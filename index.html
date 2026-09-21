@@ -2,48 +2,46 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Дневник.ру — Бакулин Д.А.</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef1f5;
     color: #222;
-    padding: 10px;
+    padding: 15px;
     min-height: 100vh;
-    font-size: 15px;
   }
 
   /* ============ Шапка ============ */
   .header {
     background: linear-gradient(135deg, #1976d2, #0d47a1);
     color: #fff;
-    padding: 16px 20px;
+    padding: 18px 28px;
     border-radius: 12px 12px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
-  .header h1 { font-size: 20px; }
-  .header .info { font-size: 13px; opacity: .95; }
+  .header h1 { font-size: 24px; }
+  .header .info { font-size: 14px; opacity: .95; }
 
   /* ============ Панель среднего балла ============ */
   .score-bar {
     background: #e3f2fd;
-    padding: 12px 20px;
+    padding: 14px 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 15px;
+    font-size: 17px;
     border-bottom: 1px solid #bbdefb;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
   }
-  .score-bar b { font-size: 20px; }
+  .score-bar b { font-size: 22px; }
   .avg-red    { color: #e53935; }
   .avg-orange { color: #fb8c00; }
   .avg-green  { color: #2e7d32; }
@@ -55,8 +53,7 @@
     border-bottom: 1px solid #e0e0e0;
   }
   .tab-btn {
-    flex: 1;
-    padding: 14px 10px;
+    padding: 14px 28px;
     border: none;
     background: #fff;
     font-size: 15px;
@@ -79,14 +76,14 @@
   /* ============ Кнопки управления ============ */
   .controls {
     background: #fff;
-    padding: 10px 20px;
+    padding: 10px 28px;
     display: flex;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
     border-bottom: 1px solid #e0e0e0;
   }
   .btn {
-    padding: 9px 16px;
+    padding: 9px 18px;
     border: none;
     background: #1976d2;
     color: #fff;
@@ -97,7 +94,6 @@
     transition: .15s;
   }
   .btn:hover { background: #1565c0; }
-  .btn:active { transform: scale(0.97); }
   .btn.danger { background: #e53935; }
   .btn.danger:hover { background: #c62828; }
   .btn.gray   { background: #607d8b; }
@@ -140,8 +136,8 @@
   th.subject-col, td.subject-col {
     background: #fafbfc;
     text-align: left;
-    padding-left: 12px;
-    min-width: 170px;
+    padding-left: 14px;
+    min-width: 190px;
     font-weight: 600;
     font-size: 14px;
     position: sticky;
@@ -165,26 +161,27 @@
 
   td.grade-cell {
     cursor: pointer;
-    min-width: 60px;
-    height: 46px;
+    min-width: 62px;
+    height: 48px;
     transition: background .12s;
     user-select: none;
   }
   td.grade-cell:hover { background: #e3f2fd; }
-  td.grade-cell:active { background: #bbdefb; }
 
   .grade-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 8px;
     color: #fff;
     font-weight: bold;
-    font-size: 19px;
+    font-size: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    transition: transform .12s;
   }
+  .grade-badge:hover { transform: scale(1.08); }
   .g1, .g2 { background: #e53935; }
   .g3      { background: #fb8c00; }
   .g4, .g5 { background: #43a047; }
@@ -205,10 +202,10 @@
   }
   .schedule-table th, .schedule-table td {
     border: 1px solid #d0d7de;
-    padding: 8px 10px;
+    padding: 10px 12px;
     text-align: left;
     vertical-align: top;
-    line-height: 1.35;
+    line-height: 1.4;
   }
   .schedule-table th {
     background: #e3f2fd;
@@ -226,10 +223,7 @@
     font-size: 13px;
     color: #37474f;
   }
-  .schedule-table td {
-    background: #fff;
-    font-size: 13px;
-  }
+  .schedule-table td { background: #fff; font-size: 13px; }
   .schedule-table td .subj { font-weight: 600; color: #1a237e; }
   .schedule-table td .room { color: #666; font-size: 12px; }
   .schedule-table td .teacher { color: #555; font-size: 12px; font-style: italic; }
@@ -237,138 +231,87 @@
 
   /* ============ Легенда ============ */
   .legend {
-    margin-top: 12px;
-    padding: 12px 16px;
+    margin-top: 14px;
+    padding: 12px 20px;
     background: #fff;
     border-left: 4px solid #1976d2;
     border-radius: 6px;
     font-size: 13px;
     color: #455a64;
     display: flex;
-    gap: 16px;
+    gap: 22px;
     align-items: center;
     flex-wrap: wrap;
   }
   .legend span.dot {
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 5px;
     vertical-align: middle;
     margin-right: 6px;
     color: #fff;
     text-align: center;
-    line-height: 20px;
+    line-height: 22px;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   /* ============ Модальное окно ============ */
   .modal-bg {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.4);
+    background: rgba(0,0,0,.35);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 100;
-    padding: 16px;
   }
   .modal-bg.active { display: flex; }
   .modal {
     background: #fff;
-    border-radius: 14px;
-    padding: 22px;
-    width: 100%;
-    max-width: 380px;
+    border-radius: 12px;
+    padding: 24px;
+    min-width: 340px;
     text-align: center;
     box-shadow: 0 12px 40px rgba(0,0,0,.25);
     animation: pop .18s ease;
   }
   @keyframes pop {
-    from { transform: scale(.92); opacity: 0; }
+    from { transform: scale(.9); opacity: 0; }
     to   { transform: scale(1);  opacity: 1; }
   }
-  .modal h3 { font-size: 17px; color: #1976d2; margin-bottom: 4px; }
+  .modal h3 { font-size: 17px; color: #1976d2; margin-bottom: 6px; }
   .modal .sub { font-size: 13px; color: #777; margin-bottom: 16px; }
   .modal .grade-btns {
-    display: flex; justify-content: center; gap: 8px;
+    display: flex; justify-content: center; gap: 10px;
     margin-bottom: 14px; flex-wrap: wrap;
   }
   .modal .grade-btn {
-    width: 54px; height: 54px;
+    width: 52px; height: 52px;
     border: none; border-radius: 10px;
     color: #fff; font-size: 22px; font-weight: bold;
     cursor: pointer; transition: .12s;
   }
-  .modal .grade-btn:active { transform: scale(0.95); }
+  .modal .grade-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,.2);
+  }
   .modal .clear-btn {
     background: #eceff1; color: #455a64;
-    padding: 10px 18px; border: none; border-radius: 6px;
-    cursor: pointer; font-size: 14px; margin-right: 8px;
+    padding: 8px 18px; border: none; border-radius: 6px;
+    cursor: pointer; font-size: 13px; margin-right: 8px;
   }
   .modal .clear-btn:hover { background: #cfd8dc; }
   .modal .cancel-btn {
     background: #607d8b; color: white;
-    padding: 10px 18px; border: none; border-radius: 6px;
-    cursor: pointer; font-size: 14px;
+    padding: 8px 18px; border: none; border-radius: 6px;
+    cursor: pointer; font-size: 13px;
   }
   .modal .cancel-btn:hover { background: #455a64; }
 
-  /* ============ Скрытые input для загрузки файла ============ */
+  /* ============ Скрытый input для загрузки ============ */
   #fileInput { display: none; }
-
-  /* ============ МОБИЛЬНАЯ АДАПТАЦИЯ ============ */
-  @media (max-width: 768px) {
-    body { padding: 6px; font-size: 16px; }
-
-    .header { padding: 14px 16px; border-radius: 10px 10px 0 0; }
-    .header h1 { font-size: 18px; }
-    .header .info { font-size: 12px; }
-
-    .score-bar { padding: 10px 16px; font-size: 14px; }
-    .score-bar b { font-size: 18px; }
-
-    .tab-btn { padding: 14px 6px; font-size: 14px; }
-
-    .controls { padding: 8px 12px; gap: 6px; }
-    .btn {
-      padding: 12px 14px;
-      font-size: 14px;
-      flex: 1 1 auto;
-      min-width: 0;
-    }
-
-    /* Таблица крупнее и удобнее пальцем */
-    table { font-size: 15px; }
-    th, td { padding: 8px 4px; }
-    td.grade-cell { min-width: 56px; height: 52px; }
-    .grade-badge { width: 40px; height: 40px; font-size: 20px; border-radius: 9px; }
-    th.subject-col, td.subject-col {
-      min-width: 140px;
-      font-size: 14px;
-      padding-left: 10px;
-    }
-    th.avg-col, td.avg-col { min-width: 68px; font-size: 15px; }
-
-    /* Расписание — вертикальный стек на мобиле */
-    .schedule-wrap { padding: 8px; overflow-x: auto; }
-    .schedule-table { min-width: 800px; font-size: 13px; }
-    .schedule-table th, .schedule-table td { padding: 8px 6px; }
-
-    /* Модалка крупнее */
-    .modal { padding: 20px 16px; }
-    .modal .grade-btn { width: 58px; height: 58px; font-size: 24px; }
-    .modal .clear-btn, .modal .cancel-btn { padding: 12px 16px; font-size: 15px; }
-
-    .legend { font-size: 12px; padding: 10px 12px; gap: 10px; }
-  }
-
-  @media (max-width: 480px) {
-    .btn { font-size: 13px; padding: 10px 12px; }
-    .header h1 { font-size: 16px; }
-    .header .info { font-size: 11px; }
-  }
 </style>
 </head>
 <body>
@@ -376,13 +319,13 @@
 <!-- ===== Шапка ===== -->
 <div class="header">
   <h1>📘 Дневник.ру</h1>
-  <div class="info">Бакулин Дмитрий Алексеевич • 9Б • Гимназия №10, Воронеж</div>
+  <div class="info">Бакулин Дмитрий Алексеевич • 9Б класс • Гимназия №10, Воронеж</div>
 </div>
 
 <!-- ===== Средний балл ===== -->
 <div class="score-bar">
-  <div>Общий средний балл: <b id="avg">—</b> <span id="avgCount" style="font-size:12px;color:#666;"></span></div>
-  <div id="today" style="font-size:12px;color:#555;"></div>
+  <div>Общий средний балл: <b id="avg">—</b> <span id="avgCount" style="font-size:13px;color:#666;"></span></div>
+  <div id="today" style="font-size:13px;color:#555;"></div>
 </div>
 
 <!-- ===== Табы ===== -->
@@ -395,17 +338,17 @@
 <div class="tab-content active" id="tab-grades">
 
   <div class="controls">
-    <button class="btn" onclick="addSubject()">➕ Предмет</button>
-    <button class="btn danger" onclick="removeSubject()">➖ Предмет</button>
-    <button class="btn" onclick="addDate()">➕ Дата</button>
-    <button class="btn danger" onclick="removeDate()">➖ Дата</button>
+    <button class="btn" onclick="addSubject()">➕ Добавить предмет</button>
+    <button class="btn danger" onclick="removeSubject()">➖ Удалить предмет</button>
+    <button class="btn" onclick="addDate()">➕ Добавить дату</button>
+    <button class="btn danger" onclick="removeDate()">➖ Удалить дату</button>
+    <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить всё</button>
   </div>
 
   <div class="controls">
     <button class="btn green" onclick="downloadDiary()">💾 Скачать дневник</button>
     <button class="btn gray" onclick="document.getElementById('fileInput').click()">📂 Загрузить дневник</button>
     <input type="file" id="fileInput" accept=".json" onchange="uploadDiary(event)">
-    <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить</button>
   </div>
 
   <div class="table-wrap">
@@ -416,10 +359,10 @@
   </div>
 
   <div class="legend">
-    <span><span class="dot" style="background:#e53935;">1</span>1-2 — плохо</span>
-    <span><span class="dot" style="background:#fb8c00;">3</span>3 — средне</span>
-    <span><span class="dot" style="background:#43a047;">5</span>4-5 — отлично</span>
-    <span style="color:#888;font-size:12px;">Клик по ячейке — поставить оценку</span>
+    <span><span class="dot" style="background:#e53935;">1</span>Оценка 1-2 — плохо</span>
+    <span><span class="dot" style="background:#fb8c00;">3</span>Оценка 3 — средне</span>
+    <span><span class="dot" style="background:#43a047;">5</span>Оценка 4-5 — отлично</span>
+    <span style="margin-left:auto;color:#888;">💡 Клик по ячейке — поставить оценку</span>
   </div>
 </div>
 
@@ -437,9 +380,7 @@
           <th>Пятница</th>
         </tr>
       </thead>
-      <tbody id="scheduleBody">
-        <!-- Заполняется скриптом -->
-      </tbody>
+      <tbody id="scheduleBody"></tbody>
     </table>
   </div>
 
@@ -452,10 +393,10 @@
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
-    <div class="sub" id="modalSub">Выберите оценку</div>
+    <div class="sub" id="modalSub">Выберите оценку от 1 до 5</div>
     <div class="grade-btns" id="modalBtns"></div>
-    <div>
-      <button class="clear-btn" onclick="clearGrade()">🗑 Убрать</button>
+    <div style="margin-top:10px;">
+      <button class="clear-btn" onclick="clearGrade()">🗑 Убрать оценку</button>
       <button class="cancel-btn" onclick="closeModal()">Отмена</button>
     </div>
   </div>
@@ -478,8 +419,6 @@ const DATES_DEFAULT = [
 ];
 
 // ============ РАСПИСАНИЕ ============
-// Формат: массив слотов, каждый слот — массив [Пн, Вт, Ср, Чт, Пт]
-// Если предмета нет — пустая строка ""
 const TIME_SLOTS = [
   "08:30 – 09:10",
   "09:30 – 10:10",
@@ -491,7 +430,7 @@ const TIME_SLOTS = [
 ];
 
 const SCHEDULE = [
-  // Слот 1 (08:30–09:10)
+  // Слот 1
   [
     { subject: "Рус.яз.", room: "44", teacher: "Подоляк С.В." },
     { subject: "Физика",  room: "17", teacher: "Милякова Т.М." },
@@ -499,7 +438,7 @@ const SCHEDULE = [
     { subject: "Рус.яз.", room: "44", teacher: "Подоляк С.В." },
     { subject: "Физика",  room: "17", teacher: "Милякова Т.М." }
   ],
-  // Слот 2 (09:30–10:10)
+  // Слот 2
   [
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
     { subject: "Физика",  room: "17", teacher: "Милякова Т.М." },
@@ -507,7 +446,7 @@ const SCHEDULE = [
     { subject: "Физ-ра",  room: "", teacher: "Акимова Е.Н." },
     { subject: "География", room: "30", teacher: "Блаженов В.А." }
   ],
-  // Слот 3 (10:30–11:10)
+  // Слот 3
   [
     { subject: "ОБЩ-ЗН", room: "32", teacher: "Якунина К.П." },
     { subject: "Англ. / Информ.", room: "28 / 19", teacher: "Подлесных Е.В. / Бородина В.М." },
@@ -515,7 +454,7 @@ const SCHEDULE = [
     { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
     { subject: "Англ. / Информ.", room: "28 / 19", teacher: "Подлесных Е.В. / Бородина В.М." }
   ],
-  // Слот 4 (11:20–12:00)
+  // Слот 4
   [
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Англ. / Информ.", room: "28 / 19", teacher: "Подлесных Е.В. / Бородина В.М." },
@@ -523,7 +462,7 @@ const SCHEDULE = [
     { subject: "Рус.яз.", room: "44", teacher: "Подоляк С.В." },
     { subject: "Англ.", room: "28", teacher: "Подлесных Е.В. / Бородина В.М." }
   ],
-  // Слот 5 (12:10–12:50)
+  // Слот 5
   [
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
     { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
@@ -531,7 +470,7 @@ const SCHEDULE = [
     { subject: "Геом.", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Вер.ст.", room: "42", teacher: "Мещерякова О.А." }
   ],
-  // Слот 6 (13:20–14:00)
+  // Слот 6
   [
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
@@ -539,7 +478,7 @@ const SCHEDULE = [
     { subject: "Геом.", room: "42", teacher: "Мещерякова О.А." },
     { subject: "История", room: "32", teacher: "Якунина К.П." }
   ],
-  // Слот 7 (14:10–14:50)
+  // Слот 7
   [
     { subject: "Физ-ра", room: "", teacher: "Акимова Е.Н." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
@@ -601,9 +540,7 @@ function render() {
       const td = document.createElement("td");
       td.className = "grade-cell";
       const g = subjGrades[d];
-      if (g) {
-        td.innerHTML = `<span class="grade-badge g${g}">${g}</span>`;
-      }
+      if (g) td.innerHTML = `<span class="grade-badge g${g}">${g}</span>`;
       td.onclick = () => openGradeModal(subj, d);
       tr.appendChild(td);
     });
