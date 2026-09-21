@@ -2,61 +2,91 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Дневник.ру — Бакулин Д.А.</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef1f5;
     color: #222;
-    padding: 15px;
+    padding: 10px;
     min-height: 100vh;
+    font-size: 15px;
   }
 
   /* ============ Шапка ============ */
   .header {
     background: linear-gradient(135deg, #1976d2, #0d47a1);
     color: #fff;
-    padding: 18px 28px;
+    padding: 16px 20px;
     border-radius: 12px 12px 0 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
-  .header h1 { font-size: 24px; }
-  .header .info { font-size: 14px; opacity: .95; }
+  .header h1 { font-size: 20px; }
+  .header .info { font-size: 13px; opacity: .95; }
 
   /* ============ Панель среднего балла ============ */
   .score-bar {
     background: #e3f2fd;
-    padding: 14px 28px;
+    padding: 12px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 17px;
+    font-size: 15px;
     border-bottom: 1px solid #bbdefb;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
   }
-  .score-bar b { font-size: 22px; }
+  .score-bar b { font-size: 20px; }
   .avg-red    { color: #e53935; }
   .avg-orange { color: #fb8c00; }
   .avg-green  { color: #2e7d32; }
 
+  /* ============ Табы ============ */
+  .tabs {
+    display: flex;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px 10px;
+    border: none;
+    background: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    color: #555;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: .2s;
+  }
+  .tab-btn.active {
+    color: #1976d2;
+    border-bottom-color: #1976d2;
+    background: #f5f9ff;
+  }
+  .tab-btn:hover { background: #f5f9ff; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
   /* ============ Кнопки управления ============ */
   .controls {
     background: #fff;
-    padding: 10px 28px;
+    padding: 10px 20px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
     border-bottom: 1px solid #e0e0e0;
   }
   .btn {
-    padding: 9px 18px;
+    padding: 9px 16px;
     border: none;
     background: #1976d2;
     color: #fff;
@@ -67,24 +97,27 @@
     transition: .15s;
   }
   .btn:hover { background: #1565c0; }
+  .btn:active { transform: scale(0.97); }
   .btn.danger { background: #e53935; }
   .btn.danger:hover { background: #c62828; }
-  .btn.gray { background: #607d8b; }
+  .btn.gray   { background: #607d8b; }
   .btn.gray:hover { background: #455a64; }
+  .btn.green  { background: #43a047; }
+  .btn.green:hover { background: #2e7d32; }
 
-  /* ============ Таблица ============ */
+  /* ============ Таблица оценок ============ */
   .table-wrap {
     background: #fff;
     border-radius: 0 0 12px 12px;
     overflow: auto;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    max-height: calc(100vh - 260px);
+    max-height: calc(100vh - 320px);
   }
   table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    min-width: 1400px;
+    min-width: 1200px;
     font-size: 14px;
   }
   th, td {
@@ -104,12 +137,11 @@
     color: #37474f;
     padding: 10px 6px;
   }
-  /* Левая колонка с предметами */
   th.subject-col, td.subject-col {
     background: #fafbfc;
     text-align: left;
-    padding-left: 14px;
-    min-width: 190px;
+    padding-left: 12px;
+    min-width: 170px;
     font-weight: 600;
     font-size: 14px;
     position: sticky;
@@ -119,7 +151,6 @@
   }
   thead th.subject-col { z-index: 6; }
 
-  /* Колонка средней оценки справа */
   th.avg-col, td.avg-col {
     background: #f5f7fa;
     font-weight: bold;
@@ -132,141 +163,212 @@
   }
   thead th.avg-col { z-index: 6; }
 
-  /* ============ Ячейки с оценками ============ */
   td.grade-cell {
     cursor: pointer;
-    min-width: 62px;
-    height: 48px;
+    min-width: 60px;
+    height: 46px;
     transition: background .12s;
     user-select: none;
-    position: relative;
   }
   td.grade-cell:hover { background: #e3f2fd; }
+  td.grade-cell:active { background: #bbdefb; }
 
-  /* Крупная оценка — белая цифра на цветном прямоугольнике */
   .grade-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     color: #fff;
     font-weight: bold;
-    font-size: 20px;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 19px;
     box-shadow: 0 1px 3px rgba(0,0,0,.15);
-    transition: transform .12s;
   }
-  .grade-badge:hover { transform: scale(1.08); }
+  .g1, .g2 { background: #e53935; }
+  .g3      { background: #fb8c00; }
+  .g4, .g5 { background: #43a047; }
 
-  .g1, .g2 { background: #e53935; }   /* красный */
-  .g3      { background: #fb8c00; }   /* оранжевый */
-  .g4, .g5 { background: #43a047; }   /* зелёный */
+  /* ============ Расписание ============ */
+  .schedule-wrap {
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    overflow-x: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    padding: 14px;
+  }
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+    font-size: 14px;
+  }
+  .schedule-table th, .schedule-table td {
+    border: 1px solid #d0d7de;
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.35;
+  }
+  .schedule-table th {
+    background: #e3f2fd;
+    color: #0d47a1;
+    font-weight: 700;
+    text-align: center;
+    font-size: 14px;
+  }
+  .schedule-table th.time-col,
+  .schedule-table td.time-col {
+    background: #f5f7fa;
+    font-weight: 700;
+    text-align: center;
+    min-width: 120px;
+    font-size: 13px;
+    color: #37474f;
+  }
+  .schedule-table td {
+    background: #fff;
+    font-size: 13px;
+  }
+  .schedule-table td .subj { font-weight: 600; color: #1a237e; }
+  .schedule-table td .room { color: #666; font-size: 12px; }
+  .schedule-table td .teacher { color: #555; font-size: 12px; font-style: italic; }
+  .schedule-table tr:nth-child(even) td:not(.time-col) { background: #fafbfc; }
 
   /* ============ Легенда ============ */
   .legend {
-    margin-top: 14px;
-    padding: 12px 20px;
+    margin-top: 12px;
+    padding: 12px 16px;
     background: #fff;
     border-left: 4px solid #1976d2;
     border-radius: 6px;
     font-size: 13px;
     color: #455a64;
     display: flex;
-    gap: 22px;
+    gap: 16px;
     align-items: center;
     flex-wrap: wrap;
   }
   .legend span.dot {
     display: inline-block;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     border-radius: 5px;
     vertical-align: middle;
     margin-right: 6px;
     color: #fff;
     text-align: center;
-    line-height: 22px;
+    line-height: 20px;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 12px;
   }
 
   /* ============ Модальное окно ============ */
   .modal-bg {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.35);
+    background: rgba(0,0,0,.4);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 100;
+    padding: 16px;
   }
   .modal-bg.active { display: flex; }
   .modal {
     background: #fff;
-    border-radius: 12px;
-    padding: 24px;
-    min-width: 340px;
+    border-radius: 14px;
+    padding: 22px;
+    width: 100%;
+    max-width: 380px;
     text-align: center;
     box-shadow: 0 12px 40px rgba(0,0,0,.25);
     animation: pop .18s ease;
   }
   @keyframes pop {
-    from { transform: scale(.9); opacity: 0; }
+    from { transform: scale(.92); opacity: 0; }
     to   { transform: scale(1);  opacity: 1; }
   }
-  .modal h3 {
-    font-size: 17px;
-    color: #1976d2;
-    margin-bottom: 6px;
-  }
-  .modal .sub {
-    font-size: 13px;
-    color: #777;
-    margin-bottom: 16px;
-  }
+  .modal h3 { font-size: 17px; color: #1976d2; margin-bottom: 4px; }
+  .modal .sub { font-size: 13px; color: #777; margin-bottom: 16px; }
   .modal .grade-btns {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
+    display: flex; justify-content: center; gap: 8px;
+    margin-bottom: 14px; flex-wrap: wrap;
   }
   .modal .grade-btn {
-    width: 52px;
-    height: 52px;
-    border: none;
-    border-radius: 10px;
-    color: #fff;
-    font-size: 22px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: .12s;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    width: 54px; height: 54px;
+    border: none; border-radius: 10px;
+    color: #fff; font-size: 22px; font-weight: bold;
+    cursor: pointer; transition: .12s;
   }
-  .modal .grade-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+  .modal .grade-btn:active { transform: scale(0.95); }
   .modal .clear-btn {
-    background: #eceff1;
-    color: #455a64;
-    padding: 8px 18px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    margin-right: 8px;
+    background: #eceff1; color: #455a64;
+    padding: 10px 18px; border: none; border-radius: 6px;
+    cursor: pointer; font-size: 14px; margin-right: 8px;
   }
   .modal .clear-btn:hover { background: #cfd8dc; }
   .modal .cancel-btn {
-    background: #607d8b;
-    color: white;
-    padding: 8px 18px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
+    background: #607d8b; color: white;
+    padding: 10px 18px; border: none; border-radius: 6px;
+    cursor: pointer; font-size: 14px;
   }
   .modal .cancel-btn:hover { background: #455a64; }
+
+  /* ============ Скрытые input для загрузки файла ============ */
+  #fileInput { display: none; }
+
+  /* ============ МОБИЛЬНАЯ АДАПТАЦИЯ ============ */
+  @media (max-width: 768px) {
+    body { padding: 6px; font-size: 16px; }
+
+    .header { padding: 14px 16px; border-radius: 10px 10px 0 0; }
+    .header h1 { font-size: 18px; }
+    .header .info { font-size: 12px; }
+
+    .score-bar { padding: 10px 16px; font-size: 14px; }
+    .score-bar b { font-size: 18px; }
+
+    .tab-btn { padding: 14px 6px; font-size: 14px; }
+
+    .controls { padding: 8px 12px; gap: 6px; }
+    .btn {
+      padding: 12px 14px;
+      font-size: 14px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    /* Таблица крупнее и удобнее пальцем */
+    table { font-size: 15px; }
+    th, td { padding: 8px 4px; }
+    td.grade-cell { min-width: 56px; height: 52px; }
+    .grade-badge { width: 40px; height: 40px; font-size: 20px; border-radius: 9px; }
+    th.subject-col, td.subject-col {
+      min-width: 140px;
+      font-size: 14px;
+      padding-left: 10px;
+    }
+    th.avg-col, td.avg-col { min-width: 68px; font-size: 15px; }
+
+    /* Расписание — вертикальный стек на мобиле */
+    .schedule-wrap { padding: 8px; overflow-x: auto; }
+    .schedule-table { min-width: 800px; font-size: 13px; }
+    .schedule-table th, .schedule-table td { padding: 8px 6px; }
+
+    /* Модалка крупнее */
+    .modal { padding: 20px 16px; }
+    .modal .grade-btn { width: 58px; height: 58px; font-size: 24px; }
+    .modal .clear-btn, .modal .cancel-btn { padding: 12px 16px; font-size: 15px; }
+
+    .legend { font-size: 12px; padding: 10px 12px; gap: 10px; }
+  }
+
+  @media (max-width: 480px) {
+    .btn { font-size: 13px; padding: 10px 12px; }
+    .header h1 { font-size: 16px; }
+    .header .info { font-size: 11px; }
+  }
 </style>
 </head>
 <body>
@@ -274,48 +376,86 @@
 <!-- ===== Шапка ===== -->
 <div class="header">
   <h1>📘 Дневник.ру</h1>
-  <div class="info">Бакулин Дмитрий Алексеевич • 9Б класс • Гимназия №10, Воронеж</div>
+  <div class="info">Бакулин Дмитрий Алексеевич • 9Б • Гимназия №10, Воронеж</div>
 </div>
 
 <!-- ===== Средний балл ===== -->
 <div class="score-bar">
-  <div>Общий средний балл: <b id="avg">—</b> <span id="avgCount" style="font-size:13px;color:#666;"></span></div>
-  <div id="today" style="font-size:13px;color:#555;"></div>
+  <div>Общий средний балл: <b id="avg">—</b> <span id="avgCount" style="font-size:12px;color:#666;"></span></div>
+  <div id="today" style="font-size:12px;color:#555;"></div>
 </div>
 
-<!-- ===== Кнопки ===== -->
-<div class="controls">
-  <button class="btn" onclick="addSubject()">➕ Добавить предмет</button>
-  <button class="btn danger" onclick="removeSubject()">➖ Удалить предмет</button>
-  <button class="btn" onclick="addDate()">➕ Добавить дату</button>
-  <button class="btn danger" onclick="removeDate()">➖ Удалить дату</button>
-  <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить всё</button>
+<!-- ===== Табы ===== -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('grades', this)">📝 Оценки</button>
+  <button class="tab-btn" onclick="switchTab('schedule', this)">📅 Расписание</button>
 </div>
 
-<!-- ===== Таблица ===== -->
-<div class="table-wrap">
-  <table id="diaryTable">
-    <thead><tr id="headerRow"></tr></thead>
-    <tbody id="tbody"></tbody>
-  </table>
+<!-- ==================== ВКЛАДКА ОЦЕНКИ ==================== -->
+<div class="tab-content active" id="tab-grades">
+
+  <div class="controls">
+    <button class="btn" onclick="addSubject()">➕ Предмет</button>
+    <button class="btn danger" onclick="removeSubject()">➖ Предмет</button>
+    <button class="btn" onclick="addDate()">➕ Дата</button>
+    <button class="btn danger" onclick="removeDate()">➖ Дата</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn green" onclick="downloadDiary()">💾 Скачать дневник</button>
+    <button class="btn gray" onclick="document.getElementById('fileInput').click()">📂 Загрузить дневник</button>
+    <input type="file" id="fileInput" accept=".json" onchange="uploadDiary(event)">
+    <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="diaryTable">
+      <thead><tr id="headerRow"></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot" style="background:#e53935;">1</span>1-2 — плохо</span>
+    <span><span class="dot" style="background:#fb8c00;">3</span>3 — средне</span>
+    <span><span class="dot" style="background:#43a047;">5</span>4-5 — отлично</span>
+    <span style="color:#888;font-size:12px;">Клик по ячейке — поставить оценку</span>
+  </div>
 </div>
 
-<!-- ===== Легенда ===== -->
-<div class="legend">
-  <span><span class="dot" style="background:#e53935;">1</span>Оценка 1-2 — плохо</span>
-  <span><span class="dot" style="background:#fb8c00;">3</span>Оценка 3 — средне</span>
-  <span><span class="dot" style="background:#43a047;">5</span>Оценка 4-5 — отлично</span>
-  <span style="margin-left:auto;color:#888;">💡 Клик по ячейке — поставить оценку</span>
+<!-- ==================== ВКЛАДКА РАСПИСАНИЕ ==================== -->
+<div class="tab-content" id="tab-schedule">
+  <div class="schedule-wrap">
+    <table class="schedule-table" id="scheduleTable">
+      <thead>
+        <tr>
+          <th class="time-col">Время</th>
+          <th>Понедельник</th>
+          <th>Вторник</th>
+          <th>Среда</th>
+          <th>Четверг</th>
+          <th>Пятница</th>
+        </tr>
+      </thead>
+      <tbody id="scheduleBody">
+        <!-- Заполняется скриптом -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legend" style="margin-top:14px;">
+    <span>💡 Расписание редактируется в файле <code>index.html</code> в переменной <code>SCHEDULE</code></span>
+  </div>
 </div>
 
 <!-- ===== Модальное окно ===== -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
-    <div class="sub" id="modalSub">Выберите оценку от 1 до 5</div>
+    <div class="sub" id="modalSub">Выберите оценку</div>
     <div class="grade-btns" id="modalBtns"></div>
-    <div style="margin-top:10px;">
-      <button class="clear-btn" onclick="clearGrade()">🗑 Убрать оценку</button>
+    <div>
+      <button class="clear-btn" onclick="clearGrade()">🗑 Убрать</button>
       <button class="cancel-btn" onclick="closeModal()">Отмена</button>
     </div>
   </div>
@@ -337,7 +477,79 @@ const DATES_DEFAULT = [
   "24.09", "26.09", "29.09", "01.10", "03.10"
 ];
 
-const STORAGE_KEY = "diary_html_v1";
+// ============ РАСПИСАНИЕ ============
+// Формат: массив слотов, каждый слот — массив [Пн, Вт, Ср, Чт, Пт]
+// Если предмета нет — пустая строка ""
+const TIME_SLOTS = [
+  "08:30 – 09:10",
+  "09:30 – 10:10",
+  "10:30 – 11:10",
+  "11:20 – 12:00",
+  "12:10 – 12:50",
+  "13:20 – 14:00",
+  "14:10 – 14:50"
+];
+
+const SCHEDULE = [
+  // Слот 1 (08:30–09:10)
+  [
+    { subject: "Рус.яз.", room: "44", teacher: "Подоляк С.В." },
+    { subject: "Физика",  room: "17", teacher: "Милякова Т.М." },
+    { subject: "География", room: "30", teacher: "Блаженов В.А." },
+    { subject: "Рус.яз.", room: "44", teacher: "Подоляк С.В." },
+    { subject: "Физика",  room: "17", teacher: "Милякова Т.М." }
+  ],
+  // Слот 2 (09:30–10:10)
+  [
+    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
+    { subject: "Физика",  room: "17", teacher: "Милякова Т.М." },
+    { subject: "Труд",    room: "22 / 49", teacher: "Знобин А.И. / Бондарев М.Н." },
+    { subject: "Физ-ра",  room: "", teacher: "Акимова Е.Н." },
+    { subject: "География", room: "30", teacher: "Блаженов В.А." }
+  ],
+  // Слот 3 (10:30–11:10)
+  [
+    { subject: "ОБЩ-ЗН", room: "32", teacher: "Якунина К.П." },
+    { subject: "Англ. / Информ.", room: "28 / 19", teacher: "Подлесных Е.В. / Бородина В.М." },
+    { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
+    { subject: "Англ. / Информ.", room: "28 / 19", teacher: "Подлесных Е.В. / Бородина В.М." }
+  ],
+  // Слот 4 (11:20–12:00)
+  [
+    { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "Англ. / Информ.", room: "28 / 19", teacher: "Подлесных Е.В. / Бородина В.М." },
+    { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
+    { subject: "Рус.яз.", room: "44", teacher: "Подоляк С.В." },
+    { subject: "Англ.", room: "28", teacher: "Подлесных Е.В. / Бородина В.М." }
+  ],
+  // Слот 5 (12:10–12:50)
+  [
+    { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
+    { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
+    { subject: "Сов. ис. / Перв. помощь", room: "32 / 25", teacher: "Якунина К.П. / Чернышова В.А." },
+    { subject: "Геом.", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "Вер.ст.", room: "42", teacher: "Мещерякова О.А." }
+  ],
+  // Слот 6 (13:20–14:00)
+  [
+    { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
+    { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "ОБЖ", room: "41", teacher: "Миляков С.В." },
+    { subject: "Геом.", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "История", room: "32", teacher: "Якунина К.П." }
+  ],
+  // Слот 7 (14:10–14:50)
+  [
+    { subject: "Физ-ра", room: "", teacher: "Акимова Е.Н." },
+    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
+    { subject: "", room: "", teacher: "" },
+    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
+    { subject: "История", room: "32", teacher: "Якунина К.П." }
+  ]
+];
+
+const STORAGE_KEY = "diary_html_v2";
 
 // ==================== СОСТОЯНИЕ ====================
 let state = loadState();
@@ -356,7 +568,7 @@ function loadState() {
   return {
     subjects: [...SUBJECTS_DEFAULT],
     dates: [...DATES_DEFAULT],
-    grades: {}   // { "Алгебра": { "01.09": 5, ... } }
+    grades: {}
   };
 }
 
@@ -364,34 +576,28 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-// ==================== РЕНДЕР ТАБЛИЦЫ ====================
+// ==================== РЕНДЕР ОЦЕНОК ====================
 function render() {
   const dates = state.dates;
   const headerRow = document.getElementById("headerRow");
   const tbody = document.getElementById("tbody");
 
-  // --- Заголовки ---
   let html = '<th class="subject-col">Предмет</th>';
-  dates.forEach((d, i) => {
-    html += `<th>${d}</th>`;
-  });
+  dates.forEach(d => { html += `<th>${d}</th>`; });
   html += '<th class="avg-col">Средний балл</th>';
   headerRow.innerHTML = html;
 
-  // --- Строки ---
   tbody.innerHTML = "";
   state.subjects.forEach(subj => {
     const subjGrades = state.grades[subj] || {};
     const tr = document.createElement("tr");
 
-    // Название
     const tdName = document.createElement("td");
     tdName.className = "subject-col";
     tdName.textContent = subj;
     tr.appendChild(tdName);
 
-    // Оценки по датам
-    dates.forEach((d, i) => {
+    dates.forEach(d => {
       const td = document.createElement("td");
       td.className = "grade-cell";
       const g = subjGrades[d];
@@ -402,7 +608,6 @@ function render() {
       tr.appendChild(td);
     });
 
-    // Средний балл по предмету
     const tdAvg = document.createElement("td");
     tdAvg.className = "avg-col";
     const vals = Object.values(subjGrades).filter(v => v);
@@ -425,16 +630,13 @@ function render() {
   updateToday();
 }
 
-// ==================== СРЕДНИЙ БАЛЛ ОБЩИЙ ====================
 function updateAvg() {
   const all = [];
   Object.values(state.grades).forEach(g => {
     Object.values(g).forEach(v => { if (v) all.push(v); });
   });
-
   const el = document.getElementById("avg");
   const cnt = document.getElementById("avgCount");
-
   if (all.length === 0) {
     el.textContent = "—";
     el.className = "";
@@ -455,14 +657,13 @@ function updateToday() {
   document.getElementById("today").textContent = "Сегодня: " + str;
 }
 
-// ==================== МОДАЛЬНОЕ ОКНО ОЦЕНКИ ====================
+// ==================== МОДАЛКА ОЦЕНКИ ====================
 let currentCell = { subj: null, date: null };
 
 function openGradeModal(subj, date) {
   currentCell = { subj, date };
   document.getElementById("modalTitle").textContent = subj;
   document.getElementById("modalSub").textContent = "Дата: " + date;
-
   const wrap = document.getElementById("modalBtns");
   wrap.innerHTML = "";
   [1, 2, 3, 4, 5].forEach(n => {
@@ -472,7 +673,6 @@ function openGradeModal(subj, date) {
     btn.onclick = () => setGrade(n);
     wrap.appendChild(btn);
   });
-
   document.getElementById("modalBg").classList.add("active");
 }
 
@@ -500,37 +700,31 @@ function clearGrade() {
   render();
 }
 
-// Закрытие по Esc / клику по фону
 document.getElementById("modalBg").addEventListener("click", e => {
   if (e.target.id === "modalBg") closeModal();
 });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") closeModal();
-  // Быстрый выбор оценки цифрами 1-5
   if (document.getElementById("modalBg").classList.contains("active")) {
     if (["1","2","3","4","5"].includes(e.key)) setGrade(parseInt(e.key));
     if (e.key === "0" || e.key === "Backspace") clearGrade();
   }
 });
 
-// ==================== УПРАВЛЕНИЕ ПРЕДМЕТАМИ ====================
+// ==================== ПРЕДМЕТЫ И ДАТЫ ====================
 function addSubject() {
   const name = prompt("Название предмета:");
   if (!name) return;
-  const trimmed = name.trim();
-  if (!trimmed) return;
-  if (state.subjects.includes(trimmed)) {
-    alert("Такой предмет уже есть!");
-    return;
-  }
-  state.subjects.push(trimmed);
-  saveState();
-  render();
+  const t = name.trim();
+  if (!t) return;
+  if (state.subjects.includes(t)) { alert("Такой предмет уже есть!"); return; }
+  state.subjects.push(t);
+  saveState(); render();
 }
 
 function removeSubject() {
   if (state.subjects.length === 0) return;
-  const list = state.subjects.map((s, i) => `${i+1}. ${s}`).join("\n");
+  const list = state.subjects.map((s,i) => `${i+1}. ${s}`).join("\n");
   const ans = prompt("Введите НОМЕР предмета для удаления:\n\n" + list);
   if (!ans) return;
   const idx = parseInt(ans) - 1;
@@ -539,27 +733,21 @@ function removeSubject() {
   if (!confirm(`Удалить «${subj}» и все его оценки?`)) return;
   state.subjects.splice(idx, 1);
   delete state.grades[subj];
-  saveState();
-  render();
+  saveState(); render();
 }
 
-// ==================== УПРАВЛЕНИЕ ДАТАМИ ====================
 function addDate() {
   const d = prompt("Введите дату (например 05.10):");
   if (!d) return;
-  const trimmed = d.trim();
-  if (state.dates.includes(trimmed)) {
-    alert("Такая дата уже есть!");
-    return;
-  }
-  state.dates.push(trimmed);
-  saveState();
-  render();
+  const t = d.trim();
+  if (state.dates.includes(t)) { alert("Такая дата уже есть!"); return; }
+  state.dates.push(t);
+  saveState(); render();
 }
 
 function removeDate() {
   if (state.dates.length === 0) return;
-  const list = state.dates.map((d, i) => `${i+1}. ${d}`).join("\n");
+  const list = state.dates.map((d,i) => `${i+1}. ${d}`).join("\n");
   const ans = prompt("Введите НОМЕР даты для удаления:\n\n" + list);
   if (!ans) return;
   const idx = parseInt(ans) - 1;
@@ -571,20 +759,96 @@ function removeDate() {
     delete state.grades[subj][d];
     if (Object.keys(state.grades[subj]).length === 0) delete state.grades[subj];
   });
-  saveState();
-  render();
+  saveState(); render();
 }
 
-// ==================== ОЧИСТКА ====================
 function clearAll() {
-  if (!confirm("Удалить ВСЕ оценки по всем предметам?")) return;
+  if (!confirm("Удалить ВСЕ оценки?")) return;
   state.grades = {};
-  saveState();
-  render();
+  saveState(); render();
+}
+
+// ==================== ЭКСПОРТ / ИМПОРТ ====================
+function downloadDiary() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const d = new Date();
+  const name = `diary_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
+  a.href = url;
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(url);
+  alert("Файл скачан! 📁\nЕго можно перенести на другое устройство и загрузить там.");
+}
+
+function uploadDiary(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const loaded = JSON.parse(e.target.result);
+      if (!loaded.subjects || !loaded.dates || !loaded.grades) {
+        alert("Неверный файл дневника!");
+        return;
+      }
+      if (!confirm("Загрузить дневник из файла?\n\nТекущие оценки будут заменены.")) return;
+      state = loaded;
+      saveState();
+      render();
+      alert("Дневник успешно загружен! ✅");
+    } catch(err) {
+      alert("Ошибка чтения файла: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+  ev.target.value = "";
+}
+
+// ==================== ТАБЫ ====================
+function switchTab(name, btn) {
+  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  btn.classList.add("active");
+}
+
+// ==================== РАСПИСАНИЕ ====================
+function renderSchedule() {
+  const body = document.getElementById("scheduleBody");
+  body.innerHTML = "";
+
+  TIME_SLOTS.forEach((time, i) => {
+    const tr = document.createElement("tr");
+
+    const tdTime = document.createElement("td");
+    tdTime.className = "time-col";
+    tdTime.textContent = time;
+    tr.appendChild(tdTime);
+
+    const row = SCHEDULE[i] || [];
+    for (let d = 0; d < 5; d++) {
+      const cell = row[d] || { subject: "", room: "", teacher: "" };
+      const td = document.createElement("td");
+      if (cell.subject) {
+        td.innerHTML =
+          `<div class="subj">${cell.subject}</div>` +
+          (cell.room ? `<div class="room">каб. ${cell.room}</div>` : "") +
+          (cell.teacher ? `<div class="teacher">${cell.teacher}</div>` : "");
+      } else {
+        td.innerHTML = '<span style="color:#bbb;">—</span>';
+      }
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  });
 }
 
 // ==================== СТАРТ ====================
 render();
+renderSchedule();
 </script>
 
 </body>
