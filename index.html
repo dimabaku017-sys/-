@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Дневник.ру — Бакулин Д.А.</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,6 +47,146 @@
   .avg-red    { color: #e53935; }
   .avg-orange { color: #fb8c00; }
   .avg-green  { color: #2e7d32; }
+
+  /* ============ Плашка "Сейчас идёт" ============ */
+  .now-bar {
+    display: none;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+  }
+  .now-bar.active { display: flex; }
+
+  .now-bar.lesson {
+    background: linear-gradient(135deg, #43a047, #2e7d32);
+    color: #fff;
+  }
+  .now-bar.break {
+    background: linear-gradient(135deg, #fb8c00, #ef6c00);
+    color: #fff;
+  }
+  .now-bar.soon {
+    background: linear-gradient(135deg, #1976d2, #0d47a1);
+    color: #fff;
+  }
+  .now-bar .icon { font-size: 20px; }
+  .now-bar .now-text { flex: 1; min-width: 200px; }
+  .now-bar .now-time {
+    background: rgba(255,255,255,.25);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ============ Плашка "Задано на завтра" ============ */
+  .tomorrow-hw {
+    display: none;
+    background: #fff8e1;
+    border-top: 2px solid #ffcc80;
+    padding: 16px 28px;
+    font-size: 14px;
+  }
+  .tomorrow-hw.active { display: block; }
+  .tomorrow-hw .th-title {
+    font-weight: 700;
+    color: #e65100;
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tomorrow-hw .th-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tomorrow-hw .th-item {
+    background: #fff;
+    border: 1px solid #ffe082;
+    border-left: 4px solid #ff9800;
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tomorrow-hw .th-item .th-subj {
+    font-weight: 700;
+    color: #1a237e;
+    font-size: 14px;
+  }
+  .tomorrow-hw .th-item .th-meta {
+    font-size: 12px;
+    color: #666;
+  }
+  .tomorrow-hw .th-item .th-text {
+    color: #5d4037;
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+  }
+  .tomorrow-hw .th-item .th-photo {
+    margin-top: 4px;
+  }
+  .tomorrow-hw .th-item .th-photo img {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 6px;
+    border: 1px solid #90caf9;
+    cursor: pointer;
+  }
+  .tomorrow-hw .th-empty {
+    color: #9e9e9e;
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  /* ============ Блок риска ============ */
+  .risk-bar {
+    background: #fff8e1;
+    border-bottom: 1px solid #ffe082;
+    padding: 12px 28px;
+    display: none;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+  }
+  .risk-bar.active { display: flex; }
+  .risk-bar .risk-title {
+    font-weight: 700;
+    color: #e65100;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+  .risk-bar .risk-item {
+    background: #fff;
+    border: 1px solid #ffcc80;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 220px;
+  }
+  .risk-bar .risk-item b { color: #e53935; }
+  .risk-bar .risk-item .hint {
+    font-size: 11px;
+    color: #6d4c41;
+  }
+  .risk-bar .risk-item .need {
+    color: #2e7d32;
+    font-weight: 700;
+  }
 
   /* ============ Табы ============ */
   .tabs {
@@ -455,6 +596,7 @@
     display: flex;
     align-items: flex-start;
     gap: 4px;
+    flex-wrap: wrap;
   }
   .hw-btn {
     background: #fff3e0;
@@ -470,6 +612,17 @@
   }
   .hw-btn:hover { background: #ffe0b2; }
   .hw-btn.has-hw { background: #ff9800; color: white; border-color: #f57c00; }
+  .hw-btn .photo-badge {
+    display: inline-block;
+    margin-left: 4px;
+    background: #1976d2;
+    color: #fff;
+    border-radius: 8px;
+    padding: 0 5px;
+    font-size: 10px;
+    line-height: 14px;
+  }
+
   .hw-text {
     font-size: 11px;
     color: #5d4037;
@@ -491,6 +644,18 @@
     color: #9e9e9e;
     background: #f5f5f5;
   }
+
+  .hw-photo-thumb {
+    margin-top: 4px;
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #90caf9;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .hw-photo-thumb:hover { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
 
   /* ============ Легенда ============ */
   .legend {
@@ -551,6 +716,7 @@
     align-items: center;
     justify-content: center;
     z-index: 100;
+    padding: 12px;
   }
   .modal-bg.active { display: flex; }
   .modal {
@@ -559,6 +725,8 @@
     padding: 24px;
     min-width: 380px;
     max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
     text-align: center;
     box-shadow: 0 12px 40px rgba(0,0,0,.25);
     animation: pop .18s ease;
@@ -681,6 +849,115 @@
   }
   .modal textarea:focus { outline: 2px solid #1976d2; border-color: #1976d2; }
 
+  /* ============ Фото в модалке Д/З ============ */
+  .hw-photo-area {
+    margin-bottom: 14px;
+    text-align: left;
+  }
+  .hw-photo-area .photo-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .hw-photo-area .photo-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #455a64;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .gallery-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: .15s;
+    box-shadow: 0 2px 6px rgba(25,118,210,.3);
+  }
+  .gallery-btn:hover { background: #1565c0; }
+  .gallery-btn:active { transform: scale(.97); }
+
+  #hwPhotoInput { display: none; }
+
+  .hw-photo-preview {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .hw-photo-preview .thumb-wrap {
+    position: relative;
+    width: 82px;
+    height: 82px;
+  }
+  .hw-photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid #90caf9;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .hw-photo-preview img:hover { border-color: #1976d2; }
+  .hw-photo-preview .remove-photo {
+    position: absolute;
+    top: -6px; right: -6px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #e53935;
+    color: #fff;
+    border: 2px solid #fff;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,.2);
+  }
+  .hw-photo-preview .remove-photo:hover { background: #c62828; }
+
+  .hw-photo-empty {
+    font-size: 12px;
+    color: #9e9e9e;
+    font-style: italic;
+    margin-top: 6px;
+  }
+
+  .photo-viewer {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    cursor: zoom-out;
+  }
+  .photo-viewer.active { display: flex; }
+  .photo-viewer img {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6);
+  }
+  .photo-viewer .close-hint {
+    position: fixed;
+    top: 16px; right: 24px;
+    color: #fff;
+    font-size: 14px;
+    opacity: .8;
+  }
+
   /* Календарь */
   .cal-grid {
     display: grid;
@@ -772,6 +1049,19 @@
   <div id="today" style="font-size:13px;color:#555;"></div>
 </div>
 
+<!-- ===== Плашка "Сейчас идёт" ===== -->
+<div class="now-bar" id="nowBar">
+  <span class="icon" id="nowIcon">🔔</span>
+  <span class="now-text" id="nowText"></span>
+  <span class="now-time" id="nowTime"></span>
+</div>
+
+<!-- ===== Блок риска (Топ-5) ===== -->
+<div class="risk-bar" id="riskBar">
+  <span class="risk-title">⚠ Внимание:</span>
+  <div id="riskItems" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+</div>
+
 <!-- ===== Табы ===== -->
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('grades', this)">📝 Оценки</button>
@@ -833,8 +1123,14 @@
     </table>
   </div>
 
+  <!-- ===== Плашка "Задано на завтра" ===== -->
+  <div class="tomorrow-hw" id="tomorrowHW">
+    <div class="th-title" id="thTitle">📝 Задано на завтра</div>
+    <div class="th-list" id="thList"></div>
+  </div>
+
   <div class="legend" style="margin-top:14px;">
-    <span>💡 Кнопка <b style="color:#e65100;">Д/З</b> — домашка. <b>Клик по тексту Д/З</b> — зачеркнуть</span>
+    <span>💡 Кнопка <b style="color:#e65100;">Д/З</b> — домашка и фото задания. <b>Клик по тексту Д/З</b> — зачеркнуть</span>
     <span style="color:#607d8b;">⬜ Выходной</span>
     <span style="color:#e65100;">🟧 Праздник</span>
     <span style="color:#2e7d32;">🟩 Каникулы</span>
@@ -903,12 +1199,31 @@
     <h3 id="hwTitle">Домашнее задание</h3>
     <div class="sub" id="hwSub"></div>
     <textarea id="hwText" placeholder="Введите домашнее задание..."></textarea>
+
+    <div class="hw-photo-area">
+      <div class="photo-label-row">
+        <span class="photo-label">📷 Фото задания</span>
+        <button class="gallery-btn" onclick="document.getElementById('hwPhotoInput').click()">
+          🖼 Выбрать из галереи
+        </button>
+        <input type="file" id="hwPhotoInput" accept="image/*" multiple onchange="addHWPhoto(event)">
+      </div>
+      <div class="hw-photo-preview" id="hwPhotoPreview"></div>
+      <div class="hw-photo-empty" id="hwPhotoEmpty">Фото пока нет</div>
+    </div>
+
     <div class="actions">
       <button class="save-btn" onclick="saveHW()">💾 Сохранить</button>
       <button class="clear-btn" onclick="clearHW()">🗑 Убрать</button>
       <button class="cancel-btn" onclick="closeHW()">Отмена</button>
     </div>
   </div>
+</div>
+
+<!-- ===== Просмотр фото ===== -->
+<div class="photo-viewer" id="photoViewer" onclick="closePhotoViewer()">
+  <span class="close-hint">Клик — закрыть</span>
+  <img id="photoViewerImg" src="" alt="Фото задания">
 </div>
 
 <!-- ===== Модалка ЧЕТВЕРТНОЙ ===== -->
@@ -948,6 +1263,27 @@
 const WEIGHT_UR = 1;
 const WEIGHT_KR = 2;
 const QUARTER_WEIGHTS = { 1: 1, 2: 1, 3: 2, 4: 2 };
+const TARGET_AVG = 3.50;
+
+// ==================== РАСПИСАНИЕ ЗВОНКОВ ====================
+// Пары начало/конец (минуты от 00:00) для каждого урока
+const BELLS = [
+  { start: "08:30", end: "09:10" },
+  { start: "09:30", end: "10:10" },
+  { start: "10:30", end: "11:10" },
+  { start: "11:20", end: "12:00" },
+  { start: "12:10", end: "12:50" },
+  { start: "13:20", end: "14:00" },
+  { start: "14:10", end: "14:50" }
+];
+function timeToMin(t) {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+function minToTime(min) {
+  const h = Math.floor(min / 60), m = min % 60;
+  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+}
 
 // ==================== ПРЕДМЕТЫ БЕЗ Д/З ====================
 const NO_HOMEWORK_SUBJECTS = [
@@ -1022,7 +1358,6 @@ const SUBJECTS_DEFAULT = [
   "Черчение", "Технология"
 ];
 
-// Даты по умолчанию — отдельно для каждой четверти
 const DATES_BY_QUARTER_DEFAULT = {
   1: [
     "01.09", "03.09", "05.09", "08.09", "10.09",
@@ -1116,16 +1451,18 @@ const MONTH_GEN = [
   "июля", "августа", "сентября", "октября", "ноября", "декабря"
 ];
 
-const STORAGE_KEY = "diary_html_v8";
+const STORAGE_KEY = "diary_html_v11";
 
 // ==================== СОСТОЯНИЕ ====================
 let state = loadState();
 let currentWeekStart = null;
 let calMonth = null;
 let currentHW = { date: null, dayIdx: 0, slotIdx: 0 };
+let hwPhotosTemp = [];
 let gradeModal = { subj: null, date: null, grade: null, type: "ur" };
 let currentQuarterModal = { subj: null, quarter: null };
 let activeQuarter = null;
+let nowTimer = null;
 
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -1133,22 +1470,14 @@ function loadState() {
     try {
       const s = JSON.parse(raw);
       if (!s.subjects) s.subjects = [...SUBJECTS_DEFAULT];
-      // Новая структура: gradesByQuarter = { 1: { "Алгебра": { "01.09": {...} } }, 2: {...} }
       if (!s.gradesByQuarter) {
-        // Миграция со старого формата (если был)
         s.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
-        if (s.grades) {
-          // Старые оценки относились к 1 четверти
-          s.gradesByQuarter[1] = s.grades;
-          delete s.grades;
-        }
+        if (s.grades) { s.gradesByQuarter[1] = s.grades; delete s.grades; }
       }
-      // Даты по четвертям
-      if (!s.datesByQuarter) {
-        s.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
-      }
+      if (!s.datesByQuarter) s.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
       if (!s.homework) s.homework = {};
       if (!s.hwDone) s.hwDone = {};
+      if (!s.hwPhotos) s.hwPhotos = {};
       if (!s.quarters) s.quarters = {};
       return s;
     } catch(e) {}
@@ -1159,6 +1488,7 @@ function loadState() {
     datesByQuarter: JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT)),
     homework: {},
     hwDone: {},
+    hwPhotos: {},
     quarters: {}
   };
 }
@@ -1172,13 +1502,8 @@ function parseGrade(v) {
 }
 function getWeight(type) { return type === "kr" ? WEIGHT_KR : WEIGHT_UR; }
 
-// Текущие оценки и даты для активной четверти
-function getCurrentGrades() {
-  return state.gradesByQuarter[activeQuarter] || {};
-}
-function getCurrentDates() {
-  return state.datesByQuarter[activeQuarter] || [];
-}
+function getCurrentGrades() { return state.gradesByQuarter[activeQuarter] || {}; }
+function getCurrentDates() { return state.datesByQuarter[activeQuarter] || []; }
 
 // ==================== ДАТЫ ====================
 function getMondayOfDate(d) {
@@ -1193,9 +1518,7 @@ function addDays(d, n) { const date = new Date(d); date.setDate(date.getDate() +
 function formatDate(d) {
   return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`;
 }
-function formatFull(d) {
-  return `${d.getDate()} ${MONTH_GEN[d.getMonth()]}`;
-}
+function formatFull(d) { return `${d.getDate()} ${MONTH_GEN[d.getMonth()]}`; }
 function isoKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
@@ -1203,6 +1526,221 @@ function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 const FIRST_MONDAY = new Date(2026, 8, 21);
+
+// ==================== "СЕЙЧАС ИДЁТ" ====================
+function updateNowBar() {
+  const bar = document.getElementById("nowBar");
+  const iconEl = document.getElementById("nowIcon");
+  const textEl = document.getElementById("nowText");
+  const timeEl = document.getElementById("nowTime");
+
+  bar.classList.remove("active", "lesson", "break", "soon");
+
+  const now = new Date();
+  const day = now.getDay(); // 0=вс
+  // Выходные — не показываем
+  if (day === 0 || day === 6) return;
+
+  // Праздник или каникулы — не показываем
+  const dayInfo = getDayType(now);
+  if (dayInfo.type !== "school") return;
+
+  // dayIdx: 0=пн ... 4=пт (в WEEK_SCHEDULE)
+  const dayIdx = day - 1;
+  const lessons = WEEK_SCHEDULE[dayIdx] || [];
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+
+  // 1) Ищем идущий урок
+  for (let i = 0; i < BELLS.length; i++) {
+    const bell = BELLS[i];
+    const s = timeToMin(bell.start);
+    const e = timeToMin(bell.end);
+    const lesson = lessons[i];
+    if (!lesson || !lesson.subject) continue;
+
+    if (nowMin >= s && nowMin < e) {
+      // Идёт урок
+      const room = lesson.room ? `, каб. ${lesson.room}` : "";
+      textEl.textContent = `Сейчас идёт: ${lesson.subject}${room}, до ${bell.end}`;
+      const leftMin = e - nowMin;
+      timeEl.textContent = `${leftMin} мин`;
+      iconEl.textContent = "📘";
+      bar.classList.add("active", "lesson");
+      return;
+    }
+  }
+
+  // 2) Ищем перемену: между концом урока i и началом урока i+1
+  for (let i = 0; i < BELLS.length - 1; i++) {
+    const curEnd = timeToMin(BELLS[i].end);
+    const nextStart = timeToMin(BELLS[i + 1].start);
+    const curLesson = lessons[i];
+    const nextLesson = lessons[i + 1];
+    if (!nextLesson || !nextLesson.subject) continue;
+
+    if (nowMin >= curEnd && nowMin < nextStart) {
+      const room = nextLesson.room ? `, каб. ${nextLesson.room}` : "";
+      textEl.textContent = `Сейчас перемена, следующий урок: ${nextLesson.subject}${room} в ${BELLS[i + 1].start}`;
+      const leftMin = nextStart - nowMin;
+      timeEl.textContent = `${leftMin} мин`;
+      iconEl.textContent = "☕";
+      bar.classList.add("active", "break");
+      return;
+    }
+  }
+
+  // 3) Утро: до первого урока ≤ 1ч30мин → "Скоро начнётся ..."
+  const firstBellStart = timeToMin(BELLS[0].start);
+  const firstLesson = lessons[0];
+  if (firstLesson && firstLesson.subject && nowMin < firstBellStart) {
+    const diff = firstBellStart - nowMin;
+    if (diff <= 90) { // 1ч30мин
+      const room = firstLesson.room ? `, каб. ${firstLesson.room}` : "";
+      textEl.textContent = `Скоро начнётся: ${firstLesson.subject}${room} в ${BELLS[0].start}`;
+      timeEl.textContent = `через ${diff} мин`;
+      iconEl.textContent = "⏰";
+      bar.classList.add("active", "soon");
+      return;
+    }
+  }
+
+  // Иначе ничего не показываем
+}
+
+// ==================== "ЗАДАНО НА ЗАВТРА" ====================
+function renderTomorrowHW() {
+  const wrap = document.getElementById("tomorrowHW");
+  const list = document.getElementById("thList");
+  const title = document.getElementById("thTitle");
+
+  wrap.classList.remove("active");
+  list.innerHTML = "";
+
+  const today = new Date();
+  const dow = today.getDay(); // 0=вс, 1=пн, ..., 4=чт, 5=пт, 6=сб
+
+  // Показываем только с воскресенья (0) по четверг (4)
+  if (dow === 5 || dow === 6) return;
+
+  // Определяем "завтра"
+  const tomorrow = addDays(today, 1);
+  const tomDow = tomorrow.getDay(); // 0=вс, 1=пн, ..., 6=сб
+
+  // Если завтра выходной — не показываем
+  if (tomDow === 0 || tomDow === 6) return;
+
+  // Проверяем, не каникулы/праздник ли завтра
+  const tomInfo = getDayType(tomorrow);
+  if (tomInfo.type !== "school") return;
+
+  const tomDayIdx = tomDow - 1; // 0=пн, ..., 4=пт
+  const lessons = WEEK_SCHEDULE[tomDayIdx] || [];
+  const dateKey = isoKey(tomorrow);
+
+  const items = [];
+  lessons.forEach((lesson, slotIdx) => {
+    if (!lesson || !lesson.subject) return;
+    if (!hasHomework(lesson.subject)) return;
+    const hwKey = `${dateKey}|${tomDayIdx}|${slotIdx}`;
+    const text = (state.homework[hwKey] || "").trim();
+    const photos = state.hwPhotos[hwKey] || [];
+    if (text || photos.length > 0) {
+      items.push({ lesson, slotIdx, text, photos });
+    }
+  });
+
+  title.textContent = `📝 Задано на завтра (${DAY_NAMES[tomDayIdx]}, ${formatFull(tomorrow)})`;
+
+  if (items.length === 0) {
+    list.innerHTML = `<div class="th-empty">Пока ничего не задано — или ты ещё не записал.</div>`;
+    wrap.classList.add("active");
+    return;
+  }
+
+  items.forEach(it => {
+    const div = document.createElement("div");
+    div.className = "th-item";
+    let html = `<div class="th-subj">${it.lesson.subject}${it.lesson.room ? ` · каб. ${it.lesson.room}` : ""}</div>`;
+    html += `<div class="th-meta">Урок ${it.slotIdx + 1} · ${BELLS[it.slotIdx] ? BELLS[it.slotIdx].start : ""}</div>`;
+    if (it.text) html += `<div class="th-text">${escapeHtml(it.text)}</div>`;
+    if (it.photos.length > 0) {
+      html += `<div class="th-photo">`;
+      it.photos.forEach((p, idx) => {
+        html += `<img src="${p}" onclick="viewTomorrowPhoto('${it.lesson.subject}', ${it.slotIdx}, ${idx})" alt="фото задания">`;
+      });
+      html += `</div>`;
+    }
+    div.innerHTML = html;
+    list.appendChild(div);
+  });
+
+  wrap.classList.add("active");
+}
+
+// Храним временно ссылки на фото для завтра, чтобы открыть во вьюере
+let tomorrowPhotosCache = [];
+function viewTomorrowPhoto(subj, slotIdx, idx) {
+  // Найдём заново по текущей дате
+  const tomorrow = addDays(new Date(), 1);
+  const tomDow = tomorrow.getDay();
+  const tomDayIdx = tomDow - 1;
+  const dateKey = isoKey(tomorrow);
+  const hwKey = `${dateKey}|${tomDayIdx}|${slotIdx}`;
+  const photos = state.hwPhotos[hwKey] || [];
+  if (!photos[idx]) return;
+  document.getElementById("photoViewerImg").src = photos[idx];
+  document.getElementById("photoViewer").classList.add("active");
+}
+
+// ==================== РАСЧЁТ ДО 3.50 ====================
+function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
+  let sumWV = 0, sumW = 0;
+  Object.values(subjGrades).forEach(v => {
+    const p = parseGrade(v); if (!p) return;
+    const w = getWeight(p.type);
+    sumWV += p.grade * w; sumW += w;
+  });
+  if (sumW === 0) return null;
+  const current = sumWV / sumW;
+  if (current >= target) return { need: 0, current, target };
+  const n = Math.ceil((target * sumW - sumWV) / (5 - target));
+  return { need: n, current, target };
+}
+
+function renderRiskBar() {
+  const grades = getCurrentGrades();
+  const items = [];
+  state.subjects.forEach(subj => {
+    const sg = grades[subj];
+    if (!sg) return;
+    const info = calcNeedForTarget(sg);
+    if (!info) return;
+    if (info.current < TARGET_AVG) items.push({ subj, ...info });
+  });
+  items.sort((a, b) => a.current - b.current);
+  const top5 = items.slice(0, 5);
+
+  const bar = document.getElementById("riskBar");
+  const wrap = document.getElementById("riskItems");
+  if (top5.length === 0) {
+    bar.classList.remove("active");
+    wrap.innerHTML = "";
+    return;
+  }
+  bar.classList.add("active");
+  wrap.innerHTML = top5.map(it => `
+    <div class="risk-item">
+      <div><b>${it.subj}</b> — ${it.current.toFixed(2)}</div>
+      <div class="hint">до 3.50 нужно <span class="need">${it.need} ${plural5(it.need)}</span></div>
+    </div>
+  `).join("");
+}
+function plural5(n) {
+  const mod10 = n % 10, mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return "пятёрка";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return "пятёрки";
+  return "пятёрок";
+}
 
 // ==================== РЕНДЕР ОЦЕНОК ====================
 function render() {
@@ -1244,7 +1782,6 @@ function render() {
       tr.appendChild(td);
     });
 
-    // Средний балл (только этой четверти)
     const tdAvg = document.createElement("td");
     tdAvg.className = "avg-col";
     const weighted = calcWeightedAvg(subjGrades);
@@ -1259,7 +1796,6 @@ function render() {
     }
     tr.appendChild(tdAvg);
 
-    // Четвертная
     const tdQ = document.createElement("td");
     tdQ.className = "quarter-cell-main";
     const qv = (state.quarters[subj] || {})[activeQuarter];
@@ -1280,6 +1816,7 @@ function render() {
   updateAvg();
   updateToday();
   updateQuarterLabel();
+  renderRiskBar();
 }
 
 function updateQuarterLabel() {
@@ -1428,27 +1965,20 @@ function uploadDiary(ev) {
   reader.onload = e => {
     try {
       const loaded = JSON.parse(e.target.result);
-      if (!loaded.subjects) {
-        alert("Неверный файл!"); return;
-      }
+      if (!loaded.subjects) { alert("Неверный файл!"); return; }
       if (!confirm("Загрузить дневник? Текущие данные будут заменены.")) return;
-      // Поддержка нового формата
       state = loaded;
       if (!state.gradesByQuarter) {
         state.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
-        if (state.grades) {
-          state.gradesByQuarter[1] = state.grades;
-          delete state.grades;
-        }
+        if (state.grades) { state.gradesByQuarter[1] = state.grades; delete state.grades; }
       }
-      if (!state.datesByQuarter) {
-        state.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
-      }
+      if (!state.datesByQuarter) state.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
       if (!state.homework) state.homework = {};
       if (!state.hwDone) state.hwDone = {};
+      if (!state.hwPhotos) state.hwPhotos = {};
       if (!state.quarters) state.quarters = {};
       saveState();
-      render(); renderSchedule(); renderQuarters();
+      render(); renderSchedule(); renderQuarters(); updateNowBar(); renderTomorrowHW();
       alert("Дневник загружен! ✅");
     } catch(err) { alert("Ошибка: " + err.message); }
   };
@@ -1532,19 +2062,23 @@ function renderSchedule() {
         const hwText = state.homework[hwKey] || "";
         const hasHW = hwText.trim().length > 0;
         const isDone = !!state.hwDone[hwKey];
+        const photos = state.hwPhotos[hwKey] || [];
+        const hasPhotos = photos.length > 0;
 
         let cellHTML = `<div class="subj">${lesson.subject}</div>`;
         if (lesson.room) cellHTML += `<div class="room">каб. ${lesson.room}</div>`;
         if (lesson.teacher) cellHTML += `<div class="teacher">${lesson.teacher}</div>`;
 
-        // Кнопка Д/З — только если предмет НЕ в списке исключений
         if (hasHomework(lesson.subject)) {
           cellHTML += `<div class="hw-row">`;
-          cellHTML += `<button class="hw-btn ${hasHW ? 'has-hw' : ''}" onclick="openHW('${dateKey}', ${dayIdx}, ${slotIdx})">📝 Д/З</button>`;
+          cellHTML += `<button class="hw-btn ${hasHW ? 'has-hw' : ''}" onclick="openHW('${dateKey}', ${dayIdx}, ${slotIdx})">📝 Д/З${hasPhotos ? `<span class="photo-badge">📷 ${photos.length}</span>` : ''}</button>`;
           cellHTML += `</div>`;
           if (hasHW) {
             const short = hwText.length > 80 ? hwText.slice(0, 80) + "…" : hwText;
             cellHTML += `<div class="hw-text ${isDone ? 'done' : ''}" onclick="toggleHW('${hwKey}')" title="Клик — зачеркнуть">${escapeHtml(short)}</div>`;
+          }
+          if (hasPhotos) {
+            cellHTML += `<img class="hw-photo-thumb" src="${photos[0]}" onclick="openHW('${dateKey}', ${dayIdx}, ${slotIdx})" alt="фото задания">`;
           }
         }
 
@@ -1556,6 +2090,9 @@ function renderSchedule() {
     });
     body.appendChild(tr);
   });
+
+  // Обновляем плашку "Задано на завтра" при каждом рендере расписания
+  renderTomorrowHW();
 }
 
 function escapeHtml(s) {
@@ -1574,7 +2111,6 @@ function goToToday() {
 function openHW(dateKey, dayIdx, slotIdx) {
   const lesson = WEEK_SCHEDULE[dayIdx][slotIdx];
   if (!lesson || !lesson.subject) return;
-  // Дополнительная защита: не открываем модалку для предметов без Д/З
   if (!hasHomework(lesson.subject)) return;
 
   currentHW = { date: dateKey, dayIdx, slotIdx };
@@ -1585,21 +2121,34 @@ function openHW(dateKey, dayIdx, slotIdx) {
   document.getElementById("hwSub").textContent =
     `${DAY_NAMES[dayIdx]}, ${formatFull(d)} • Урок ${slotIdx + 1} (${TIME_SLOTS[slotIdx]})`;
   document.getElementById("hwText").value = existing;
+
+  hwPhotosTemp = (state.hwPhotos[hwKey] || []).slice();
+  renderHWPhotos();
+
   document.getElementById("hwModalBg").classList.add("active");
   setTimeout(() => document.getElementById("hwText").focus(), 100);
 }
-function closeHW() { document.getElementById("hwModalBg").classList.remove("active"); }
+function closeHW() {
+  document.getElementById("hwModalBg").classList.remove("active");
+  hwPhotosTemp = [];
+}
 function saveHW() {
   const text = document.getElementById("hwText").value.trim();
   const hwKey = `${currentHW.date}|${currentHW.dayIdx}|${currentHW.slotIdx}`;
   if (text) state.homework[hwKey] = text;
   else { delete state.homework[hwKey]; delete state.hwDone[hwKey]; }
+
+  if (hwPhotosTemp.length > 0) state.hwPhotos[hwKey] = hwPhotosTemp.slice();
+  else delete state.hwPhotos[hwKey];
+
   saveState(); closeHW(); renderSchedule();
 }
 function clearHW() {
-  if (!confirm("Удалить домашнее задание?")) return;
+  if (!confirm("Удалить домашнее задание и фото?")) return;
   const hwKey = `${currentHW.date}|${currentHW.dayIdx}|${currentHW.slotIdx}`;
-  delete state.homework[hwKey]; delete state.hwDone[hwKey];
+  delete state.homework[hwKey];
+  delete state.hwDone[hwKey];
+  delete state.hwPhotos[hwKey];
   saveState(); closeHW(); renderSchedule();
 }
 function toggleHW(hwKey) {
@@ -1610,6 +2159,86 @@ function toggleHW(hwKey) {
 document.getElementById("hwModalBg").addEventListener("click", e => {
   if (e.target.id === "hwModalBg") closeHW();
 });
+
+// ==================== ФОТО К Д/З ====================
+function addHWPhoto(ev) {
+  const files = Array.from(ev.target.files || []);
+  if (!files.length) return;
+
+  files.forEach(file => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      compressImage(e.target.result, 900, 0.7, base64 => {
+        hwPhotosTemp.push(base64);
+        renderHWPhotos();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  ev.target.value = "";
+}
+
+function compressImage(dataUrl, maxWidth, quality, cb) {
+  const img = new Image();
+  img.onload = () => {
+    let w = img.width, h = img.height;
+    if (w > maxWidth) {
+      h = Math.round(h * maxWidth / w);
+      w = maxWidth;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, w, h);
+    cb(canvas.toDataURL("image/jpeg", quality));
+  };
+  img.onerror = () => cb(dataUrl);
+  img.src = dataUrl;
+}
+
+function renderHWPhotos() {
+  const wrap = document.getElementById("hwPhotoPreview");
+  const empty = document.getElementById("hwPhotoEmpty");
+  wrap.innerHTML = "";
+  if (hwPhotosTemp.length === 0) {
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+  hwPhotosTemp.forEach((src, idx) => {
+    const div = document.createElement("div");
+    div.className = "thumb-wrap";
+    div.innerHTML = `
+      <img src="${src}" alt="фото" onclick="viewTempPhoto(${idx})">
+      <button class="remove-photo" onclick="removeHWPhoto(${idx})" title="Удалить">×</button>
+    `;
+    wrap.appendChild(div);
+  });
+}
+
+function removeHWPhoto(idx) {
+  hwPhotosTemp.splice(idx, 1);
+  renderHWPhotos();
+}
+function viewTempPhoto(idx) {
+  document.getElementById("photoViewerImg").src = hwPhotosTemp[idx];
+  document.getElementById("photoViewer").classList.add("active");
+}
+
+// ==================== ПРОСМОТР ФОТО ====================
+function openPhotoViewer(hwKey, idx) {
+  const photos = state.hwPhotos[hwKey] || [];
+  if (!photos[idx]) return;
+  document.getElementById("photoViewerImg").src = photos[idx];
+  document.getElementById("photoViewer").classList.add("active");
+}
+function closePhotoViewer() {
+  document.getElementById("photoViewer").classList.remove("active");
+  document.getElementById("photoViewerImg").src = "";
+}
 
 // ==================== ЧЕТВЕРТНЫЕ ====================
 function calcFinalGrade(q) {
@@ -1703,7 +2332,7 @@ function openQuarterModal(subj, quarter) {
       state.quarters[subj][quarter] = n;
       saveState(); closeQModal();
       renderQuarters();
-      render(); // синхронизация колонки в таблице оценок
+      render();
     };
     wrap.appendChild(btn);
   });
@@ -1798,6 +2427,14 @@ activeQuarter = getCurrentQuarter();
 currentWeekStart = new Date(FIRST_MONDAY);
 render();
 renderSchedule();
+updateNowBar();
+renderTomorrowHW();
+
+// Обновляем плашку "Сейчас идёт" каждые 30 секунд
+nowTimer = setInterval(() => {
+  updateNowBar();
+  renderTomorrowHW();
+}, 30000);
 </script>
 
 </body>
