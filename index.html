@@ -27,7 +27,36 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
   .header h1 { font-size: 24px; }
-  .header .info { font-size: 14px; opacity: .95; }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .avatar-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.85);
+    background: #f5b800;
+    cursor: pointer;
+    padding: 0;
+    overflow: hidden;
+    transition: transform .15s, border-color .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .avatar-btn:hover {
+    transform: scale(1.06);
+    border-color: #fff;
+  }
+  .avatar-btn svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 
   /* ============ Панель среднего балла ============ */
   .score-bar {
@@ -59,7 +88,6 @@
     border-bottom: 1px solid rgba(0,0,0,.08);
   }
   .now-bar.active { display: flex; }
-
   .now-bar.lesson {
     background: linear-gradient(135deg, #43a047, #2e7d32);
     color: #fff;
@@ -656,56 +684,6 @@
   }
   .hw-photo-thumb:hover { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
 
-  /* ============ Легенда ============ */
-  .legend {
-    margin-top: 14px;
-    padding: 12px 20px;
-    background: #fff;
-    border-left: 4px solid #1976d2;
-    border-radius: 6px;
-    font-size: 13px;
-    color: #455a64;
-    display: flex;
-    gap: 18px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .legend span.dot {
-    display: inline-block;
-    width: 22px;
-    height: 22px;
-    border-radius: 5px;
-    vertical-align: middle;
-    margin-right: 6px;
-    color: #fff;
-    text-align: center;
-    line-height: 22px;
-    font-weight: bold;
-    font-size: 13px;
-  }
-  .legend .tag-kr {
-    display: inline-block;
-    padding: 2px 6px;
-    background: #c62828;
-    color: white;
-    font-size: 10px;
-    font-weight: bold;
-    border-radius: 3px;
-    margin-right: 4px;
-    vertical-align: middle;
-  }
-  .legend .tag-ur {
-    display: inline-block;
-    padding: 2px 6px;
-    background: #eceff1;
-    color: #607d8b;
-    font-size: 10px;
-    font-weight: bold;
-    border-radius: 3px;
-    margin-right: 4px;
-    vertical-align: middle;
-  }
-
   /* ============ Модальное окно ============ */
   .modal-bg {
     position: fixed;
@@ -957,6 +935,71 @@
     opacity: .8;
   }
 
+  /* ============ Модалка ПРОФИЛЯ ============ */
+  .profile-modal {
+    min-width: 420px;
+    max-width: 90vw;
+    text-align: center;
+    padding: 30px 26px 24px;
+  }
+  .profile-modal .profile-avatar-big {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    overflow: hidden;
+    border: 4px solid #ffe082;
+    box-shadow: 0 4px 16px rgba(245,184,0,.35);
+    background: #f5b800;
+  }
+  .profile-modal .profile-avatar-big svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .profile-modal .profile-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0d47a1;
+    margin-bottom: 16px;
+  }
+  .profile-modal .profile-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: #f5f9ff;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-align: left;
+  }
+  .profile-modal .profile-row .pr-label {
+    color: #607d8b;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .profile-modal .profile-row .pr-value {
+    color: #222;
+    font-weight: 500;
+    text-align: right;
+    word-break: break-word;
+  }
+  .profile-modal .profile-close {
+    margin-top: 14px;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .15s;
+  }
+  .profile-modal .profile-close:hover { background: #1565c0; }
+
   /* Календарь */
   .cal-grid {
     display: grid;
@@ -1031,7 +1074,35 @@
 <!-- ===== Шапка ===== -->
 <div class="header">
   <h1>📘 Дневник.ру</h1>
-  <div class="info">Бакулин Дмитрий Алексеевич • 9Б класс • Гимназия №10, Воронеж</div>
+  <div class="header-right">
+    <button class="avatar-btn" onclick="openProfile()" title="Профиль">
+      <!-- Аватар: мальчик в худи на жёлтом фоне -->
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Жёлтый фон -->
+        <rect width="200" height="200" fill="#f5b800"/>
+        <!-- Худи (серая толстовка) -->
+        <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
+        <!-- Воротник худи -->
+        <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
+        <!-- Шнурки худи -->
+        <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+        <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+        <!-- Шея -->
+        <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
+        <!-- Тень под подбородком -->
+        <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
+        <!-- Уши -->
+        <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+        <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+        <!-- Лицо -->
+        <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
+        <!-- Волосы (коричневые, зачёс вбок) -->
+        <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
+        <!-- Прядь на лоб -->
+        <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
+      </svg>
+    </button>
+  </div>
 </div>
 
 <!-- ===== Средний балл ===== -->
@@ -1090,15 +1161,6 @@
       <tbody id="tbody"></tbody>
     </table>
   </div>
-
-  <div class="legend">
-    <span><span class="dot" style="background:#e53935;">1</span>1-2 — плохо</span>
-    <span><span class="dot" style="background:#fb8c00;">3</span>3 — средне</span>
-    <span><span class="dot" style="background:#43a047;">5</span>4-5 — отлично</span>
-    <span><span class="tag-ur">УР</span>урок · вес 1</span>
-    <span><span class="tag-kr">К/Р</span>контрольная · вес 2</span>
-    <span style="margin-left:auto;color:#888;">💡 У каждой четверти свои оценки и даты</span>
-  </div>
 </div>
 
 <!-- ==================== ВКЛАДКА РАСПИСАНИЕ ==================== -->
@@ -1122,27 +1184,14 @@
     </table>
   </div>
 
-  <!-- ===== Плашка "Задано на завтра" ===== -->
   <div class="tomorrow-hw" id="tomorrowHW">
     <div class="th-title" id="thTitle">📝 Задано на завтра</div>
     <div class="th-list" id="thList"></div>
-  </div>
-
-  <div class="legend" style="margin-top:14px;">
-    <span>💡 Кнопка <b style="color:#e65100;">Д/З</b> — домашка и фото задания. <b>Клик по тексту Д/З</b> — зачеркнуть</span>
-    <span style="color:#607d8b;">⬜ Выходной</span>
-    <span style="color:#e65100;">🟧 Праздник</span>
-    <span style="color:#2e7d32;">🟩 Каникулы</span>
   </div>
 </div>
 
 <!-- ==================== ВКЛАДКА ЧЕТВЕРТНЫЕ ==================== -->
 <div class="tab-content" id="tab-quarters">
-  <div class="controls">
-    <div style="font-size:14px;color:#555;">
-      💡 Нажми на ячейку 1-4 четверти. <b>Годовая</b> считается с акцентом на 3-4 четверти. Синхронизировано с вкладкой «Оценки».
-    </div>
-  </div>
   <div class="table-wrap">
     <table class="quarters-table" id="quartersTable">
       <thead>
@@ -1157,14 +1206,6 @@
       </thead>
       <tbody id="quartersBody"></tbody>
     </table>
-  </div>
-
-  <div class="legend">
-    <span>📘 1-я — сентябрь-октябрь (вес 1)</span>
-    <span>❄️ 2-я — ноябрь-декабрь (вес 1)</span>
-    <span>🌸 3-я — январь-март (вес <b>2</b>)</span>
-    <span>☀️ 4-я — апрель-май (вес <b>2</b>)</span>
-    <span style="color:#e65100;font-weight:bold;">🎓 Годовая с акцентом на 3-4 четверти</span>
   </div>
 </div>
 
@@ -1235,6 +1276,52 @@
       <button class="clear-btn" onclick="clearQuarter()">🗑 Убрать</button>
       <button class="cancel-btn" onclick="closeQModal()">Отмена</button>
     </div>
+  </div>
+</div>
+
+<!-- ===== Модалка ПРОФИЛЯ ===== -->
+<div class="modal-bg" id="profileModalBg">
+  <div class="modal profile-modal">
+    <div class="profile-avatar-big">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="200" fill="#f5b800"/>
+        <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
+        <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
+        <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+        <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+        <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
+        <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
+        <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+        <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+        <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
+        <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
+        <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
+      </svg>
+    </div>
+    <div class="profile-name">Бакулин Дмитрий Алексеевич</div>
+
+    <div class="profile-row">
+      <span class="pr-label">Класс</span>
+      <span class="pr-value">9Б</span>
+    </div>
+    <div class="profile-row">
+      <span class="pr-label">Школа</span>
+      <span class="pr-value">Гимназия №10, Воронеж</span>
+    </div>
+    <div class="profile-row">
+      <span class="pr-label">Дата рождения</span>
+      <span class="pr-value">22.07.2011</span>
+    </div>
+    <div class="profile-row">
+      <span class="pr-label">Телефон</span>
+      <span class="pr-value">+7 950 759-68-56</span>
+    </div>
+    <div class="profile-row">
+      <span class="pr-label">Электронная почта</span>
+      <span class="pr-value">dimabaku017@gmail.com</span>
+    </div>
+
+    <button class="profile-close" onclick="closeProfile()">Закрыть</button>
   </div>
 </div>
 
@@ -1445,7 +1532,7 @@ const MONTH_GEN = [
   "июля", "августа", "сентября", "октября", "ноября", "декабря"
 ];
 
-const STORAGE_KEY = "diary_html_v11";
+const STORAGE_KEY = "diary_html_v12";
 
 // ==================== СОСТОЯНИЕ ====================
 let state = loadState();
@@ -1521,6 +1608,17 @@ function isSameDay(a, b) {
 }
 const FIRST_MONDAY = new Date(2026, 8, 21);
 
+// ==================== ПРОФИЛЬ ====================
+function openProfile() {
+  document.getElementById("profileModalBg").classList.add("active");
+}
+function closeProfile() {
+  document.getElementById("profileModalBg").classList.remove("active");
+}
+document.getElementById("profileModalBg").addEventListener("click", e => {
+  if (e.target.id === "profileModalBg") closeProfile();
+});
+
 // ==================== "СЕЙЧАС ИДЁТ" ====================
 function updateNowBar() {
   const bar = document.getElementById("nowBar");
@@ -1541,7 +1639,6 @@ function updateNowBar() {
   const lessons = WEEK_SCHEDULE[dayIdx] || [];
   const nowMin = now.getHours() * 60 + now.getMinutes();
 
-  // 1) Идущий урок
   for (let i = 0; i < BELLS.length; i++) {
     const bell = BELLS[i];
     const s = timeToMin(bell.start);
@@ -1560,7 +1657,6 @@ function updateNowBar() {
     }
   }
 
-  // 2) Перемена
   for (let i = 0; i < BELLS.length - 1; i++) {
     const curEnd = timeToMin(BELLS[i].end);
     const nextStart = timeToMin(BELLS[i + 1].start);
@@ -1578,7 +1674,6 @@ function updateNowBar() {
     }
   }
 
-  // 3) Утро: до первого урока ≤ 1ч30мин
   const firstBellStart = timeToMin(BELLS[0].start);
   const firstLesson = lessons[0];
   if (firstLesson && firstLesson.subject && nowMin < firstBellStart) {
@@ -1606,7 +1701,6 @@ function renderTomorrowHW() {
   const today = new Date();
   const dow = today.getDay();
 
-  // Показываем с воскресенья (0) по четверг (4)
   if (dow === 5 || dow === 6) return;
 
   const tomorrow = addDays(today, 1);
