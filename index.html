@@ -81,6 +81,7 @@
     gap: 10px;
     flex-wrap: wrap;
     border-bottom: 1px solid #e0e0e0;
+    align-items: center;
   }
   .btn {
     padding: 9px 18px;
@@ -101,6 +102,35 @@
   .btn.green  { background: #43a047; }
   .btn.green:hover { background: #2e7d32; }
 
+  /* ============ Инфо о неделе ============ */
+  .week-info {
+    background: #fff8e1;
+    padding: 12px 28px;
+    border-bottom: 1px solid #ffe082;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 14px;
+  }
+  .week-info .week-label {
+    font-weight: 700;
+    color: #e65100;
+    font-size: 15px;
+  }
+  .week-info .week-dates {
+    color: #6d4c41;
+    font-size: 13px;
+  }
+  .week-nav {
+    display: flex;
+    gap: 6px;
+  }
+  .week-nav .btn { padding: 6px 14px; font-size: 13px; }
+  .btn.today { background: #ff9800; }
+  .btn.today:hover { background: #f57c00; }
+
   /* ============ Таблица оценок ============ */
   .table-wrap {
     background: #fff;
@@ -109,21 +139,21 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     max-height: calc(100vh - 320px);
   }
-  table {
+  table.grades-table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
     min-width: 1200px;
     font-size: 14px;
   }
-  th, td {
+  table.grades-table th, table.grades-table td {
     border-right: 1px solid #e0e0e0;
     border-bottom: 1px solid #e0e0e0;
     padding: 6px;
     text-align: center;
     vertical-align: middle;
   }
-  thead th {
+  table.grades-table thead th {
     background: #f5f7fa;
     position: sticky;
     top: 0;
@@ -179,9 +209,7 @@
     font-weight: bold;
     font-size: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,.15);
-    transition: transform .12s;
   }
-  .grade-badge:hover { transform: scale(1.08); }
   .g1, .g2 { background: #e53935; }
   .g3      { background: #fb8c00; }
   .g4, .g5 { background: #43a047; }
@@ -197,12 +225,12 @@
   .schedule-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 900px;
-    font-size: 14px;
+    min-width: 1100px;
+    font-size: 13px;
   }
   .schedule-table th, .schedule-table td {
     border: 1px solid #d0d7de;
-    padding: 10px 12px;
+    padding: 8px 10px;
     text-align: left;
     vertical-align: top;
     line-height: 1.4;
@@ -212,22 +240,91 @@
     color: #0d47a1;
     font-weight: 700;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
+    padding: 10px 6px;
+  }
+  .schedule-table th .day-name { display: block; font-size: 14px; }
+  .schedule-table th .day-date {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #1565c0;
+    margin-top: 2px;
+  }
+  .schedule-table th .day-date.today {
+    background: #ff9800;
+    color: white;
+    border-radius: 4px;
+    padding: 2px 6px;
+    display: inline-block;
+    margin-top: 3px;
+  }
+  .schedule-table th.num-col,
+  .schedule-table td.num-col {
+    background: #f5f7fa;
+    font-weight: 700;
+    text-align: center;
+    width: 42px;
+    min-width: 42px;
+    font-size: 15px;
+    color: #37474f;
   }
   .schedule-table th.time-col,
   .schedule-table td.time-col {
     background: #f5f7fa;
     font-weight: 700;
     text-align: center;
-    min-width: 120px;
-    font-size: 13px;
+    min-width: 110px;
+    font-size: 12px;
     color: #37474f;
   }
-  .schedule-table td { background: #fff; font-size: 13px; }
-  .schedule-table td .subj { font-weight: 600; color: #1a237e; }
-  .schedule-table td .room { color: #666; font-size: 12px; }
-  .schedule-table td .teacher { color: #555; font-size: 12px; font-style: italic; }
-  .schedule-table tr:nth-child(even) td:not(.time-col) { background: #fafbfc; }
+  .schedule-table td {
+    background: #fff;
+    font-size: 12px;
+    min-width: 175px;
+    vertical-align: top;
+  }
+  .schedule-table td .subj { font-weight: 600; color: #1a237e; font-size: 13px; }
+  .schedule-table td .room { color: #666; font-size: 11px; }
+  .schedule-table td .teacher { color: #555; font-size: 11px; font-style: italic; }
+
+  /* Д/З кнопка */
+  .hw-row {
+    margin-top: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .hw-btn {
+    background: #fff3e0;
+    color: #e65100;
+    border: 1px solid #ffcc80;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: .15s;
+  }
+  .hw-btn:hover { background: #ffe0b2; }
+  .hw-btn.has-hw {
+    background: #ff9800;
+    color: white;
+    border-color: #f57c00;
+  }
+  .hw-text {
+    font-size: 11px;
+    color: #5d4037;
+    background: #fff8e1;
+    padding: 2px 5px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 2px;
+    max-width: 100%;
+    word-wrap: break-word;
+    line-height: 1.3;
+  }
 
   /* ============ Легенда ============ */
   .legend {
@@ -273,6 +370,7 @@
     border-radius: 12px;
     padding: 24px;
     min-width: 340px;
+    max-width: 90vw;
     text-align: center;
     box-shadow: 0 12px 40px rgba(0,0,0,.25);
     animation: pop .18s ease;
@@ -310,7 +408,90 @@
   }
   .modal .cancel-btn:hover { background: #455a64; }
 
-  /* ============ Скрытый input для загрузки ============ */
+  /* Модалка Д/З */
+  .modal textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 1px solid #cfd8dc;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 12px;
+  }
+  .modal textarea:focus {
+    outline: 2px solid #1976d2;
+    border-color: #1976d2;
+  }
+  .modal .save-btn {
+    background: #43a047;
+    color: white;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .modal .save-btn:hover { background: #2e7d32; }
+
+  /* Календарь */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .cal-cell {
+    padding: 10px 6px;
+    text-align: center;
+    border-radius: 6px;
+    background: #f5f7fa;
+    cursor: pointer;
+    font-size: 13px;
+    transition: .15s;
+    border: 2px solid transparent;
+  }
+  .cal-cell:hover { background: #e3f2fd; }
+  .cal-cell.active {
+    background: #1976d2;
+    color: white;
+    font-weight: bold;
+  }
+  .cal-cell.header {
+    background: #e3f2fd;
+    cursor: default;
+    font-weight: 600;
+    color: #0d47a1;
+  }
+  .cal-cell.header:hover { background: #e3f2fd; }
+  .cal-cell.other-month { color: #bbb; background: #fafafa; }
+  .cal-cell.past { color: #ccc; }
+  .cal-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .cal-nav .month-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1976d2;
+  }
+  .cal-nav button {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .cal-nav button:hover { background: #1565c0; }
+  .cal-nav button:disabled { background: #b0bec5; cursor: not-allowed; }
+
   #fileInput { display: none; }
 </style>
 </head>
@@ -352,7 +533,7 @@
   </div>
 
   <div class="table-wrap">
-    <table id="diaryTable">
+    <table class="grades-table" id="diaryTable">
       <thead><tr id="headerRow"></tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -368,16 +549,24 @@
 
 <!-- ==================== ВКЛАДКА РАСПИСАНИЕ ==================== -->
 <div class="tab-content" id="tab-schedule">
+
+  <div class="week-info">
+    <div>
+      <div class="week-label" id="weekLabel">Неделя</div>
+      <div class="week-dates" id="weekDates">—</div>
+    </div>
+    <div class="week-nav">
+      <button class="btn" onclick="prevWeek()">← Предыдущая</button>
+      <button class="btn today" onclick="goToToday()">📅 Календарь</button>
+      <button class="btn" onclick="nextWeek()">Следующая →</button>
+    </div>
+  </div>
+
   <div class="schedule-wrap">
     <table class="schedule-table" id="scheduleTable">
       <thead>
-        <tr>
-          <th class="time-col">Время</th>
-          <th>Понедельник</th>
-          <th>Вторник</th>
-          <th>Среда</th>
-          <th>Четверг</th>
-          <th>Пятница</th>
+        <tr id="scheduleHeader">
+          <!-- Заполняется скриптом -->
         </tr>
       </thead>
       <tbody id="scheduleBody"></tbody>
@@ -385,11 +574,11 @@
   </div>
 
   <div class="legend" style="margin-top:14px;">
-    <span>💡 Расписание редактируется в файле <code>index.html</code> в переменной <code>SCHEDULE</code></span>
+    <span>💡 Кнопка <b style="color:#e65100;">Д/З</b> рядом с уроком — добавить домашнее задание на конкретную дату</span>
   </div>
 </div>
 
-<!-- ===== Модальное окно ===== -->
+<!-- ===== Модальное окно ОЦЕНКИ ===== -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
@@ -398,6 +587,37 @@
     <div style="margin-top:10px;">
       <button class="clear-btn" onclick="clearGrade()">🗑 Убрать оценку</button>
       <button class="cancel-btn" onclick="closeModal()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Модальное окно Д/З ===== -->
+<div class="modal-bg" id="hwModalBg">
+  <div class="modal">
+    <h3 id="hwTitle">Домашнее задание</h3>
+    <div class="sub" id="hwSub"></div>
+    <textarea id="hwText" placeholder="Введите домашнее задание..."></textarea>
+    <div>
+      <button class="save-btn" onclick="saveHW()">💾 Сохранить</button>
+      <button class="clear-btn" onclick="clearHW()">🗑 Убрать Д/З</button>
+      <button class="cancel-btn" onclick="closeHW()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Модальное окно КАЛЕНДАРЯ ===== -->
+<div class="modal-bg" id="calModalBg">
+  <div class="modal" style="min-width: 480px;">
+    <h3>📅 Выбор недели</h3>
+    <div class="sub">Учебный год 2026/2027</div>
+    <div class="cal-nav">
+      <button onclick="prevMonth()">←</button>
+      <div class="month-title" id="calMonthTitle">Сентябрь 2026</div>
+      <button onclick="nextMonth()">→</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div style="margin-top:8px;">
+      <button class="cancel-btn" onclick="closeCal()">Закрыть</button>
     </div>
   </div>
 </div>
@@ -418,7 +638,7 @@ const DATES_DEFAULT = [
   "24.09", "26.09", "29.09", "01.10", "03.10"
 ];
 
-// ============ РАСПИСАНИЕ ============
+// ============ ВРЕМЯ УРОКОВ ============
 const TIME_SLOTS = [
   "08:30 – 09:10",
   "09:30 – 10:10",
@@ -429,69 +649,76 @@ const TIME_SLOTS = [
   "14:10 – 14:50"
 ];
 
-const SCHEDULE = [
-  // Слот 1
+// ============ РАСПИСАНИЕ ПО ДНЯМ НЕДЕЛИ ============
+// Индекс: 0 = Пн, 1 = Вт, 2 = Ср, 3 = Чт, 4 = Пт
+// В каждом дне 7 слотов (массив из 7 элементов)
+const WEEK_SCHEDULE = [
+  // ============ ПОНЕДЕЛЬНИК ============
   [
-    { subject: "Рус.яз.", room: "44", teacher: "Подоляк С.В." },
-    { subject: "Физика",  room: "17", teacher: "Милякова Т.М." },
+    { subject: "Разговоры о важном", room: "", teacher: "" },
+    { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
+    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
+    { subject: "Обществознание", room: "32", teacher: "Якунина К.П." },
+    { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
+    { subject: "Литература", room: "44", teacher: "Подоляк С.В." }
+  ],
+  // ============ ВТОРНИК ============
+  [
+    { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
+    { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
+    { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
+    { subject: "Информатика", room: "19", teacher: "Бородина В.М." },
+    { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
+    { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
+  ],
+  // ============ СРЕДА ============
+  [
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
-    { subject: "Рус.яз.", room: "44", teacher: "Подоляк С.В." },
-    { subject: "Физика",  room: "17", teacher: "Милякова Т.М." }
-  ],
-  // Слот 2
-  [
-    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
-    { subject: "Физика",  room: "17", teacher: "Милякова Т.М." },
-    { subject: "Труд",    room: "22 / 49", teacher: "Знобин А.И. / Бондарев М.Н." },
-    { subject: "Физ-ра",  room: "", teacher: "Акимова Е.Н." },
-    { subject: "География", room: "30", teacher: "Блаженов В.А." }
-  ],
-  // Слот 3
-  [
-    { subject: "ОБЩ-ЗН", room: "32", teacher: "Якунина К.П." },
-    { subject: "Англ. / Информ.", room: "28 / 19", teacher: "Подлесных Е.В. / Бородина В.М." },
+    { subject: "Труд", room: "22 / 49", teacher: "Знобин А.И. / Бондарев М.Н." },
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
-    { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
-    { subject: "Англ. / Информ.", room: "28 / 19", teacher: "Подлесных Е.В. / Бородина В.М." }
-  ],
-  // Слот 4
-  [
-    { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
-    { subject: "Англ. / Информ.", room: "28 / 19", teacher: "Подлесных Е.В. / Бородина В.М." },
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
-    { subject: "Рус.яз.", room: "44", teacher: "Подоляк С.В." },
-    { subject: "Англ.", room: "28", teacher: "Подлесных Е.В. / Бородина В.М." }
-  ],
-  // Слот 5
-  [
-    { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
-    { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
-    { subject: "Сов. ис. / Перв. помощь", room: "32 / 25", teacher: "Якунина К.П. / Чернышова В.А." },
-    { subject: "Геом.", room: "42", teacher: "Мещерякова О.А." },
-    { subject: "Вер.ст.", room: "42", teacher: "Мещерякова О.А." }
-  ],
-  // Слот 6
-  [
-    { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
-    { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "Черчение", room: "42", teacher: "Мещерякова О.А." },
     { subject: "ОБЖ", room: "41", teacher: "Миляков С.В." },
-    { subject: "Геом.", room: "42", teacher: "Мещерякова О.А." },
-    { subject: "История", room: "32", teacher: "Якунина К.П." }
+    { subject: "", room: "", teacher: "" }
   ],
-  // Слот 7
+  // ============ ЧЕТВЕРГ ============
   [
+    { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
     { subject: "Физ-ра", room: "", teacher: "Акимова Е.Н." },
-    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
-    { subject: "", room: "", teacher: "" },
-    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
+    { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
+    { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
+    { subject: "Геометрия", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "Геометрия", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
+  ],
+  // ============ ПЯТНИЦА ============
+  [
+    { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
+    { subject: "География", room: "30", teacher: "Блаженов В.А." },
+    { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
+    { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
+    { subject: "Вер.ст.", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "История", room: "32", teacher: "Якунина К.П." },
     { subject: "История", room: "32", teacher: "Якунина К.П." }
   ]
 ];
 
-const STORAGE_KEY = "diary_html_v2";
+const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница"];
+const DAY_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт"];
+const MONTH_NAMES = [
+  "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+];
+
+const STORAGE_KEY = "diary_html_v3";
 
 // ==================== СОСТОЯНИЕ ====================
 let state = loadState();
+let currentWeekStart = null; // Дата понедельника текущей недели
+let calMonth = null;         // Месяц, отображаемый в календаре
+let currentHW = { date: null, dayIdx: 0, slotIdx: 0 };
 
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -501,19 +728,67 @@ function loadState() {
       if (!s.subjects) s.subjects = [...SUBJECTS_DEFAULT];
       if (!s.dates) s.dates = [...DATES_DEFAULT];
       if (!s.grades) s.grades = {};
+      if (!s.homework) s.homework = {}; // { "2026-09-21|0|0": "текст Д/З" }
       return s;
     } catch(e) {}
   }
   return {
     subjects: [...SUBJECTS_DEFAULT],
     dates: [...DATES_DEFAULT],
-    grades: {}
+    grades: {},
+    homework: {}
   };
 }
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
+
+// ==================== РАБОТА С ДАТАМИ ====================
+function getMondayOfDate(d) {
+  const date = new Date(d);
+  const day = date.getDay(); // 0=вс, 1=пн, ...
+  const diff = day === 0 ? -6 : 1 - day;
+  date.setDate(date.getDate() + diff);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+function addDays(d, n) {
+  const date = new Date(d);
+  date.setDate(date.getDate() + n);
+  return date;
+}
+
+function formatDate(d) {
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${dd}.${mm}.${yyyy}`;
+}
+
+function formatShort(d) {
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  return `${dd}.${mm}`;
+}
+
+function isoKey(d) {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function isSameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() &&
+         a.getMonth() === b.getMonth() &&
+         a.getDate() === b.getDate();
+}
+
+// ==================== НАЧАЛЬНАЯ НЕДЕЛЯ ====================
+// Первая учебная неделя: 21.09.2026 (понедельник)
+const FIRST_MONDAY = new Date(2026, 8, 21); // 8 = сентябрь
 
 // ==================== РЕНДЕР ОЦЕНОК ====================
 function render() {
@@ -588,9 +863,7 @@ function updateAvg() {
 
 function updateToday() {
   const d = new Date();
-  const str = String(d.getDate()).padStart(2,"0") + "." +
-              String(d.getMonth()+1).padStart(2,"0") + "." +
-              d.getFullYear();
+  const str = formatDate(d);
   document.getElementById("today").textContent = "Сегодня: " + str;
 }
 
@@ -639,13 +912,6 @@ function clearGrade() {
 
 document.getElementById("modalBg").addEventListener("click", e => {
   if (e.target.id === "modalBg") closeModal();
-});
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeModal();
-  if (document.getElementById("modalBg").classList.contains("active")) {
-    if (["1","2","3","4","5"].includes(e.key)) setGrade(parseInt(e.key));
-    if (e.key === "0" || e.key === "Backspace") clearGrade();
-  }
 });
 
 // ==================== ПРЕДМЕТЫ И ДАТЫ ====================
@@ -731,10 +997,12 @@ function uploadDiary(ev) {
         alert("Неверный файл дневника!");
         return;
       }
-      if (!confirm("Загрузить дневник из файла?\n\nТекущие оценки будут заменены.")) return;
+      if (!confirm("Загрузить дневник из файла?\n\nТекущие данные будут заменены.")) return;
       state = loaded;
+      if (!state.homework) state.homework = {};
       saveState();
       render();
+      renderSchedule();
       alert("Дневник успешно загружен! ✅");
     } catch(err) {
       alert("Ошибка чтения файла: " + err.message);
@@ -752,38 +1020,256 @@ function switchTab(name, btn) {
   btn.classList.add("active");
 }
 
-// ==================== РАСПИСАНИЕ ====================
-function renderSchedule() {
-  const body = document.getElementById("scheduleBody");
-  body.innerHTML = "";
+// ==================== РАСПИСАНИЕ ПО НЕДЕЛЯМ ====================
 
-  TIME_SLOTS.forEach((time, i) => {
+function getWeekDates(monday) {
+  return [0,1,2,3,4].map(i => addDays(monday, i));
+}
+
+function renderSchedule() {
+  if (!currentWeekStart) {
+    currentWeekStart = getMondayOfDate(new Date());
+  }
+
+  const dates = getWeekDates(currentWeekStart);
+  const header = document.getElementById("scheduleHeader");
+  const body = document.getElementById("scheduleBody");
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  // === Шапка ===
+  let headHTML = '<th class="num-col">№</th><th class="time-col">Время</th>';
+  dates.forEach((d, i) => {
+    const isToday = isSameDay(d, today);
+    headHTML += `<th>
+      <span class="day-name">${DAY_NAMES[i]}</span>
+      <span class="day-date ${isToday ? 'today' : ''}">${formatShort(d)}</span>
+    </th>`;
+  });
+  header.innerHTML = headHTML;
+
+  // === Инфо о неделе ===
+  const weekLabel = document.getElementById("weekLabel");
+  const weekDates = document.getElementById("weekDates");
+  const startD = dates[0], endD = dates[4];
+  const weekNum = Math.round((currentWeekStart - FIRST_MONDAY) / (7 * 24 * 3600 * 1000)) + 1;
+  weekLabel.textContent = `Учебная неделя №${weekNum}`;
+  weekDates.textContent = `${formatDate(startD)} — ${formatDate(endD)}`;
+
+  // === Тело ===
+  body.innerHTML = "";
+  TIME_SLOTS.forEach((time, slotIdx) => {
     const tr = document.createElement("tr");
 
+    // № урока
+    const tdNum = document.createElement("td");
+    tdNum.className = "num-col";
+    tdNum.textContent = slotIdx + 1;
+    tr.appendChild(tdNum);
+
+    // Время
     const tdTime = document.createElement("td");
     tdTime.className = "time-col";
     tdTime.textContent = time;
     tr.appendChild(tdTime);
 
-    const row = SCHEDULE[i] || [];
-    for (let d = 0; d < 5; d++) {
-      const cell = row[d] || { subject: "", room: "", teacher: "" };
+    // Каждый день
+    dates.forEach((d, dayIdx) => {
+      const lesson = (WEEK_SCHEDULE[dayIdx] && WEEK_SCHEDULE[dayIdx][slotIdx]) || { subject: "", room: "", teacher: "" };
       const td = document.createElement("td");
-      if (cell.subject) {
-        td.innerHTML =
-          `<div class="subj">${cell.subject}</div>` +
-          (cell.room ? `<div class="room">каб. ${cell.room}</div>` : "") +
-          (cell.teacher ? `<div class="teacher">${cell.teacher}</div>` : "");
+
+      if (lesson.subject) {
+        const dateKey = isoKey(d);
+        const hwKey = `${dateKey}|${dayIdx}|${slotIdx}`;
+        const hwText = state.homework[hwKey] || "";
+        const hasHW = hwText.trim().length > 0;
+
+        let cellHTML =
+          `<div class="subj">${lesson.subject}</div>` +
+          (lesson.room ? `<div class="room">каб. ${lesson.room}</div>` : "") +
+          (lesson.teacher ? `<div class="teacher">${lesson.teacher}</div>` : "");
+
+        cellHTML += `<div class="hw-row">`;
+        cellHTML += `<button class="hw-btn ${hasHW ? 'has-hw' : ''}" onclick="openHW('${dateKey}', ${dayIdx}, ${slotIdx})">📝 Д/З</button>`;
+        cellHTML += `</div>`;
+
+        if (hasHW) {
+          const short = hwText.length > 60 ? hwText.slice(0, 60) + "…" : hwText;
+          cellHTML += `<div class="hw-text">${escapeHtml(short)}</div>`;
+        }
+
+        td.innerHTML = cellHTML;
       } else {
         td.innerHTML = '<span style="color:#bbb;">—</span>';
       }
       tr.appendChild(td);
-    }
+    });
+
     body.appendChild(tr);
   });
 }
 
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function prevWeek() {
+  currentWeekStart = addDays(currentWeekStart, -7);
+  renderSchedule();
+}
+
+function nextWeek() {
+  currentWeekStart = addDays(currentWeekStart, 7);
+  renderSchedule();
+}
+
+function goToToday() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  if (today < FIRST_MONDAY) {
+    currentWeekStart = new Date(FIRST_MONDAY);
+  } else {
+    currentWeekStart = getMondayOfDate(today);
+  }
+  openCal();
+}
+
+// ==================== Д/З ====================
+function openHW(dateKey, dayIdx, slotIdx) {
+  const lesson = WEEK_SCHEDULE[dayIdx][slotIdx];
+  if (!lesson || !lesson.subject) return;
+
+  currentHW = { date: dateKey, dayIdx, slotIdx };
+  const hwKey = `${dateKey}|${dayIdx}|${slotIdx}`;
+  const existing = state.homework[hwKey] || "";
+
+  const d = new Date(dateKey);
+  const dateStr = formatDate(d);
+
+  document.getElementById("hwTitle").textContent = lesson.subject;
+  document.getElementById("hwSub").textContent = `${DAY_NAMES[dayIdx]}, ${dateStr} • Урок ${slotIdx + 1} (${TIME_SLOTS[slotIdx]})`;
+  document.getElementById("hwText").value = existing;
+  document.getElementById("hwModalBg").classList.add("active");
+
+  setTimeout(() => document.getElementById("hwText").focus(), 100);
+}
+
+function closeHW() {
+  document.getElementById("hwModalBg").classList.remove("active");
+}
+
+function saveHW() {
+  const text = document.getElementById("hwText").value.trim();
+  const hwKey = `${currentHW.date}|${currentHW.dayIdx}|${currentHW.slotIdx}`;
+  if (text) {
+    state.homework[hwKey] = text;
+  } else {
+    delete state.homework[hwKey];
+  }
+  saveState();
+  closeHW();
+  renderSchedule();
+}
+
+function clearHW() {
+  if (!confirm("Удалить домашнее задание?")) return;
+  const hwKey = `${currentHW.date}|${currentHW.dayIdx}|${currentHW.slotIdx}`;
+  delete state.homework[hwKey];
+  saveState();
+  closeHW();
+  renderSchedule();
+}
+
+document.getElementById("hwModalBg").addEventListener("click", e => {
+  if (e.target.id === "hwModalBg") closeHW();
+});
+
+// ==================== КАЛЕНДАРЬ ====================
+function openCal() {
+  calMonth = new Date(currentWeekStart.getFullYear(), currentWeekStart.getMonth(), 1);
+  document.getElementById("calModalBg").classList.add("active");
+  renderCal();
+}
+
+function closeCal() {
+  document.getElementById("calModalBg").classList.remove("active");
+}
+
+function prevMonth() {
+  calMonth.setMonth(calMonth.getMonth() - 1);
+  renderCal();
+}
+
+function nextMonth() {
+  calMonth.setMonth(calMonth.getMonth() + 1);
+  renderCal();
+}
+
+function renderCal() {
+  const grid = document.getElementById("calGrid");
+  const title = document.getElementById("calMonthTitle");
+  title.textContent = `${MONTH_NAMES[calMonth.getMonth()]} ${calMonth.getFullYear()}`;
+
+  // Заголовки дней
+  let html = "";
+  ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(d => {
+    html += `<div class="cal-cell header">${d}</div>`;
+  });
+
+  const firstDay = new Date(calMonth);
+  const startOffset = (firstDay.getDay() + 6) % 7; // Пн = 0
+  const daysInMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 0).getDate();
+  const prevMonthDays = new Date(calMonth.getFullYear(), calMonth.getMonth(), 0).getDate();
+
+  // Прошлые дни
+  for (let i = startOffset - 1; i >= 0; i--) {
+    html += `<div class="cal-cell other-month">${prevMonthDays - i}</div>`;
+  }
+
+  // Дни месяца
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const currentWeekKey = isoKey(currentWeekStart);
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(calMonth.getFullYear(), calMonth.getMonth(), day);
+    d.setHours(0,0,0,0);
+    const isPast = d < FIRST_MONDAY;
+    const isToday = isSameDay(d, today);
+    const isActive = isoKey(getMondayOfDate(d)) === currentWeekKey;
+
+    let cls = "cal-cell";
+    if (isPast) cls += " past";
+    if (isActive) cls += " active";
+
+    const label = isToday ? `${day}★` : day;
+    html += `<div class="${cls}" onclick="pickWeek(${calMonth.getFullYear()}, ${calMonth.getMonth()}, ${day})">${label}</div>`;
+  }
+
+  // Следующие дни
+  const totalCells = startOffset + daysInMonth;
+  const remaining = (7 - (totalCells % 7)) % 7;
+  for (let i = 1; i <= remaining; i++) {
+    html += `<div class="cal-cell other-month">${i}</div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function pickWeek(year, month, day) {
+  const picked = new Date(year, month, day);
+  picked.setHours(0,0,0,0);
+  currentWeekStart = getMondayOfDate(picked);
+  closeCal();
+  renderSchedule();
+}
+
+document.getElementById("calModalBg").addEventListener("click", e => {
+  if (e.target.id === "calModalBg") closeCal();
+});
+
 // ==================== СТАРТ ====================
+currentWeekStart = new Date(FIRST_MONDAY); // Начинаем с 21.09.2026
 render();
 renderSchedule();
 </script>
