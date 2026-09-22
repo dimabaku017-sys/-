@@ -102,6 +102,8 @@
   .btn.gray:hover { background: #455a64; }
   .btn.green  { background: #43a047; }
   .btn.green:hover { background: #2e7d32; }
+  .btn.purple { background: #8e24aa; }
+  .btn.purple:hover { background: #6a1b9a; }
 
   /* ============ Инфо о неделе ============ */
   .week-info {
@@ -168,7 +170,6 @@
   }
   thead th.subject-col { z-index: 6; }
 
-  /* Колонка среднего балла */
   th.avg-col, td.avg-col {
     background: #f5f7fa;
     font-weight: bold;
@@ -195,11 +196,9 @@
     height: 52px;
     transition: background .12s;
     user-select: none;
-    position: relative;
   }
   td.grade-cell:hover { background: #e3f2fd; }
 
-  /* Обёртка оценки: бейдж + метка типа */
   .grade-wrap {
     display: flex;
     flex-direction: column;
@@ -223,7 +222,6 @@
   .g3      { background: #fb8c00; }
   .g4, .g5 { background: #43a047; }
 
-  /* Метка типа оценки */
   .type-label {
     font-size: 9px;
     font-weight: bold;
@@ -231,14 +229,63 @@
     border-radius: 3px;
     letter-spacing: 0.3px;
   }
-  .type-label.ur {
-    color: #607d8b;
-    background: #eceff1;
+  .type-label.ur { color: #607d8b; background: #eceff1; }
+  .type-label.kr { color: #fff; background: #c62828; box-shadow: 0 1px 2px rgba(198,40,40,.3); }
+
+  /* ============ Таблица четвертных ============ */
+  table.quarters-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    min-width: 800px;
+    font-size: 14px;
   }
-  .type-label.kr {
-    color: #fff;
-    background: #c62828;
-    box-shadow: 0 1px 2px rgba(198,40,40,.3);
+  table.quarters-table th, table.quarters-table td {
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  table.quarters-table thead th {
+    background: #f5f7fa;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    font-weight: 600;
+    font-size: 13px;
+    color: #37474f;
+    padding: 12px 6px;
+  }
+  table.quarters-table th.subject-col,
+  table.quarters-table td.subject-col {
+    background: #fafbfc;
+    text-align: left;
+    padding-left: 14px;
+    min-width: 220px;
+    font-weight: 600;
+    font-size: 14px;
+    position: sticky;
+    left: 0;
+    z-index: 4;
+    border-right: 2px solid #cfd8dc;
+  }
+  table.quarters-table td.quarter-cell {
+    cursor: pointer;
+    min-width: 100px;
+    height: 52px;
+    font-size: 20px;
+    font-weight: bold;
+    transition: background .12s;
+  }
+  table.quarters-table td.quarter-cell:hover { background: #e3f2fd; }
+  table.quarters-table td.quarter-cell.final {
+    background: #fff3e0;
+    font-size: 22px;
+  }
+  table.quarters-table td.quarter-cell.final:hover { background: #ffe0b2; }
+  table.quarters-table td.quarter-cell.final.has-grade {
+    background: #e8f5e9;
   }
 
   /* ============ Расписание ============ */
@@ -252,7 +299,7 @@
   .schedule-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1100px;
+    min-width: 1300px;
     font-size: 13px;
   }
   .schedule-table th, .schedule-table td {
@@ -315,6 +362,29 @@
   .schedule-table td .room { color: #666; font-size: 11px; }
   .schedule-table td .teacher { color: #555; font-size: 11px; font-style: italic; }
 
+  /* Выходной / Праздник / Каникулы в расписании */
+  td.day-off {
+    background: #f5f5f5 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    color: #9e9e9e;
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  td.day-off.holiday {
+    background: #fff3e0 !important;
+    color: #e65100;
+  }
+  td.day-off.weekend {
+    background: #eceff1 !important;
+    color: #607d8b;
+  }
+  td.day-off.vacation {
+    background: #e8f5e9 !important;
+    color: #2e7d32;
+  }
+
   /* Д/З */
   .hw-row {
     margin-top: 6px;
@@ -335,11 +405,7 @@
     transition: .15s;
   }
   .hw-btn:hover { background: #ffe0b2; }
-  .hw-btn.has-hw {
-    background: #ff9800;
-    color: white;
-    border-color: #f57c00;
-  }
+  .hw-btn.has-hw { background: #ff9800; color: white; border-color: #f57c00; }
   .hw-text {
     font-size: 11px;
     color: #5d4037;
@@ -361,7 +427,6 @@
     color: #9e9e9e;
     background: #f5f5f5;
   }
-  .hw-text.done:hover { background: #eeeeee; }
 
   /* ============ Легенда ============ */
   .legend {
@@ -373,7 +438,7 @@
     font-size: 13px;
     color: #455a64;
     display: flex;
-    gap: 22px;
+    gap: 18px;
     align-items: center;
     flex-wrap: wrap;
   }
@@ -441,7 +506,6 @@
   .modal h3 { font-size: 17px; color: #1976d2; margin-bottom: 6px; }
   .modal .sub { font-size: 13px; color: #777; margin-bottom: 16px; }
 
-  /* Секция выбора оценки */
   .modal .section-label {
     font-size: 12px;
     font-weight: 600;
@@ -461,7 +525,6 @@
     border: none; border-radius: 10px;
     color: #fff; font-size: 22px; font-weight: bold;
     cursor: pointer; transition: .12s;
-    position: relative;
   }
   .modal .grade-btn:hover {
     transform: translateY(-2px);
@@ -472,7 +535,6 @@
     outline-offset: 2px;
   }
 
-  /* Секция выбора типа */
   .modal .type-btns {
     display: flex;
     justify-content: center;
@@ -511,12 +573,12 @@
   }
   .modal .type-btn.selected .hint { color: inherit; opacity: 0.7; }
 
-  /* Нижние кнопки */
   .modal .actions {
     display: flex;
     justify-content: center;
     gap: 8px;
     margin-top: 8px;
+    flex-wrap: wrap;
   }
   .modal .clear-btn {
     background: #eceff1; color: #455a64;
@@ -542,7 +604,6 @@
   }
   .modal .save-btn:hover { background: #2e7d32; }
 
-  /* Д/З textarea */
   .modal textarea {
     width: 100%;
     min-height: 100px;
@@ -554,10 +615,7 @@
     resize: vertical;
     margin-bottom: 12px;
   }
-  .modal textarea:focus {
-    outline: 2px solid #1976d2;
-    border-color: #1976d2;
-  }
+  .modal textarea:focus { outline: 2px solid #1976d2; border-color: #1976d2; }
 
   /* Календарь */
   .cal-grid {
@@ -591,6 +649,18 @@
   .cal-cell.header:hover { background: #e3f2fd; }
   .cal-cell.other-month { color: #bbb; background: #fafafa; }
   .cal-cell.past { color: #ccc; }
+  .cal-cell.holiday {
+    background: #fff3e0;
+    color: #e65100;
+    font-weight: bold;
+  }
+  .cal-cell.holiday:hover { background: #ffe0b2; }
+  .cal-cell.vacation {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: bold;
+  }
+  .cal-cell.vacation:hover { background: #c8e6c9; }
   .cal-nav {
     display: flex;
     justify-content: space-between;
@@ -627,7 +697,7 @@
 <!-- ===== Средний балл ===== -->
 <div class="score-bar">
   <div>
-    <span class="label">Общий средневзвешенный балл:</span>
+    <span class="label">Общий средневзвешенный:</span>
     <b id="avgWeighted">—</b>
     <span id="avgCount" style="font-size:12px;color:#666;"></span>
   </div>
@@ -642,11 +712,11 @@
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('grades', this)">📝 Оценки</button>
   <button class="tab-btn" onclick="switchTab('schedule', this)">📅 Расписание</button>
+  <button class="tab-btn" onclick="switchTab('quarters', this)">🎓 Четвертные</button>
 </div>
 
 <!-- ==================== ВКЛАДКА ОЦЕНКИ ==================== -->
 <div class="tab-content active" id="tab-grades">
-
   <div class="controls">
     <button class="btn" onclick="addSubject()">➕ Добавить предмет</button>
     <button class="btn danger" onclick="removeSubject()">➖ Удалить предмет</button>
@@ -654,7 +724,6 @@
     <button class="btn danger" onclick="removeDate()">➖ Удалить дату</button>
     <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить всё</button>
   </div>
-
   <div class="controls">
     <button class="btn green" onclick="downloadDiary()">💾 Скачать дневник</button>
     <button class="btn gray" onclick="document.getElementById('fileInput').click()">📂 Загрузить дневник</button>
@@ -669,18 +738,16 @@
   </div>
 
   <div class="legend">
-    <span><span class="dot" style="background:#e53935;">1</span>Оценка 1-2 — плохо</span>
-    <span><span class="dot" style="background:#fb8c00;">3</span>Оценка 3 — средне</span>
-    <span><span class="dot" style="background:#43a047;">5</span>Оценка 4-5 — отлично</span>
-    <span><span class="tag-ur">УР</span>обычный урок (вес 1)</span>
-    <span><span class="tag-kr">К/Р</span>контрольная (вес 2)</span>
-    <span style="margin-left:auto;color:#888;">💡 Клик по ячейке — поставить оценку</span>
+    <span><span class="dot" style="background:#e53935;">1</span>1-2 — плохо</span>
+    <span><span class="dot" style="background:#fb8c00;">3</span>3 — средне</span>
+    <span><span class="dot" style="background:#43a047;">5</span>4-5 — отлично</span>
+    <span><span class="tag-ur">УР</span>урок · вес 1</span>
+    <span><span class="tag-kr">К/Р</span>контрольная · вес 2</span>
   </div>
 </div>
 
 <!-- ==================== ВКЛАДКА РАСПИСАНИЕ ==================== -->
 <div class="tab-content" id="tab-schedule">
-
   <div class="week-info">
     <div>
       <div class="week-label" id="weekLabel">Неделя</div>
@@ -701,7 +768,42 @@
   </div>
 
   <div class="legend" style="margin-top:14px;">
-    <span>💡 Кнопка <b style="color:#e65100;">Д/З</b> — добавить домашнее задание. <b>Клик по тексту Д/З</b> — отметить как сделанное (зачеркнуть)</span>
+    <span>💡 Кнопка <b style="color:#e65100;">Д/З</b> — домашка. <b>Клик по тексту Д/З</b> — зачеркнуть</span>
+    <span style="color:#607d8b;">⬜ Выходной</span>
+    <span style="color:#e65100;">🟧 Праздник</span>
+    <span style="color:#2e7d32;">🟩 Каникулы</span>
+  </div>
+</div>
+
+<!-- ==================== ВКЛАДКА ЧЕТВЕРТНЫЕ ==================== -->
+<div class="tab-content" id="tab-quarters">
+  <div class="controls">
+    <div style="font-size:14px;color:#555;">
+      💡 Нажми на ячейку, чтобы выставить четвертную оценку. Итоговая считается автоматически как среднее четырёх четвертей.
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="quarters-table" id="quartersTable">
+      <thead>
+        <tr>
+          <th class="subject-col">Предмет</th>
+          <th>1 четверть</th>
+          <th>2 четверть</th>
+          <th>3 четверть</th>
+          <th>4 четверть</th>
+          <th>Годовая</th>
+        </tr>
+      </thead>
+      <tbody id="quartersBody"></tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <span>📘 1-я четверть — сентябрь-октябрь</span>
+    <span>❄️ 2-я — ноябрь-декабрь</span>
+    <span>🌸 3-я — январь-март</span>
+    <span>☀️ 4-я — апрель-май</span>
+    <span style="color:#e65100;font-weight:bold;">🎓 Годовая = среднее четырёх четвертей</span>
   </div>
 </div>
 
@@ -710,22 +812,17 @@
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
     <div class="sub" id="modalSub"></div>
-
     <div class="section-label">1. Выберите оценку</div>
     <div class="grade-btns" id="modalBtns"></div>
-
     <div class="section-label">2. Тип работы</div>
     <div class="type-btns">
       <button class="type-btn" data-type="ur" onclick="selectType('ur')">
-        УР
-        <span class="hint">Обычный урок · вес 1</span>
+        УР <span class="hint">Урок · вес 1</span>
       </button>
       <button class="type-btn" data-type="kr" onclick="selectType('kr')">
-        К/Р
-        <span class="hint">Контрольная · вес 2</span>
+        К/Р <span class="hint">Контрольная · вес 2</span>
       </button>
     </div>
-
     <div class="actions">
       <button class="save-btn" onclick="saveGrade()">💾 Сохранить</button>
       <button class="clear-btn" onclick="clearGrade()">🗑 Убрать</button>
@@ -748,9 +845,22 @@
   </div>
 </div>
 
+<!-- ===== Модалка ЧЕТВЕРТНОЙ ОЦЕНКИ ===== -->
+<div class="modal-bg" id="qModalBg">
+  <div class="modal">
+    <h3 id="qTitle">Четвертная оценка</h3>
+    <div class="sub" id="qSub"></div>
+    <div class="grade-btns" id="qBtns"></div>
+    <div class="actions">
+      <button class="clear-btn" onclick="clearQuarter()">🗑 Убрать</button>
+      <button class="cancel-btn" onclick="closeQModal()">Отмена</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== Модалка КАЛЕНДАРЯ ===== -->
 <div class="modal-bg" id="calModalBg">
-  <div class="modal" style="min-width: 480px;">
+  <div class="modal" style="min-width: 520px;">
     <h3>📅 Выбор недели</h3>
     <div class="sub">Учебный год 2026/2027</div>
     <div class="cal-nav">
@@ -759,16 +869,59 @@
       <button onclick="nextMonth()">→</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
-    <div style="margin-top:8px;">
+    <div style="margin-top:8px; display:flex; gap:8px; justify-content:center;">
+      <span style="font-size:12px;padding:4px 10px;background:#e8f5e9;border-radius:4px;color:#2e7d32;font-weight:bold;">Каникулы</span>
+      <span style="font-size:12px;padding:4px 10px;background:#fff3e0;border-radius:4px;color:#e65100;font-weight:bold;">Праздник</span>
       <button class="cancel-btn" onclick="closeCal()">Закрыть</button>
     </div>
   </div>
 </div>
 
 <script>
-// ==================== ВЕСА ОЦЕНОК ====================
-const WEIGHT_UR = 1; // обычный урок
-const WEIGHT_KR = 2; // контрольная работа
+// ==================== ВЕСА ====================
+const WEIGHT_UR = 1;
+const WEIGHT_KR = 2;
+
+// ==================== ПРАЗДНИКИ (день-месяц) ====================
+// Каждый год повторяются
+const HOLIDAYS = [
+  { day: 23, month: 2,  name: "День защитника Отечества" },
+  { day: 8,  month: 3,  name: "Международный женский день" },
+  { day: 1,  month: 5,  name: "Праздник Весны и Труда" },
+  { day: 9,  month: 5,  name: "День Победы" },
+  { day: 12, month: 6,  name: "День России" },
+  { day: 4,  month: 11, name: "День народного единства" }
+];
+
+// ==================== КАНИКУЛЫ ====================
+// Каникулы задаём как диапазоны дат для учебного года 2026/2027
+const VACATIONS = [
+  { from: new Date(2026, 9, 27),  to: new Date(2026, 10, 5),  name: "Осенние каникулы" },      // 27.10 – 05.11.2026
+  { from: new Date(2026, 11, 30), to: new Date(2027, 0, 11),  name: "Зимние каникулы" },       // 30.12.2026 – 11.01.2027
+  { from: new Date(2027, 0, 1),   to: new Date(2027, 0, 8),   name: "Новогодние каникулы" },   // 01.01 – 08.01.2027
+  { from: new Date(2027, 2, 24),  to: new Date(2027, 2, 31),  name: "Весенние каникулы" },     // 24.03 – 31.03.2027
+  { from: new Date(2027, 4, 26),  to: new Date(2027, 7, 31),  name: "Летние каникулы" }       // 26.05 – 31.08.2027
+];
+
+function getHoliday(date) {
+  return HOLIDAYS.find(h => h.day === date.getDate() && h.month === date.getMonth() + 1) || null;
+}
+
+function getVacation(date) {
+  const d = new Date(date); d.setHours(0,0,0,0);
+  return VACATIONS.find(v => d >= v.from && d <= v.to) || null;
+}
+
+// Тип дня: "school" | "weekend" | "holiday" | "vacation"
+function getDayType(date) {
+  const vac = getVacation(date);
+  if (vac) return { type: "vacation", label: `🎒 ${vac.name}`, name: vac.name };
+  const hol = getHoliday(date);
+  if (hol) return { type: "holiday", label: `🎉 ${hol.name}`, name: hol.name };
+  const dow = date.getDay(); // 0=вс, 6=сб
+  if (dow === 0 || dow === 6) return { type: "weekend", label: "Выходной день", name: "Выходной" };
+  return { type: "school", label: "", name: "" };
+}
 
 // ==================== ДАННЫЕ ====================
 const SUBJECTS_DEFAULT = [
@@ -791,7 +944,8 @@ const TIME_SLOTS = [
 ];
 
 const WEEK_SCHEDULE = [
-  [ // ПН
+  // ПН
+  [
     { subject: "Разговоры о важном", room: "", teacher: "" },
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
@@ -800,7 +954,8 @@ const WEEK_SCHEDULE = [
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." }
   ],
-  [ // ВТ
+  // ВТ
+  [
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
@@ -809,7 +964,8 @@ const WEEK_SCHEDULE = [
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
   ],
-  [ // СР
+  // СР
+  [
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
     { subject: "Труд", room: "22 / 49", teacher: "Знобин А.И. / Бондарев М.Н." },
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
@@ -818,7 +974,8 @@ const WEEK_SCHEDULE = [
     { subject: "ОБЖ", room: "41", teacher: "Миляков С.В." },
     { subject: "", room: "", teacher: "" }
   ],
-  [ // ЧТ
+  // ЧТ
+  [
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
     { subject: "Физ-ра", room: "", teacher: "Акимова Е.Н." },
     { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
@@ -827,7 +984,8 @@ const WEEK_SCHEDULE = [
     { subject: "Геометрия", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
   ],
-  [ // ПТ
+  // ПТ
+  [
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
     { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
@@ -835,31 +993,29 @@ const WEEK_SCHEDULE = [
     { subject: "Вер.ст.", room: "42", teacher: "Мещерякова О.А." },
     { subject: "История", room: "32", teacher: "Якунина К.П." },
     { subject: "История", room: "32", teacher: "Якунина К.П." }
-  ]
+  ],
+  // СБ — пусто (выходной)
+  [],
+  // ВС — пусто (выходной)
+  []
 ];
 
-const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница"];
-const DAY_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт"];
+const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
+const DAY_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const MONTH_NAMES = [
   "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
   "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
 ];
 
-const STORAGE_KEY = "diary_html_v4";
+const STORAGE_KEY = "diary_html_v5";
 
 // ==================== СОСТОЯНИЕ ====================
 let state = loadState();
 let currentWeekStart = null;
 let calMonth = null;
 let currentHW = { date: null, dayIdx: 0, slotIdx: 0 };
-
-// Модалка оценки — временные значения
-let gradeModal = {
-  subj: null,
-  date: null,
-  grade: null,
-  type: "ur"  // "ur" или "kr"
-};
+let gradeModal = { subj: null, date: null, grade: null, type: "ur" };
+let currentQuarter = { subj: null, quarter: null };
 
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -870,36 +1026,30 @@ function loadState() {
       if (!s.dates) s.dates = [...DATES_DEFAULT];
       if (!s.grades) s.grades = {};
       if (!s.homework) s.homework = {};
-      if (!s.hwDone) s.hwDone = {}; // { "key": true } — зачёркнутые Д/З
+      if (!s.hwDone) s.hwDone = {};
+      if (!s.quarters) s.quarters = {}; // { "Алгебра": { 1: 5, 2: 4, 3: 5, 4: 4 } }
       return s;
     } catch(e) {}
   }
   return {
     subjects: [...SUBJECTS_DEFAULT],
     dates: [...DATES_DEFAULT],
-    // grades: { "Алгебра": { "01.09": 5, ... } } — обычный формат,
-    // но значение может быть либо числом, либо { grade: 5, type: "kr" }
     grades: {},
     homework: {},
-    hwDone: {}
+    hwDone: {},
+    quarters: {}
   };
 }
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
-// Универсальный парсер оценки: всегда возвращает { grade, type }
 function parseGrade(v) {
   if (v === null || v === undefined) return null;
   if (typeof v === "number") return { grade: v, type: "ur" };
   if (typeof v === "object" && v.grade) return { grade: v.grade, type: v.type || "ur" };
   return null;
 }
-
-function getWeight(type) {
-  return type === "kr" ? WEIGHT_KR : WEIGHT_UR;
-}
+function getWeight(type) { return type === "kr" ? WEIGHT_KR : WEIGHT_UR; }
 
 // ==================== РАБОТА С ДАТАМИ ====================
 function getMondayOfDate(d) {
@@ -907,35 +1057,21 @@ function getMondayOfDate(d) {
   const day = date.getDay();
   const diff = day === 0 ? -6 : 1 - day;
   date.setDate(date.getDate() + diff);
-  date.setHours(0, 0, 0, 0);
+  date.setHours(0,0,0,0);
   return date;
 }
-function addDays(d, n) {
-  const date = new Date(d);
-  date.setDate(date.getDate() + n);
-  return date;
-}
+function addDays(d, n) { const date = new Date(d); date.setDate(date.getDate() + n); return date; }
 function formatDate(d) {
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-  return `${dd}.${mm}.${yyyy}`;
+  return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`;
 }
 function formatShort(d) {
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  return `${dd}.${mm}`;
+  return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}`;
 }
 function isoKey(d) {
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 function isSameDay(a, b) {
-  return a.getFullYear() === b.getFullYear() &&
-         a.getMonth() === b.getMonth() &&
-         a.getDate() === b.getDate();
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 const FIRST_MONDAY = new Date(2026, 8, 21);
 
@@ -965,30 +1101,23 @@ function render() {
       td.className = "grade-cell";
       const parsed = parseGrade(subjGrades[d]);
       if (parsed) {
-        td.innerHTML = `
-          <div class="grade-wrap">
-            <span class="grade-badge g${parsed.grade}">${parsed.grade}</span>
-            <span class="type-label ${parsed.type}">${parsed.type === "kr" ? "К/Р" : "УР"}</span>
-          </div>`;
+        td.innerHTML = `<div class="grade-wrap">
+          <span class="grade-badge g${parsed.grade}">${parsed.grade}</span>
+          <span class="type-label ${parsed.type}">${parsed.type === "kr" ? "К/Р" : "УР"}</span>
+        </div>`;
       }
       td.onclick = () => openGradeModal(subj, d);
       tr.appendChild(td);
     });
 
-    // Средний балл (взвешенный + простой)
     const tdAvg = document.createElement("td");
     tdAvg.className = "avg-col";
     const weighted = calcWeightedAvg(subjGrades);
     const simple = calcSimpleAvg(subjGrades);
     if (weighted !== null) {
-      let color;
-      if (weighted < 2.5) color = "#e53935";
-      else if (weighted < 3.5) color = "#fb8c00";
-      else color = "#2e7d32";
-
-      tdAvg.innerHTML =
-        `<div class="weighted" style="color:${color};">${weighted.toFixed(2)}</div>` +
-        `<div class="simple">простой: ${simple.toFixed(2)}</div>`;
+      let color = weighted < 2.5 ? "#e53935" : weighted < 3.5 ? "#fb8c00" : "#2e7d32";
+      tdAvg.innerHTML = `<div class="weighted" style="color:${color};">${weighted.toFixed(2)}</div>
+        <div class="simple">простой: ${simple.toFixed(2)}</div>`;
     } else {
       tdAvg.textContent = "—";
       tdAvg.style.color = "#9e9e9e";
@@ -1005,64 +1134,46 @@ function render() {
 function calcWeightedAvg(subjGrades) {
   let sumWV = 0, sumW = 0;
   Object.values(subjGrades).forEach(v => {
-    const p = parseGrade(v);
-    if (!p) return;
+    const p = parseGrade(v); if (!p) return;
     const w = getWeight(p.type);
-    sumWV += p.grade * w;
-    sumW += w;
+    sumWV += p.grade * w; sumW += w;
   });
   return sumW === 0 ? null : sumWV / sumW;
 }
-
 function calcSimpleAvg(subjGrades) {
   const vals = [];
   Object.values(subjGrades).forEach(v => {
-    const p = parseGrade(v);
-    if (p) vals.push(p.grade);
+    const p = parseGrade(v); if (p) vals.push(p.grade);
   });
-  if (vals.length === 0) return null;
-  return vals.reduce((a,b) => a+b, 0) / vals.length;
+  if (!vals.length) return null;
+  return vals.reduce((a,b)=>a+b,0) / vals.length;
 }
 
 function updateAvg() {
-  let sumWV = 0, sumW = 0;
-  let allCount = 0;
+  let sumWV = 0, sumW = 0, count = 0;
   const allSimple = [];
-
-  Object.values(state.grades).forEach(subjGrades => {
-    Object.values(subjGrades).forEach(v => {
-      const p = parseGrade(v);
-      if (!p) return;
+  Object.values(state.grades).forEach(sg => {
+    Object.values(sg).forEach(v => {
+      const p = parseGrade(v); if (!p) return;
       const w = getWeight(p.type);
-      sumWV += p.grade * w;
-      sumW += w;
-      allCount++;
-      allSimple.push(p.grade);
+      sumWV += p.grade * w; sumW += w; count++; allSimple.push(p.grade);
     });
   });
-
   const elW = document.getElementById("avgWeighted");
   const elS = document.getElementById("avgSimple");
   const cnt = document.getElementById("avgCount");
-
-  if (allCount === 0) {
-    elW.textContent = "—";
-    elW.className = "";
-    elS.textContent = "—";
-    cnt.textContent = "";
-    return;
+  if (count === 0) {
+    elW.textContent = "—"; elW.className = "";
+    elS.textContent = "—"; elS.className = "";
+    cnt.textContent = ""; return;
   }
-
   const wAvg = sumWV / sumW;
-  const sAvg = allSimple.reduce((a,b) => a+b, 0) / allSimple.length;
-
+  const sAvg = allSimple.reduce((a,b)=>a+b,0) / allSimple.length;
   elW.textContent = wAvg.toFixed(2);
   elW.className = wAvg < 2.5 ? "avg-red" : wAvg < 3.5 ? "avg-orange" : "avg-green";
-
   elS.textContent = sAvg.toFixed(2);
   elS.className = sAvg < 2.5 ? "avg-red" : sAvg < 3.5 ? "avg-orange" : "avg-green";
-
-  cnt.textContent = `(${allCount} оценок)`;
+  cnt.textContent = `(${count} оценок)`;
 }
 
 function updateToday() {
@@ -1073,7 +1184,6 @@ function updateToday() {
 // ==================== МОДАЛКА ОЦЕНКИ ====================
 function openGradeModal(subj, date) {
   const existing = parseGrade((state.grades[subj] || {})[date]);
-
   gradeModal.subj = subj;
   gradeModal.date = date;
   gradeModal.grade = existing ? existing.grade : null;
@@ -1082,14 +1192,12 @@ function openGradeModal(subj, date) {
   document.getElementById("modalTitle").textContent = subj;
   document.getElementById("modalSub").textContent = "Дата: " + date;
 
-  // Кнопки оценок
   const wrap = document.getElementById("modalBtns");
   wrap.innerHTML = "";
   [1,2,3,4,5].forEach(n => {
     const btn = document.createElement("button");
     btn.className = "grade-btn g" + n;
     btn.textContent = n;
-    btn.dataset.grade = n;
     if (gradeModal.grade === n) btn.classList.add("selected");
     btn.onclick = () => {
       gradeModal.grade = n;
@@ -1098,10 +1206,7 @@ function openGradeModal(subj, date) {
     };
     wrap.appendChild(btn);
   });
-
-  // Кнопки типа
   updateTypeButtons();
-
   document.getElementById("modalBg").classList.add("active");
 }
 
@@ -1110,39 +1215,24 @@ function updateTypeButtons() {
     b.classList.toggle("selected", b.dataset.type === gradeModal.type);
   });
 }
-
-function selectType(type) {
-  gradeModal.type = type;
-  updateTypeButtons();
-}
-
-function closeModal() {
-  document.getElementById("modalBg").classList.remove("active");
-}
+function selectType(type) { gradeModal.type = type; updateTypeButtons(); }
+function closeModal() { document.getElementById("modalBg").classList.remove("active"); }
 
 function saveGrade() {
-  if (!gradeModal.grade) {
-    alert("Сначала выберите оценку (1-5)!");
-    return;
-  }
+  if (!gradeModal.grade) { alert("Выберите оценку!"); return; }
   const { subj, date, grade, type } = gradeModal;
   if (!state.grades[subj]) state.grades[subj] = {};
-  // Сохраняем в новом формате { grade, type }
   state.grades[subj][date] = { grade, type };
-  saveState();
-  closeModal();
-  render();
+  saveState(); closeModal(); render();
 }
 
 function clearGrade() {
   const { subj, date } = gradeModal;
   if (state.grades[subj]) {
     delete state.grades[subj][date];
-    if (Object.keys(state.grades[subj]).length === 0) delete state.grades[subj];
+    if (!Object.keys(state.grades[subj]).length) delete state.grades[subj];
   }
-  saveState();
-  closeModal();
-  render();
+  saveState(); closeModal(); render();
 }
 
 document.getElementById("modalBg").addEventListener("click", e => {
@@ -1157,21 +1247,22 @@ function addSubject() {
   if (!t) return;
   if (state.subjects.includes(t)) { alert("Такой предмет уже есть!"); return; }
   state.subjects.push(t);
-  saveState(); render();
+  saveState(); render(); renderQuarters();
 }
 
 function removeSubject() {
-  if (state.subjects.length === 0) return;
+  if (!state.subjects.length) return;
   const list = state.subjects.map((s,i) => `${i+1}. ${s}`).join("\n");
-  const ans = prompt("Введите НОМЕР предмета для удаления:\n\n" + list);
+  const ans = prompt("НОМЕР предмета для удаления:\n\n" + list);
   if (!ans) return;
   const idx = parseInt(ans) - 1;
   if (isNaN(idx) || idx < 0 || idx >= state.subjects.length) return;
   const subj = state.subjects[idx];
-  if (!confirm(`Удалить «${subj}» и все его оценки?`)) return;
+  if (!confirm(`Удалить «${subj}» и все оценки?`)) return;
   state.subjects.splice(idx, 1);
   delete state.grades[subj];
-  saveState(); render();
+  delete state.quarters[subj];
+  saveState(); render(); renderQuarters();
 }
 
 function addDate() {
@@ -1184,24 +1275,24 @@ function addDate() {
 }
 
 function removeDate() {
-  if (state.dates.length === 0) return;
+  if (!state.dates.length) return;
   const list = state.dates.map((d,i) => `${i+1}. ${d}`).join("\n");
-  const ans = prompt("Введите НОМЕР даты для удаления:\n\n" + list);
+  const ans = prompt("НОМЕР даты для удаления:\n\n" + list);
   if (!ans) return;
   const idx = parseInt(ans) - 1;
   if (isNaN(idx) || idx < 0 || idx >= state.dates.length) return;
   const d = state.dates[idx];
-  if (!confirm(`Удалить дату ${d} и все оценки за неё?`)) return;
+  if (!confirm(`Удалить дату ${d}?`)) return;
   state.dates.splice(idx, 1);
   Object.keys(state.grades).forEach(subj => {
     delete state.grades[subj][d];
-    if (Object.keys(state.grades[subj]).length === 0) delete state.grades[subj];
+    if (!Object.keys(state.grades[subj]).length) delete state.grades[subj];
   });
   saveState(); render();
 }
 
 function clearAll() {
-  if (!confirm("Удалить ВСЕ оценки?")) return;
+  if (!confirm("Удалить ВСЕ оценки по всем предметам?")) return;
   state.grades = {};
   saveState(); render();
 }
@@ -1213,9 +1304,8 @@ function downloadDiary() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const d = new Date();
-  const name = `diary_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
   a.href = url;
-  a.download = name;
+  a.download = `diary_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
   a.click();
   URL.revokeObjectURL(url);
   alert("Файл скачан! 📁");
@@ -1229,20 +1319,17 @@ function uploadDiary(ev) {
     try {
       const loaded = JSON.parse(e.target.result);
       if (!loaded.subjects || !loaded.dates || !loaded.grades) {
-        alert("Неверный файл дневника!");
-        return;
+        alert("Неверный файл!"); return;
       }
-      if (!confirm("Загрузить дневник из файла?\n\nТекущие данные будут заменены.")) return;
+      if (!confirm("Загрузить дневник? Текущие данные будут заменены.")) return;
       state = loaded;
       if (!state.homework) state.homework = {};
       if (!state.hwDone) state.hwDone = {};
+      if (!state.quarters) state.quarters = {};
       saveState();
-      render();
-      renderSchedule();
+      render(); renderSchedule(); renderQuarters();
       alert("Дневник загружен! ✅");
-    } catch(err) {
-      alert("Ошибка чтения: " + err.message);
-    }
+    } catch(err) { alert("Ошибка: " + err.message); }
   };
   reader.readAsText(file);
   ev.target.value = "";
@@ -1254,11 +1341,13 @@ function switchTab(name, btn) {
   document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
   document.getElementById("tab-" + name).classList.add("active");
   btn.classList.add("active");
+  if (name === "quarters") renderQuarters();
+  if (name === "schedule") renderSchedule();
 }
 
 // ==================== РАСПИСАНИЕ ====================
 function getWeekDates(monday) {
-  return [0,1,2,3,4].map(i => addDays(monday, i));
+  return [0,1,2,3,4,5,6].map(i => addDays(monday, i)); // 7 дней: Пн-Вс
 }
 
 function renderSchedule() {
@@ -1272,7 +1361,9 @@ function renderSchedule() {
   let headHTML = '<th class="num-col">№</th><th class="time-col">Время</th>';
   dates.forEach((d, i) => {
     const isToday = isSameDay(d, today);
-    headHTML += `<th>
+    const dayType = getDayType(d);
+    const isWeekend = i >= 5;
+    headHTML += `<th ${isWeekend ? 'style="background:#eceff1;color:#607d8b;"' : ''}>
       <span class="day-name">${DAY_NAMES[i]}</span>
       <span class="day-date ${isToday ? 'today' : ''}">${formatShort(d)}</span>
     </th>`;
@@ -1283,9 +1374,13 @@ function renderSchedule() {
   const weekDates = document.getElementById("weekDates");
   const weekNum = Math.round((currentWeekStart - FIRST_MONDAY) / (7 * 24 * 3600 * 1000)) + 1;
   weekLabel.textContent = `Учебная неделя №${weekNum}`;
-  weekDates.textContent = `${formatDate(dates[0])} — ${formatDate(dates[4])}`;
+  weekDates.textContent = `${formatDate(dates[0])} — ${formatDate(dates[6])}`;
 
   body.innerHTML = "";
+
+  // Определяем общий статус недели (каникулы?)
+  const weekVacation = getVacation(dates[0]) || getVacation(dates[2]) || getVacation(dates[4]);
+
   TIME_SLOTS.forEach((time, slotIdx) => {
     const tr = document.createElement("tr");
 
@@ -1300,9 +1395,27 @@ function renderSchedule() {
     tr.appendChild(tdTime);
 
     dates.forEach((d, dayIdx) => {
-      const lesson = (WEEK_SCHEDULE[dayIdx] && WEEK_SCHEDULE[dayIdx][slotIdx]) || { subject: "", room: "", teacher: "" };
       const td = document.createElement("td");
+      const dayInfo = getDayType(d);
 
+      // Если выходной / праздник / каникулы — показываем надпись
+      if (dayInfo.type !== "school") {
+        if (slotIdx === 0) {
+          // На первом уроке показываем большую надпись и rowspan
+          // Но проще: показываем текст в каждой ячейке, но это некрасиво.
+          // Сделаем: в первом уроке показываем надпись, а остальные пустые.
+          td.className = `day-off ${dayInfo.type}`;
+          td.innerHTML = `<div style="font-size:13px;">${dayInfo.label}</div>`;
+        } else {
+          td.className = `day-off ${dayInfo.type}`;
+          td.innerHTML = "";
+        }
+        tr.appendChild(td);
+        return;
+      }
+
+      // Обычный учебный день
+      const lesson = (WEEK_SCHEDULE[dayIdx] && WEEK_SCHEDULE[dayIdx][slotIdx]) || { subject: "", room: "", teacher: "" };
       if (lesson.subject) {
         const dateKey = isoKey(d);
         const hwKey = `${dateKey}|${dayIdx}|${slotIdx}`;
@@ -1310,10 +1423,9 @@ function renderSchedule() {
         const hasHW = hwText.trim().length > 0;
         const isDone = !!state.hwDone[hwKey];
 
-        let cellHTML =
-          `<div class="subj">${lesson.subject}</div>` +
-          (lesson.room ? `<div class="room">каб. ${lesson.room}</div>` : "") +
-          (lesson.teacher ? `<div class="teacher">${lesson.teacher}</div>` : "");
+        let cellHTML = `<div class="subj">${lesson.subject}</div>`;
+        if (lesson.room) cellHTML += `<div class="room">каб. ${lesson.room}</div>`;
+        if (lesson.teacher) cellHTML += `<div class="teacher">${lesson.teacher}</div>`;
 
         cellHTML += `<div class="hw-row">`;
         cellHTML += `<button class="hw-btn ${hasHW ? 'has-hw' : ''}" onclick="openHW('${dateKey}', ${dayIdx}, ${slotIdx})">📝 Д/З</button>`;
@@ -1321,7 +1433,7 @@ function renderSchedule() {
 
         if (hasHW) {
           const short = hwText.length > 80 ? hwText.slice(0, 80) + "…" : hwText;
-          cellHTML += `<div class="hw-text ${isDone ? 'done' : ''}" onclick="toggleHW('${hwKey}')" title="Клик — зачеркнуть / раззачеркнуть">${escapeHtml(short)}</div>`;
+          cellHTML += `<div class="hw-text ${isDone ? 'done' : ''}" onclick="toggleHW('${hwKey}')" title="Клик — зачеркнуть">${escapeHtml(short)}</div>`;
         }
 
         td.innerHTML = cellHTML;
@@ -1339,14 +1451,8 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function prevWeek() {
-  currentWeekStart = addDays(currentWeekStart, -7);
-  renderSchedule();
-}
-function nextWeek() {
-  currentWeekStart = addDays(currentWeekStart, 7);
-  renderSchedule();
-}
+function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderSchedule(); }
+function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7); renderSchedule(); }
 function goToToday() {
   const today = new Date(); today.setHours(0,0,0,0);
   if (today < FIRST_MONDAY) currentWeekStart = new Date(FIRST_MONDAY);
@@ -1358,11 +1464,9 @@ function goToToday() {
 function openHW(dateKey, dayIdx, slotIdx) {
   const lesson = WEEK_SCHEDULE[dayIdx][slotIdx];
   if (!lesson || !lesson.subject) return;
-
   currentHW = { date: dateKey, dayIdx, slotIdx };
   const hwKey = `${dateKey}|${dayIdx}|${slotIdx}`;
   const existing = state.homework[hwKey] || "";
-
   const d = new Date(dateKey);
   document.getElementById("hwTitle").textContent = lesson.subject;
   document.getElementById("hwSub").textContent =
@@ -1371,47 +1475,121 @@ function openHW(dateKey, dayIdx, slotIdx) {
   document.getElementById("hwModalBg").classList.add("active");
   setTimeout(() => document.getElementById("hwText").focus(), 100);
 }
-
-function closeHW() {
-  document.getElementById("hwModalBg").classList.remove("active");
-}
-
+function closeHW() { document.getElementById("hwModalBg").classList.remove("active"); }
 function saveHW() {
   const text = document.getElementById("hwText").value.trim();
   const hwKey = `${currentHW.date}|${currentHW.dayIdx}|${currentHW.slotIdx}`;
-  if (text) {
-    state.homework[hwKey] = text;
-  } else {
-    delete state.homework[hwKey];
-    delete state.hwDone[hwKey];
-  }
-  saveState();
-  closeHW();
-  renderSchedule();
+  if (text) state.homework[hwKey] = text;
+  else { delete state.homework[hwKey]; delete state.hwDone[hwKey]; }
+  saveState(); closeHW(); renderSchedule();
 }
-
 function clearHW() {
   if (!confirm("Удалить домашнее задание?")) return;
   const hwKey = `${currentHW.date}|${currentHW.dayIdx}|${currentHW.slotIdx}`;
-  delete state.homework[hwKey];
-  delete state.hwDone[hwKey];
-  saveState();
-  closeHW();
-  renderSchedule();
+  delete state.homework[hwKey]; delete state.hwDone[hwKey];
+  saveState(); closeHW(); renderSchedule();
 }
-
 function toggleHW(hwKey) {
-  if (state.hwDone[hwKey]) {
-    delete state.hwDone[hwKey];
-  } else {
-    state.hwDone[hwKey] = true;
-  }
-  saveState();
-  renderSchedule();
+  if (state.hwDone[hwKey]) delete state.hwDone[hwKey];
+  else state.hwDone[hwKey] = true;
+  saveState(); renderSchedule();
 }
-
 document.getElementById("hwModalBg").addEventListener("click", e => {
   if (e.target.id === "hwModalBg") closeHW();
+});
+
+// ==================== ЧЕТВЕРТНЫЕ ====================
+function renderQuarters() {
+  const tbody = document.getElementById("quartersBody");
+  tbody.innerHTML = "";
+
+  state.subjects.forEach(subj => {
+    const tr = document.createElement("tr");
+    const q = state.quarters[subj] || {};
+
+    const tdName = document.createElement("td");
+    tdName.className = "subject-col";
+    tdName.textContent = subj;
+    tr.appendChild(tdName);
+
+    [1,2,3,4].forEach(qn => {
+      const td = document.createElement("td");
+      td.className = "quarter-cell";
+      const v = q[qn];
+      if (v) {
+        td.textContent = v;
+        td.style.color = v < 2.5 ? "#e53935" : v < 3.5 ? "#fb8c00" : "#2e7d32";
+      } else {
+        td.textContent = "—";
+        td.style.color = "#cfd8dc";
+      }
+      td.onclick = () => openQuarterModal(subj, qn);
+      tr.appendChild(td);
+    });
+
+    // Годовая = среднее четырёх четвертей
+    const tdFinal = document.createElement("td");
+    tdFinal.className = "quarter-cell final";
+    const vals = [q[1], q[2], q[3], q[4]].filter(x => x);
+    if (vals.length === 4) {
+      const avg = vals.reduce((a,b)=>a+b,0) / 4;
+      const rounded = Math.round(avg);
+      tdFinal.classList.add("has-grade");
+      tdFinal.textContent = rounded;
+      tdFinal.style.color = rounded < 2.5 ? "#e53935" : rounded < 3.5 ? "#fb8c00" : "#2e7d32";
+      tdFinal.title = `Среднее: ${avg.toFixed(2)} → годовая: ${rounded}`;
+    } else if (vals.length > 0) {
+      tdFinal.textContent = "?";
+      tdFinal.style.color = "#ff9800";
+      tdFinal.title = `Не все четверти заполнены (${vals.length}/4)`;
+    } else {
+      tdFinal.textContent = "—";
+      tdFinal.style.color = "#cfd8dc";
+    }
+    tr.appendChild(tdFinal);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function openQuarterModal(subj, quarter) {
+  currentQuarter = { subj, quarter };
+  const q = state.quarters[subj] || {};
+  const existing = q[quarter];
+
+  document.getElementById("qTitle").textContent = `${subj} — ${quarter} четверть`;
+  document.getElementById("qSub").textContent = "Выберите оценку от 1 до 5";
+
+  const wrap = document.getElementById("qBtns");
+  wrap.innerHTML = "";
+  [1,2,3,4,5].forEach(n => {
+    const btn = document.createElement("button");
+    btn.className = "grade-btn g" + n;
+    btn.textContent = n;
+    if (existing === n) btn.classList.add("selected");
+    btn.onclick = () => {
+      if (!state.quarters[subj]) state.quarters[subj] = {};
+      state.quarters[subj][quarter] = n;
+      saveState();
+      closeQModal();
+      renderQuarters();
+    };
+    wrap.appendChild(btn);
+  });
+
+  document.getElementById("qModalBg").classList.add("active");
+}
+function closeQModal() { document.getElementById("qModalBg").classList.remove("active"); }
+function clearQuarter() {
+  const { subj, quarter } = currentQuarter;
+  if (state.quarters[subj]) {
+    delete state.quarters[subj][quarter];
+    if (!Object.keys(state.quarters[subj]).length) delete state.quarters[subj];
+  }
+  saveState(); closeQModal(); renderQuarters();
+}
+document.getElementById("qModalBg").addEventListener("click", e => {
+  if (e.target.id === "qModalBg") closeQModal();
 });
 
 // ==================== КАЛЕНДАРЬ ====================
@@ -1420,16 +1598,14 @@ function openCal() {
   document.getElementById("calModalBg").classList.add("active");
   renderCal();
 }
-function closeCal() {
-  document.getElementById("calModalBg").classList.remove("active");
-}
+function closeCal() { document.getElementById("calModalBg").classList.remove("active"); }
 function prevMonth() { calMonth.setMonth(calMonth.getMonth() - 1); renderCal(); }
 function nextMonth() { calMonth.setMonth(calMonth.getMonth() + 1); renderCal(); }
 
 function renderCal() {
   const grid = document.getElementById("calGrid");
-  const title = document.getElementById("calMonthTitle");
-  title.textContent = `${MONTH_NAMES[calMonth.getMonth()]} ${calMonth.getFullYear()}`;
+  document.getElementById("calMonthTitle").textContent =
+    `${MONTH_NAMES[calMonth.getMonth()]} ${calMonth.getFullYear()}`;
 
   let html = "";
   ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(d => {
@@ -1451,6 +1627,7 @@ function renderCal() {
   for (let day = 1; day <= daysInMonth; day++) {
     const d = new Date(calMonth.getFullYear(), calMonth.getMonth(), day);
     d.setHours(0,0,0,0);
+    const dayInfo = getDayType(d);
     const isPast = d < FIRST_MONDAY;
     const isToday = isSameDay(d, today);
     const isActive = isoKey(getMondayOfDate(d)) === currentWeekKey;
@@ -1458,9 +1635,13 @@ function renderCal() {
     let cls = "cal-cell";
     if (isPast) cls += " past";
     if (isActive) cls += " active";
+    if (dayInfo.type === "vacation" && !isActive) cls += " vacation";
+    if (dayInfo.type === "holiday" && !isActive) cls += " holiday";
 
-    const label = isToday ? `${day}★` : day;
-    html += `<div class="${cls}" onclick="pickWeek(${calMonth.getFullYear()}, ${calMonth.getMonth()}, ${day})">${label}</div>`;
+    let label = isToday ? `${day}★` : day;
+    let title = dayInfo.name || "";
+
+    html += `<div class="${cls}" title="${title}" onclick="pickWeek(${calMonth.getFullYear()}, ${calMonth.getMonth()}, ${day})">${label}</div>`;
   }
 
   const totalCells = startOffset + daysInMonth;
@@ -1473,13 +1654,10 @@ function renderCal() {
 }
 
 function pickWeek(year, month, day) {
-  const picked = new Date(year, month, day);
-  picked.setHours(0,0,0,0);
+  const picked = new Date(year, month, day); picked.setHours(0,0,0,0);
   currentWeekStart = getMondayOfDate(picked);
-  closeCal();
-  renderSchedule();
+  closeCal(); renderSchedule();
 }
-
 document.getElementById("calModalBg").addEventListener("click", e => {
   if (e.target.id === "calModalBg") closeCal();
 });
