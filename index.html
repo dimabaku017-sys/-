@@ -102,10 +102,43 @@
   .btn.gray:hover { background: #455a64; }
   .btn.green  { background: #43a047; }
   .btn.green:hover { background: #2e7d32; }
-  .btn.purple { background: #8e24aa; }
-  .btn.purple:hover { background: #6a1b9a; }
 
-  /* ============ Инфо о неделе ============ */
+  /* Переключатель четверти */
+  .quarter-switcher {
+    display: inline-flex;
+    align-items: center;
+    background: #fff3e0;
+    border: 1px solid #ffcc80;
+    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
+    margin-left: 8px;
+  }
+  .quarter-switcher .arrow {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: #e65100;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: .15s;
+  }
+  .quarter-switcher .arrow:hover { background: #ffe0b2; }
+  .quarter-switcher .arrow:disabled { color: #cfd8dc; cursor: not-allowed; }
+  .quarter-switcher .arrow:disabled:hover { background: transparent; }
+  .quarter-switcher .quarter-label {
+    font-weight: 700;
+    color: #e65100;
+    font-size: 14px;
+    min-width: 130px;
+    text-align: center;
+    padding: 0 8px;
+  }
+
+  /* Инфо о неделе */
   .week-info {
     background: #fff8e1;
     padding: 12px 28px;
@@ -136,7 +169,7 @@
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    min-width: 1200px;
+    min-width: 1300px;
     font-size: 14px;
   }
   table.grades-table th, table.grades-table td {
@@ -177,7 +210,7 @@
     min-width: 90px;
     border-left: 2px solid #cfd8dc;
     position: sticky;
-    right: 0;
+    right: 100px;
     z-index: 4;
   }
   thead th.avg-col { z-index: 6; }
@@ -189,6 +222,40 @@
     font-weight: normal;
     margin-top: 2px;
   }
+
+  th.quarter-col, td.quarter-col {
+    background: #fff3e0;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 90px;
+    border-left: 2px solid #ffcc80;
+    position: sticky;
+    right: 0;
+    z-index: 4;
+  }
+  thead th.quarter-col {
+    z-index: 6;
+    color: #e65100;
+    font-size: 12px;
+    padding: 8px 6px;
+  }
+  thead th.quarter-col .q-name { display: block; font-size: 13px; }
+  thead th.quarter-col .q-sub {
+    display: block;
+    font-size: 10px;
+    color: #bf360c;
+    margin-top: 2px;
+  }
+  td.quarter-cell-main {
+    cursor: pointer;
+    min-width: 90px;
+    height: 48px;
+    font-size: 20px;
+    font-weight: bold;
+    transition: background .12s;
+    user-select: none;
+  }
+  td.quarter-cell-main:hover { background: #ffe0b2; }
 
   td.grade-cell {
     cursor: pointer;
@@ -282,10 +349,19 @@
   table.quarters-table td.quarter-cell.final {
     background: #fff3e0;
     font-size: 22px;
+    cursor: default;
   }
-  table.quarters-table td.quarter-cell.final:hover { background: #ffe0b2; }
+  table.quarters-table td.quarter-cell.final:hover { background: #fff3e0; }
   table.quarters-table td.quarter-cell.final.has-grade {
     background: #e8f5e9;
+  }
+  table.quarters-table td.quarter-cell.final.has-grade:hover { background: #e8f5e9; }
+  .quarter-weights {
+    font-size: 10px;
+    color: #78909c;
+    font-weight: normal;
+    display: block;
+    margin-top: 2px;
   }
 
   /* ============ Расписание ============ */
@@ -323,7 +399,7 @@
     font-size: 12px;
     font-weight: 500;
     color: #1565c0;
-    margin-top: 2px;
+    margin-top: 3px;
   }
   .schedule-table th .day-date.today {
     background: #ff9800;
@@ -331,7 +407,6 @@
     border-radius: 4px;
     padding: 2px 6px;
     display: inline-block;
-    margin-top: 3px;
   }
   .schedule-table th.num-col,
   .schedule-table td.num-col {
@@ -362,7 +437,6 @@
   .schedule-table td .room { color: #666; font-size: 11px; }
   .schedule-table td .teacher { color: #555; font-size: 11px; font-style: italic; }
 
-  /* Выходной / Праздник / Каникулы в расписании */
   td.day-off {
     background: #f5f5f5 !important;
     text-align: center !important;
@@ -372,20 +446,10 @@
     font-size: 13px;
     font-weight: 600;
   }
-  td.day-off.holiday {
-    background: #fff3e0 !important;
-    color: #e65100;
-  }
-  td.day-off.weekend {
-    background: #eceff1 !important;
-    color: #607d8b;
-  }
-  td.day-off.vacation {
-    background: #e8f5e9 !important;
-    color: #2e7d32;
-  }
+  td.day-off.holiday { background: #fff3e0 !important; color: #e65100; }
+  td.day-off.weekend { background: #eceff1 !important; color: #607d8b; }
+  td.day-off.vacation { background: #e8f5e9 !important; color: #2e7d32; }
 
-  /* Д/З */
   .hw-row {
     margin-top: 6px;
     display: flex;
@@ -718,16 +782,17 @@
 <!-- ==================== ВКЛАДКА ОЦЕНКИ ==================== -->
 <div class="tab-content active" id="tab-grades">
   <div class="controls">
-    <button class="btn" onclick="addSubject()">➕ Добавить предмет</button>
-    <button class="btn danger" onclick="removeSubject()">➖ Удалить предмет</button>
-    <button class="btn" onclick="addDate()">➕ Добавить дату</button>
-    <button class="btn danger" onclick="removeDate()">➖ Удалить дату</button>
-    <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить всё</button>
-  </div>
-  <div class="controls">
     <button class="btn green" onclick="downloadDiary()">💾 Скачать дневник</button>
     <button class="btn gray" onclick="document.getElementById('fileInput').click()">📂 Загрузить дневник</button>
     <input type="file" id="fileInput" accept=".json" onchange="uploadDiary(event)">
+
+    <div class="quarter-switcher" title="Переключение между четвертями">
+      <button class="arrow" id="qPrev" onclick="changeQuarter(-1)">‹</button>
+      <span class="quarter-label" id="qLabel">1 четверть</span>
+      <button class="arrow" id="qNext" onclick="changeQuarter(1)">›</button>
+    </div>
+
+    <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить всё</button>
   </div>
 
   <div class="table-wrap">
@@ -743,6 +808,7 @@
     <span><span class="dot" style="background:#43a047;">5</span>4-5 — отлично</span>
     <span><span class="tag-ur">УР</span>урок · вес 1</span>
     <span><span class="tag-kr">К/Р</span>контрольная · вес 2</span>
+    <span style="margin-left:auto;color:#888;">💡 У каждой четверти свои оценки и даты</span>
   </div>
 </div>
 
@@ -779,7 +845,7 @@
 <div class="tab-content" id="tab-quarters">
   <div class="controls">
     <div style="font-size:14px;color:#555;">
-      💡 Нажми на ячейку, чтобы выставить четвертную оценку. Итоговая считается автоматически как среднее четырёх четвертей.
+      💡 Нажми на ячейку 1-4 четверти. <b>Годовая</b> считается с акцентом на 3-4 четверти. Синхронизировано с вкладкой «Оценки».
     </div>
   </div>
   <div class="table-wrap">
@@ -787,10 +853,10 @@
       <thead>
         <tr>
           <th class="subject-col">Предмет</th>
-          <th>1 четверть</th>
-          <th>2 четверть</th>
-          <th>3 четверть</th>
-          <th>4 четверть</th>
+          <th>1 четверть<span class="quarter-weights">вес 1</span></th>
+          <th>2 четверть<span class="quarter-weights">вес 1</span></th>
+          <th>3 четверть<span class="quarter-weights">вес 2</span></th>
+          <th>4 четверть<span class="quarter-weights">вес 2</span></th>
           <th>Годовая</th>
         </tr>
       </thead>
@@ -799,11 +865,11 @@
   </div>
 
   <div class="legend">
-    <span>📘 1-я четверть — сентябрь-октябрь</span>
-    <span>❄️ 2-я — ноябрь-декабрь</span>
-    <span>🌸 3-я — январь-март</span>
-    <span>☀️ 4-я — апрель-май</span>
-    <span style="color:#e65100;font-weight:bold;">🎓 Годовая = среднее четырёх четвертей</span>
+    <span>📘 1-я — сентябрь-октябрь (вес 1)</span>
+    <span>❄️ 2-я — ноябрь-декабрь (вес 1)</span>
+    <span>🌸 3-я — январь-март (вес <b>2</b>)</span>
+    <span>☀️ 4-я — апрель-май (вес <b>2</b>)</span>
+    <span style="color:#e65100;font-weight:bold;">🎓 Годовая с акцентом на 3-4 четверти</span>
   </div>
 </div>
 
@@ -845,7 +911,7 @@
   </div>
 </div>
 
-<!-- ===== Модалка ЧЕТВЕРТНОЙ ОЦЕНКИ ===== -->
+<!-- ===== Модалка ЧЕТВЕРТНОЙ ===== -->
 <div class="modal-bg" id="qModalBg">
   <div class="modal">
     <h3 id="qTitle">Четвертная оценка</h3>
@@ -881,9 +947,9 @@
 // ==================== ВЕСА ====================
 const WEIGHT_UR = 1;
 const WEIGHT_KR = 2;
+const QUARTER_WEIGHTS = { 1: 1, 2: 1, 3: 2, 4: 2 };
 
-// ==================== ПРАЗДНИКИ (день-месяц) ====================
-// Каждый год повторяются
+// ==================== ПРАЗДНИКИ ====================
 const HOLIDAYS = [
   { day: 23, month: 2,  name: "День защитника Отечества" },
   { day: 8,  month: 3,  name: "Международный женский день" },
@@ -894,34 +960,49 @@ const HOLIDAYS = [
 ];
 
 // ==================== КАНИКУЛЫ ====================
-// Каникулы задаём как диапазоны дат для учебного года 2026/2027
 const VACATIONS = [
-  { from: new Date(2026, 9, 27),  to: new Date(2026, 10, 5),  name: "Осенние каникулы" },      // 27.10 – 05.11.2026
-  { from: new Date(2026, 11, 30), to: new Date(2027, 0, 11),  name: "Зимние каникулы" },       // 30.12.2026 – 11.01.2027
-  { from: new Date(2027, 0, 1),   to: new Date(2027, 0, 8),   name: "Новогодние каникулы" },   // 01.01 – 08.01.2027
-  { from: new Date(2027, 2, 24),  to: new Date(2027, 2, 31),  name: "Весенние каникулы" },     // 24.03 – 31.03.2027
-  { from: new Date(2027, 4, 26),  to: new Date(2027, 7, 31),  name: "Летние каникулы" }       // 26.05 – 31.08.2027
+  { from: new Date(2026, 9, 27),  to: new Date(2026, 10, 5),  name: "Осенние каникулы" },
+  { from: new Date(2026, 11, 30), to: new Date(2027, 0, 11),  name: "Зимние каникулы" },
+  { from: new Date(2027, 0, 1),   to: new Date(2027, 0, 8),   name: "Новогодние каникулы" },
+  { from: new Date(2027, 2, 24),  to: new Date(2027, 2, 31),  name: "Весенние каникулы" },
+  { from: new Date(2027, 4, 26),  to: new Date(2027, 7, 31),  name: "Летние каникулы" }
 ];
 
 function getHoliday(date) {
   return HOLIDAYS.find(h => h.day === date.getDate() && h.month === date.getMonth() + 1) || null;
 }
-
 function getVacation(date) {
   const d = new Date(date); d.setHours(0,0,0,0);
   return VACATIONS.find(v => d >= v.from && d <= v.to) || null;
 }
-
-// Тип дня: "school" | "weekend" | "holiday" | "vacation"
 function getDayType(date) {
   const vac = getVacation(date);
   if (vac) return { type: "vacation", label: `🎒 ${vac.name}`, name: vac.name };
   const hol = getHoliday(date);
   if (hol) return { type: "holiday", label: `🎉 ${hol.name}`, name: hol.name };
-  const dow = date.getDay(); // 0=вс, 6=сб
+  const dow = date.getDay();
   if (dow === 0 || dow === 6) return { type: "weekend", label: "Выходной день", name: "Выходной" };
   return { type: "school", label: "", name: "" };
 }
+
+// ==================== АВТООПРЕДЕЛЕНИЕ ЧЕТВЕРТИ ====================
+function getQuarterByDate(date) {
+  const d = new Date(date); d.setHours(0,0,0,0);
+  const q1End = new Date(2026, 9, 26);
+  const q2Start = new Date(2026, 10, 6);
+  const q2End = new Date(2026, 11, 29);
+  const q3Start = new Date(2027, 0, 12);
+  const q3End = new Date(2027, 2, 23);
+  const q4Start = new Date(2027, 3, 1);
+  const q4End = new Date(2027, 4, 25);
+
+  if (d <= q1End) return 1;
+  if (d >= q2Start && d <= q2End) return 2;
+  if (d >= q3Start && d <= q3End) return 3;
+  if (d >= q4Start && d <= q4End) return 4;
+  return 1;
+}
+function getCurrentQuarter() { return getQuarterByDate(new Date()); }
 
 // ==================== ДАННЫЕ ====================
 const SUBJECTS_DEFAULT = [
@@ -932,11 +1013,29 @@ const SUBJECTS_DEFAULT = [
   "Черчение", "Технология"
 ];
 
-const DATES_DEFAULT = [
-  "01.09", "03.09", "05.09", "08.09", "10.09",
-  "12.09", "15.09", "17.09", "19.09", "22.09",
-  "24.09", "26.09", "29.09", "01.10", "03.10"
-];
+// Даты по умолчанию — отдельно для каждой четверти
+const DATES_BY_QUARTER_DEFAULT = {
+  1: [
+    "01.09", "03.09", "05.09", "08.09", "10.09",
+    "12.09", "15.09", "17.09", "19.09", "22.09",
+    "24.09", "26.09", "29.09", "01.10", "03.10"
+  ],
+  2: [
+    "06.11", "10.11", "12.11", "14.11", "17.11",
+    "19.11", "21.11", "24.11", "26.11", "28.11",
+    "01.12", "03.12", "05.12", "08.12", "10.12"
+  ],
+  3: [
+    "12.01", "14.01", "16.01", "19.01", "21.01",
+    "23.01", "26.01", "28.01", "30.01", "02.02",
+    "04.02", "06.02", "09.02", "11.02", "13.02"
+  ],
+  4: [
+    "01.04", "03.04", "06.04", "08.04", "10.04",
+    "13.04", "15.04", "17.04", "20.04", "22.04",
+    "24.04", "27.04", "29.04", "04.05", "06.05"
+  ]
+};
 
 const TIME_SLOTS = [
   "08:30 – 09:10", "09:30 – 10:10", "10:30 – 11:10",
@@ -944,8 +1043,7 @@ const TIME_SLOTS = [
 ];
 
 const WEEK_SCHEDULE = [
-  // ПН
-  [
+  [ // ПН
     { subject: "Разговоры о важном", room: "", teacher: "" },
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
@@ -954,8 +1052,7 @@ const WEEK_SCHEDULE = [
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." }
   ],
-  // ВТ
-  [
+  [ // ВТ
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
@@ -964,8 +1061,7 @@ const WEEK_SCHEDULE = [
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
   ],
-  // СР
-  [
+  [ // СР
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
     { subject: "Труд", room: "22 / 49", teacher: "Знобин А.И. / Бондарев М.Н." },
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
@@ -974,8 +1070,7 @@ const WEEK_SCHEDULE = [
     { subject: "ОБЖ", room: "41", teacher: "Миляков С.В." },
     { subject: "", room: "", teacher: "" }
   ],
-  // ЧТ
-  [
+  [ // ЧТ
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
     { subject: "Физ-ра", room: "", teacher: "Акимова Е.Н." },
     { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
@@ -984,8 +1079,7 @@ const WEEK_SCHEDULE = [
     { subject: "Геометрия", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
   ],
-  // ПТ
-  [
+  [ // ПТ
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
     { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
@@ -994,20 +1088,21 @@ const WEEK_SCHEDULE = [
     { subject: "История", room: "32", teacher: "Якунина К.П." },
     { subject: "История", room: "32", teacher: "Якунина К.П." }
   ],
-  // СБ — пусто (выходной)
-  [],
-  // ВС — пусто (выходной)
-  []
+  [], // СБ
+  []  // ВС
 ];
 
 const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
-const DAY_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const MONTH_NAMES = [
   "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
   "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
 ];
+const MONTH_GEN = [
+  "января", "февраля", "марта", "апреля", "мая", "июня",
+  "июля", "августа", "сентября", "октября", "ноября", "декабря"
+];
 
-const STORAGE_KEY = "diary_html_v5";
+const STORAGE_KEY = "diary_html_v8";
 
 // ==================== СОСТОЯНИЕ ====================
 let state = loadState();
@@ -1015,7 +1110,8 @@ let currentWeekStart = null;
 let calMonth = null;
 let currentHW = { date: null, dayIdx: 0, slotIdx: 0 };
 let gradeModal = { subj: null, date: null, grade: null, type: "ur" };
-let currentQuarter = { subj: null, quarter: null };
+let currentQuarterModal = { subj: null, quarter: null };
+let activeQuarter = null;
 
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -1023,24 +1119,35 @@ function loadState() {
     try {
       const s = JSON.parse(raw);
       if (!s.subjects) s.subjects = [...SUBJECTS_DEFAULT];
-      if (!s.dates) s.dates = [...DATES_DEFAULT];
-      if (!s.grades) s.grades = {};
+      // Новая структура: gradesByQuarter = { 1: { "Алгебра": { "01.09": {...} } }, 2: {...} }
+      if (!s.gradesByQuarter) {
+        // Миграция со старого формата (если был)
+        s.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
+        if (s.grades) {
+          // Старые оценки относились к 1 четверти
+          s.gradesByQuarter[1] = s.grades;
+          delete s.grades;
+        }
+      }
+      // Даты по четвертям
+      if (!s.datesByQuarter) {
+        s.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
+      }
       if (!s.homework) s.homework = {};
       if (!s.hwDone) s.hwDone = {};
-      if (!s.quarters) s.quarters = {}; // { "Алгебра": { 1: 5, 2: 4, 3: 5, 4: 4 } }
+      if (!s.quarters) s.quarters = {};
       return s;
     } catch(e) {}
   }
   return {
     subjects: [...SUBJECTS_DEFAULT],
-    dates: [...DATES_DEFAULT],
-    grades: {},
+    gradesByQuarter: { 1: {}, 2: {}, 3: {}, 4: {} },
+    datesByQuarter: JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT)),
     homework: {},
     hwDone: {},
     quarters: {}
   };
 }
-
 function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
 function parseGrade(v) {
@@ -1051,7 +1158,15 @@ function parseGrade(v) {
 }
 function getWeight(type) { return type === "kr" ? WEIGHT_KR : WEIGHT_UR; }
 
-// ==================== РАБОТА С ДАТАМИ ====================
+// Текущие оценки и даты для активной четверти
+function getCurrentGrades() {
+  return state.gradesByQuarter[activeQuarter] || {};
+}
+function getCurrentDates() {
+  return state.datesByQuarter[activeQuarter] || [];
+}
+
+// ==================== ДАТЫ ====================
 function getMondayOfDate(d) {
   const date = new Date(d);
   const day = date.getDay();
@@ -1064,8 +1179,8 @@ function addDays(d, n) { const date = new Date(d); date.setDate(date.getDate() +
 function formatDate(d) {
   return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`;
 }
-function formatShort(d) {
-  return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}`;
+function formatFull(d) {
+  return `${d.getDate()} ${MONTH_GEN[d.getMonth()]}`;
 }
 function isoKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
@@ -1077,18 +1192,23 @@ const FIRST_MONDAY = new Date(2026, 8, 21);
 
 // ==================== РЕНДЕР ОЦЕНОК ====================
 function render() {
-  const dates = state.dates;
+  const dates = getCurrentDates();
+  const grades = getCurrentGrades();
   const headerRow = document.getElementById("headerRow");
   const tbody = document.getElementById("tbody");
 
   let html = '<th class="subject-col">Предмет</th>';
   dates.forEach(d => { html += `<th>${d}</th>`; });
   html += '<th class="avg-col">Средний балл</th>';
+  html += `<th class="quarter-col">
+    <span class="q-name">Четвертная</span>
+    <span class="q-sub">${activeQuarter} четверть</span>
+  </th>`;
   headerRow.innerHTML = html;
 
   tbody.innerHTML = "";
   state.subjects.forEach(subj => {
-    const subjGrades = state.grades[subj] || {};
+    const subjGrades = grades[subj] || {};
     const tr = document.createElement("tr");
 
     const tdName = document.createElement("td");
@@ -1110,6 +1230,7 @@ function render() {
       tr.appendChild(td);
     });
 
+    // Средний балл (только этой четверти)
     const tdAvg = document.createElement("td");
     tdAvg.className = "avg-col";
     const weighted = calcWeightedAvg(subjGrades);
@@ -1124,11 +1245,38 @@ function render() {
     }
     tr.appendChild(tdAvg);
 
+    // Четвертная
+    const tdQ = document.createElement("td");
+    tdQ.className = "quarter-cell-main";
+    const qv = (state.quarters[subj] || {})[activeQuarter];
+    if (qv) {
+      tdQ.textContent = qv;
+      tdQ.style.color = qv < 2.5 ? "#e53935" : qv < 3.5 ? "#fb8c00" : "#2e7d32";
+    } else {
+      tdQ.textContent = "—";
+      tdQ.style.color = "#cfd8dc";
+    }
+    tdQ.title = "Клик — выставить четвертную";
+    tdQ.onclick = () => openQuarterModal(subj, activeQuarter);
+    tr.appendChild(tdQ);
+
     tbody.appendChild(tr);
   });
 
   updateAvg();
   updateToday();
+  updateQuarterLabel();
+}
+
+function updateQuarterLabel() {
+  document.getElementById("qLabel").textContent = `${activeQuarter} четверть`;
+  document.getElementById("qPrev").disabled = activeQuarter <= 1;
+  document.getElementById("qNext").disabled = activeQuarter >= 4;
+}
+
+function changeQuarter(delta) {
+  activeQuarter = Math.max(1, Math.min(4, activeQuarter + delta));
+  render();
 }
 
 function calcWeightedAvg(subjGrades) {
@@ -1150,9 +1298,10 @@ function calcSimpleAvg(subjGrades) {
 }
 
 function updateAvg() {
+  const grades = getCurrentGrades();
   let sumWV = 0, sumW = 0, count = 0;
   const allSimple = [];
-  Object.values(state.grades).forEach(sg => {
+  Object.values(grades).forEach(sg => {
     Object.values(sg).forEach(v => {
       const p = parseGrade(v); if (!p) return;
       const w = getWeight(p.type);
@@ -1165,7 +1314,7 @@ function updateAvg() {
   if (count === 0) {
     elW.textContent = "—"; elW.className = "";
     elS.textContent = "—"; elS.className = "";
-    cnt.textContent = ""; return;
+    cnt.textContent = `(${activeQuarter} четверть)`; return;
   }
   const wAvg = sumWV / sumW;
   const sAvg = allSimple.reduce((a,b)=>a+b,0) / allSimple.length;
@@ -1173,7 +1322,7 @@ function updateAvg() {
   elW.className = wAvg < 2.5 ? "avg-red" : wAvg < 3.5 ? "avg-orange" : "avg-green";
   elS.textContent = sAvg.toFixed(2);
   elS.className = sAvg < 2.5 ? "avg-red" : sAvg < 3.5 ? "avg-orange" : "avg-green";
-  cnt.textContent = `(${count} оценок)`;
+  cnt.textContent = `(${count} оценок в ${activeQuarter} четверти)`;
 }
 
 function updateToday() {
@@ -1183,15 +1332,14 @@ function updateToday() {
 
 // ==================== МОДАЛКА ОЦЕНКИ ====================
 function openGradeModal(subj, date) {
-  const existing = parseGrade((state.grades[subj] || {})[date]);
+  const grades = getCurrentGrades();
+  const existing = parseGrade((grades[subj] || {})[date]);
   gradeModal.subj = subj;
   gradeModal.date = date;
   gradeModal.grade = existing ? existing.grade : null;
   gradeModal.type = existing ? existing.type : "ur";
-
   document.getElementById("modalTitle").textContent = subj;
-  document.getElementById("modalSub").textContent = "Дата: " + date;
-
+  document.getElementById("modalSub").textContent = `Дата: ${date} • ${activeQuarter} четверть`;
   const wrap = document.getElementById("modalBtns");
   wrap.innerHTML = "";
   [1,2,3,4,5].forEach(n => {
@@ -1209,7 +1357,6 @@ function openGradeModal(subj, date) {
   updateTypeButtons();
   document.getElementById("modalBg").classList.add("active");
 }
-
 function updateTypeButtons() {
   document.querySelectorAll(".type-btn").forEach(b => {
     b.classList.toggle("selected", b.dataset.type === gradeModal.type);
@@ -1221,79 +1368,28 @@ function closeModal() { document.getElementById("modalBg").classList.remove("act
 function saveGrade() {
   if (!gradeModal.grade) { alert("Выберите оценку!"); return; }
   const { subj, date, grade, type } = gradeModal;
-  if (!state.grades[subj]) state.grades[subj] = {};
-  state.grades[subj][date] = { grade, type };
+  const grades = state.gradesByQuarter[activeQuarter];
+  if (!grades[subj]) grades[subj] = {};
+  grades[subj][date] = { grade, type };
   saveState(); closeModal(); render();
 }
-
 function clearGrade() {
   const { subj, date } = gradeModal;
-  if (state.grades[subj]) {
-    delete state.grades[subj][date];
-    if (!Object.keys(state.grades[subj]).length) delete state.grades[subj];
+  const grades = state.gradesByQuarter[activeQuarter];
+  if (grades[subj]) {
+    delete grades[subj][date];
+    if (!Object.keys(grades[subj]).length) delete grades[subj];
   }
   saveState(); closeModal(); render();
 }
-
 document.getElementById("modalBg").addEventListener("click", e => {
   if (e.target.id === "modalBg") closeModal();
 });
 
-// ==================== ПРЕДМЕТЫ И ДАТЫ ====================
-function addSubject() {
-  const name = prompt("Название предмета:");
-  if (!name) return;
-  const t = name.trim();
-  if (!t) return;
-  if (state.subjects.includes(t)) { alert("Такой предмет уже есть!"); return; }
-  state.subjects.push(t);
-  saveState(); render(); renderQuarters();
-}
-
-function removeSubject() {
-  if (!state.subjects.length) return;
-  const list = state.subjects.map((s,i) => `${i+1}. ${s}`).join("\n");
-  const ans = prompt("НОМЕР предмета для удаления:\n\n" + list);
-  if (!ans) return;
-  const idx = parseInt(ans) - 1;
-  if (isNaN(idx) || idx < 0 || idx >= state.subjects.length) return;
-  const subj = state.subjects[idx];
-  if (!confirm(`Удалить «${subj}» и все оценки?`)) return;
-  state.subjects.splice(idx, 1);
-  delete state.grades[subj];
-  delete state.quarters[subj];
-  saveState(); render(); renderQuarters();
-}
-
-function addDate() {
-  const d = prompt("Введите дату (например 05.10):");
-  if (!d) return;
-  const t = d.trim();
-  if (state.dates.includes(t)) { alert("Такая дата уже есть!"); return; }
-  state.dates.push(t);
-  saveState(); render();
-}
-
-function removeDate() {
-  if (!state.dates.length) return;
-  const list = state.dates.map((d,i) => `${i+1}. ${d}`).join("\n");
-  const ans = prompt("НОМЕР даты для удаления:\n\n" + list);
-  if (!ans) return;
-  const idx = parseInt(ans) - 1;
-  if (isNaN(idx) || idx < 0 || idx >= state.dates.length) return;
-  const d = state.dates[idx];
-  if (!confirm(`Удалить дату ${d}?`)) return;
-  state.dates.splice(idx, 1);
-  Object.keys(state.grades).forEach(subj => {
-    delete state.grades[subj][d];
-    if (!Object.keys(state.grades[subj]).length) delete state.grades[subj];
-  });
-  saveState(); render();
-}
-
+// ==================== ОЧИСТКА ====================
 function clearAll() {
-  if (!confirm("Удалить ВСЕ оценки по всем предметам?")) return;
-  state.grades = {};
+  if (!confirm(`Удалить ВСЕ оценки за ${activeQuarter} четверть?`)) return;
+  state.gradesByQuarter[activeQuarter] = {};
   saveState(); render();
 }
 
@@ -1318,11 +1414,22 @@ function uploadDiary(ev) {
   reader.onload = e => {
     try {
       const loaded = JSON.parse(e.target.result);
-      if (!loaded.subjects || !loaded.dates || !loaded.grades) {
+      if (!loaded.subjects) {
         alert("Неверный файл!"); return;
       }
       if (!confirm("Загрузить дневник? Текущие данные будут заменены.")) return;
+      // Поддержка нового формата
       state = loaded;
+      if (!state.gradesByQuarter) {
+        state.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
+        if (state.grades) {
+          state.gradesByQuarter[1] = state.grades;
+          delete state.grades;
+        }
+      }
+      if (!state.datesByQuarter) {
+        state.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
+      }
       if (!state.homework) state.homework = {};
       if (!state.hwDone) state.hwDone = {};
       if (!state.quarters) state.quarters = {};
@@ -1343,16 +1450,16 @@ function switchTab(name, btn) {
   btn.classList.add("active");
   if (name === "quarters") renderQuarters();
   if (name === "schedule") renderSchedule();
+  if (name === "grades") render();
 }
 
 // ==================== РАСПИСАНИЕ ====================
 function getWeekDates(monday) {
-  return [0,1,2,3,4,5,6].map(i => addDays(monday, i)); // 7 дней: Пн-Вс
+  return [0,1,2,3,4,5,6].map(i => addDays(monday, i));
 }
 
 function renderSchedule() {
   if (!currentWeekStart) currentWeekStart = getMondayOfDate(new Date());
-
   const dates = getWeekDates(currentWeekStart);
   const header = document.getElementById("scheduleHeader");
   const body = document.getElementById("scheduleBody");
@@ -1361,11 +1468,10 @@ function renderSchedule() {
   let headHTML = '<th class="num-col">№</th><th class="time-col">Время</th>';
   dates.forEach((d, i) => {
     const isToday = isSameDay(d, today);
-    const dayType = getDayType(d);
     const isWeekend = i >= 5;
     headHTML += `<th ${isWeekend ? 'style="background:#eceff1;color:#607d8b;"' : ''}>
       <span class="day-name">${DAY_NAMES[i]}</span>
-      <span class="day-date ${isToday ? 'today' : ''}">${formatShort(d)}</span>
+      <span class="day-date ${isToday ? 'today' : ''}">${formatFull(d)}</span>
     </th>`;
   });
   header.innerHTML = headHTML;
@@ -1377,13 +1483,8 @@ function renderSchedule() {
   weekDates.textContent = `${formatDate(dates[0])} — ${formatDate(dates[6])}`;
 
   body.innerHTML = "";
-
-  // Определяем общий статус недели (каникулы?)
-  const weekVacation = getVacation(dates[0]) || getVacation(dates[2]) || getVacation(dates[4]);
-
   TIME_SLOTS.forEach((time, slotIdx) => {
     const tr = document.createElement("tr");
-
     const tdNum = document.createElement("td");
     tdNum.className = "num-col";
     tdNum.textContent = slotIdx + 1;
@@ -1398,12 +1499,8 @@ function renderSchedule() {
       const td = document.createElement("td");
       const dayInfo = getDayType(d);
 
-      // Если выходной / праздник / каникулы — показываем надпись
       if (dayInfo.type !== "school") {
         if (slotIdx === 0) {
-          // На первом уроке показываем большую надпись и rowspan
-          // Но проще: показываем текст в каждой ячейке, но это некрасиво.
-          // Сделаем: в первом уроке показываем надпись, а остальные пустые.
           td.className = `day-off ${dayInfo.type}`;
           td.innerHTML = `<div style="font-size:13px;">${dayInfo.label}</div>`;
         } else {
@@ -1414,7 +1511,6 @@ function renderSchedule() {
         return;
       }
 
-      // Обычный учебный день
       const lesson = (WEEK_SCHEDULE[dayIdx] && WEEK_SCHEDULE[dayIdx][slotIdx]) || { subject: "", room: "", teacher: "" };
       if (lesson.subject) {
         const dateKey = isoKey(d);
@@ -1426,23 +1522,19 @@ function renderSchedule() {
         let cellHTML = `<div class="subj">${lesson.subject}</div>`;
         if (lesson.room) cellHTML += `<div class="room">каб. ${lesson.room}</div>`;
         if (lesson.teacher) cellHTML += `<div class="teacher">${lesson.teacher}</div>`;
-
         cellHTML += `<div class="hw-row">`;
         cellHTML += `<button class="hw-btn ${hasHW ? 'has-hw' : ''}" onclick="openHW('${dateKey}', ${dayIdx}, ${slotIdx})">📝 Д/З</button>`;
         cellHTML += `</div>`;
-
         if (hasHW) {
           const short = hwText.length > 80 ? hwText.slice(0, 80) + "…" : hwText;
           cellHTML += `<div class="hw-text ${isDone ? 'done' : ''}" onclick="toggleHW('${hwKey}')" title="Клик — зачеркнуть">${escapeHtml(short)}</div>`;
         }
-
         td.innerHTML = cellHTML;
       } else {
         td.innerHTML = '<span style="color:#bbb;">—</span>';
       }
       tr.appendChild(td);
     });
-
     body.appendChild(tr);
   });
 }
@@ -1450,7 +1542,6 @@ function renderSchedule() {
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
 function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderSchedule(); }
 function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7); renderSchedule(); }
 function goToToday() {
@@ -1470,7 +1561,7 @@ function openHW(dateKey, dayIdx, slotIdx) {
   const d = new Date(dateKey);
   document.getElementById("hwTitle").textContent = lesson.subject;
   document.getElementById("hwSub").textContent =
-    `${DAY_NAMES[dayIdx]}, ${formatDate(d)} • Урок ${slotIdx + 1} (${TIME_SLOTS[slotIdx]})`;
+    `${DAY_NAMES[dayIdx]}, ${formatFull(d)} • Урок ${slotIdx + 1} (${TIME_SLOTS[slotIdx]})`;
   document.getElementById("hwText").value = existing;
   document.getElementById("hwModalBg").classList.add("active");
   setTimeout(() => document.getElementById("hwText").focus(), 100);
@@ -1499,6 +1590,25 @@ document.getElementById("hwModalBg").addEventListener("click", e => {
 });
 
 // ==================== ЧЕТВЕРТНЫЕ ====================
+function calcFinalGrade(q) {
+  const values = [q[1], q[2], q[3], q[4]];
+  if (values.some(x => !x)) return null;
+
+  let sum = 0, wsum = 0;
+  for (const qn of [1,2,3,4]) {
+    const w = QUARTER_WEIGHTS[qn];
+    sum += q[qn] * w;
+    wsum += w;
+  }
+  const weighted = sum / wsum;
+  const avg34 = (q[3] + q[4]) / 2;
+  const avg12 = (q[1] + q[2]) / 2;
+
+  if (avg34 < avg12 && avg34 < 3.5) return Math.floor(weighted);
+  if (avg34 > avg12 && avg34 >= 3.5) return Math.ceil(weighted);
+  return Math.round(weighted);
+}
+
 function renderQuarters() {
   const tbody = document.getElementById("quartersBody");
   tbody.innerHTML = "";
@@ -1527,39 +1637,38 @@ function renderQuarters() {
       tr.appendChild(td);
     });
 
-    // Годовая = среднее четырёх четвертей
     const tdFinal = document.createElement("td");
     tdFinal.className = "quarter-cell final";
-    const vals = [q[1], q[2], q[3], q[4]].filter(x => x);
-    if (vals.length === 4) {
-      const avg = vals.reduce((a,b)=>a+b,0) / 4;
-      const rounded = Math.round(avg);
+    const final = calcFinalGrade(q);
+    if (final !== null) {
       tdFinal.classList.add("has-grade");
-      tdFinal.textContent = rounded;
-      tdFinal.style.color = rounded < 2.5 ? "#e53935" : rounded < 3.5 ? "#fb8c00" : "#2e7d32";
-      tdFinal.title = `Среднее: ${avg.toFixed(2)} → годовая: ${rounded}`;
-    } else if (vals.length > 0) {
-      tdFinal.textContent = "?";
-      tdFinal.style.color = "#ff9800";
-      tdFinal.title = `Не все четверти заполнены (${vals.length}/4)`;
+      tdFinal.textContent = final;
+      tdFinal.style.color = final < 2.5 ? "#e53935" : final < 3.5 ? "#fb8c00" : "#2e7d32";
+      const weighted = [1,2,3,4].reduce((s, qn) => s + q[qn] * QUARTER_WEIGHTS[qn], 0) /
+                      [1,2,3,4].reduce((s, qn) => s + QUARTER_WEIGHTS[qn], 0);
+      tdFinal.title = `Четверти: ${q[1]}, ${q[2]}, ${q[3]}, ${q[4]}\nВзвешенный: ${weighted.toFixed(2)}\nГодовая: ${final}`;
     } else {
-      tdFinal.textContent = "—";
-      tdFinal.style.color = "#cfd8dc";
+      const filled = [1,2,3,4].filter(qn => q[qn]);
+      if (filled.length > 0) {
+        tdFinal.textContent = "?";
+        tdFinal.style.color = "#ff9800";
+        tdFinal.title = `Заполнено ${filled.length} из 4 четвертей`;
+      } else {
+        tdFinal.textContent = "—";
+        tdFinal.style.color = "#cfd8dc";
+      }
     }
     tr.appendChild(tdFinal);
-
     tbody.appendChild(tr);
   });
 }
 
 function openQuarterModal(subj, quarter) {
-  currentQuarter = { subj, quarter };
+  currentQuarterModal = { subj, quarter };
   const q = state.quarters[subj] || {};
   const existing = q[quarter];
-
   document.getElementById("qTitle").textContent = `${subj} — ${quarter} четверть`;
   document.getElementById("qSub").textContent = "Выберите оценку от 1 до 5";
-
   const wrap = document.getElementById("qBtns");
   wrap.innerHTML = "";
   [1,2,3,4,5].forEach(n => {
@@ -1570,23 +1679,24 @@ function openQuarterModal(subj, quarter) {
     btn.onclick = () => {
       if (!state.quarters[subj]) state.quarters[subj] = {};
       state.quarters[subj][quarter] = n;
-      saveState();
-      closeQModal();
+      saveState(); closeQModal();
       renderQuarters();
+      render(); // синхронизация колонки в таблице оценок
     };
     wrap.appendChild(btn);
   });
-
   document.getElementById("qModalBg").classList.add("active");
 }
 function closeQModal() { document.getElementById("qModalBg").classList.remove("active"); }
 function clearQuarter() {
-  const { subj, quarter } = currentQuarter;
+  const { subj, quarter } = currentQuarterModal;
   if (state.quarters[subj]) {
     delete state.quarters[subj][quarter];
     if (!Object.keys(state.quarters[subj]).length) delete state.quarters[subj];
   }
-  saveState(); closeQModal(); renderQuarters();
+  saveState(); closeQModal();
+  renderQuarters();
+  render();
 }
 document.getElementById("qModalBg").addEventListener("click", e => {
   if (e.target.id === "qModalBg") closeQModal();
@@ -1640,7 +1750,6 @@ function renderCal() {
 
     let label = isToday ? `${day}★` : day;
     let title = dayInfo.name || "";
-
     html += `<div class="${cls}" title="${title}" onclick="pickWeek(${calMonth.getFullYear()}, ${calMonth.getMonth()}, ${day})">${label}</div>`;
   }
 
@@ -1663,6 +1772,7 @@ document.getElementById("calModalBg").addEventListener("click", e => {
 });
 
 // ==================== СТАРТ ====================
+activeQuarter = getCurrentQuarter();
 currentWeekStart = new Date(FIRST_MONDAY);
 render();
 renderSchedule();
