@@ -2,7 +2,6 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Дневник.ру — Бакулин Д.А.</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1266,7 +1265,6 @@ const QUARTER_WEIGHTS = { 1: 1, 2: 1, 3: 2, 4: 2 };
 const TARGET_AVG = 3.50;
 
 // ==================== РАСПИСАНИЕ ЗВОНКОВ ====================
-// Пары начало/конец (минуты от 00:00) для каждого урока
 const BELLS = [
   { start: "08:30", end: "09:10" },
   { start: "09:30", end: "10:10" },
@@ -1279,10 +1277,6 @@ const BELLS = [
 function timeToMin(t) {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;
-}
-function minToTime(min) {
-  const h = Math.floor(min / 60), m = min % 60;
-  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
 }
 
 // ==================== ПРЕДМЕТЫ БЕЗ Д/З ====================
@@ -1537,20 +1531,17 @@ function updateNowBar() {
   bar.classList.remove("active", "lesson", "break", "soon");
 
   const now = new Date();
-  const day = now.getDay(); // 0=вс
-  // Выходные — не показываем
+  const day = now.getDay();
   if (day === 0 || day === 6) return;
 
-  // Праздник или каникулы — не показываем
   const dayInfo = getDayType(now);
   if (dayInfo.type !== "school") return;
 
-  // dayIdx: 0=пн ... 4=пт (в WEEK_SCHEDULE)
   const dayIdx = day - 1;
   const lessons = WEEK_SCHEDULE[dayIdx] || [];
   const nowMin = now.getHours() * 60 + now.getMinutes();
 
-  // 1) Ищем идущий урок
+  // 1) Идущий урок
   for (let i = 0; i < BELLS.length; i++) {
     const bell = BELLS[i];
     const s = timeToMin(bell.start);
@@ -1559,7 +1550,6 @@ function updateNowBar() {
     if (!lesson || !lesson.subject) continue;
 
     if (nowMin >= s && nowMin < e) {
-      // Идёт урок
       const room = lesson.room ? `, каб. ${lesson.room}` : "";
       textEl.textContent = `Сейчас идёт: ${lesson.subject}${room}, до ${bell.end}`;
       const leftMin = e - nowMin;
@@ -1570,11 +1560,10 @@ function updateNowBar() {
     }
   }
 
-  // 2) Ищем перемену: между концом урока i и началом урока i+1
+  // 2) Перемена
   for (let i = 0; i < BELLS.length - 1; i++) {
     const curEnd = timeToMin(BELLS[i].end);
     const nextStart = timeToMin(BELLS[i + 1].start);
-    const curLesson = lessons[i];
     const nextLesson = lessons[i + 1];
     if (!nextLesson || !nextLesson.subject) continue;
 
@@ -1589,12 +1578,12 @@ function updateNowBar() {
     }
   }
 
-  // 3) Утро: до первого урока ≤ 1ч30мин → "Скоро начнётся ..."
+  // 3) Утро: до первого урока ≤ 1ч30мин
   const firstBellStart = timeToMin(BELLS[0].start);
   const firstLesson = lessons[0];
   if (firstLesson && firstLesson.subject && nowMin < firstBellStart) {
     const diff = firstBellStart - nowMin;
-    if (diff <= 90) { // 1ч30мин
+    if (diff <= 90) {
       const room = firstLesson.room ? `, каб. ${firstLesson.room}` : "";
       textEl.textContent = `Скоро начнётся: ${firstLesson.subject}${room} в ${BELLS[0].start}`;
       timeEl.textContent = `через ${diff} мин`;
@@ -1603,8 +1592,6 @@ function updateNowBar() {
       return;
     }
   }
-
-  // Иначе ничего не показываем
 }
 
 // ==================== "ЗАДАНО НА ЗАВТРА" ====================
@@ -1617,23 +1604,20 @@ function renderTomorrowHW() {
   list.innerHTML = "";
 
   const today = new Date();
-  const dow = today.getDay(); // 0=вс, 1=пн, ..., 4=чт, 5=пт, 6=сб
+  const dow = today.getDay();
 
-  // Показываем только с воскресенья (0) по четверг (4)
+  // Показываем с воскресенья (0) по четверг (4)
   if (dow === 5 || dow === 6) return;
 
-  // Определяем "завтра"
   const tomorrow = addDays(today, 1);
-  const tomDow = tomorrow.getDay(); // 0=вс, 1=пн, ..., 6=сб
+  const tomDow = tomorrow.getDay();
 
-  // Если завтра выходной — не показываем
   if (tomDow === 0 || tomDow === 6) return;
 
-  // Проверяем, не каникулы/праздник ли завтра
   const tomInfo = getDayType(tomorrow);
   if (tomInfo.type !== "school") return;
 
-  const tomDayIdx = tomDow - 1; // 0=пн, ..., 4=пт
+  const tomDayIdx = tomDow - 1;
   const lessons = WEEK_SCHEDULE[tomDayIdx] || [];
   const dateKey = isoKey(tomorrow);
 
@@ -1666,7 +1650,7 @@ function renderTomorrowHW() {
     if (it.photos.length > 0) {
       html += `<div class="th-photo">`;
       it.photos.forEach((p, idx) => {
-        html += `<img src="${p}" onclick="viewTomorrowPhoto('${it.lesson.subject}', ${it.slotIdx}, ${idx})" alt="фото задания">`;
+        html += `<img src="${p}" onclick="viewTomorrowPhoto(${it.slotIdx}, ${idx})" alt="фото задания">`;
       });
       html += `</div>`;
     }
@@ -1677,10 +1661,7 @@ function renderTomorrowHW() {
   wrap.classList.add("active");
 }
 
-// Храним временно ссылки на фото для завтра, чтобы открыть во вьюере
-let tomorrowPhotosCache = [];
-function viewTomorrowPhoto(subj, slotIdx, idx) {
-  // Найдём заново по текущей дате
+function viewTomorrowPhoto(slotIdx, idx) {
   const tomorrow = addDays(new Date(), 1);
   const tomDow = tomorrow.getDay();
   const tomDayIdx = tomDow - 1;
@@ -2091,7 +2072,6 @@ function renderSchedule() {
     body.appendChild(tr);
   });
 
-  // Обновляем плашку "Задано на завтра" при каждом рендере расписания
   renderTomorrowHW();
 }
 
@@ -2430,7 +2410,6 @@ renderSchedule();
 updateNowBar();
 renderTomorrowHW();
 
-// Обновляем плашку "Сейчас идёт" каждые 30 секунд
 nowTimer = setInterval(() => {
   updateNowBar();
   renderTomorrowHW();
