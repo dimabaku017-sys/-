@@ -949,6 +949,15 @@ const WEIGHT_UR = 1;
 const WEIGHT_KR = 2;
 const QUARTER_WEIGHTS = { 1: 1, 2: 1, 3: 2, 4: 2 };
 
+// ==================== ПРЕДМЕТЫ БЕЗ Д/З ====================
+const NO_HOMEWORK_SUBJECTS = [
+  "Разговоры о важном",
+  "Физкультура"
+];
+function hasHomework(subject) {
+  return !NO_HOMEWORK_SUBJECTS.includes(subject);
+}
+
 // ==================== ПРАЗДНИКИ ====================
 const HOLIDAYS = [
   { day: 23, month: 2,  name: "День защитника Отечества" },
@@ -1043,8 +1052,9 @@ const TIME_SLOTS = [
 ];
 
 const WEEK_SCHEDULE = [
-  [ // ПН
-    { subject: "Разговоры о важном", room: "", teacher: "" },
+  // ============ ПОНЕДЕЛЬНИК ============
+  [
+    { subject: "Разговоры о важном", room: "16", teacher: "Уварова Ю.В." },
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." },
     { subject: "Обществознание", room: "32", teacher: "Якунина К.П." },
@@ -1052,44 +1062,48 @@ const WEEK_SCHEDULE = [
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." }
   ],
-  [ // ВТ
+  // ============ ВТОРНИК ============
+  [
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
-    { subject: "Информатика", room: "19", teacher: "Бородина В.М." },
+    { subject: "Информатика", room: "19", teacher: "Уварова Ю.В." },
     { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
-    { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
+    { subject: "Физкультура", room: "", teacher: "Акимова Е.Н." }
   ],
-  [ // СР
+  // ============ СРЕДА ============
+  [
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
-    { subject: "Труд", room: "22 / 49", teacher: "Знобин А.И. / Бондарев М.Н." },
+    { subject: "Технология", room: "22", teacher: "Злобин А.И." },
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
     { subject: "Черчение", room: "42", teacher: "Мещерякова О.А." },
     { subject: "ОБЖ", room: "41", teacher: "Миляков С.В." },
     { subject: "", room: "", teacher: "" }
   ],
-  [ // ЧТ
+  // ============ ЧЕТВЕРГ ============
+  [
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
-    { subject: "Физ-ра", room: "", teacher: "Акимова Е.Н." },
+    { subject: "Физкультура", room: "", teacher: "Акимова Е.Н." },
     { subject: "Химия", room: "18", teacher: "Сбоева И.А." },
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
     { subject: "Геометрия", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Геометрия", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
   ],
-  [ // ПТ
+  // ============ ПЯТНИЦА ============
+  [
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
     { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
     { subject: "Английский язык", room: "28", teacher: "Подлесных Е.В." },
-    { subject: "Вер.ст.", room: "42", teacher: "Мещерякова О.А." },
+    { subject: "Вероятность и статистика", room: "42", teacher: "Мещерякова О.А." },
     { subject: "История", room: "32", teacher: "Якунина К.П." },
     { subject: "История", room: "32", teacher: "Якунина К.П." }
   ],
-  [], // СБ
-  []  // ВС
+  [], // СУББОТА — выходной
+  []  // ВОСКРЕСЕНЬЕ — выходной
 ];
 
 const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
@@ -1522,13 +1536,18 @@ function renderSchedule() {
         let cellHTML = `<div class="subj">${lesson.subject}</div>`;
         if (lesson.room) cellHTML += `<div class="room">каб. ${lesson.room}</div>`;
         if (lesson.teacher) cellHTML += `<div class="teacher">${lesson.teacher}</div>`;
-        cellHTML += `<div class="hw-row">`;
-        cellHTML += `<button class="hw-btn ${hasHW ? 'has-hw' : ''}" onclick="openHW('${dateKey}', ${dayIdx}, ${slotIdx})">📝 Д/З</button>`;
-        cellHTML += `</div>`;
-        if (hasHW) {
-          const short = hwText.length > 80 ? hwText.slice(0, 80) + "…" : hwText;
-          cellHTML += `<div class="hw-text ${isDone ? 'done' : ''}" onclick="toggleHW('${hwKey}')" title="Клик — зачеркнуть">${escapeHtml(short)}</div>`;
+
+        // Кнопка Д/З — только если предмет НЕ в списке исключений
+        if (hasHomework(lesson.subject)) {
+          cellHTML += `<div class="hw-row">`;
+          cellHTML += `<button class="hw-btn ${hasHW ? 'has-hw' : ''}" onclick="openHW('${dateKey}', ${dayIdx}, ${slotIdx})">📝 Д/З</button>`;
+          cellHTML += `</div>`;
+          if (hasHW) {
+            const short = hwText.length > 80 ? hwText.slice(0, 80) + "…" : hwText;
+            cellHTML += `<div class="hw-text ${isDone ? 'done' : ''}" onclick="toggleHW('${hwKey}')" title="Клик — зачеркнуть">${escapeHtml(short)}</div>`;
+          }
         }
+
         td.innerHTML = cellHTML;
       } else {
         td.innerHTML = '<span style="color:#bbb;">—</span>';
@@ -1555,6 +1574,9 @@ function goToToday() {
 function openHW(dateKey, dayIdx, slotIdx) {
   const lesson = WEEK_SCHEDULE[dayIdx][slotIdx];
   if (!lesson || !lesson.subject) return;
+  // Дополнительная защита: не открываем модалку для предметов без Д/З
+  if (!hasHomework(lesson.subject)) return;
+
   currentHW = { date: dateKey, dayIdx, slotIdx };
   const hwKey = `${dateKey}|${dayIdx}|${slotIdx}`;
   const existing = state.homework[hwKey] || "";
