@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Дневник.ру — Бакулин Д.А.</title>
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="shortcut icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1976d2">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -2508,6 +2513,12 @@ nowTimer = setInterval(() => {
   updateNowBar();
   renderTomorrowHW();
 }, 30000);
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 </script>
 
 </body>
