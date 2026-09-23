@@ -1,0 +1,25 @@
+{
+  "name": "Дневник.ру — Бакулин Д.А.",
+  "short_name": "Дневник",
+  "description": "Личный дневник ученика 9Б класса",
+  "start_url": "/-/",
+  "scope": "/-/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1976d2",
+  "theme_color": "#1976d2",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
