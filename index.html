@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Дневник.ру — Бакулин Д.А.</title>
+<title>Дневник.ру</title>
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="shortcut icon" href="icon.png">
@@ -22,6 +22,8 @@
     --green: #2e7d32;
     --red: #e53935;
     --purple: #8e24aa;
+    --pink: #ec407a;
+    --pink-soft: #fce4ec;
     --shadow-sm: 0 1px 3px rgba(20,40,80,.08);
     --shadow-md: 0 4px 14px rgba(20,40,80,.10);
     --shadow-lg: 0 12px 32px rgba(20,40,80,.16);
@@ -37,6 +39,7 @@
     --border: #2a3446;
     --primary-soft: #1a2c48;
     --orange-soft: #2e2010;
+    --pink-soft: #2a1520;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -49,7 +52,6 @@
     transition: background .3s var(--ease), color .3s var(--ease);
   }
 
-  /* ============ Шапка ============ */
   .header {
     background: linear-gradient(135deg, #1976d2, #0d47a1);
     background-size: 200% 200%;
@@ -65,6 +67,10 @@
     box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
+  }
+  .header.eva {
+    background: linear-gradient(135deg, #ec407a, #ad1457);
+    background-size: 200% 200%;
   }
   .header::after {
     content: "";
@@ -84,16 +90,9 @@
     50%      { transform: translate(5%, -4%) scale(1.08); opacity: 1; }
   }
   .header h1 { font-size: 24px; position: relative; z-index: 1; }
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    position: relative;
-    z-index: 1;
-  }
+  .header-right { display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }
   .theme-btn {
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     border: 2px solid rgba(255,255,255,.7);
     background: rgba(255,255,255,.15);
@@ -107,8 +106,7 @@
   }
   .theme-btn:hover { background: rgba(255,255,255,.3); transform: rotate(20deg); }
   .avatar-btn {
-    width: 56px;
-    height: 56px;
+    width: 56px; height: 56px;
     border-radius: 50%;
     border: 3px solid rgba(255,255,255,.85);
     background: #f5b800;
@@ -120,15 +118,10 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 0 0 0 rgba(255,255,255,.5);
   }
-  .avatar-btn:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 0 5px rgba(255,255,255,.25);
-  }
+  .avatar-btn:hover { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(255,255,255,.25); }
   .avatar-btn svg { width: 100%; height: 100%; display: block; }
 
-  /* ============ Средний балл ============ */
   .score-bar {
     background: var(--primary-soft);
     padding: 14px 28px;
@@ -142,6 +135,7 @@
     transition: background .3s var(--ease);
   }
   [data-theme="dark"] .score-bar { border-bottom-color: var(--border); }
+  .score-bar.hidden { display: none; }
   .score-bar .label { color: var(--text-soft); font-size: 13px; }
   .score-bar b { font-size: 22px; transition: color .3s var(--ease); }
   .avg-red    { color: #e53935; text-shadow: 0 0 10px rgba(229,57,53,.3); }
@@ -151,7 +145,6 @@
   [data-theme="dark"] .avg-orange { color: #ffb74d; }
   [data-theme="dark"] .avg-green  { color: #66bb6a; }
 
-  /* ============ "Сейчас идёт" ============ */
   .now-bar {
     display: none;
     padding: 12px 28px;
@@ -172,6 +165,9 @@
   .now-bar.lesson { background: linear-gradient(135deg, #43a047, #2e7d32); color: #fff; }
   .now-bar.break  { background: linear-gradient(135deg, #fb8c00, #ef6c00); color: #fff; }
   .now-bar.soon   { background: linear-gradient(135deg, #1976d2, #0d47a1); color: #fff; }
+  .now-bar.eva.lesson { background: linear-gradient(135deg, #ec407a, #ad1457); }
+  .now-bar.eva.break  { background: linear-gradient(135deg, #ff7043, #d84315); }
+  .now-bar.eva.soon   { background: linear-gradient(135deg, #ab47bc, #6a1b9a); }
   .now-bar::after {
     content: "";
     position: absolute;
@@ -201,7 +197,6 @@
     z-index: 1;
   }
 
-  /* ============ "Задано на завтра" ============ */
   .tomorrow-hw {
     display: none;
     background: var(--orange-soft);
@@ -238,10 +233,7 @@
     animation: fadeIn .3s var(--ease) backwards;
   }
   [data-theme="dark"] .tomorrow-hw .th-item { border-color: var(--border); }
-  .tomorrow-hw .th-item:hover {
-    transform: translateX(4px);
-    box-shadow: var(--shadow-sm);
-  }
+  .tomorrow-hw .th-item:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
   .tomorrow-hw .th-item .th-subj { font-weight: 700; color: #1a237e; font-size: 14px; }
   [data-theme="dark"] .tomorrow-hw .th-item .th-subj { color: #82b1ff; }
   .tomorrow-hw .th-item .th-meta { font-size: 12px; color: var(--text-soft); }
@@ -264,7 +256,6 @@
   .tomorrow-hw .th-item .th-photo img:hover { transform: scale(1.08); }
   .tomorrow-hw .th-empty { color: var(--text-mute); font-style: italic; font-size: 13px; }
 
-  /* ============ Риск ============ */
   .risk-bar {
     background: var(--orange-soft);
     border-bottom: 1px solid #ffe082;
@@ -310,7 +301,6 @@
   .risk-bar .risk-item .need { color: var(--green); font-weight: 700; }
   [data-theme="dark"] .risk-bar .risk-item .need { color: #66bb6a; }
 
-  /* ============ Табы ============ */
   .tabs {
     display: flex;
     background: var(--panel);
@@ -337,6 +327,9 @@
   [data-theme="dark"] .tab-btn.active { background: var(--primary-soft); color: #82b1ff; }
   .tab-btn:hover { background: #f5f9ff; }
   [data-theme="dark"] .tab-btn:hover { background: var(--primary-soft); }
+  .tab-btn.hidden { display: none; }
+  .tab-btn.eva.active { color: #ec407a; border-bottom-color: #ec407a; background: var(--pink-soft); }
+  .tab-btn.eva:hover { background: var(--pink-soft); }
 
   .tab-content { display: none; }
   .tab-content.active { display: block; animation: tabIn .3s var(--ease); }
@@ -345,7 +338,6 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ============ Кнопки ============ */
   .controls {
     background: var(--panel);
     padding: 10px 28px;
@@ -387,7 +379,6 @@
   .btn.green  { background: #43a047; }
   .btn.green:hover { background: #2e7d32; }
 
-  /* Переключатель четверти */
   .quarter-switcher {
     display: inline-flex;
     align-items: center;
@@ -400,10 +391,8 @@
     transition: .25s var(--ease);
   }
   [data-theme="dark"] .quarter-switcher { background: var(--orange-soft); border-color: var(--border); }
-  .quarter-switcher:hover { box-shadow: var(--shadow-sm); }
   .quarter-switcher .arrow {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     border: none;
     background: transparent;
     color: var(--orange);
@@ -426,7 +415,6 @@
     padding: 0 8px;
   }
 
-  /* Инфо о неделе */
   .week-info {
     background: var(--orange-soft);
     padding: 12px 28px;
@@ -439,17 +427,23 @@
     font-size: 14px;
   }
   [data-theme="dark"] .week-info { border-bottom-color: var(--border); }
+  .week-info.eva { background: var(--pink-soft); border-bottom-color: #f8bbd0; }
+  [data-theme="dark"] .week-info.eva { border-bottom-color: var(--border); }
   .week-info .week-label { font-weight: 700; color: var(--orange); font-size: 15px; }
+  .week-info.eva .week-label { color: #ec407a; }
   .week-info .week-dates { color: #6d4c41; font-size: 13px; }
   [data-theme="dark"] .week-info .week-dates { color: var(--text-soft); }
+  .week-info.eva .week-dates { color: #ad1457; }
+  [data-theme="dark"] .week-info.eva .week-dates { color: var(--text-soft); }
   .week-nav { display: flex; gap: 6px; flex-wrap: wrap; }
   .week-nav .btn { padding: 6px 14px; font-size: 13px; }
   .btn.today { background: #ff9800; }
   .btn.today:hover { background: #f57c00; }
+  .btn.today.eva { background: #ec407a; }
+  .btn.today.eva:hover { background: #ad1457; }
   .btn.remind { background: #8e24aa; }
   .btn.remind:hover { background: #6a1b9a; }
 
-  /* ============ Таблица оценок ============ */
   .table-wrap {
     background: var(--panel);
     border-radius: 0 0 12px 12px;
@@ -612,7 +606,6 @@
   [data-theme="dark"] .type-label.ur { color: var(--text-soft); background: #2a3446; }
   .type-label.kr { color: #fff; background: #c62828; box-shadow: 0 1px 3px rgba(198,40,40,.4); }
 
-  /* ============ Четвертные ============ */
   table.quarters-table {
     border-collapse: separate;
     border-spacing: 0;
@@ -668,16 +661,11 @@
   [data-theme="dark"] table.quarters-table td.quarter-cell:hover { background: var(--primary-soft); }
   table.quarters-table td.quarter-cell.final { background: #fff3e0; font-size: 22px; cursor: default; }
   [data-theme="dark"] table.quarters-table td.quarter-cell.final { background: var(--orange-soft); }
-  table.quarters-table td.quarter-cell.final:hover { background: #fff3e0; transform: none; }
-  [data-theme="dark"] table.quarters-table td.quarter-cell.final:hover { background: var(--orange-soft); }
   table.quarters-table td.quarter-cell.final.has-grade { background: #e8f5e9; }
   [data-theme="dark"] table.quarters-table td.quarter-cell.final.has-grade { background: #1a2e1c; }
-  table.quarters-table td.quarter-cell.final.has-grade:hover { background: #e8f5e9; }
-  [data-theme="dark"] table.quarters-table td.quarter-cell.final.has-grade:hover { background: #1a2e1c; }
   .quarter-weights { font-size: 10px; color: #78909c; font-weight: normal; display: block; margin-top: 2px; }
   [data-theme="dark"] .quarter-weights { color: var(--text-mute); }
 
-  /* ============ Расписание ============ */
   .schedule-wrap {
     background: var(--panel);
     border-radius: 0 0 12px 12px;
@@ -714,6 +702,14 @@
     background: var(--primary-soft);
     color: #82b1ff;
   }
+  .schedule-table.eva th {
+    background: linear-gradient(180deg, #fce4ec, #f5f7fa);
+    color: #ad1457;
+  }
+  [data-theme="dark"] .schedule-table.eva th {
+    background: var(--pink-soft);
+    color: #f48fb1;
+  }
   .schedule-table th .day-name { display: block; font-size: 14px; }
   .schedule-table th .day-date {
     display: block;
@@ -723,6 +719,8 @@
     margin-top: 3px;
   }
   [data-theme="dark"] .schedule-table th .day-date { color: #82b1ff; }
+  .schedule-table.eva th .day-date { color: #ad1457; }
+  [data-theme="dark"] .schedule-table.eva th .day-date { color: #f48fb1; }
   .schedule-table th .day-date.today {
     background: linear-gradient(135deg, #ff9800, #f57c00);
     color: white;
@@ -731,6 +729,10 @@
     display: inline-block;
     box-shadow: 0 2px 8px rgba(255,152,0,.5);
     animation: todayPulse 2s infinite;
+  }
+  .schedule-table.eva th .day-date.today {
+    background: linear-gradient(135deg, #ec407a, #ad1457);
+    box-shadow: 0 2px 8px rgba(236,64,122,.5);
   }
   @keyframes todayPulse {
     0%, 100% { box-shadow: 0 2px 8px rgba(255,152,0,.5); }
@@ -773,8 +775,11 @@
     vertical-align: top;
   }
   .schedule-table td:hover { background: var(--primary-soft); }
+  .schedule-table.eva td:hover { background: var(--pink-soft); }
   .schedule-table td .subj { font-weight: 600; color: #1a237e; font-size: 13px; }
   [data-theme="dark"] .schedule-table td .subj { color: #82b1ff; }
+  .schedule-table.eva td .subj { color: #ad1457; }
+  [data-theme="dark"] .schedule-table.eva td .subj { color: #f48fb1; }
   .schedule-table td .room { color: var(--text-soft); font-size: 11px; }
   .schedule-table td .teacher { color: var(--text-soft); font-size: 11px; font-style: italic; }
 
@@ -874,15 +879,14 @@
   [data-theme="dark"] .hw-photo-thumb { border-color: var(--border); }
   .hw-photo-thumb:hover { transform: scale(1.15) rotate(-3deg); box-shadow: var(--shadow-md); }
 
-  /* ============ Модалка — по центру (как в эталоне) ============ */
   .modal-bg {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,.4);
     backdrop-filter: blur(4px);
     display: none;
-    align-items: center;      /* центр по вертикали */
-    justify-content: center;  /* центр по горизонтали */
+    align-items: center;
+    justify-content: center;
     z-index: 100;
     padding: 12px;
   }
@@ -932,15 +936,8 @@
     cursor: pointer; transition: .2s var(--ease);
     box-shadow: 0 2px 8px rgba(0,0,0,.15);
   }
-  .modal .grade-btn:hover {
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 8px 20px rgba(0,0,0,.25);
-  }
-  .modal .grade-btn.selected {
-    outline: 3px solid var(--primary);
-    outline-offset: 2px;
-    transform: scale(1.08);
-  }
+  .modal .grade-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+  .modal .grade-btn.selected { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.08); }
 
   .modal .type-btns { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
   .modal .type-btn {
@@ -957,40 +954,14 @@
   }
   [data-theme="dark"] .modal .type-btn { border-color: var(--border); color: var(--text-soft); }
   .modal .type-btn:hover { border-color: #90a4ae; transform: translateY(-2px); }
-  .modal .type-btn.selected[data-type="ur"] {
-    border-color: #607d8b;
-    background: #eceff1;
-    color: #37474f;
-  }
-  [data-theme="dark"] .modal .type-btn.selected[data-type="ur"] {
-    background: var(--primary-soft);
-    color: var(--text);
-  }
-  .modal .type-btn.selected[data-type="kr"] {
-    border-color: #c62828;
-    background: #ffebee;
-    color: #c62828;
-  }
-  [data-theme="dark"] .modal .type-btn.selected[data-type="kr"] {
-    background: #2e1414;
-    color: #ff6b6b;
-  }
-  .modal .type-btn .hint {
-    display: block;
-    font-size: 11px;
-    font-weight: normal;
-    color: #999;
-    margin-top: 2px;
-  }
+  .modal .type-btn.selected[data-type="ur"] { border-color: #607d8b; background: #eceff1; color: #37474f; }
+  [data-theme="dark"] .modal .type-btn.selected[data-type="ur"] { background: var(--primary-soft); color: var(--text); }
+  .modal .type-btn.selected[data-type="kr"] { border-color: #c62828; background: #ffebee; color: #c62828; }
+  [data-theme="dark"] .modal .type-btn.selected[data-type="kr"] { background: #2e1414; color: #ff6b6b; }
+  .modal .type-btn .hint { display: block; font-size: 11px; font-weight: normal; color: #999; margin-top: 2px; }
   .modal .type-btn.selected .hint { color: inherit; opacity: 0.7; }
 
-  .modal .actions {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
+  .modal .actions { display: flex; justify-content: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
   .modal .clear-btn {
     background: #eceff1; color: #455a64;
     padding: 10px 18px; border: none; border-radius: 6px;
@@ -1037,36 +1008,22 @@
   [data-theme="dark"] .modal textarea { border-color: var(--border); }
   .modal textarea:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
-  /* ============ Фото в модалке Д/З ============ */
   .hw-photo-area { margin-bottom: 14px; text-align: left; }
   .hw-photo-area .photo-label-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    gap: 8px;
-    flex-wrap: wrap;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px; gap: 8px; flex-wrap: wrap;
   }
   .hw-photo-area .photo-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #455a64;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 12px; font-weight: 600; color: #455a64;
+    text-transform: uppercase; letter-spacing: 0.5px;
   }
   [data-theme="dark"] .hw-photo-area .photo-label { color: var(--text-soft); }
   .gallery-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    display: inline-flex; align-items: center; gap: 6px;
     padding: 10px 18px;
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
+    color: #fff; border: none; border-radius: 8px;
+    cursor: pointer; font-size: 14px; font-weight: 600;
     transition: .2s var(--ease);
     box-shadow: 0 2px 6px rgba(25,118,210,.3);
   }
@@ -1074,17 +1031,14 @@
   .gallery-btn:active { transform: scale(.97); }
 
   #hwPhotoInput { display: none; }
-
   .hw-photo-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .hw-photo-preview .thumb-wrap {
     position: relative;
-    width: 82px;
-    height: 82px;
+    width: 82px; height: 82px;
     animation: badgeIn .3s var(--ease);
   }
   .hw-photo-preview img {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: cover;
     border-radius: 6px;
     border: 2px solid #90caf9;
@@ -1107,7 +1061,6 @@
     transition: .2s var(--ease);
   }
   .hw-photo-preview .remove-photo:hover { transform: scale(1.15) rotate(90deg); }
-
   .hw-photo-empty { font-size: 12px; color: var(--text-mute); font-style: italic; margin-top: 6px; }
 
   .photo-viewer {
@@ -1137,11 +1090,9 @@
     opacity: .8;
   }
 
-  /* ============ Профиль ============ */
   .profile-modal { min-width: 420px; max-width: 90vw; text-align: center; padding: 30px 26px 24px; }
   .profile-modal .profile-avatar-big {
-    width: 150px;
-    height: 150px;
+    width: 150px; height: 150px;
     border-radius: 50%;
     margin: 0 auto 16px;
     overflow: hidden;
@@ -1149,6 +1100,11 @@
     box-shadow: 0 4px 16px rgba(245,184,0,.35);
     background: #f5b800;
     animation: avatarFloat 4s ease-in-out infinite;
+  }
+  .profile-modal.eva .profile-avatar-big {
+    border-color: #f8bbd0;
+    box-shadow: 0 4px 16px rgba(236,64,122,.35);
+    background: #fce4ec;
   }
   @keyframes avatarFloat {
     0%, 100% { transform: translateY(0); }
@@ -1161,7 +1117,9 @@
     color: var(--primary-dark);
     margin-bottom: 16px;
   }
+  .profile-modal.eva .profile-name { color: #ad1457; }
   [data-theme="dark"] .profile-modal .profile-name { color: #82b1ff; }
+  [data-theme="dark"] .profile-modal.eva .profile-name { color: #f48fb1; }
   .profile-modal .profile-row {
     display: flex;
     justify-content: space-between;
@@ -1177,12 +1135,18 @@
     border-left: 3px solid transparent;
   }
   [data-theme="dark"] .profile-modal .profile-row { background: #202a3d; }
+  .profile-modal.eva .profile-row { background: #fce4ec; }
+  [data-theme="dark"] .profile-modal.eva .profile-row { background: #2a1520; }
   .profile-modal .profile-row:hover {
     background: var(--primary-soft);
     border-left-color: var(--primary);
     transform: translateX(4px);
   }
-  [data-theme="dark"] .profile-modal .profile-row:hover { background: var(--primary-soft); }
+  .profile-modal.eva .profile-row:hover {
+    background: #f8bbd0;
+    border-left-color: #ec407a;
+  }
+  [data-theme="dark"] .profile-modal.eva .profile-row:hover { background: #3a1a28; }
   .profile-modal .profile-row .pr-label { color: #607d8b; font-weight: 600; font-size: 13px; }
   [data-theme="dark"] .profile-modal .profile-row .pr-label { color: var(--text-soft); }
   .profile-modal .profile-row .pr-value { color: var(--text); font-weight: 500; text-align: right; word-break: break-word; }
@@ -1201,7 +1165,123 @@
   }
   .profile-modal .profile-close:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(25,118,210,.45); }
 
-  /* Календарь */
+  .profile-modal .family-btn {
+    margin-top: 14px;
+    margin-right: 6px;
+    background: linear-gradient(135deg, #7b1fa2, #4a148c);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s var(--ease);
+    box-shadow: 0 2px 8px rgba(123,31,162,.35);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .profile-modal .family-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(123,31,162,.5);
+  }
+
+  .family-modal { min-width: 440px; max-width: 90vw; text-align: center; padding: 28px 24px 22px; }
+  .family-modal h3 { font-size: 18px; color: #7b1fa2; margin-bottom: 6px; }
+  [data-theme="dark"] .family-modal h3 { color: #ba68c8; }
+  .family-modal .sub { font-size: 13px; color: #777; margin-bottom: 18px; }
+  [data-theme="dark"] .family-modal .sub { color: var(--text-soft); }
+
+  .family-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .family-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #f5f9ff;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: .25s var(--ease);
+    text-align: left;
+  }
+  [data-theme="dark"] .family-item { background: #202a3d; }
+  .family-item:hover {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+  [data-theme="dark"] .family-item:hover { background: var(--primary-soft); }
+  .family-item.active {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+  }
+  [data-theme="dark"] .family-item.active { background: var(--primary-soft); }
+  .family-item.eva.active {
+    border-color: #ec407a;
+    background: var(--pink-soft);
+  }
+  [data-theme="dark"] .family-item.eva.active { background: var(--pink-soft); }
+  .family-item.eva:hover {
+    background: var(--pink-soft);
+    border-color: #ec407a;
+  }
+  [data-theme="dark"] .family-item.eva:hover { background: var(--pink-soft); }
+
+  .family-item .fam-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 3px solid #ffe082;
+    background: #f5b800;
+  }
+  .family-item.eva .fam-avatar {
+    border-color: #f8bbd0;
+    background: #fce4ec;
+  }
+  .family-item .fam-avatar svg { width: 100%; height: 100%; display: block; }
+  .family-item .fam-info { flex: 1; }
+  .family-item .fam-name {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+  .family-item .fam-role {
+    font-size: 12px;
+    color: var(--text-soft);
+  }
+  .family-item .fam-check {
+    font-size: 20px;
+    color: var(--primary);
+    opacity: 0;
+    transition: .2s var(--ease);
+  }
+  .family-item.eva .fam-check { color: #ec407a; }
+  .family-item.active .fam-check { opacity: 1; }
+
+  .family-close {
+    background: linear-gradient(135deg, #7b1fa2, #4a148c);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s var(--ease);
+    box-shadow: 0 2px 8px rgba(123,31,162,.35);
+  }
+  .family-close:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(123,31,162,.5); }
+
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 14px; }
   .cal-cell {
     padding: 10px 6px;
@@ -1254,13 +1334,11 @@
 
   #fileInput { display: none; }
 
-  /* ============ Напоминания ============ */
   .btn.remind { background: linear-gradient(135deg, #8e24aa, #6a1b9a); position: relative; }
   .btn.remind:hover { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
   .btn.remind .badge {
     display: inline-block;
-    min-width: 18px;
-    height: 18px;
+    min-width: 18px; height: 18px;
     line-height: 18px;
     padding: 0 5px;
     margin-left: 6px;
@@ -1281,7 +1359,6 @@
 
   .remind-modal { min-width: 460px; text-align: left; }
   .remind-modal h3, .remind-modal .sub { text-align: center; }
-
   .remind-form {
     background: var(--primary-soft);
     border: 1px solid #bbdefb;
@@ -1318,7 +1395,6 @@
   .remind-row input:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
   .remind-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
-
   .remind-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
   .remind-item {
     display: flex;
@@ -1354,8 +1430,7 @@
     background: #ffebee;
     border: none;
     color: #c62828;
-    width: 26px;
-    height: 26px;
+    width: 26px; height: 26px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
@@ -1372,7 +1447,6 @@
     padding: 16px;
   }
 
-  /* ============ Тосты ============ */
   .toast-wrap {
     position: fixed;
     top: 16px;
@@ -1421,7 +1495,6 @@
   @keyframes toastIn  { from { transform: translateX(120%) scale(.9); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
   @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 
-  /* Скроллбар */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #c5cdd6; border-radius: 999px; }
@@ -1431,13 +1504,12 @@
 </head>
 <body>
 
-<!-- ===== Шапка ===== -->
-<div class="header">
-  <h1>📘 Дневник.ру</h1>
+<div class="header" id="mainHeader">
+  <h1 id="headerTitle">📘 Дневник.ру</h1>
   <div class="header-right">
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
     <button class="avatar-btn" onclick="openProfile()" title="Профиль">
-      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <svg id="avatarSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
         <rect width="200" height="200" fill="#f5b800"/>
         <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
         <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
@@ -1455,8 +1527,7 @@
   </div>
 </div>
 
-<!-- ===== Средний балл ===== -->
-<div class="score-bar">
+<div class="score-bar" id="scoreBar">
   <div>
     <span class="label">Общий средневзвешенный:</span>
     <b id="avgWeighted">—</b>
@@ -1469,42 +1540,35 @@
   <div id="today" style="font-size:13px;color:var(--text-soft);"></div>
 </div>
 
-<!-- ===== Плашка "Сейчас идёт" ===== -->
 <div class="now-bar" id="nowBar">
   <span class="icon" id="nowIcon">🔔</span>
   <span class="now-text" id="nowText"></span>
   <span class="now-time" id="nowTime"></span>
 </div>
 
-<!-- ===== Блок риска ===== -->
 <div class="risk-bar" id="riskBar">
   <span class="risk-title">⚠ Внимание:</span>
   <div id="riskItems" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
 </div>
 
-<!-- ===== Табы ===== -->
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('grades', this)">📝 Оценки</button>
-  <button class="tab-btn" onclick="switchTab('schedule', this)">📅 Расписание</button>
-  <button class="tab-btn" onclick="switchTab('quarters', this)">🎓 Четвертные</button>
+  <button class="tab-btn active" id="tabBtnGrades" onclick="switchTab('grades', this)">📝 Оценки</button>
+  <button class="tab-btn" id="tabBtnSchedule" onclick="switchTab('schedule', this)">📅 Расписание</button>
+  <button class="tab-btn" id="tabBtnQuarters" onclick="switchTab('quarters', this)">🎓 Четвертные</button>
 </div>
 
-<!-- ==================== ВКЛАДКА ОЦЕНКИ ==================== -->
 <div class="tab-content active" id="tab-grades">
   <div class="controls">
     <button class="btn green" onclick="downloadDiary()">💾 Скачать дневник</button>
     <button class="btn gray" onclick="document.getElementById('fileInput').click()">📂 Загрузить дневник</button>
     <input type="file" id="fileInput" accept=".json" onchange="uploadDiary(event)">
-
     <div class="quarter-switcher" title="Переключение между четвертями">
       <button class="arrow" id="qPrev" onclick="changeQuarter(-1)">‹</button>
       <span class="quarter-label" id="qLabel">1 четверть</span>
       <button class="arrow" id="qNext" onclick="changeQuarter(1)">›</button>
     </div>
-
     <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить всё</button>
   </div>
-
   <div class="table-wrap">
     <table class="grades-table" id="diaryTable">
       <thead><tr id="headerRow"></tr></thead>
@@ -1513,35 +1577,31 @@
   </div>
 </div>
 
-<!-- ==================== ВКЛАДКА РАСПИСАНИЕ ==================== -->
 <div class="tab-content" id="tab-schedule">
-  <div class="week-info">
+  <div class="week-info" id="weekInfo">
     <div>
       <div class="week-label" id="weekLabel">Неделя</div>
       <div class="week-dates" id="weekDates">—</div>
     </div>
     <div class="week-nav">
       <button class="btn" onclick="prevWeek()">← Предыдущая</button>
-      <button class="btn today" onclick="goToToday()">📅 Календарь</button>
+      <button class="btn today" id="btnToday" onclick="goToToday()">📅 Календарь</button>
       <button class="btn" onclick="nextWeek()">Следующая →</button>
       <button class="btn remind" onclick="openReminders()">🔔 Напоминания <span id="remindBadge" class="badge empty">0</span></button>
     </div>
   </div>
-
   <div class="schedule-wrap">
     <table class="schedule-table" id="scheduleTable">
       <thead><tr id="scheduleHeader"></tr></thead>
       <tbody id="scheduleBody"></tbody>
     </table>
   </div>
-
   <div class="tomorrow-hw" id="tomorrowHW">
     <div class="th-title" id="thTitle">📝 Задано на завтра</div>
     <div class="th-list" id="thList"></div>
   </div>
 </div>
 
-<!-- ==================== ВКЛАДКА ЧЕТВЕРТНЫЕ ==================== -->
 <div class="tab-content" id="tab-quarters">
   <div class="table-wrap">
     <table class="quarters-table" id="quartersTable">
@@ -1560,7 +1620,6 @@
   </div>
 </div>
 
-<!-- ===== Модалка ОЦЕНКИ ===== -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
@@ -1584,13 +1643,11 @@
   </div>
 </div>
 
-<!-- ===== Модалка Д/З ===== -->
 <div class="modal-bg" id="hwModalBg">
   <div class="modal">
     <h3 id="hwTitle">Домашнее задание</h3>
     <div class="sub" id="hwSub"></div>
     <textarea id="hwText" placeholder="Введите домашнее задание..."></textarea>
-
     <div class="hw-photo-area">
       <div class="photo-label-row">
         <span class="photo-label">📷 Фото задания</span>
@@ -1602,7 +1659,6 @@
       <div class="hw-photo-preview" id="hwPhotoPreview"></div>
       <div class="hw-photo-empty" id="hwPhotoEmpty">Фото пока нет</div>
     </div>
-
     <div class="actions">
       <button class="save-btn" onclick="saveHW()">💾 Сохранить</button>
       <button class="clear-btn" onclick="clearHW()">🗑 Убрать</button>
@@ -1611,13 +1667,11 @@
   </div>
 </div>
 
-<!-- ===== Просмотр фото ===== -->
 <div class="photo-viewer" id="photoViewer" onclick="closePhotoViewer()">
   <span class="close-hint">Клик — закрыть</span>
   <img id="photoViewerImg" src="" alt="Фото задания">
 </div>
 
-<!-- ===== Модалка ЧЕТВЕРТНОЙ ===== -->
 <div class="modal-bg" id="qModalBg">
   <div class="modal">
     <h3 id="qTitle">Четвертная оценка</h3>
@@ -1630,10 +1684,9 @@
   </div>
 </div>
 
-<!-- ===== Модалка ПРОФИЛЯ ===== -->
 <div class="modal-bg" id="profileModalBg">
-  <div class="modal profile-modal">
-    <div class="profile-avatar-big">
+  <div class="modal profile-modal" id="profileModal">
+    <div class="profile-avatar-big" id="profileAvatarBig">
       <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
         <rect width="200" height="200" fill="#f5b800"/>
         <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
@@ -1649,11 +1702,10 @@
         <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
       </svg>
     </div>
-    <div class="profile-name">Бакулин Дмитрий Алексеевич</div>
-
+    <div class="profile-name" id="profileName">Бакулин Дмитрий Алексеевич</div>
     <div class="profile-row">
       <span class="pr-label">Класс</span>
-      <span class="pr-value">9Б</span>
+      <span class="pr-value" id="profileClass">9Б</span>
     </div>
     <div class="profile-row">
       <span class="pr-label">Школа</span>
@@ -1661,22 +1713,82 @@
     </div>
     <div class="profile-row">
       <span class="pr-label">Дата рождения</span>
-      <span class="pr-value">22.07.2011</span>
+      <span class="pr-value" id="profileBirth">22.07.2011</span>
     </div>
     <div class="profile-row">
       <span class="pr-label">Телефон</span>
-      <span class="pr-value">+7 950 759-68-56</span>
+      <span class="pr-value" id="profilePhone">+7 950 759-68-56</span>
     </div>
-    <div class="profile-row">
+    <div class="profile-row" id="profileEmailRow">
       <span class="pr-label">Электронная почта</span>
       <span class="pr-value">dimabaku017@gmail.com</span>
     </div>
-
+    <button class="family-btn" onclick="openFamily()">👨‍👩‍👧 Семья</button>
     <button class="profile-close" onclick="closeProfile()">Закрыть</button>
   </div>
 </div>
 
-<!-- ===== Модалка КАЛЕНДАРЯ ===== -->
+<div class="modal-bg" id="familyModalBg">
+  <div class="modal family-modal">
+    <h3>👨‍👩‍👧 Семья</h3>
+    <div class="sub">Выберите профиль</div>
+    <div class="family-list">
+      <div class="family-item" id="famDima" onclick="switchUser('dima')">
+        <div class="fam-avatar">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="200" fill="#f5b800"/>
+            <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
+            <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
+            <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+            <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+            <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
+            <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
+            <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+            <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+            <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
+            <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
+            <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
+          </svg>
+        </div>
+        <div class="fam-info">
+          <div class="fam-name">Дима</div>
+          <div class="fam-role">Основной аккаунт · 9Б</div>
+        </div>
+        <span class="fam-check">✓</span>
+      </div>
+      <div class="family-item eva" id="famEva" onclick="switchUser('eva')">
+        <div class="fam-avatar">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="200" fill="#fce4ec"/>
+            <path d="M55 95 Q50 160 65 185 L135 185 Q150 160 145 95 Z" fill="#8d6e63"/>
+            <path d="M45 200 Q50 155 75 142 L100 152 L125 142 Q150 155 155 200 Z" fill="#f48fb1"/>
+            <path d="M75 142 Q100 162 125 142 Q115 152 100 155 Q85 152 75 142 Z" fill="#ec407a"/>
+            <path d="M87 122 L87 140 Q100 148 113 140 L113 122 Z" fill="#f5d4b8"/>
+            <path d="M72 78 Q72 48 100 46 Q128 48 128 78 L128 105 Q128 132 100 135 Q72 132 72 105 Z" fill="#fadcc0"/>
+            <ellipse cx="66" cy="95" rx="8" ry="12" fill="#fadcc0"/>
+            <ellipse cx="134" cy="95" rx="8" ry="12" fill="#fadcc0"/>
+            <path d="M64 82 Q60 40 100 32 Q140 40 136 82 Q132 62 120 55 Q124 42 108 42 Q112 54 96 48 Q102 36 82 44 Q88 56 72 58 Q66 66 64 82 Z" fill="#8d6e63"/>
+            <path d="M70 62 Q85 48 110 52 Q105 65 82 68 Z" fill="#8d6e63"/>
+            <ellipse cx="86" cy="92" rx="4" ry="5" fill="#3e2723"/>
+            <ellipse cx="114" cy="92" rx="4" ry="5" fill="#3e2723"/>
+            <circle cx="87" cy="90" r="1.5" fill="#fff"/>
+            <circle cx="115" cy="90" r="1.5" fill="#fff"/>
+            <ellipse cx="80" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
+            <ellipse cx="120" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
+            <path d="M92 115 Q100 122 108 115" stroke="#c2185b" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="fam-info">
+          <div class="fam-name">Ева</div>
+          <div class="fam-role">1Б · Сестра</div>
+        </div>
+        <span class="fam-check">✓</span>
+      </div>
+    </div>
+    <button class="family-close" onclick="closeFamily()">Закрыть</button>
+  </div>
+</div>
+
 <div class="modal-bg" id="calModalBg">
   <div class="modal" style="min-width: 520px;">
     <h3>📅 Выбор недели</h3>
@@ -1695,12 +1807,10 @@
   </div>
 </div>
 
-<!-- ===== Модалка НАПОМИНАНИЙ ===== -->
 <div class="modal-bg" id="remindModalBg">
   <div class="modal remind-modal">
     <h3>🔔 Напоминания</h3>
     <div class="sub">Уведомление придёт в указанное время и исчезнет</div>
-
     <div class="remind-form">
       <div class="remind-row">
         <label>Дата
@@ -1716,12 +1826,10 @@
         <button class="cancel-btn" onclick="closeReminders()">Закрыть</button>
       </div>
     </div>
-
     <div class="remind-list" id="remindList"></div>
   </div>
 </div>
 
-<!-- ===== Тосты ===== -->
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
@@ -1740,15 +1848,21 @@ const BELLS = [
   { start: "13:20", end: "14:00" },
   { start: "14:10", end: "14:50" }
 ];
+
+// Звонки Евы (1 класс): 1-й 08:30–09:10, 2-й 09:25–10:05, 3-й 10:35–11:35
+const BELLS_EVA = [
+  { start: "08:30", end: "09:10" },
+  { start: "09:25", end: "10:05" },
+  { start: "10:35", end: "11:35" }
+];
+
 function timeToMin(t) {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;
 }
 
 const NO_HOMEWORK_SUBJECTS = ["Разговоры о важном", "Физкультура"];
-function hasHomework(subject) {
-  return !NO_HOMEWORK_SUBJECTS.includes(subject);
-}
+function hasHomework(subject) { return !NO_HOMEWORK_SUBJECTS.includes(subject); }
 
 const HOLIDAYS = [
   { day: 23, month: 2,  name: "День защитника Отечества" },
@@ -1786,17 +1900,10 @@ function getDayType(date) {
 
 function getQuarterByDate(date) {
   const d = new Date(date); d.setHours(0,0,0,0);
-  const q1End = new Date(2026, 9, 26);
-  const q2Start = new Date(2026, 10, 6);
-  const q2End = new Date(2026, 11, 29);
-  const q3Start = new Date(2027, 0, 12);
-  const q3End = new Date(2027, 2, 23);
-  const q4Start = new Date(2027, 3, 1);
-  const q4End = new Date(2027, 4, 25);
-  if (d <= q1End) return 1;
-  if (d >= q2Start && d <= q2End) return 2;
-  if (d >= q3Start && d <= q3End) return 3;
-  if (d >= q4Start && d <= q4End) return 4;
+  if (d <= new Date(2026, 9, 26)) return 1;
+  if (d >= new Date(2026, 10, 6) && d <= new Date(2026, 11, 29)) return 2;
+  if (d >= new Date(2027, 0, 12) && d <= new Date(2027, 2, 23)) return 3;
+  if (d >= new Date(2027, 3, 1) && d <= new Date(2027, 4, 25)) return 4;
   return 1;
 }
 function getCurrentQuarter() { return getQuarterByDate(new Date()); }
@@ -1866,13 +1973,96 @@ const WEEK_SCHEDULE = [
   []
 ];
 
+// Расписание Евы (1Б) — без кабинетов, учитель Любовь Евгеньевна
+const WEEK_SCHEDULE_EVA = [
+  [
+    { subject: "Разговоры о важном", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Физкультура", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Русский язык", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Технология/Изо", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" }
+  ],
+  [
+    { subject: "Литература", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Математика", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Музыка/Русский язык", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" }
+  ],
+  [
+    { subject: "Физкультура", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Математика", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Русский язык", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" }
+  ],
+  [
+    { subject: "Литература", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Русский язык", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Подвижные игры", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" }
+  ],
+  [
+    { subject: "Литература", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Математика", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "Окружающий мир", room: "", teacher: "Любовь Евгеньевна" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" },
+    { subject: "", room: "", teacher: "" }
+  ],
+  [],
+  []
+];
+
 const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const MONTH_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 
-const STORAGE_KEY = "diary_html_v13";
+const STORAGE_KEY = "diary_html_v14";
 
-// ==================== СОСТОЯНИЕ ====================
+const PROFILES = {
+  dima: {
+    name: "Бакулин Дмитрий Алексеевич",
+    class: "9Б",
+    school: "Гимназия №10, Воронеж",
+    birth: "22.07.2011",
+    phone: "+7 950 759-68-56",
+    email: "dimabaku017@gmail.com",
+    showEmail: true,
+    showGrades: true,
+    showQuarters: true,
+    showHW: true,
+    showScoreBar: true,
+    bellType: "default",
+    schedule: WEEK_SCHEDULE
+  },
+  eva: {
+    name: "Бакулина Ева Алексеевна",
+    class: "1Б",
+    school: "Гимназия №10, Воронеж",
+    birth: "19.02.2019",
+    phone: "+7 993 299-46-56",
+    email: "",
+    showEmail: false,
+    showGrades: false,
+    showQuarters: false,
+    showHW: false,
+    showScoreBar: false,
+    bellType: "eva",
+    schedule: WEEK_SCHEDULE_EVA
+  }
+};
+
 let state = loadState();
 let currentWeekStart = null;
 let calMonth = null;
@@ -1881,6 +2071,7 @@ let hwPhotosTemp = [];
 let gradeModal = { subj: null, date: null, grade: null, type: "ur" };
 let currentQuarterModal = { subj: null, quarter: null };
 let activeQuarter = null;
+let currentUser = "dima";
 
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -1899,6 +2090,7 @@ function loadState() {
       if (!s.quarters) s.quarters = {};
       if (!Array.isArray(s.reminders)) s.reminders = [];
       if (!s.theme || s.theme === "auto") s.theme = "light";
+      if (!s.user) s.user = "dima";
       return s;
     } catch(e) {}
   }
@@ -1907,7 +2099,7 @@ function loadState() {
     gradesByQuarter: { 1: {}, 2: {}, 3: {}, 4: {} },
     datesByQuarter: JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT)),
     homework: {}, hwDone: {}, hwPhotos: {}, quarters: {},
-    reminders: [], theme: "light"
+    reminders: [], theme: "light", user: "dima"
   };
 }
 function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -1921,8 +2113,10 @@ function parseGrade(v) {
 function getWeight(type) { return type === "kr" ? WEIGHT_KR : WEIGHT_UR; }
 function getCurrentGrades() { return state.gradesByQuarter[activeQuarter] || {}; }
 function getCurrentDates() { return state.datesByQuarter[activeQuarter] || []; }
+function getProfile() { return PROFILES[currentUser]; }
+function getBells() { return getProfile().bellType === "eva" ? BELLS_EVA : BELLS; }
+function getSchedule() { return getProfile().schedule; }
 
-// ==================== ТЕМА ====================
 function applyTheme() {
   let theme = state.theme;
   if (theme !== "dark" && theme !== "light") theme = "light";
@@ -1936,7 +2130,6 @@ function toggleTheme() {
   applyTheme();
 }
 
-// ==================== ДАТЫ ====================
 function getMondayOfDate(d) {
   const date = new Date(d);
   const day = date.getDay();
@@ -1957,14 +2150,152 @@ function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
-// ==================== ПРОФИЛЬ ====================
-function openProfile() { document.getElementById("profileModalBg").classList.add("active"); }
-function closeProfile() { document.getElementById("profileModalBg").classList.remove("active"); }
+function openProfile() {
+  renderProfileContent();
+  document.getElementById("profileModalBg").classList.add("active");
+}
+function closeProfile() {
+  document.getElementById("profileModalBg").classList.remove("active");
+}
 document.getElementById("profileModalBg").addEventListener("click", e => {
   if (e.target.id === "profileModalBg") closeProfile();
 });
 
-// ==================== "СЕЙЧАС ИДЁТ" ====================
+function renderProfileContent() {
+  const p = getProfile();
+  const modal = document.getElementById("profileModal");
+  modal.classList.toggle("eva", currentUser === "eva");
+  document.getElementById("profileAvatarBig").innerHTML = currentUser === "eva" ? getEvaAvatarSVG() : getDimaAvatarSVG();
+  document.getElementById("profileName").textContent = p.name;
+  document.getElementById("profileClass").textContent = p.class;
+  document.getElementById("profileBirth").textContent = p.birth;
+  document.getElementById("profilePhone").textContent = p.phone;
+  const emailRow = document.getElementById("profileEmailRow");
+  if (p.showEmail) {
+    emailRow.style.display = "flex";
+    emailRow.querySelector(".pr-value").textContent = p.email;
+  } else {
+    emailRow.style.display = "none";
+  }
+}
+
+function getDimaAvatarSVG() {
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="200" fill="#f5b800"/>
+    <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
+    <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
+    <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+    <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+    <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
+    <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
+    <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+    <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+    <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
+    <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
+    <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
+  </svg>`;
+}
+
+function getEvaAvatarSVG() {
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="200" fill="#fce4ec"/>
+    <path d="M55 95 Q50 160 65 185 L135 185 Q150 160 145 95 Z" fill="#8d6e63"/>
+    <path d="M45 200 Q50 155 75 142 L100 152 L125 142 Q150 155 155 200 Z" fill="#f48fb1"/>
+    <path d="M75 142 Q100 162 125 142 Q115 152 100 155 Q85 152 75 142 Z" fill="#ec407a"/>
+    <path d="M87 122 L87 140 Q100 148 113 140 L113 122 Z" fill="#f5d4b8"/>
+    <path d="M72 78 Q72 48 100 46 Q128 48 128 78 L128 105 Q128 132 100 135 Q72 132 72 105 Z" fill="#fadcc0"/>
+    <ellipse cx="66" cy="95" rx="8" ry="12" fill="#fadcc0"/>
+    <ellipse cx="134" cy="95" rx="8" ry="12" fill="#fadcc0"/>
+    <path d="M64 82 Q60 40 100 32 Q140 40 136 82 Q132 62 120 55 Q124 42 108 42 Q112 54 96 48 Q102 36 82 44 Q88 56 72 58 Q66 66 64 82 Z" fill="#8d6e63"/>
+    <path d="M70 62 Q85 48 110 52 Q105 65 82 68 Z" fill="#8d6e63"/>
+    <ellipse cx="86" cy="92" rx="4" ry="5" fill="#3e2723"/>
+    <ellipse cx="114" cy="92" rx="4" ry="5" fill="#3e2723"/>
+    <circle cx="87" cy="90" r="1.5" fill="#fff"/>
+    <circle cx="115" cy="90" r="1.5" fill="#fff"/>
+    <ellipse cx="80" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
+    <ellipse cx="120" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
+    <path d="M92 115 Q100 122 108 115" stroke="#c2185b" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function openFamily() {
+  updateFamilySelection();
+  document.getElementById("familyModalBg").classList.add("active");
+}
+function closeFamily() {
+  document.getElementById("familyModalBg").classList.remove("active");
+}
+document.getElementById("familyModalBg").addEventListener("click", e => {
+  if (e.target.id === "familyModalBg") closeFamily();
+});
+
+function updateFamilySelection() {
+  document.getElementById("famDima").classList.toggle("active", currentUser === "dima");
+  document.getElementById("famEva").classList.toggle("active", currentUser === "eva");
+}
+
+function switchUser(user) {
+  if (user === currentUser) {
+    closeFamily();
+    return;
+  }
+  currentUser = user;
+  state.user = user;
+  saveState();
+  updateFamilySelection();
+  applyUserTheme();
+  refreshUIToUser();
+  closeFamily();
+  closeProfile();
+  if (user === "eva") {
+    const scheduleBtn = document.getElementById("tabBtnSchedule");
+    switchTab("schedule", scheduleBtn);
+  } else {
+    const gradesBtn = document.getElementById("tabBtnGrades");
+    switchTab("grades", gradesBtn);
+  }
+}
+
+function applyUserTheme() {
+  const header = document.getElementById("mainHeader");
+  const weekInfo = document.getElementById("weekInfo");
+  const btnToday = document.getElementById("btnToday");
+  const scheduleTable = document.getElementById("scheduleTable");
+  const tabSchedule = document.getElementById("tabBtnSchedule");
+  const nowBar = document.getElementById("nowBar");
+  if (currentUser === "eva") {
+    header.classList.add("eva");
+    weekInfo.classList.add("eva");
+    btnToday.classList.add("eva");
+    scheduleTable.classList.add("eva");
+    tabSchedule.classList.add("eva");
+    nowBar.classList.add("eva");
+  } else {
+    header.classList.remove("eva");
+    weekInfo.classList.remove("eva");
+    btnToday.classList.remove("eva");
+    scheduleTable.classList.remove("eva");
+    tabSchedule.classList.remove("eva");
+    nowBar.classList.remove("eva");
+  }
+}
+
+function refreshUIToUser() {
+  const p = getProfile();
+  document.getElementById("tabBtnGrades").classList.toggle("hidden", !p.showGrades);
+  document.getElementById("tabBtnQuarters").classList.toggle("hidden", !p.showQuarters);
+  document.getElementById("scoreBar").classList.toggle("hidden", !p.showScoreBar);
+
+  document.getElementById("avatarSvg").outerHTML = currentUser === "eva"
+    ? getEvaAvatarSVG().replace("<svg", '<svg id="avatarSvg"')
+    : getDimaAvatarSVG().replace("<svg", '<svg id="avatarSvg"');
+
+  render();
+  renderSchedule();
+  renderQuarters();
+  updateNowBar();
+}
+
 function updateNowBar() {
   const bar = document.getElementById("nowBar");
   const iconEl = document.getElementById("nowIcon");
@@ -1979,11 +2310,13 @@ function updateNowBar() {
   if (dayInfo.type !== "school") return;
 
   const dayIdx = day - 1;
-  const lessons = WEEK_SCHEDULE[dayIdx] || [];
+  const bells = getBells();
+  const schedule = getSchedule();
+  const lessons = schedule[dayIdx] || [];
   const nowMin = now.getHours() * 60 + now.getMinutes();
 
-  for (let i = 0; i < BELLS.length; i++) {
-    const bell = BELLS[i];
+  for (let i = 0; i < bells.length; i++) {
+    const bell = bells[i];
     const s = timeToMin(bell.start), e = timeToMin(bell.end);
     const lesson = lessons[i];
     if (!lesson || !lesson.subject) continue;
@@ -1996,27 +2329,27 @@ function updateNowBar() {
       return;
     }
   }
-  for (let i = 0; i < BELLS.length - 1; i++) {
-    const curEnd = timeToMin(BELLS[i].end);
-    const nextStart = timeToMin(BELLS[i + 1].start);
+  for (let i = 0; i < bells.length - 1; i++) {
+    const curEnd = timeToMin(bells[i].end);
+    const nextStart = timeToMin(bells[i + 1].start);
     const nextLesson = lessons[i + 1];
     if (!nextLesson || !nextLesson.subject) continue;
     if (nowMin >= curEnd && nowMin < nextStart) {
       const room = nextLesson.room ? `, каб. ${nextLesson.room}` : "";
-      textEl.textContent = `Сейчас перемена, следующий урок: ${nextLesson.subject}${room} в ${BELLS[i + 1].start}`;
+      textEl.textContent = `Сейчас перемена, следующий урок: ${nextLesson.subject}${room} в ${bells[i + 1].start}`;
       timeEl.textContent = `${nextStart - nowMin} мин`;
       iconEl.textContent = "☕";
       bar.classList.add("active", "break");
       return;
     }
   }
-  const firstBellStart = timeToMin(BELLS[0].start);
+  const firstBellStart = timeToMin(bells[0].start);
   const firstLesson = lessons[0];
   if (firstLesson && firstLesson.subject && nowMin < firstBellStart) {
     const diff = firstBellStart - nowMin;
     if (diff <= 90) {
       const room = firstLesson.room ? `, каб. ${firstLesson.room}` : "";
-      textEl.textContent = `Скоро начнётся: ${firstLesson.subject}${room} в ${BELLS[0].start}`;
+      textEl.textContent = `Скоро начнётся: ${firstLesson.subject}${room} в ${bells[0].start}`;
       timeEl.textContent = `через ${diff} мин`;
       iconEl.textContent = "⏰";
       bar.classList.add("active", "soon");
@@ -2025,13 +2358,14 @@ function updateNowBar() {
   }
 }
 
-// ==================== "ЗАДАНО НА ЗАВТРА" ====================
 function renderTomorrowHW() {
   const wrap = document.getElementById("tomorrowHW");
   const list = document.getElementById("thList");
   const title = document.getElementById("thTitle");
   wrap.classList.remove("active");
   list.innerHTML = "";
+
+  if (!getProfile().showHW) return;
 
   const today = new Date();
   const dow = today.getDay();
@@ -2045,7 +2379,8 @@ function renderTomorrowHW() {
   if (tomInfo.type !== "school") return;
 
   const tomDayIdx = tomDow - 1;
-  const lessons = WEEK_SCHEDULE[tomDayIdx] || [];
+  const schedule = getSchedule();
+  const lessons = schedule[tomDayIdx] || [];
   const dateKey = isoKey(tomorrow);
 
   const items = [];
@@ -2070,7 +2405,7 @@ function renderTomorrowHW() {
     const div = document.createElement("div");
     div.className = "th-item";
     let html = `<div class="th-subj">${it.lesson.subject}${it.lesson.room ? ` · каб. ${it.lesson.room}` : ""}</div>`;
-    html += `<div class="th-meta">Урок ${it.slotIdx + 1} · ${BELLS[it.slotIdx] ? BELLS[it.slotIdx].start : ""}</div>`;
+    html += `<div class="th-meta">Урок ${it.slotIdx + 1}</div>`;
     if (it.text) html += `<div class="th-text">${escapeHtml(it.text)}</div>`;
     if (it.photos.length > 0) {
       html += `<div class="th-photo">`;
@@ -2098,7 +2433,6 @@ function viewTomorrowPhoto(slotIdx, idx) {
   document.getElementById("photoViewer").classList.add("active");
 }
 
-// ==================== РАСЧЁТ ====================
 function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
   let sumWV = 0, sumW = 0;
   Object.values(subjGrades).forEach(v => {
@@ -2114,6 +2448,13 @@ function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
 }
 
 function renderRiskBar() {
+  const bar = document.getElementById("riskBar");
+  const wrap = document.getElementById("riskItems");
+  if (!getProfile().showGrades) {
+    bar.classList.remove("active");
+    wrap.innerHTML = "";
+    return;
+  }
   const grades = getCurrentGrades();
   const items = [];
   state.subjects.forEach(subj => {
@@ -2125,9 +2466,6 @@ function renderRiskBar() {
   });
   items.sort((a, b) => a.current - b.current);
   const top5 = items.slice(0, 5);
-
-  const bar = document.getElementById("riskBar");
-  const wrap = document.getElementById("riskItems");
   if (top5.length === 0) {
     bar.classList.remove("active");
     wrap.innerHTML = "";
@@ -2148,8 +2486,8 @@ function plural5(n) {
   return "пятёрок";
 }
 
-// ==================== РЕНДЕР ОЦЕНОК ====================
 function render() {
+  if (!getProfile().showGrades) return;
   const dates = getCurrentDates();
   const grades = getCurrentGrades();
   const headerRow = document.getElementById("headerRow");
@@ -2210,7 +2548,6 @@ function render() {
       tdQ.textContent = "—";
       tdQ.style.color = "var(--text-mute)";
     }
-    tdQ.title = "Клик — выставить четвертную";
     tdQ.onclick = () => openQuarterModal(subj, activeQuarter);
     tr.appendChild(tdQ);
 
@@ -2249,6 +2586,7 @@ function calcSimpleAvg(subjGrades) {
 }
 
 function updateAvg() {
+  if (!getProfile().showGrades) return;
   const grades = getCurrentGrades();
   let sumWV = 0, sumW = 0, count = 0;
   const allSimple = [];
@@ -2281,7 +2619,6 @@ function updateToday() {
   document.getElementById("today").textContent = "Сегодня: " + formatDate(d);
 }
 
-// ==================== МОДАЛКА ОЦЕНКИ ====================
 function openGradeModal(subj, date) {
   const grades = getCurrentGrades();
   const existing = parseGrade((grades[subj] || {})[date]);
@@ -2337,14 +2674,12 @@ document.getElementById("modalBg").addEventListener("click", e => {
   if (e.target.id === "modalBg") closeModal();
 });
 
-// ==================== ОЧИСТКА ====================
 function clearAll() {
   if (!confirm(`Удалить ВСЕ оценки за ${activeQuarter} четверть?`)) return;
   state.gradesByQuarter[activeQuarter] = {};
   saveState(); render();
 }
 
-// ==================== ЭКСПОРТ / ИМПОРТ ====================
 function downloadDiary() {
   const data = JSON.stringify(state, null, 2);
   const blob = new Blob([data], { type: "application/json" });
@@ -2379,9 +2714,13 @@ function uploadDiary(ev) {
       if (!state.quarters) state.quarters = {};
       if (!Array.isArray(state.reminders)) state.reminders = [];
       if (!state.theme || state.theme === "auto") state.theme = "light";
+      if (!state.user) state.user = "dima";
+      currentUser = state.user;
       saveState();
-      render(); renderSchedule(); renderQuarters(); updateNowBar(); renderTomorrowHW();
-      renderReminders(); updateRemindBadge(); checkReminders(); applyTheme();
+      applyTheme();
+      applyUserTheme();
+      refreshUIToUser();
+      renderReminders(); updateRemindBadge(); checkReminders();
       alert("Дневник загружен! ✅");
     } catch(err) { alert("Ошибка: " + err.message); }
   };
@@ -2389,8 +2728,9 @@ function uploadDiary(ev) {
   ev.target.value = "";
 }
 
-// ==================== ТАБЫ ====================
 function switchTab(name, btn) {
+  if (name === "grades" && !getProfile().showGrades) return;
+  if (name === "quarters" && !getProfile().showQuarters) return;
   document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
   document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
   document.getElementById("tab-" + name).classList.add("active");
@@ -2400,7 +2740,6 @@ function switchTab(name, btn) {
   if (name === "grades") render();
 }
 
-// ==================== РАСПИСАНИЕ ====================
 function getWeekDates(monday) { return [0,1,2,3,4,5,6].map(i => addDays(monday, i)); }
 
 function renderSchedule() {
@@ -2410,10 +2749,15 @@ function renderSchedule() {
   const body = document.getElementById("scheduleBody");
   const today = new Date(); today.setHours(0,0,0,0);
 
+  const bells = getBells();
+  const schedule = getSchedule();
+  const showHW = getProfile().showHW;
+
   let headHTML = '<th class="num-col">№</th><th class="time-col">Время</th>';
   dates.forEach((d, i) => {
     const isToday = isSameDay(d, today);
-    const dateStr = `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}`;
+    // Формат: "22 октября"
+    const dateStr = `${d.getDate()} ${MONTH_GEN[d.getMonth()]}`;
     headHTML += `<th>
       <span class="day-name">${DAY_NAMES[i]}</span>
       <span class="day-date ${isToday ? "today" : ""}">${dateStr}</span>
@@ -2422,10 +2766,10 @@ function renderSchedule() {
   header.innerHTML = headHTML;
 
   body.innerHTML = "";
-  for (let slot = 0; slot < BELLS.length; slot++) {
+  for (let slot = 0; slot < bells.length; slot++) {
     const tr = document.createElement("tr");
     tr.innerHTML = `<td class="num-col">${slot + 1}</td>
-                    <td class="time-col">${BELLS[slot].start} – ${BELLS[slot].end}</td>`;
+                    <td class="time-col">${bells[slot].start} – ${bells[slot].end}</td>`;
     for (let day = 0; day < 7; day++) {
       const td = document.createElement("td");
       const date = dates[day];
@@ -2434,21 +2778,21 @@ function renderSchedule() {
       if (dayInfo.type !== "school") {
         if (slot === 0) {
           td.className = "day-off " + dayInfo.type;
-          td.rowSpan = BELLS.length;
+          td.rowSpan = bells.length;
           td.textContent = dayInfo.label;
           tr.appendChild(td);
         }
         continue;
       }
 
-      const lessons = WEEK_SCHEDULE[day] || [];
+      const lessons = schedule[day] || [];
       const lesson = lessons[slot];
       if (lesson && lesson.subject) {
         let html = `<div class="subj">${lesson.subject}</div>`;
         if (lesson.room) html += `<div class="room">каб. ${lesson.room}</div>`;
         if (lesson.teacher) html += `<div class="teacher">${lesson.teacher}</div>`;
 
-        if (hasHomework(lesson.subject)) {
+        if (showHW && hasHomework(lesson.subject)) {
           const dateKey = isoKey(date);
           const hwKey = `${dateKey}|${day}|${slot}`;
           const hwText = state.homework[hwKey] || "";
@@ -2498,14 +2842,15 @@ function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderSc
 function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7); renderSchedule(); }
 function goToToday() { calMonth = new Date(); openCal(); }
 
-// ==================== Д/З ====================
 function openHW(dayIdx, slotIdx, dateKey) {
+  if (!getProfile().showHW) return;
   currentHW = { date: dateKey, dayIdx, slotIdx };
-  const lesson = WEEK_SCHEDULE[dayIdx][slotIdx];
+  const schedule = getSchedule();
+  const bells = getBells();
+  const lesson = schedule[dayIdx][slotIdx];
   const hwKey = `${dateKey}|${dayIdx}|${slotIdx}`;
-
   document.getElementById("hwTitle").textContent = lesson.subject;
-  document.getElementById("hwSub").textContent = `${DAY_NAMES[dayIdx]} • Урок ${slotIdx + 1} • ${BELLS[slotIdx].start}`;
+  document.getElementById("hwSub").textContent = `${DAY_NAMES[dayIdx]} • Урок ${slotIdx + 1} • ${bells[slotIdx].start}`;
   document.getElementById("hwText").value = state.homework[hwKey] || "";
   hwPhotosTemp = [...(state.hwPhotos[hwKey] || [])];
   renderHWPhotos();
@@ -2552,6 +2897,7 @@ function viewHWPhoto(hwKey, idx) {
 }
 function closePhotoViewer() { document.getElementById("photoViewer").classList.remove("active"); }
 function saveHW() {
+  if (!getProfile().showHW) return;
   const { date, dayIdx, slotIdx } = currentHW;
   const hwKey = `${date}|${dayIdx}|${slotIdx}`;
   const text = document.getElementById("hwText").value.trim();
@@ -2564,6 +2910,7 @@ function saveHW() {
   renderSchedule();
 }
 function clearHW() {
+  if (!getProfile().showHW) return;
   const { date, dayIdx, slotIdx } = currentHW;
   const hwKey = `${date}|${dayIdx}|${slotIdx}`;
   delete state.homework[hwKey];
@@ -2587,8 +2934,8 @@ document.getElementById("hwModalBg").addEventListener("click", e => {
   if (e.target.id === "hwModalBg") closeHW();
 });
 
-// ==================== ЧЕТВЕРТНЫЕ ====================
 function renderQuarters() {
+  if (!getProfile().showQuarters) return;
   const tbody = document.getElementById("quartersBody");
   tbody.innerHTML = "";
   state.subjects.forEach(subj => {
@@ -2597,7 +2944,6 @@ function renderQuarters() {
     tdName.className = "subject-col";
     tdName.textContent = subj;
     tr.appendChild(tdName);
-
     let sumW = 0, sumWV = 0;
     for (let q = 1; q <= 4; q++) {
       const td = document.createElement("td");
@@ -2615,7 +2961,6 @@ function renderQuarters() {
       td.onclick = () => openQuarterModal(subj, q);
       tr.appendChild(td);
     }
-
     const tdFinal = document.createElement("td");
     tdFinal.className = "quarter-cell final";
     if (sumW > 0) {
@@ -2672,7 +3017,6 @@ document.getElementById("qModalBg").addEventListener("click", e => {
   if (e.target.id === "qModalBg") closeQModal();
 });
 
-// ==================== КАЛЕНДАРЬ ====================
 function openCal() {
   if (!calMonth) calMonth = new Date();
   renderCal();
@@ -2724,7 +3068,6 @@ document.getElementById("calModalBg").addEventListener("click", e => {
   if (e.target.id === "calModalBg") closeCal();
 });
 
-// ==================== НАПОМИНАНИЯ ====================
 function ensureReminders() { if (!Array.isArray(state.reminders)) state.reminders = []; }
 function getUpcomingReminders() {
   ensureReminders();
@@ -2878,7 +3221,6 @@ function askNotificationPermission() {
   if (Notification.permission === "default") Notification.requestPermission();
 }
 
-// ==================== ESCAPE ====================
 function escapeHtml(s) {
   return String(s)
     .replace(/&/g, "&amp;")
@@ -2890,10 +3232,26 @@ function escapeHtml(s) {
 
 // ==================== СТАРТ ====================
 applyTheme();
+currentUser = state.user || "dima";
+applyUserTheme();
 activeQuarter = getCurrentQuarter();
 currentWeekStart = getMondayOfDate(new Date());
+
+if (currentUser === "eva") {
+  document.getElementById("tabBtnGrades").classList.add("hidden");
+  document.getElementById("tabBtnQuarters").classList.add("hidden");
+  document.getElementById("tabBtnSchedule").classList.add("active");
+  document.getElementById("tab-schedule").classList.add("active");
+  document.getElementById("tab-grades").classList.remove("active");
+  document.getElementById("scoreBar").classList.add("hidden");
+} else {
+  document.getElementById("tabBtnGrades").classList.add("active");
+  document.getElementById("tab-grades").classList.add("active");
+}
+
 render();
 renderSchedule();
+renderQuarters();
 
 setInterval(updateNowBar, 30000);
 setInterval(checkReminders, 1000);
