@@ -2152,3 +2152,711 @@ function openGradeModal(subj, date) {
   const grades = getCurrentGrades();
   const existing = parseGrade((grades[subj] || {})[date]);
   gradeModal.subj = subj;
+  gradeModal.date = date;
+  gradeModal.grade = existing ? existing.grade : null;
+  gradeModal.type = existing ? existing.type : "ur";
+  document.getElementById("modalTitle").textContent = subj;
+  document.getElementById("modalSub").textContent = `Дата: ${date} • ${activeQuarter} четверть`;
+  const wrap = document.getElementById("modalBtns");
+  wrap.innerHTML = "";
+  [1,2,3,4,5].forEach(n => {
+    const btn = document.createElement("button");
+    btn.className = "grade-btn g" + n;
+    btn.textContent = n;
+    if (gradeModal.grade === n) btn.classList.add("selected");
+    btn.onclick = () => {
+      gradeModal.grade = n;
+      document.querySelectorAll("#modalBtns .grade-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    };
+    wrap.appendChild(btn);
+  });
+  updateTypeButtons();
+  document.getElementById("modalBg").classList.add("active");
+}
+function updateTypeButtons() {
+  document.querySelectorAll(".type-btn").forEach(b => {
+    b.classList.toggle("selected", b.dataset.type === gradeModal.type);
+  });
+}
+function selectType(type) { gradeModal.type = type; updateTypeButtons(); }
+function closeModal() { document.getElementById("modalBg").classList.remove("active"); }
+
+function saveGrade() {
+  if (!gradeModal.grade) { alert("Выберите оценку!"); return; }
+  const { subj, date, grade, type } = gradeModal;
+  const grades = state.gradesByQuarter[activeQuarter];
+  if (!grades[subj]) grades[subj] = {};
+  grades[subj][date] = { grade, type };
+  saveState(); closeModal(); render();
+}
+function clearGrade() {
+  const { subj, date } = gradeModal;
+  const grades = state.gradesByQuarter[activeQuarter];
+  if (grades[subj]) {
+    delete grades[subj][date];
+    if (!Object.keys(grades[subj]).length) delete grades[subj];
+  }
+  saveState(); closeModal(); render();
+}
+document.getElementById("modalBg").addEventListener("click", e => {
+  if (e.target.id === "modalBg") closeModal();
+});
+
+// ==================== ОЧИСТКА ====================
+function clearAll() {
+  if (!confirm(`Удалить ВСЕ оценки за ${activeQuarter} четверть?`)) return;
+  state.gradesByQuarter[activeQuarter] = {};
+  saveState(); render();
+}
+
+// ==================== ЭКСПОРТ / ИМПОРТ ====================
+function downloadDiary() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const d = new Date();
+  a.href = url;
+  a.download = `diary_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  alert("Файл скачан! 📁");
+}
+
+function uploadDiary(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const loaded = JSON.parse(e.target.result);
+      if (!loaded.subjects) { alert("Неверный файл!"); return; }
+      if (!confirm("Загрузить дневник? Текущие данные будут заменены.")) return;
+      state = loaded;
+      if (!state.gradesByQuarter) {
+        state.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
+        if (state.grades) { state.gradesByQuarter[1] = state.grades; delete state.grades; }
+      }
+      if (!state.datesByQuarter) state.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
+      if (!state.homework) state.homework = {};
+      if (!state.hwDone) state.hwDone = {};
+      if (!state.hwPhotos) state.hwPhotos = {};
+      if (!state.quarters) state.quarters = {};
+      if (!Array.isArray(state.reminders)) state.reminders = [];
+      saveState();
+      render(); renderSchedule(); renderQuarters(); updateNowBar(); renderTomorrowHW();
+      renderReminders(); updateRemindBadge(); checkReminders();
+      alert("Дневник загружен! ✅");
+    } catch(err) { alert("Ошибка: " + err.message); }
+  };
+  reader.readAsText(file);
+  ev.target.value = "";
+}
+
+// ==================== ТАБЫ ====================
+function switchTab(name, btn) {
+  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  btn.classList.add("active");
+  if (name === "quarters") renderQuarters();
+  if (name === "schedule") renderSchedule();
+  if (name === "grades") render();
+}
+
+// ==================== РАСПИСАНИЕ ====================
+function getWeekDates(monday) {
+  return [0,1,2,3,4,5,6].map(i => addDays(monday, i));
+}
+
+function renderSchedule() {
+  if (!currentWeekStart) currentWeekStart = getMondayOfDate(new Date());
+  const dates = getWeekDates(currentWeekStart);
+  const header = document.getElementById("scheduleHeader");
+  const body = document.getElementById("scheduleBody");
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  let headHTML = '<th class="num-col">№</th><th class="time-col">Время</th>';
+  dates.forEach((d, i) => {
+    const isToday = isSameDay(d, today);
+    const dateStr = `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}`;
+    headHTML += `<th>
+      <span class="day-name">${DAY_NAMES[i]}</span>
+      <span class="day-date ${isToday ? "today" : ""}">${dateStr}</span>
+    </th>`;
+  });
+  header.innerHTML = headHTML;
+
+  body.innerHTML = "";
+  for (let slot = 0; slot < BELLS.length; slot++) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="num-col">${slot + 1}</td>
+                    <td class="time-col">${BELLS[slot].start}<br>–<br>${BELLS[slot].end}</td>`;
+    for (let day = 0; day < 7; day++) {
+      const td = document.createElement("td");
+      const date = dates[day];
+      const dayInfo = getDayType(date);
+
+      if (dayInfo.type !== "school") {
+        if (slot === 0) {
+          td.className = "day-off " + dayInfo.type;
+          td.rowSpan = BELLS.length;
+          td.textContent = dayInfo.label;
+          tr.appendChild(td);
+        }
+        continue;
+      }
+
+      const lessons = WEEK_SCHEDULE[day] || [];
+      const lesson = lessons[slot];
+      if (lesson && lesson.subject) {
+        let html = `<div class="subj">${lesson.subject}</div>`;
+        if (lesson.room) html += `<div class="room">каб. ${lesson.room}</div>`;
+        if (lesson.teacher) html += `<div class="teacher">${lesson.teacher}</div>`;
+
+        if (hasHomework(lesson.subject)) {
+          const dateKey = isoKey(date);
+          const hwKey = `${dateKey}|${day}|${slot}`;
+          const hwText = state.homework[hwKey] || "";
+          const hwPhotos = state.hwPhotos[hwKey] || [];
+          const isDone = state.hwDone[hwKey] || false;
+          const photoBadge = hwPhotos.length > 0 ? `<span class="photo-badge">📷${hwPhotos.length}</span>` : "";
+          html += `<div class="hw-row">
+            <button class="hw-btn ${hwText || hwPhotos.length ? "has-hw" : ""}"
+              onclick="openHW(${day}, ${slot}, '${dateKey}')">
+              📝 ${hwText || hwPhotos.length ? "Д/З" : "Задать"}${photoBadge}
+            </button>
+          </div>`;
+          if (hwText) {
+            html += `<div class="hw-text ${isDone ? "done" : ""}"
+              onclick="toggleHWDone('${hwKey}')"
+              title="Клик — отметить выполненным">${escapeHtml(hwText)}</div>`;
+          }
+          if (hwPhotos.length > 0) {
+            html += `<div>`;
+            hwPhotos.forEach((p, idx) => {
+              html += `<img class="hw-photo-thumb" src="${p}" onclick="viewHWPhoto('${hwKey}', ${idx})" alt="фото">`;
+            });
+            html += `</div>`;
+          }
+        }
+
+        td.innerHTML = html;
+      }
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+
+  // Инфо о неделе
+  const mon = dates[0], sun = dates[6];
+  const weekLabel = document.getElementById("weekLabel");
+  const weekDates = document.getElementById("weekDates");
+  weekLabel.textContent = `Неделя ${getWeekNumber(mon)}`;
+  weekDates.textContent = `${formatFull(mon)} — ${formatFull(sun)} ${sun.getFullYear()}`;
+
+  renderTomorrowHW();
+}
+
+function getWeekNumber(d) {
+  const date = new Date(d);
+  date.setHours(0,0,0,0);
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  const week1 = new Date(date.getFullYear(), 0, 4);
+  return 1 + Math.round(((date - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+}
+
+function prevWeek() {
+  currentWeekStart = addDays(currentWeekStart, -7);
+  renderSchedule();
+}
+function nextWeek() {
+  currentWeekStart = addDays(currentWeekStart, 7);
+  renderSchedule();
+}
+function goToToday() {
+  calMonth = new Date();
+  openCal();
+}
+
+// ==================== Д/З ====================
+function openHW(dayIdx, slotIdx, dateKey) {
+  currentHW = { date: dateKey, dayIdx, slotIdx };
+  const lesson = WEEK_SCHEDULE[dayIdx][slotIdx];
+  const hwKey = `${dateKey}|${dayIdx}|${slotIdx}`;
+
+  document.getElementById("hwTitle").textContent = lesson.subject;
+  document.getElementById("hwSub").textContent = `${DAY_NAMES[dayIdx]} • Урок ${slotIdx + 1} • ${BELLS[slotIdx].start}`;
+  document.getElementById("hwText").value = state.homework[hwKey] || "";
+  hwPhotosTemp = [...(state.hwPhotos[hwKey] || [])];
+  renderHWPhotos();
+  document.getElementById("hwModalBg").classList.add("active");
+}
+
+function renderHWPhotos() {
+  const wrap = document.getElementById("hwPhotoPreview");
+  const empty = document.getElementById("hwPhotoEmpty");
+  wrap.innerHTML = "";
+  if (hwPhotosTemp.length === 0) {
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+  hwPhotosTemp.forEach((p, idx) => {
+    const div = document.createElement("div");
+    div.className = "thumb-wrap";
+    div.innerHTML = `
+      <img src="${p}" onclick="viewPhotoTemp(${idx})" alt="фото">
+      <button class="remove-photo" onclick="removeHWPhoto(${idx})">✕</button>
+    `;
+    wrap.appendChild(div);
+  });
+}
+function addHWPhoto(ev) {
+  const files = Array.from(ev.target.files);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      hwPhotosTemp.push(e.target.result);
+      renderHWPhotos();
+    };
+    reader.readAsDataURL(file);
+  });
+  ev.target.value = "";
+}
+function removeHWPhoto(idx) {
+  hwPhotosTemp.splice(idx, 1);
+  renderHWPhotos();
+}
+function viewPhotoTemp(idx) {
+  document.getElementById("photoViewerImg").src = hwPhotosTemp[idx];
+  document.getElementById("photoViewer").classList.add("active");
+}
+function viewHWPhoto(hwKey, idx) {
+  const photos = state.hwPhotos[hwKey] || [];
+  if (!photos[idx]) return;
+  document.getElementById("photoViewerImg").src = photos[idx];
+  document.getElementById("photoViewer").classList.add("active");
+}
+function closePhotoViewer() {
+  document.getElementById("photoViewer").classList.remove("active");
+}
+function saveHW() {
+  const { date, dayIdx, slotIdx } = currentHW;
+  const hwKey = `${date}|${dayIdx}|${slotIdx}`;
+  const text = document.getElementById("hwText").value.trim();
+
+  if (text) state.homework[hwKey] = text;
+  else delete state.homework[hwKey];
+
+  if (hwPhotosTemp.length > 0) state.hwPhotos[hwKey] = [...hwPhotosTemp];
+  else delete state.hwPhotos[hwKey];
+
+  saveState();
+  closeHW();
+  renderSchedule();
+}
+function clearHW() {
+  const { date, dayIdx, slotIdx } = currentHW;
+  const hwKey = `${date}|${dayIdx}|${slotIdx}`;
+  delete state.homework[hwKey];
+  delete state.hwPhotos[hwKey];
+  delete state.hwDone[hwKey];
+  saveState();
+  closeHW();
+  renderSchedule();
+}
+function closeHW() {
+  document.getElementById("hwModalBg").classList.remove("active");
+  hwPhotosTemp = [];
+}
+function toggleHWDone(hwKey) {
+  state.hwDone[hwKey] = !state.hwDone[hwKey];
+  if (!state.hwDone[hwKey]) delete state.hwDone[hwKey];
+  saveState();
+  renderSchedule();
+}
+document.getElementById("hwModalBg").addEventListener("click", e => {
+  if (e.target.id === "hwModalBg") closeHW();
+});
+
+// ==================== ЧЕТВЕРТНЫЕ ====================
+function renderQuarters() {
+  const tbody = document.getElementById("quartersBody");
+  tbody.innerHTML = "";
+  state.subjects.forEach(subj => {
+    const tr = document.createElement("tr");
+    const tdName = document.createElement("td");
+    tdName.className = "subject-col";
+    tdName.textContent = subj;
+    tr.appendChild(tdName);
+
+    let sumW = 0, sumWV = 0;
+    for (let q = 1; q <= 4; q++) {
+      const td = document.createElement("td");
+      td.className = "quarter-cell";
+      const qv = (state.quarters[subj] || {})[q];
+      if (qv) {
+        td.textContent = qv;
+        td.style.color = qv < 2.5 ? "#e53935" : qv < 3.5 ? "#fb8c00" : "#2e7d32";
+        const w = QUARTER_WEIGHTS[q];
+        sumW += w; sumWV += qv * w;
+      } else {
+        td.textContent = "—";
+        td.style.color = "#cfd8dc";
+      }
+      td.onclick = () => openQuarterModal(subj, q);
+      tr.appendChild(td);
+    }
+
+    const tdFinal = document.createElement("td");
+    tdFinal.className = "quarter-cell final";
+    if (sumW > 0) {
+      const final = Math.round(sumWV / sumW);
+      tdFinal.textContent = final;
+      tdFinal.classList.add("has-grade");
+      tdFinal.style.color = final < 2.5 ? "#e53935" : final < 3.5 ? "#fb8c00" : "#2e7d32";
+    } else {
+      tdFinal.textContent = "—";
+      tdFinal.style.color = "#cfd8dc";
+    }
+    tr.appendChild(tdFinal);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function openQuarterModal(subj, quarter) {
+  currentQuarterModal = { subj, quarter };
+  document.getElementById("qTitle").textContent = subj;
+  document.getElementById("qSub").textContent = `${quarter} четверть`;
+  const wrap = document.getElementById("qBtns");
+  wrap.innerHTML = "";
+  const current = (state.quarters[subj] || {})[quarter];
+  [1,2,3,4,5].forEach(n => {
+    const btn = document.createElement("button");
+    btn.className = "grade-btn g" + n;
+    btn.textContent = n;
+    if (current === n) btn.classList.add("selected");
+    btn.onclick = () => {
+      if (!state.quarters[subj]) state.quarters[subj] = {};
+      state.quarters[subj][quarter] = n;
+      saveState();
+      closeQModal();
+      renderQuarters();
+      render();
+    };
+    wrap.appendChild(btn);
+  });
+  document.getElementById("qModalBg").classList.add("active");
+}
+function closeQModal() {
+  document.getElementById("qModalBg").classList.remove("active");
+}
+function clearQuarter() {
+  const { subj, quarter } = currentQuarterModal;
+  if (state.quarters[subj]) {
+    delete state.quarters[subj][quarter];
+    if (!Object.keys(state.quarters[subj]).length) delete state.quarters[subj];
+  }
+  saveState();
+  closeQModal();
+  renderQuarters();
+  render();
+}
+document.getElementById("qModalBg").addEventListener("click", e => {
+  if (e.target.id === "qModalBg") closeQModal();
+});
+
+// ==================== КАЛЕНДАРЬ ====================
+function openCal() {
+  if (!calMonth) calMonth = new Date();
+  renderCal();
+  document.getElementById("calModalBg").classList.add("active");
+}
+function closeCal() {
+  document.getElementById("calModalBg").classList.remove("active");
+}
+function prevMonth() {
+  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1);
+  renderCal();
+}
+function nextMonth() {
+  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1);
+  renderCal();
+}
+function renderCal() {
+  const grid = document.getElementById("calGrid");
+  const title = document.getElementById("calMonthTitle");
+  const y = calMonth.getFullYear(), m = calMonth.getMonth();
+  title.textContent = `${MONTH_NAMES[m]} ${y}`;
+
+  grid.innerHTML = "";
+  ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(d => {
+    const el = document.createElement("div");
+    el.className = "cal-cell header";
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const first = new Date(y, m, 1);
+  const startDay = (first.getDay() + 6) % 7;
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  for (let i = 0; i < startDay; i++) {
+    const el = document.createElement("div");
+    el.className = "cal-cell other-month";
+    el.textContent = "";
+    grid.appendChild(el);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(y, m, day);
+    const el = document.createElement("div");
+    el.className = "cal-cell";
+    el.textContent = day;
+
+    const info = getDayType(date);
+    if (info.type === "holiday") el.classList.add("holiday");
+    if (info.type === "vacation") el.classList.add("vacation");
+    if (date < today) el.classList.add("past");
+
+    el.onclick = () => {
+      currentWeekStart = getMondayOfDate(date);
+      closeCal();
+      switchTab("schedule", document.querySelectorAll(".tab-btn")[1]);
+    };
+
+    grid.appendChild(el);
+  }
+}
+document.getElementById("calModalBg").addEventListener("click", e => {
+  if (e.target.id === "calModalBg") closeCal();
+});
+
+// ==================== НАПОМИНАНИЯ ====================
+function ensureReminders() {
+  if (!Array.isArray(state.reminders)) state.reminders = [];
+}
+
+function getUpcomingReminders() {
+  ensureReminders();
+  return state.reminders
+    .filter(r => !r.fired)
+    .sort((a, b) => a.ts - b.ts);
+}
+
+function updateRemindBadge() {
+  const badge = document.getElementById("remindBadge");
+  if (!badge) return;
+  const n = getUpcomingReminders().length;
+  badge.textContent = n;
+  badge.classList.toggle("empty", n === 0);
+}
+
+function openReminders() {
+  ensureReminders();
+  renderReminders();
+  const now = new Date();
+  const dEl = document.getElementById("remindDate");
+  const tEl = document.getElementById("remindTime");
+  if (!dEl.value) dEl.value = isoKey(now);
+  if (!tEl.value) {
+    const hh = String(now.getHours()).padStart(2, "0");
+    const mm = String(now.getMinutes()).padStart(2, "0");
+    tEl.value = `${hh}:${mm}`;
+  }
+  document.getElementById("remindModalBg").classList.add("active");
+  updateRemindBadge();
+}
+
+function closeReminders() {
+  document.getElementById("remindModalBg").classList.remove("active");
+}
+
+document.getElementById("remindModalBg").addEventListener("click", e => {
+  if (e.target.id === "remindModalBg") closeReminders();
+});
+
+function addReminder() {
+  const dEl = document.getElementById("remindDate");
+  const tEl = document.getElementById("remindTime");
+  const xEl = document.getElementById("remindText");
+
+  const dateVal = dEl.value;
+  const timeVal = tEl.value;
+  const text = xEl.value.trim();
+
+  if (!dateVal) { alert("Выбери дату"); return; }
+  if (!timeVal) { alert("Выбери время"); return; }
+  if (!text)    { alert("Напиши текст напоминания"); return; }
+
+  const [Y, M, D] = dateVal.split("-").map(Number);
+  const [h, m]    = timeVal.split(":").map(Number);
+  const ts = new Date(Y, M - 1, D, h, m, 0, 0).getTime();
+
+  if (ts <= Date.now()) {
+    if (!confirm("Это время уже прошло. Всё равно добавить? Оно сработает сразу.")) return;
+  }
+
+  const newRem = {
+    id: "r_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+    ts,
+    text,
+    fired: false
+  };
+  state.reminders.push(newRem);
+  state.reminders.sort((a, b) => a.ts - b.ts);
+  saveState();
+
+  xEl.value = "";
+  renderReminders();
+  updateRemindBadge();
+
+  if (ts <= Date.now()) {
+    newRem.fired = true;
+    fireReminder(newRem);
+    state.reminders = state.reminders.filter(r => !r.fired);
+    saveState();
+    renderReminders();
+    updateRemindBadge();
+  } else {
+    checkReminders();
+  }
+}
+
+function deleteReminder(id) {
+  state.reminders = state.reminders.filter(r => r.id !== id);
+  saveState();
+  renderReminders();
+  updateRemindBadge();
+}
+
+function renderReminders() {
+  ensureReminders();
+  const wrap = document.getElementById("remindList");
+  if (!wrap) return;
+  const items = [...state.reminders].sort((a, b) => a.ts - b.ts);
+
+  if (items.length === 0) {
+    wrap.innerHTML = `<div class="remind-empty">Напоминаний пока нет</div>`;
+    updateRemindBadge();
+    return;
+  }
+
+  const now = Date.now();
+  wrap.innerHTML = items.map(r => {
+    const d = new Date(r.ts);
+    const isPast = r.fired || r.ts < now;
+    const dateStr = formatDate(d);
+    const timeStr = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+    return `
+      <div class="remind-item ${isPast ? "past" : ""}">
+        <div class="ri-time">
+          ${dateStr}<br>${timeStr}
+          ${r.fired ? "<br><span style='color:#9e9e9e'>✓ показано</span>" : ""}
+        </div>
+        <div class="ri-text">${escapeHtml(r.text)}</div>
+        <button class="ri-del" title="Удалить" onclick="deleteReminder('${r.id}')">✕</button>
+      </div>
+    `;
+  }).join("");
+
+  updateRemindBadge();
+}
+
+function checkReminders() {
+  ensureReminders();
+  const now = Date.now();
+  let changed = false;
+
+  state.reminders.forEach(r => {
+    if (!r.fired && r.ts <= now) {
+      r.fired = true;
+      changed = true;
+      fireReminder(r);
+    }
+  });
+
+  if (changed) {
+    state.reminders = state.reminders.filter(r => !r.fired);
+    saveState();
+    updateRemindBadge();
+    if (document.getElementById("remindModalBg").classList.contains("active")) {
+      renderReminders();
+    }
+  }
+}
+
+function fireReminder(r) {
+  showToast("🔔 Напоминание", r.text);
+
+  if ("Notification" in window && Notification.permission === "granted") {
+    try {
+      new Notification("🔔 Дневник.ру — напоминание", {
+        body: r.text,
+        icon: "icon.png",
+        tag: r.id
+      });
+    } catch (e) {}
+  }
+}
+
+function showToast(title, text) {
+  const wrap = document.getElementById("toastWrap");
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.innerHTML = `
+    <span class="t-icon">🔔</span>
+    <div class="t-body">
+      <div class="t-title">${escapeHtml(title)}</div>
+      <div class="t-text">${escapeHtml(text)}</div>
+    </div>
+    <button class="t-close" title="Закрыть">✕</button>
+  `;
+  const close = () => {
+    el.classList.add("hide");
+    setTimeout(() => el.remove(), 250);
+  };
+  el.querySelector(".t-close").onclick = close;
+  wrap.appendChild(el);
+  setTimeout(close, 12000);
+}
+
+function askNotificationPermission() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "default") {
+    Notification.requestPermission();
+  }
+}
+
+// ==================== ESCAPE ====================
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// ==================== СТАРТ ====================
+activeQuarter = getCurrentQuarter();
+currentWeekStart = getMondayOfDate(new Date());
+render();
+renderSchedule();
+
+setInterval(updateNowBar, 30000);
+setInterval(checkReminders, 1000);
+setInterval(renderReminders, 30000);
+
+updateNowBar();
+checkReminders();
+updateRemindBadge();
+
+document.addEventListener("click", askNotificationPermission, { once: true });
+</script>
+</body>
+</html>
