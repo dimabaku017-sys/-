@@ -874,17 +874,17 @@
   [data-theme="dark"] .hw-photo-thumb { border-color: var(--border); }
   .hw-photo-thumb:hover { transform: scale(1.15) rotate(-3deg); box-shadow: var(--shadow-md); }
 
-  /* ============ Модалка — по центру ============ */
+  /* ============ Модалка — по центру (как в эталоне) ============ */
   .modal-bg {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,.4);
     backdrop-filter: blur(4px);
     display: none;
-    align-items: center;      /* по центру по вертикали */
-    justify-content: center;  /* по центру по горизонтали */
+    align-items: center;      /* центр по вертикали */
+    justify-content: center;  /* центр по горизонтали */
     z-index: 100;
-    padding: 20px;
+    padding: 12px;
   }
   .modal-bg.active { display: flex; animation: bgIn .25s var(--ease); }
   @keyframes bgIn { from { opacity: 0; } to { opacity: 1; } }
@@ -894,11 +894,11 @@
     padding: 24px;
     min-width: 380px;
     max-width: 90vw;
-    max-height: calc(100vh - 40px);
+    max-height: 90vh;
     overflow-y: auto;
     text-align: center;
     box-shadow: var(--shadow-lg);
-    animation: pop .3s var(--ease);
+    animation: pop .25s var(--ease);
     color: var(--text);
   }
   @keyframes pop {
@@ -1138,13 +1138,7 @@
   }
 
   /* ============ Профиль ============ */
-  .profile-modal {
-    min-width: 420px;
-    max-width: 90vw;
-    text-align: center;
-    padding: 30px 26px 24px;
-    max-height: calc(100vh - 40px);
-  }
+  .profile-modal { min-width: 420px; max-width: 90vw; text-align: center; padding: 30px 26px 24px; }
   .profile-modal .profile-avatar-big {
     width: 150px;
     height: 150px;
@@ -1285,11 +1279,7 @@
   }
   .btn.remind .badge.empty { display: none; }
 
-  .remind-modal {
-    min-width: 460px;
-    text-align: left;
-    max-height: calc(100vh - 40px);
-  }
+  .remind-modal { min-width: 460px; text-align: left; }
   .remind-modal h3, .remind-modal .sub { text-align: center; }
 
   .remind-form {
@@ -1431,55 +1421,12 @@
   @keyframes toastIn  { from { transform: translateX(120%) scale(.9); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
   @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 
-  /* ============ Скроллбар ============ */
+  /* Скроллбар */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #c5cdd6; border-radius: 999px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
   [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #3a4a60; }
-
-  /* ============================================================
-     ============ МОБИЛЬНАЯ ВЕРСИЯ ==============================
-     ============ Модалки — по центру и ЧУТЬ ЛЕВЕЕ ===============
-     ============================================================ */
-  @media (max-width: 720px) {
-    .modal-bg {
-      align-items: center;         /* по центру по вертикали */
-      justify-content: center;     /* по центру по горизонтали */
-      padding: 12px 12px 12px 6px; /* сдвигаем центр влево на 6px */
-    }
-    .modal {
-      transform: translateX(-4vw); /* сдвигаем саму модалку влево на 4% ширины экрана */
-      min-width: 0;
-      width: calc(100vw - 32px);
-      max-width: calc(100vw - 32px);
-      padding: 20px 18px;
-    }
-    .profile-modal {
-      min-width: 0;
-      width: calc(100vw - 40px);
-      max-width: calc(100vw - 40px);
-      padding: 24px 20px 20px;
-    }
-    .remind-modal {
-      min-width: 0;
-      width: calc(100vw - 32px);
-      max-width: calc(100vw - 32px);
-    }
-    .modal-bg.active .modal {
-      transform: translateX(-4vw); /* сохраняем сдвиг при анимации */
-    }
-  }
-
-  /* Очень узкие экраны — сдвиг чуть больше */
-  @media (max-width: 400px) {
-    .modal {
-      transform: translateX(-5vw);
-    }
-    .modal-bg.active .modal {
-      transform: translateX(-5vw);
-    }
-  }
 </style>
 </head>
 <body>
