@@ -874,17 +874,17 @@
   [data-theme="dark"] .hw-photo-thumb { border-color: var(--border); }
   .hw-photo-thumb:hover { transform: scale(1.15) rotate(-3deg); box-shadow: var(--shadow-md); }
 
-  /* ============ Модалка ============ */
+  /* ============ Модалка (открывается ВЫШЕ) ============ */
   .modal-bg {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,.4);
     backdrop-filter: blur(4px);
     display: none;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     z-index: 100;
-    padding: 12px;
+    padding: 40px 12px 12px;
   }
   .modal-bg.active { display: flex; animation: bgIn .25s var(--ease); }
   @keyframes bgIn { from { opacity: 0; } to { opacity: 1; } }
@@ -894,7 +894,7 @@
     padding: 24px;
     min-width: 380px;
     max-width: 90vw;
-    max-height: 90vh;
+    max-height: calc(100vh - 60px);
     overflow-y: auto;
     text-align: center;
     box-shadow: var(--shadow-lg);
@@ -902,7 +902,7 @@
     color: var(--text);
   }
   @keyframes pop {
-    from { transform: scale(.9) translateY(20px); opacity: 0; }
+    from { transform: scale(.9) translateY(-20px); opacity: 0; }
     to   { transform: scale(1) translateY(0); opacity: 1; }
   }
   .modal h3 { font-size: 17px; color: var(--primary); margin-bottom: 6px; }
@@ -1138,7 +1138,13 @@
   }
 
   /* ============ Профиль ============ */
-  .profile-modal { min-width: 420px; max-width: 90vw; text-align: center; padding: 30px 26px 24px; }
+  .profile-modal {
+    min-width: 420px;
+    max-width: 90vw;
+    text-align: center;
+    padding: 30px 26px 24px;
+    max-height: calc(100vh - 80px);
+  }
   .profile-modal .profile-avatar-big {
     width: 150px;
     height: 150px;
@@ -1279,7 +1285,11 @@
   }
   .btn.remind .badge.empty { display: none; }
 
-  .remind-modal { min-width: 460px; text-align: left; }
+  .remind-modal {
+    min-width: 460px;
+    text-align: left;
+    max-height: calc(100vh - 80px);
+  }
   .remind-modal h3, .remind-modal .sub { text-align: center; }
 
   .remind-form {
@@ -1898,7 +1908,6 @@ function loadState() {
       if (!s.hwPhotos) s.hwPhotos = {};
       if (!s.quarters) s.quarters = {};
       if (!Array.isArray(s.reminders)) s.reminders = [];
-      // Светлая тема по умолчанию
       if (!s.theme || s.theme === "auto") s.theme = "light";
       return s;
     } catch(e) {}
@@ -2425,7 +2434,6 @@ function renderSchedule() {
   body.innerHTML = "";
   for (let slot = 0; slot < BELLS.length; slot++) {
     const tr = document.createElement("tr");
-    // ⏰ ВРЕМЯ В ОДНУ СТРОКУ
     tr.innerHTML = `<td class="num-col">${slot + 1}</td>
                     <td class="time-col">${BELLS[slot].start} – ${BELLS[slot].end}</td>`;
     for (let day = 0; day < 7; day++) {
