@@ -7,18 +7,53 @@
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="shortcut icon" href="icon.png">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #1976d2;
+    --primary-dark: #0d47a1;
+    --primary-soft: #e3f2fd;
+    --bg: #eef1f5;
+    --panel: #ffffff;
+    --text: #222;
+    --text-soft: #555;
+    --text-mute: #9e9e9e;
+    --border: #e0e0e0;
+    --orange: #ef6c00;
+    --orange-soft: #fff8e1;
+    --green: #2e7d32;
+    --red: #e53935;
+    --purple: #8e24aa;
+    --shadow-sm: 0 1px 3px rgba(20,40,80,.08);
+    --shadow-md: 0 4px 14px rgba(20,40,80,.10);
+    --shadow-lg: 0 12px 32px rgba(20,40,80,.16);
+    --ease: cubic-bezier(.4,0,.2,1);
+  }
+
+  [data-theme="dark"] {
+    --bg: #0f1420;
+    --panel: #1a2130;
+    --text: #e8eefc;
+    --text-soft: #a8b3c8;
+    --text-mute: #6b7690;
+    --border: #2a3446;
+    --primary-soft: #1a2c48;
+    --orange-soft: #2e2010;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: #eef1f5;
-    color: #222;
+    background: var(--bg);
+    color: var(--text);
     padding: 15px;
     min-height: 100vh;
+    transition: background .3s var(--ease), color .3s var(--ease);
   }
 
   /* ============ Шапка ============ */
   .header {
     background: linear-gradient(135deg, #1976d2, #0d47a1);
+    background-size: 200% 200%;
+    animation: headerShift 16s ease infinite;
     color: #fff;
     padding: 18px 28px;
     border-radius: 12px 12px 0 0;
@@ -27,15 +62,50 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
   }
-  .header h1 { font-size: 24px; }
-
+  .header::after {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.18), transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,.10), transparent 45%);
+    pointer-events: none;
+    animation: headerGlow 12s ease-in-out infinite;
+  }
+  @keyframes headerShift {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+  @keyframes headerGlow {
+    0%, 100% { transform: translate(0,0) scale(1); opacity: .8; }
+    50%      { transform: translate(5%, -4%) scale(1.08); opacity: 1; }
+  }
+  .header h1 { font-size: 24px; position: relative; z-index: 1; }
   .header-right {
     display: flex;
     align-items: center;
     gap: 14px;
+    position: relative;
+    z-index: 1;
   }
+  .theme-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.7);
+    background: rgba(255,255,255,.15);
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .25s var(--ease);
+    color: #fff;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,.3); transform: rotate(20deg); }
   .avatar-btn {
     width: 56px;
     height: 56px;
@@ -45,25 +115,22 @@
     cursor: pointer;
     padding: 0;
     overflow: hidden;
-    transition: transform .15s, border-color .15s;
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 0 0 0 rgba(255,255,255,.5);
   }
   .avatar-btn:hover {
-    transform: scale(1.06);
-    border-color: #fff;
+    transform: scale(1.08);
+    box-shadow: 0 0 0 5px rgba(255,255,255,.25);
   }
-  .avatar-btn svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
+  .avatar-btn svg { width: 100%; height: 100%; display: block; }
 
-  /* ============ Панель среднего балла ============ */
+  /* ============ Средний балл ============ */
   .score-bar {
-    background: #e3f2fd;
+    background: var(--primary-soft);
     padding: 14px 28px;
     display: flex;
     justify-content: space-between;
@@ -72,14 +139,19 @@
     border-bottom: 1px solid #bbdefb;
     flex-wrap: wrap;
     gap: 12px;
+    transition: background .3s var(--ease);
   }
-  .score-bar .label { color: #555; font-size: 13px; }
-  .score-bar b { font-size: 22px; }
-  .avg-red    { color: #e53935; }
-  .avg-orange { color: #fb8c00; }
-  .avg-green  { color: #2e7d32; }
+  [data-theme="dark"] .score-bar { border-bottom-color: var(--border); }
+  .score-bar .label { color: var(--text-soft); font-size: 13px; }
+  .score-bar b { font-size: 22px; transition: color .3s var(--ease); }
+  .avg-red    { color: #e53935; text-shadow: 0 0 10px rgba(229,57,53,.3); }
+  .avg-orange { color: #fb8c00; text-shadow: 0 0 10px rgba(251,140,0,.3); }
+  .avg-green  { color: #2e7d32; text-shadow: 0 0 10px rgba(46,125,50,.3); }
+  [data-theme="dark"] .avg-red    { color: #ff6b6b; }
+  [data-theme="dark"] .avg-orange { color: #ffb74d; }
+  [data-theme="dark"] .avg-green  { color: #66bb6a; }
 
-  /* ============ Плашка "Сейчас идёт" ============ */
+  /* ============ "Сейчас идёт" ============ */
   .now-bar {
     display: none;
     padding: 12px 28px;
@@ -89,22 +161,35 @@
     gap: 10px;
     flex-wrap: wrap;
     border-bottom: 1px solid rgba(0,0,0,.08);
+    position: relative;
+    overflow: hidden;
   }
-  .now-bar.active { display: flex; }
-  .now-bar.lesson {
-    background: linear-gradient(135deg, #43a047, #2e7d32);
-    color: #fff;
+  .now-bar.active { display: flex; animation: slideDown .3s var(--ease); }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
-  .now-bar.break {
-    background: linear-gradient(135deg, #fb8c00, #ef6c00);
-    color: #fff;
+  .now-bar.lesson { background: linear-gradient(135deg, #43a047, #2e7d32); color: #fff; }
+  .now-bar.break  { background: linear-gradient(135deg, #fb8c00, #ef6c00); color: #fff; }
+  .now-bar.soon   { background: linear-gradient(135deg, #1976d2, #0d47a1); color: #fff; }
+  .now-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+    animation: shimmer 3s infinite;
+    pointer-events: none;
   }
-  .now-bar.soon {
-    background: linear-gradient(135deg, #1976d2, #0d47a1);
-    color: #fff;
+  @keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
-  .now-bar .icon { font-size: 20px; }
-  .now-bar .now-text { flex: 1; min-width: 200px; }
+  .now-bar .icon { font-size: 20px; position: relative; z-index: 1; animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.15); }
+  }
+  .now-bar .now-text { flex: 1; min-width: 200px; position: relative; z-index: 1; }
   .now-bar .now-time {
     background: rgba(255,255,255,.25);
     padding: 4px 12px;
@@ -112,33 +197,36 @@
     font-size: 14px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+    position: relative;
+    z-index: 1;
   }
 
-  /* ============ Плашка "Задано на завтра" ============ */
+  /* ============ "Задано на завтра" ============ */
   .tomorrow-hw {
     display: none;
-    background: #fff8e1;
+    background: var(--orange-soft);
     border-top: 2px solid #ffcc80;
     padding: 16px 28px;
     font-size: 14px;
   }
-  .tomorrow-hw.active { display: block; }
+  [data-theme="dark"] .tomorrow-hw { border-top-color: var(--border); }
+  .tomorrow-hw.active { display: block; animation: fadeIn .35s var(--ease); }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
   .tomorrow-hw .th-title {
     font-weight: 700;
-    color: #e65100;
+    color: var(--orange);
     font-size: 15px;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .tomorrow-hw .th-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+  .tomorrow-hw .th-list { display: flex; flex-direction: column; gap: 8px; }
   .tomorrow-hw .th-item {
-    background: #fff;
+    background: var(--panel);
     border: 1px solid #ffe082;
     border-left: 4px solid #ff9800;
     border-radius: 6px;
@@ -146,41 +234,39 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    transition: .25s var(--ease);
+    animation: fadeIn .3s var(--ease) backwards;
   }
-  .tomorrow-hw .th-item .th-subj {
-    font-weight: 700;
-    color: #1a237e;
-    font-size: 14px;
+  [data-theme="dark"] .tomorrow-hw .th-item { border-color: var(--border); }
+  .tomorrow-hw .th-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
   }
-  .tomorrow-hw .th-item .th-meta {
-    font-size: 12px;
-    color: #666;
-  }
+  .tomorrow-hw .th-item .th-subj { font-weight: 700; color: #1a237e; font-size: 14px; }
+  [data-theme="dark"] .tomorrow-hw .th-item .th-subj { color: #82b1ff; }
+  .tomorrow-hw .th-item .th-meta { font-size: 12px; color: var(--text-soft); }
   .tomorrow-hw .th-item .th-text {
     color: #5d4037;
     font-size: 13px;
     line-height: 1.4;
     white-space: pre-wrap;
   }
-  .tomorrow-hw .th-item .th-photo {
-    margin-top: 4px;
-  }
+  [data-theme="dark"] .tomorrow-hw .th-item .th-text { color: var(--text); }
+  .tomorrow-hw .th-item .th-photo { margin-top: 4px; }
   .tomorrow-hw .th-item .th-photo img {
     max-width: 100px;
     max-height: 100px;
     border-radius: 6px;
     border: 1px solid #90caf9;
     cursor: pointer;
+    transition: .2s var(--ease);
   }
-  .tomorrow-hw .th-empty {
-    color: #9e9e9e;
-    font-style: italic;
-    font-size: 13px;
-  }
+  .tomorrow-hw .th-item .th-photo img:hover { transform: scale(1.08); }
+  .tomorrow-hw .th-empty { color: var(--text-mute); font-style: italic; font-size: 13px; }
 
-  /* ============ Блок риска ============ */
+  /* ============ Риск ============ */
   .risk-bar {
-    background: #fff8e1;
+    background: var(--orange-soft);
     border-bottom: 1px solid #ffe082;
     padding: 12px 28px;
     display: none;
@@ -189,84 +275,111 @@
     align-items: center;
     font-size: 14px;
   }
-  .risk-bar.active { display: flex; }
+  [data-theme="dark"] .risk-bar { border-bottom-color: var(--border); }
+  .risk-bar.active { display: flex; animation: slideDown .3s var(--ease); }
   .risk-bar .risk-title {
     font-weight: 700;
-    color: #e65100;
+    color: var(--orange);
     font-size: 15px;
     white-space: nowrap;
   }
   .risk-bar .risk-item {
-    background: #fff;
+    background: var(--panel);
     border: 1px solid #ffcc80;
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 13px;
-    color: #333;
+    color: var(--text);
     display: flex;
     flex-direction: column;
     gap: 2px;
     min-width: 220px;
+    transition: .25s var(--ease);
+    animation: fadeIn .35s var(--ease) backwards;
   }
-  .risk-bar .risk-item b { color: #e53935; }
-  .risk-bar .risk-item .hint {
-    font-size: 11px;
-    color: #6d4c41;
+  [data-theme="dark"] .risk-bar .risk-item { border-color: var(--border); }
+  .risk-bar .risk-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--orange);
   }
-  .risk-bar .risk-item .need {
-    color: #2e7d32;
-    font-weight: 700;
-  }
+  .risk-bar .risk-item b { color: var(--red); }
+  [data-theme="dark"] .risk-bar .risk-item b { color: #ff6b6b; }
+  .risk-bar .risk-item .hint { font-size: 11px; color: #6d4c41; }
+  [data-theme="dark"] .risk-bar .risk-item .hint { color: var(--text-soft); }
+  .risk-bar .risk-item .need { color: var(--green); font-weight: 700; }
+  [data-theme="dark"] .risk-bar .risk-item .need { color: #66bb6a; }
 
   /* ============ Табы ============ */
   .tabs {
     display: flex;
-    background: #fff;
-    border-bottom: 1px solid #e0e0e0;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    transition: background .3s var(--ease);
   }
   .tab-btn {
     padding: 14px 28px;
     border: none;
-    background: #fff;
+    background: var(--panel);
     font-size: 15px;
     font-weight: 500;
-    color: #555;
+    color: var(--text-soft);
     cursor: pointer;
     border-bottom: 3px solid transparent;
-    transition: .2s;
+    transition: .2s var(--ease);
+    position: relative;
   }
   .tab-btn.active {
-    color: #1976d2;
-    border-bottom-color: #1976d2;
+    color: var(--primary);
+    border-bottom-color: var(--primary);
     background: #f5f9ff;
   }
+  [data-theme="dark"] .tab-btn.active { background: var(--primary-soft); color: #82b1ff; }
   .tab-btn:hover { background: #f5f9ff; }
+  [data-theme="dark"] .tab-btn:hover { background: var(--primary-soft); }
 
   .tab-content { display: none; }
-  .tab-content.active { display: block; }
+  .tab-content.active { display: block; animation: tabIn .3s var(--ease); }
+  @keyframes tabIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
-  /* ============ Кнопки управления ============ */
+  /* ============ Кнопки ============ */
   .controls {
-    background: #fff;
+    background: var(--panel);
     padding: 10px 28px;
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border);
     align-items: center;
+    transition: background .3s var(--ease);
   }
   .btn {
     padding: 9px 18px;
     border: none;
-    background: #1976d2;
+    background: var(--primary);
     color: #fff;
     border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    transition: .15s;
+    transition: .2s var(--ease);
+    position: relative;
+    overflow: hidden;
   }
-  .btn:hover { background: #1565c0; }
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35), transparent 70%);
+    transform: translateX(-100%);
+    transition: transform .5s;
+  }
+  .btn:hover::before { transform: translateX(100%); }
+  .btn:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .btn:active { transform: translateY(0) scale(.98); }
   .btn.danger { background: #e53935; }
   .btn.danger:hover { background: #c62828; }
   .btn.gray   { background: #607d8b; }
@@ -284,25 +397,29 @@
     padding: 2px;
     gap: 2px;
     margin-left: 8px;
+    transition: .25s var(--ease);
   }
+  [data-theme="dark"] .quarter-switcher { background: var(--orange-soft); border-color: var(--border); }
+  .quarter-switcher:hover { box-shadow: var(--shadow-sm); }
   .quarter-switcher .arrow {
     width: 32px;
     height: 32px;
     border: none;
     background: transparent;
-    color: #e65100;
+    color: var(--orange);
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     border-radius: 6px;
-    transition: .15s;
+    transition: .2s var(--ease);
   }
-  .quarter-switcher .arrow:hover { background: #ffe0b2; }
+  .quarter-switcher .arrow:hover:not(:disabled) { background: #ffe0b2; transform: scale(1.1); }
+  [data-theme="dark"] .quarter-switcher .arrow:hover:not(:disabled) { background: rgba(255,255,255,.1); }
   .quarter-switcher .arrow:disabled { color: #cfd8dc; cursor: not-allowed; }
   .quarter-switcher .arrow:disabled:hover { background: transparent; }
   .quarter-switcher .quarter-label {
     font-weight: 700;
-    color: #e65100;
+    color: var(--orange);
     font-size: 14px;
     min-width: 130px;
     text-align: center;
@@ -311,7 +428,7 @@
 
   /* Инфо о неделе */
   .week-info {
-    background: #fff8e1;
+    background: var(--orange-soft);
     padding: 12px 28px;
     border-bottom: 1px solid #ffe082;
     display: flex;
@@ -321,20 +438,25 @@
     gap: 10px;
     font-size: 14px;
   }
-  .week-info .week-label { font-weight: 700; color: #e65100; font-size: 15px; }
+  [data-theme="dark"] .week-info { border-bottom-color: var(--border); }
+  .week-info .week-label { font-weight: 700; color: var(--orange); font-size: 15px; }
   .week-info .week-dates { color: #6d4c41; font-size: 13px; }
+  [data-theme="dark"] .week-info .week-dates { color: var(--text-soft); }
   .week-nav { display: flex; gap: 6px; flex-wrap: wrap; }
   .week-nav .btn { padding: 6px 14px; font-size: 13px; }
   .btn.today { background: #ff9800; }
   .btn.today:hover { background: #f57c00; }
+  .btn.remind { background: #8e24aa; }
+  .btn.remind:hover { background: #6a1b9a; }
 
   /* ============ Таблица оценок ============ */
   .table-wrap {
-    background: #fff;
+    background: var(--panel);
     border-radius: 0 0 12px 12px;
     overflow: auto;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    box-shadow: var(--shadow-md);
     max-height: calc(100vh - 320px);
+    transition: background .3s var(--ease);
   }
   table.grades-table {
     border-collapse: separate;
@@ -344,8 +466,8 @@
     font-size: 14px;
   }
   table.grades-table th, table.grades-table td {
-    border-right: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     padding: 6px;
     text-align: center;
     vertical-align: middle;
@@ -360,6 +482,7 @@
     color: #37474f;
     padding: 10px 6px;
   }
+  [data-theme="dark"] table.grades-table thead th { background: #202a3d; color: var(--text-soft); }
   th.subject-col, td.subject-col {
     background: #fafbfc;
     text-align: left;
@@ -371,8 +494,17 @@
     left: 0;
     z-index: 4;
     border-right: 2px solid #cfd8dc;
+    transition: .25s var(--ease);
+  }
+  [data-theme="dark"] th.subject-col, [data-theme="dark"] td.subject-col {
+    background: #202a3d;
+    border-right-color: var(--border);
   }
   thead th.subject-col { z-index: 6; }
+  tbody tr { transition: .25s var(--ease); }
+  tbody tr:hover { background: rgba(25,118,210,.04); }
+  [data-theme="dark"] tbody tr:hover { background: rgba(74,158,255,.05); }
+  tbody tr:hover td.subject-col { color: var(--primary); padding-left: 20px; }
 
   th.avg-col, td.avg-col {
     background: #f5f7fa;
@@ -384,15 +516,15 @@
     right: 100px;
     z-index: 4;
   }
+  [data-theme="dark"] th.avg-col, [data-theme="dark"] td.avg-col {
+    background: #202a3d;
+    border-left-color: var(--border);
+  }
   thead th.avg-col { z-index: 6; }
   td.avg-col { line-height: 1.3; }
   td.avg-col .weighted { font-size: 15px; }
-  td.avg-col .simple {
-    font-size: 11px;
-    color: #78909c;
-    font-weight: normal;
-    margin-top: 2px;
-  }
+  td.avg-col .simple { font-size: 11px; color: #78909c; font-weight: normal; margin-top: 2px; }
+  [data-theme="dark"] td.avg-col .simple { color: var(--text-mute); }
 
   th.quarter-col, td.quarter-col {
     background: #fff3e0;
@@ -404,38 +536,40 @@
     right: 0;
     z-index: 4;
   }
+  [data-theme="dark"] th.quarter-col, [data-theme="dark"] td.quarter-col {
+    background: var(--orange-soft);
+    border-left-color: var(--border);
+  }
   thead th.quarter-col {
     z-index: 6;
-    color: #e65100;
+    color: var(--orange);
     font-size: 12px;
     padding: 8px 6px;
   }
   thead th.quarter-col .q-name { display: block; font-size: 13px; }
-  thead th.quarter-col .q-sub {
-    display: block;
-    font-size: 10px;
-    color: #bf360c;
-    margin-top: 2px;
-  }
+  thead th.quarter-col .q-sub { display: block; font-size: 10px; color: #bf360c; margin-top: 2px; }
+  [data-theme="dark"] thead th.quarter-col .q-sub { color: var(--text-soft); }
   td.quarter-cell-main {
     cursor: pointer;
     min-width: 90px;
     height: 48px;
     font-size: 20px;
     font-weight: bold;
-    transition: background .12s;
+    transition: .2s var(--ease);
     user-select: none;
   }
-  td.quarter-cell-main:hover { background: #ffe0b2; }
+  td.quarter-cell-main:hover { background: #ffe0b2; transform: scale(1.05); }
+  [data-theme="dark"] td.quarter-cell-main:hover { background: rgba(255,255,255,.06); }
 
   td.grade-cell {
     cursor: pointer;
     min-width: 62px;
     height: 52px;
-    transition: background .12s;
+    transition: .2s var(--ease);
     user-select: none;
   }
-  td.grade-cell:hover { background: #e3f2fd; }
+  td.grade-cell:hover { background: #e3f2fd; transform: scale(1.05); }
+  [data-theme="dark"] td.grade-cell:hover { background: var(--primary-soft); }
 
   .grade-wrap {
     display: flex;
@@ -454,11 +588,18 @@
     color: #fff;
     font-weight: bold;
     font-size: 19px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+    animation: badgeIn .3s var(--ease);
+    transition: .25s var(--ease);
   }
-  .g1, .g2 { background: #e53935; }
-  .g3      { background: #fb8c00; }
-  .g4, .g5 { background: #43a047; }
+  @keyframes badgeIn {
+    from { transform: scale(.5); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  td.grade-cell:hover .grade-badge { transform: scale(1.08) rotate(-3deg); }
+  .g1, .g2 { background: linear-gradient(135deg, #ef5350, #c62828); }
+  .g3      { background: linear-gradient(135deg, #ffa726, #ef6c00); }
+  .g4, .g5 { background: linear-gradient(135deg, #66bb6a, #2e7d32); }
 
   .type-label {
     font-size: 9px;
@@ -468,9 +609,10 @@
     letter-spacing: 0.3px;
   }
   .type-label.ur { color: #607d8b; background: #eceff1; }
-  .type-label.kr { color: #fff; background: #c62828; box-shadow: 0 1px 2px rgba(198,40,40,.3); }
+  [data-theme="dark"] .type-label.ur { color: var(--text-soft); background: #2a3446; }
+  .type-label.kr { color: #fff; background: #c62828; box-shadow: 0 1px 3px rgba(198,40,40,.4); }
 
-  /* ============ Таблица четвертных ============ */
+  /* ============ Четвертные ============ */
   table.quarters-table {
     border-collapse: separate;
     border-spacing: 0;
@@ -479,8 +621,8 @@
     font-size: 14px;
   }
   table.quarters-table th, table.quarters-table td {
-    border-right: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     padding: 8px;
     text-align: center;
     vertical-align: middle;
@@ -495,6 +637,7 @@
     color: #37474f;
     padding: 12px 6px;
   }
+  [data-theme="dark"] table.quarters-table thead th { background: #202a3d; color: var(--text-soft); }
   table.quarters-table th.subject-col,
   table.quarters-table td.subject-col {
     background: #fafbfc;
@@ -508,40 +651,40 @@
     z-index: 4;
     border-right: 2px solid #cfd8dc;
   }
+  [data-theme="dark"] table.quarters-table th.subject-col,
+  [data-theme="dark"] table.quarters-table td.subject-col {
+    background: #202a3d;
+    border-right-color: var(--border);
+  }
   table.quarters-table td.quarter-cell {
     cursor: pointer;
     min-width: 100px;
     height: 52px;
     font-size: 20px;
     font-weight: bold;
-    transition: background .12s;
+    transition: .2s var(--ease);
   }
-  table.quarters-table td.quarter-cell:hover { background: #e3f2fd; }
-  table.quarters-table td.quarter-cell.final {
-    background: #fff3e0;
-    font-size: 22px;
-    cursor: default;
-  }
-  table.quarters-table td.quarter-cell.final:hover { background: #fff3e0; }
-  table.quarters-table td.quarter-cell.final.has-grade {
-    background: #e8f5e9;
-  }
+  table.quarters-table td.quarter-cell:hover { background: #e3f2fd; transform: scale(1.05); }
+  [data-theme="dark"] table.quarters-table td.quarter-cell:hover { background: var(--primary-soft); }
+  table.quarters-table td.quarter-cell.final { background: #fff3e0; font-size: 22px; cursor: default; }
+  [data-theme="dark"] table.quarters-table td.quarter-cell.final { background: var(--orange-soft); }
+  table.quarters-table td.quarter-cell.final:hover { background: #fff3e0; transform: none; }
+  [data-theme="dark"] table.quarters-table td.quarter-cell.final:hover { background: var(--orange-soft); }
+  table.quarters-table td.quarter-cell.final.has-grade { background: #e8f5e9; }
+  [data-theme="dark"] table.quarters-table td.quarter-cell.final.has-grade { background: #1a2e1c; }
   table.quarters-table td.quarter-cell.final.has-grade:hover { background: #e8f5e9; }
-  .quarter-weights {
-    font-size: 10px;
-    color: #78909c;
-    font-weight: normal;
-    display: block;
-    margin-top: 2px;
-  }
+  [data-theme="dark"] table.quarters-table td.quarter-cell.final.has-grade:hover { background: #1a2e1c; }
+  .quarter-weights { font-size: 10px; color: #78909c; font-weight: normal; display: block; margin-top: 2px; }
+  [data-theme="dark"] .quarter-weights { color: var(--text-mute); }
 
   /* ============ Расписание ============ */
   .schedule-wrap {
-    background: #fff;
+    background: var(--panel);
     border-radius: 0 0 12px 12px;
     overflow-x: auto;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    box-shadow: var(--shadow-md);
     padding: 14px;
+    transition: background .3s var(--ease);
   }
   .schedule-table {
     width: 100%;
@@ -555,14 +698,21 @@
     text-align: left;
     vertical-align: top;
     line-height: 1.4;
+    transition: background .2s var(--ease);
   }
+  [data-theme="dark"] .schedule-table th,
+  [data-theme="dark"] .schedule-table td { border-color: var(--border); }
   .schedule-table th {
-    background: #e3f2fd;
-    color: #0d47a1;
+    background: linear-gradient(180deg, #e3f2fd, #f5f7fa);
+    color: var(--primary-dark);
     font-weight: 700;
     text-align: center;
     font-size: 13px;
     padding: 10px 6px;
+  }
+  [data-theme="dark"] .schedule-table th {
+    background: var(--primary-soft);
+    color: #82b1ff;
   }
   .schedule-table th .day-name { display: block; font-size: 14px; }
   .schedule-table th .day-date {
@@ -572,12 +722,19 @@
     color: #1565c0;
     margin-top: 3px;
   }
+  [data-theme="dark"] .schedule-table th .day-date { color: #82b1ff; }
   .schedule-table th .day-date.today {
-    background: #ff9800;
+    background: linear-gradient(135deg, #ff9800, #f57c00);
     color: white;
     border-radius: 4px;
     padding: 2px 6px;
     display: inline-block;
+    box-shadow: 0 2px 8px rgba(255,152,0,.5);
+    animation: todayPulse 2s infinite;
+  }
+  @keyframes todayPulse {
+    0%, 100% { box-shadow: 0 2px 8px rgba(255,152,0,.5); }
+    50%      { box-shadow: 0 2px 14px rgba(255,152,0,.9); }
   }
   .schedule-table th.num-col,
   .schedule-table td.num-col {
@@ -589,6 +746,11 @@
     font-size: 15px;
     color: #37474f;
   }
+  [data-theme="dark"] .schedule-table th.num-col,
+  [data-theme="dark"] .schedule-table td.num-col {
+    background: #202a3d;
+    color: var(--text-soft);
+  }
   .schedule-table th.time-col,
   .schedule-table td.time-col {
     background: #f5f7fa;
@@ -597,29 +759,41 @@
     min-width: 110px;
     font-size: 12px;
     color: #37474f;
+    white-space: nowrap;
+  }
+  [data-theme="dark"] .schedule-table th.time-col,
+  [data-theme="dark"] .schedule-table td.time-col {
+    background: #202a3d;
+    color: var(--text-soft);
   }
   .schedule-table td {
-    background: #fff;
+    background: var(--panel);
     font-size: 12px;
     min-width: 175px;
     vertical-align: top;
   }
+  .schedule-table td:hover { background: var(--primary-soft); }
   .schedule-table td .subj { font-weight: 600; color: #1a237e; font-size: 13px; }
-  .schedule-table td .room { color: #666; font-size: 11px; }
-  .schedule-table td .teacher { color: #555; font-size: 11px; font-style: italic; }
+  [data-theme="dark"] .schedule-table td .subj { color: #82b1ff; }
+  .schedule-table td .room { color: var(--text-soft); font-size: 11px; }
+  .schedule-table td .teacher { color: var(--text-soft); font-size: 11px; font-style: italic; }
 
   td.day-off {
     background: #f5f5f5 !important;
     text-align: center !important;
     vertical-align: middle !important;
-    color: #9e9e9e;
+    color: var(--text-mute);
     font-style: italic;
     font-size: 13px;
     font-weight: 600;
   }
+  [data-theme="dark"] td.day-off { background: #202a3d !important; }
   td.day-off.holiday { background: #fff3e0 !important; color: #e65100; }
+  [data-theme="dark"] td.day-off.holiday { background: var(--orange-soft) !important; color: #ffb74d; }
   td.day-off.weekend { background: #eceff1 !important; color: #607d8b; }
+  [data-theme="dark"] td.day-off.weekend { background: #202a3d !important; color: var(--text-soft); }
   td.day-off.vacation { background: #e8f5e9 !important; color: #2e7d32; }
+  [data-theme="dark"] td.day-off.vacation { background: #1a2e1c !important; color: #66bb6a; }
 
   .hw-row {
     margin-top: 6px;
@@ -630,7 +804,7 @@
   }
   .hw-btn {
     background: #fff3e0;
-    color: #e65100;
+    color: var(--orange);
     border: 1px solid #ffcc80;
     border-radius: 4px;
     padding: 2px 7px;
@@ -638,14 +812,20 @@
     cursor: pointer;
     font-weight: 600;
     white-space: nowrap;
-    transition: .15s;
+    transition: .2s var(--ease);
   }
-  .hw-btn:hover { background: #ffe0b2; }
-  .hw-btn.has-hw { background: #ff9800; color: white; border-color: #f57c00; }
+  [data-theme="dark"] .hw-btn { background: var(--orange-soft); border-color: var(--border); }
+  .hw-btn:hover {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(255,152,0,.4);
+  }
+  .hw-btn.has-hw { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; border-color: transparent; }
   .hw-btn .photo-badge {
     display: inline-block;
     margin-left: 4px;
-    background: #1976d2;
+    background: var(--primary);
     color: #fff;
     border-radius: 8px;
     padding: 0 5px;
@@ -665,15 +845,21 @@
     word-wrap: break-word;
     line-height: 1.35;
     cursor: pointer;
-    transition: .15s;
+    transition: .2s var(--ease);
     user-select: none;
+    border-left: 3px solid var(--orange);
   }
-  .hw-text:hover { background: #ffecb3; }
+  [data-theme="dark"] .hw-text { background: #202a3d; color: var(--text); }
+  .hw-text:hover { background: #ffecb3; transform: translateX(2px); }
+  [data-theme="dark"] .hw-text:hover { background: var(--orange-soft); }
   .hw-text.done {
     text-decoration: line-through;
-    color: #9e9e9e;
+    color: var(--text-mute);
     background: #f5f5f5;
+    border-left-color: var(--green);
+    opacity: .7;
   }
+  [data-theme="dark"] .hw-text.done { background: #202a3d; }
 
   .hw-photo-thumb {
     margin-top: 4px;
@@ -683,24 +869,27 @@
     border-radius: 4px;
     border: 1px solid #90caf9;
     cursor: pointer;
-    transition: .15s;
+    transition: .2s var(--ease);
   }
-  .hw-photo-thumb:hover { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+  [data-theme="dark"] .hw-photo-thumb { border-color: var(--border); }
+  .hw-photo-thumb:hover { transform: scale(1.15) rotate(-3deg); box-shadow: var(--shadow-md); }
 
-  /* ============ Модальное окно ============ */
+  /* ============ Модалка — по центру (как в эталоне) ============ */
   .modal-bg {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.35);
+    background: rgba(0,0,0,.4);
+    backdrop-filter: blur(4px);
     display: none;
-    align-items: center;
-    justify-content: center;
+    align-items: center;      /* центр по вертикали */
+    justify-content: center;  /* центр по горизонтали */
     z-index: 100;
     padding: 12px;
   }
-  .modal-bg.active { display: flex; }
+  .modal-bg.active { display: flex; animation: bgIn .25s var(--ease); }
+  @keyframes bgIn { from { opacity: 0; } to { opacity: 1; } }
   .modal {
-    background: #fff;
+    background: var(--panel);
     border-radius: 12px;
     padding: 24px;
     min-width: 380px;
@@ -708,15 +897,18 @@
     max-height: 90vh;
     overflow-y: auto;
     text-align: center;
-    box-shadow: 0 12px 40px rgba(0,0,0,.25);
-    animation: pop .18s ease;
+    box-shadow: var(--shadow-lg);
+    animation: pop .25s var(--ease);
+    color: var(--text);
   }
   @keyframes pop {
     from { transform: scale(.9); opacity: 0; }
-    to   { transform: scale(1);  opacity: 1; }
+    to   { transform: scale(1); opacity: 1; }
   }
-  .modal h3 { font-size: 17px; color: #1976d2; margin-bottom: 6px; }
+  .modal h3 { font-size: 17px; color: var(--primary); margin-bottom: 6px; }
+  [data-theme="dark"] .modal h3 { color: #82b1ff; }
   .modal .sub { font-size: 13px; color: #777; margin-bottom: 16px; }
+  [data-theme="dark"] .modal .sub { color: var(--text-soft); }
 
   .modal .section-label {
     font-size: 12px;
@@ -727,6 +919,7 @@
     margin-bottom: 8px;
     text-align: left;
   }
+  [data-theme="dark"] .modal .section-label { color: var(--text-soft); }
 
   .modal .grade-btns {
     display: flex; justify-content: center; gap: 10px;
@@ -736,45 +929,51 @@
     width: 52px; height: 52px;
     border: none; border-radius: 10px;
     color: #fff; font-size: 22px; font-weight: bold;
-    cursor: pointer; transition: .12s;
+    cursor: pointer; transition: .2s var(--ease);
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
   }
   .modal .grade-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,.2);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,.25);
   }
   .modal .grade-btn.selected {
-    outline: 3px solid #1976d2;
+    outline: 3px solid var(--primary);
     outline-offset: 2px;
+    transform: scale(1.08);
   }
 
-  .modal .type-btns {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 18px;
-  }
+  .modal .type-btns { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
   .modal .type-btn {
     padding: 10px 24px;
     border: 2px solid #cfd8dc;
-    background: #fff;
+    background: var(--panel);
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
     color: #546e7a;
-    transition: .15s;
+    transition: .2s var(--ease);
     min-width: 130px;
   }
-  .modal .type-btn:hover { border-color: #90a4ae; }
+  [data-theme="dark"] .modal .type-btn { border-color: var(--border); color: var(--text-soft); }
+  .modal .type-btn:hover { border-color: #90a4ae; transform: translateY(-2px); }
   .modal .type-btn.selected[data-type="ur"] {
     border-color: #607d8b;
     background: #eceff1;
     color: #37474f;
   }
+  [data-theme="dark"] .modal .type-btn.selected[data-type="ur"] {
+    background: var(--primary-soft);
+    color: var(--text);
+  }
   .modal .type-btn.selected[data-type="kr"] {
     border-color: #c62828;
     background: #ffebee;
     color: #c62828;
+  }
+  [data-theme="dark"] .modal .type-btn.selected[data-type="kr"] {
+    background: #2e1414;
+    color: #ff6b6b;
   }
   .modal .type-btn .hint {
     display: block;
@@ -796,16 +995,19 @@
     background: #eceff1; color: #455a64;
     padding: 10px 18px; border: none; border-radius: 6px;
     cursor: pointer; font-size: 13px;
+    transition: .2s var(--ease);
   }
-  .modal .clear-btn:hover { background: #cfd8dc; }
+  [data-theme="dark"] .modal .clear-btn { background: #2a3446; color: var(--text-soft); }
+  .modal .clear-btn:hover { background: #cfd8dc; transform: translateY(-1px); }
   .modal .cancel-btn {
     background: #607d8b; color: white;
     padding: 10px 18px; border: none; border-radius: 6px;
     cursor: pointer; font-size: 13px;
+    transition: .2s var(--ease);
   }
-  .modal .cancel-btn:hover { background: #455a64; }
+  .modal .cancel-btn:hover { background: #455a64; transform: translateY(-1px); }
   .modal .save-btn {
-    background: #43a047;
+    background: linear-gradient(135deg, #43a047, #2e7d32);
     color: white;
     padding: 10px 22px;
     border: none;
@@ -813,8 +1015,10 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
+    transition: .2s var(--ease);
+    box-shadow: 0 2px 8px rgba(67,160,71,.3);
   }
-  .modal .save-btn:hover { background: #2e7d32; }
+  .modal .save-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(67,160,71,.45); }
 
   .modal textarea {
     width: 100%;
@@ -826,14 +1030,15 @@
     font-size: 14px;
     resize: vertical;
     margin-bottom: 12px;
+    background: var(--panel);
+    color: var(--text);
+    transition: .2s var(--ease);
   }
-  .modal textarea:focus { outline: 2px solid #1976d2; border-color: #1976d2; }
+  [data-theme="dark"] .modal textarea { border-color: var(--border); }
+  .modal textarea:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
   /* ============ Фото в модалке Д/З ============ */
-  .hw-photo-area {
-    margin-bottom: 14px;
-    text-align: left;
-  }
+  .hw-photo-area { margin-bottom: 14px; text-align: left; }
   .hw-photo-area .photo-label-row {
     display: flex;
     align-items: center;
@@ -849,36 +1054,33 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
+  [data-theme="dark"] .hw-photo-area .photo-label { color: var(--text-soft); }
   .gallery-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 10px 18px;
-    background: #1976d2;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: #fff;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
-    transition: .15s;
+    transition: .2s var(--ease);
     box-shadow: 0 2px 6px rgba(25,118,210,.3);
   }
-  .gallery-btn:hover { background: #1565c0; }
+  .gallery-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(25,118,210,.45); }
   .gallery-btn:active { transform: scale(.97); }
 
   #hwPhotoInput { display: none; }
 
-  .hw-photo-preview {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-  }
+  .hw-photo-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .hw-photo-preview .thumb-wrap {
     position: relative;
     width: 82px;
     height: 82px;
+    animation: badgeIn .3s var(--ease);
   }
   .hw-photo-preview img {
     width: 100%;
@@ -887,48 +1089,45 @@
     border-radius: 6px;
     border: 2px solid #90caf9;
     cursor: pointer;
-    transition: .15s;
+    transition: .25s var(--ease);
   }
-  .hw-photo-preview img:hover { border-color: #1976d2; }
+  .hw-photo-preview img:hover { border-color: var(--primary); transform: scale(1.05); }
   .hw-photo-preview .remove-photo {
     position: absolute;
     top: -6px; right: -6px;
     width: 22px; height: 22px;
     border-radius: 50%;
-    background: #e53935;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
     color: #fff;
-    border: 2px solid #fff;
+    border: 2px solid var(--panel);
     cursor: pointer;
     font-size: 13px;
     line-height: 1;
     font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,.2);
+    transition: .2s var(--ease);
   }
-  .hw-photo-preview .remove-photo:hover { background: #c62828; }
+  .hw-photo-preview .remove-photo:hover { transform: scale(1.15) rotate(90deg); }
 
-  .hw-photo-empty {
-    font-size: 12px;
-    color: #9e9e9e;
-    font-style: italic;
-    margin-top: 6px;
-  }
+  .hw-photo-empty { font-size: 12px; color: var(--text-mute); font-style: italic; margin-top: 6px; }
 
   .photo-viewer {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.85);
+    background: rgba(0,0,0,.9);
+    backdrop-filter: blur(6px);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 200;
     cursor: zoom-out;
   }
-  .photo-viewer.active { display: flex; }
+  .photo-viewer.active { display: flex; animation: bgIn .25s var(--ease); }
   .photo-viewer img {
     max-width: 92vw;
     max-height: 92vh;
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
+    animation: pop .35s var(--ease);
   }
   .photo-viewer .close-hint {
     position: fixed;
@@ -938,13 +1137,8 @@
     opacity: .8;
   }
 
-  /* ============ Модалка ПРОФИЛЯ ============ */
-  .profile-modal {
-    min-width: 420px;
-    max-width: 90vw;
-    text-align: center;
-    padding: 30px 26px 24px;
-  }
+  /* ============ Профиль ============ */
+  .profile-modal { min-width: 420px; max-width: 90vw; text-align: center; padding: 30px 26px 24px; }
   .profile-modal .profile-avatar-big {
     width: 150px;
     height: 150px;
@@ -954,18 +1148,20 @@
     border: 4px solid #ffe082;
     box-shadow: 0 4px 16px rgba(245,184,0,.35);
     background: #f5b800;
+    animation: avatarFloat 4s ease-in-out infinite;
   }
-  .profile-modal .profile-avatar-big svg {
-    width: 100%;
-    height: 100%;
-    display: block;
+  @keyframes avatarFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
   }
+  .profile-modal .profile-avatar-big svg { width: 100%; height: 100%; display: block; }
   .profile-modal .profile-name {
     font-size: 20px;
     font-weight: 700;
-    color: #0d47a1;
+    color: var(--primary-dark);
     margin-bottom: 16px;
   }
+  [data-theme="dark"] .profile-modal .profile-name { color: #82b1ff; }
   .profile-modal .profile-row {
     display: flex;
     justify-content: space-between;
@@ -977,21 +1173,22 @@
     margin-bottom: 8px;
     font-size: 14px;
     text-align: left;
+    transition: .2s var(--ease);
+    border-left: 3px solid transparent;
   }
-  .profile-modal .profile-row .pr-label {
-    color: #607d8b;
-    font-weight: 600;
-    font-size: 13px;
+  [data-theme="dark"] .profile-modal .profile-row { background: #202a3d; }
+  .profile-modal .profile-row:hover {
+    background: var(--primary-soft);
+    border-left-color: var(--primary);
+    transform: translateX(4px);
   }
-  .profile-modal .profile-row .pr-value {
-    color: #222;
-    font-weight: 500;
-    text-align: right;
-    word-break: break-word;
-  }
+  [data-theme="dark"] .profile-modal .profile-row:hover { background: var(--primary-soft); }
+  .profile-modal .profile-row .pr-label { color: #607d8b; font-weight: 600; font-size: 13px; }
+  [data-theme="dark"] .profile-modal .profile-row .pr-label { color: var(--text-soft); }
+  .profile-modal .profile-row .pr-value { color: var(--text); font-weight: 500; text-align: right; word-break: break-word; }
   .profile-modal .profile-close {
     margin-top: 14px;
-    background: #1976d2;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -999,17 +1196,13 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: .15s;
+    transition: .2s var(--ease);
+    box-shadow: 0 2px 8px rgba(25,118,210,.3);
   }
-  .profile-modal .profile-close:hover { background: #1565c0; }
+  .profile-modal .profile-close:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(25,118,210,.45); }
 
   /* Календарь */
-  .cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    margin-bottom: 14px;
-  }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 14px; }
   .cal-cell {
     padding: 10px 6px;
     text-align: center;
@@ -1017,66 +1210,53 @@
     background: #f5f7fa;
     cursor: pointer;
     font-size: 13px;
-    transition: .15s;
+    transition: .2s var(--ease);
     border: 2px solid transparent;
+    color: var(--text);
   }
-  .cal-cell:hover { background: #e3f2fd; }
-  .cal-cell.active {
-    background: #1976d2;
-    color: white;
-    font-weight: bold;
-  }
+  [data-theme="dark"] .cal-cell { background: #202a3d; }
+  .cal-cell:hover { background: #e3f2fd; transform: scale(1.08); }
+  [data-theme="dark"] .cal-cell:hover { background: var(--primary-soft); }
+  .cal-cell.active { background: var(--primary); color: white; font-weight: bold; }
   .cal-cell.header {
     background: #e3f2fd;
     cursor: default;
     font-weight: 600;
-    color: #0d47a1;
+    color: var(--primary-dark);
   }
-  .cal-cell.header:hover { background: #e3f2fd; }
-  .cal-cell.other-month { color: #bbb; background: #fafafa; }
-  .cal-cell.past { color: #ccc; }
-  .cal-cell.holiday {
-    background: #fff3e0;
-    color: #e65100;
-    font-weight: bold;
-  }
+  [data-theme="dark"] .cal-cell.header { background: var(--primary-soft); color: #82b1ff; }
+  .cal-cell.header:hover { background: #e3f2fd; transform: none; }
+  [data-theme="dark"] .cal-cell.header:hover { background: var(--primary-soft); }
+  .cal-cell.other-month { color: var(--text-mute); background: transparent; }
+  .cal-cell.past { color: var(--text-mute); opacity: .5; }
+  .cal-cell.holiday { background: #fff3e0; color: #e65100; font-weight: bold; }
+  [data-theme="dark"] .cal-cell.holiday { background: var(--orange-soft); color: #ffb74d; }
   .cal-cell.holiday:hover { background: #ffe0b2; }
-  .cal-cell.vacation {
-    background: #e8f5e9;
-    color: #2e7d32;
-    font-weight: bold;
-  }
+  .cal-cell.vacation { background: #e8f5e9; color: #2e7d32; font-weight: bold; }
+  [data-theme="dark"] .cal-cell.vacation { background: #1a2e1c; color: #66bb6a; }
   .cal-cell.vacation:hover { background: #c8e6c9; }
-  .cal-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-  .cal-nav .month-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1976d2;
-  }
+  .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .cal-nav .month-title { font-size: 18px; font-weight: 700; color: var(--primary); }
+  [data-theme="dark"] .cal-nav .month-title { color: #82b1ff; }
   .cal-nav button {
-    background: #1976d2;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
     cursor: pointer;
     font-size: 16px;
+    transition: .2s var(--ease);
+    box-shadow: var(--shadow-sm);
   }
-  .cal-nav button:hover { background: #1565c0; }
+  .cal-nav button:hover { transform: scale(1.12); box-shadow: var(--shadow-md); }
 
   #fileInput { display: none; }
 
-  /* ============ НАПОМИНАНИЯ ============ */
-  .btn.remind {
-    background: #8e24aa;
-    position: relative;
-  }
-  .btn.remind:hover { background: #6a1b9a; }
+  /* ============ Напоминания ============ */
+  .btn.remind { background: linear-gradient(135deg, #8e24aa, #6a1b9a); position: relative; }
+  .btn.remind:hover { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
   .btn.remind .badge {
     display: inline-block;
     min-width: 18px;
@@ -1090,6 +1270,12 @@
     font-size: 11px;
     font-weight: 700;
     text-align: center;
+    box-shadow: 0 0 0 2px rgba(255,82,82,.3);
+    animation: badgePulse 2s infinite;
+  }
+  @keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(255,82,82,.3); }
+    50%      { box-shadow: 0 0 0 5px rgba(255,82,82,.1); }
   }
   .btn.remind .badge.empty { display: none; }
 
@@ -1097,18 +1283,14 @@
   .remind-modal h3, .remind-modal .sub { text-align: center; }
 
   .remind-form {
-    background: #f5f9ff;
+    background: var(--primary-soft);
     border: 1px solid #bbdefb;
     border-radius: 10px;
     padding: 14px;
     margin-bottom: 16px;
   }
-  .remind-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-  }
+  [data-theme="dark"] .remind-form { border-color: var(--border); }
+  .remind-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
   .remind-row label {
     display: flex;
     flex-direction: column;
@@ -1121,41 +1303,37 @@
     flex: 1;
     min-width: 140px;
   }
+  [data-theme="dark"] .remind-row label { color: var(--text-soft); }
   .remind-row input {
     padding: 8px 10px;
     border: 1px solid #cfd8dc;
     border-radius: 6px;
     font-size: 14px;
     font-family: inherit;
-    color: #222;
+    color: var(--text);
+    background: var(--panel);
+    transition: .2s var(--ease);
   }
-  .remind-row input:focus { outline: 2px solid #1976d2; border-color: #1976d2; }
+  [data-theme="dark"] .remind-row input { border-color: var(--border); }
+  .remind-row input:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
-  .remind-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    margin-top: 10px;
-  }
+  .remind-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
 
-  .remind-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 320px;
-    overflow-y: auto;
-  }
+  .remind-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
   .remind-item {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-left: 4px solid #8e24aa;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--purple);
     border-radius: 8px;
     padding: 10px 12px;
+    transition: .25s var(--ease);
+    animation: fadeIn .3s var(--ease) backwards;
   }
-  .remind-item.past { opacity: .5; border-left-color: #bdbdbd; }
+  .remind-item:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
+  .remind-item.past { opacity: .5; border-left-color: var(--text-mute); }
   .remind-item .ri-time {
     font-size: 12px;
     font-weight: 700;
@@ -1163,10 +1341,11 @@
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
+  [data-theme="dark"] .remind-item .ri-time { color: #ba68c8; }
   .remind-item .ri-text {
     flex: 1;
     font-size: 13px;
-    color: #333;
+    color: var(--text);
     line-height: 1.35;
     word-break: break-word;
     white-space: pre-wrap;
@@ -1181,16 +1360,19 @@
     cursor: pointer;
     font-size: 14px;
     flex-shrink: 0;
+    transition: .2s var(--ease);
   }
-  .remind-item .ri-del:hover { background: #ffcdd2; }
+  [data-theme="dark"] .remind-item .ri-del { background: #2e1414; color: #ff6b6b; }
+  .remind-item .ri-del:hover { background: #c62828; color: #fff; transform: rotate(90deg); }
   .remind-empty {
     text-align: center;
-    color: #9e9e9e;
+    color: var(--text-mute);
     font-style: italic;
     font-size: 13px;
     padding: 16px;
   }
 
+  /* ============ Тосты ============ */
   .toast-wrap {
     position: fixed;
     top: 16px;
@@ -1205,38 +1387,46 @@
     pointer-events: auto;
     min-width: 260px;
     max-width: 360px;
-    background: linear-gradient(135deg, #8e24aa, #6a1b9a);
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
     color: #fff;
     padding: 14px 16px;
     border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    box-shadow: 0 12px 40px rgba(124,58,237,.5);
     font-size: 14px;
     line-height: 1.4;
-    animation: toastIn .25s ease;
+    animation: toastIn .35s var(--ease);
     display: flex;
     gap: 10px;
     align-items: flex-start;
   }
-  .toast .t-icon { font-size: 22px; flex-shrink: 0; }
+  .toast .t-icon { font-size: 22px; flex-shrink: 0; animation: pulse 1.5s infinite; }
   .toast .t-body { flex: 1; }
   .toast .t-title { font-weight: 700; margin-bottom: 3px; }
   .toast .t-text { opacity: .95; white-space: pre-wrap; word-break: break-word; }
   .toast .t-close {
-    background: transparent;
+    background: rgba(255,255,255,.15);
     border: none;
     color: #fff;
-    opacity: .7;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1;
-    padding: 0;
+    padding: 3px 7px;
+    border-radius: 6px;
     flex-shrink: 0;
+    transition: .2s var(--ease);
   }
-  .toast .t-close:hover { opacity: 1; }
-  .toast.hide { animation: toastOut .25s ease forwards; }
+  .toast .t-close:hover { background: rgba(255,255,255,.3); }
+  .toast.hide { animation: toastOut .3s var(--ease) forwards; }
 
-  @keyframes toastIn  { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes toastIn  { from { transform: translateX(120%) scale(.9); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
   @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+
+  /* Скроллбар */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #c5cdd6; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+  [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #3a4a60; }
 </style>
 </head>
 <body>
@@ -1245,6 +1435,7 @@
 <div class="header">
   <h1>📘 Дневник.ру</h1>
   <div class="header-right">
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
     <button class="avatar-btn" onclick="openProfile()" title="Профиль">
       <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
         <rect width="200" height="200" fill="#f5b800"/>
@@ -1269,13 +1460,13 @@
   <div>
     <span class="label">Общий средневзвешенный:</span>
     <b id="avgWeighted">—</b>
-    <span id="avgCount" style="font-size:12px;color:#666;"></span>
+    <span id="avgCount" style="font-size:12px;color:var(--text-soft);"></span>
   </div>
   <div>
     <span class="label">Простой средний:</span>
     <b id="avgSimple" style="font-size:18px;">—</b>
   </div>
-  <div id="today" style="font-size:13px;color:#555;"></div>
+  <div id="today" style="font-size:13px;color:var(--text-soft);"></div>
 </div>
 
 <!-- ===== Плашка "Сейчас идёт" ===== -->
@@ -1285,7 +1476,7 @@
   <span class="now-time" id="nowTime"></span>
 </div>
 
-<!-- ===== Блок риска (Топ-5) ===== -->
+<!-- ===== Блок риска ===== -->
 <div class="risk-bar" id="riskBar">
   <span class="risk-title">⚠ Внимание:</span>
   <div id="riskItems" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
@@ -1530,7 +1721,7 @@
   </div>
 </div>
 
-<!-- ===== Тосты уведомлений ===== -->
+<!-- ===== Тосты ===== -->
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
@@ -1540,7 +1731,6 @@ const WEIGHT_KR = 2;
 const QUARTER_WEIGHTS = { 1: 1, 2: 1, 3: 2, 4: 2 };
 const TARGET_AVG = 3.50;
 
-// ==================== РАСПИСАНИЕ ЗВОНКОВ ====================
 const BELLS = [
   { start: "08:30", end: "09:10" },
   { start: "09:30", end: "10:10" },
@@ -1555,16 +1745,11 @@ function timeToMin(t) {
   return h * 60 + m;
 }
 
-// ==================== ПРЕДМЕТЫ БЕЗ Д/З ====================
-const NO_HOMEWORK_SUBJECTS = [
-  "Разговоры о важном",
-  "Физкультура"
-];
+const NO_HOMEWORK_SUBJECTS = ["Разговоры о важном", "Физкультура"];
 function hasHomework(subject) {
   return !NO_HOMEWORK_SUBJECTS.includes(subject);
 }
 
-// ==================== ПРАЗДНИКИ ====================
 const HOLIDAYS = [
   { day: 23, month: 2,  name: "День защитника Отечества" },
   { day: 8,  month: 3,  name: "Международный женский день" },
@@ -1574,7 +1759,6 @@ const HOLIDAYS = [
   { day: 4,  month: 11, name: "День народного единства" }
 ];
 
-// ==================== КАНИКУЛЫ ====================
 const VACATIONS = [
   { from: new Date(2026, 9, 27),  to: new Date(2026, 10, 5),  name: "Осенние каникулы" },
   { from: new Date(2026, 11, 30), to: new Date(2027, 0, 11),  name: "Зимние каникулы" },
@@ -1600,7 +1784,6 @@ function getDayType(date) {
   return { type: "school", label: "", name: "" };
 }
 
-// ==================== АВТООПРЕДЕЛЕНИЕ ЧЕТВЕРТИ ====================
 function getQuarterByDate(date) {
   const d = new Date(date); d.setHours(0,0,0,0);
   const q1End = new Date(2026, 9, 26);
@@ -1610,7 +1793,6 @@ function getQuarterByDate(date) {
   const q3End = new Date(2027, 2, 23);
   const q4Start = new Date(2027, 3, 1);
   const q4End = new Date(2027, 4, 25);
-
   if (d <= q1End) return 1;
   if (d >= q2Start && d <= q2End) return 2;
   if (d >= q3Start && d <= q3End) return 3;
@@ -1619,7 +1801,6 @@ function getQuarterByDate(date) {
 }
 function getCurrentQuarter() { return getQuarterByDate(new Date()); }
 
-// ==================== ДАННЫЕ ====================
 const SUBJECTS_DEFAULT = [
   "Алгебра", "Геометрия", "Русский язык", "Литература",
   "Физика", "Химия", "История", "Обществознание",
@@ -1629,35 +1810,13 @@ const SUBJECTS_DEFAULT = [
 ];
 
 const DATES_BY_QUARTER_DEFAULT = {
-  1: [
-    "01.09", "03.09", "05.09", "08.09", "10.09",
-    "12.09", "15.09", "17.09", "19.09", "22.09",
-    "24.09", "26.09", "29.09", "01.10", "03.10"
-  ],
-  2: [
-    "06.11", "10.11", "12.11", "14.11", "17.11",
-    "19.11", "21.11", "24.11", "26.11", "28.11",
-    "01.12", "03.12", "05.12", "08.12", "10.12"
-  ],
-  3: [
-    "12.01", "14.01", "16.01", "19.01", "21.01",
-    "23.01", "26.01", "28.01", "30.01", "02.02",
-    "04.02", "06.02", "09.02", "11.02", "13.02"
-  ],
-  4: [
-    "01.04", "03.04", "06.04", "08.04", "10.04",
-    "13.04", "15.04", "17.04", "20.04", "22.04",
-    "24.04", "27.04", "29.04", "04.05", "06.05"
-  ]
+  1: ["01.09","03.09","05.09","08.09","10.09","12.09","15.09","17.09","19.09","22.09","24.09","26.09","29.09","01.10","03.10"],
+  2: ["06.11","10.11","12.11","14.11","17.11","19.11","21.11","24.11","26.11","28.11","01.12","03.12","05.12","08.12","10.12"],
+  3: ["12.01","14.01","16.01","19.01","21.01","23.01","26.01","28.01","30.01","02.02","04.02","06.02","09.02","11.02","13.02"],
+  4: ["01.04","03.04","06.04","08.04","10.04","13.04","15.04","17.04","20.04","22.04","24.04","27.04","29.04","04.05","06.05"]
 };
 
-const TIME_SLOTS = [
-  "08:30 – 09:10", "09:30 – 10:10", "10:30 – 11:10",
-  "11:20 – 12:00", "12:10 – 12:50", "13:20 – 14:00", "14:10 – 14:50"
-];
-
 const WEEK_SCHEDULE = [
-  // ============ ПОНЕДЕЛЬНИК ============
   [
     { subject: "Разговоры о важном", room: "16", teacher: "Уварова Ю.В." },
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
@@ -1667,7 +1826,6 @@ const WEEK_SCHEDULE = [
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." }
   ],
-  // ============ ВТОРНИК ============
   [
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
@@ -1677,7 +1835,6 @@ const WEEK_SCHEDULE = [
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Физкультура", room: "", teacher: "Акимова Е.Н." }
   ],
-  // ============ СРЕДА ============
   [
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
     { subject: "Технология", room: "22", teacher: "Злобин А.И." },
@@ -1687,7 +1844,6 @@ const WEEK_SCHEDULE = [
     { subject: "ОБЖ", room: "41", teacher: "Миляков С.В." },
     { subject: "", room: "", teacher: "" }
   ],
-  // ============ ЧЕТВЕРГ ============
   [
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
     { subject: "Физкультура", room: "", teacher: "Акимова Е.Н." },
@@ -1697,7 +1853,6 @@ const WEEK_SCHEDULE = [
     { subject: "Геометрия", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
   ],
-  // ============ ПЯТНИЦА ============
   [
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
@@ -1707,21 +1862,15 @@ const WEEK_SCHEDULE = [
     { subject: "История", room: "32", teacher: "Якунина К.П." },
     { subject: "История", room: "32", teacher: "Якунина К.П." }
   ],
-  [], // СУББОТА — выходной
-  []  // ВОСКРЕСЕНЬЕ — выходной
+  [],
+  []
 ];
 
 const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
-const MONTH_NAMES = [
-  "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-];
-const MONTH_GEN = [
-  "января", "февраля", "марта", "апреля", "мая", "июня",
-  "июля", "августа", "сентября", "октября", "ноября", "декабря"
-];
+const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+const MONTH_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 
-const STORAGE_KEY = "diary_html_v12";
+const STORAGE_KEY = "diary_html_v13";
 
 // ==================== СОСТОЯНИЕ ====================
 let state = loadState();
@@ -1732,7 +1881,6 @@ let hwPhotosTemp = [];
 let gradeModal = { subj: null, date: null, grade: null, type: "ur" };
 let currentQuarterModal = { subj: null, quarter: null };
 let activeQuarter = null;
-let nowTimer = null;
 
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -1750,6 +1898,7 @@ function loadState() {
       if (!s.hwPhotos) s.hwPhotos = {};
       if (!s.quarters) s.quarters = {};
       if (!Array.isArray(s.reminders)) s.reminders = [];
+      if (!s.theme || s.theme === "auto") s.theme = "light";
       return s;
     } catch(e) {}
   }
@@ -1757,11 +1906,8 @@ function loadState() {
     subjects: [...SUBJECTS_DEFAULT],
     gradesByQuarter: { 1: {}, 2: {}, 3: {}, 4: {} },
     datesByQuarter: JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT)),
-    homework: {},
-    hwDone: {},
-    hwPhotos: {},
-    quarters: {},
-    reminders: []
+    homework: {}, hwDone: {}, hwPhotos: {}, quarters: {},
+    reminders: [], theme: "light"
   };
 }
 function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -1773,9 +1919,22 @@ function parseGrade(v) {
   return null;
 }
 function getWeight(type) { return type === "kr" ? WEIGHT_KR : WEIGHT_UR; }
-
 function getCurrentGrades() { return state.gradesByQuarter[activeQuarter] || {}; }
 function getCurrentDates() { return state.datesByQuarter[activeQuarter] || []; }
+
+// ==================== ТЕМА ====================
+function applyTheme() {
+  let theme = state.theme;
+  if (theme !== "dark" && theme !== "light") theme = "light";
+  document.documentElement.setAttribute("data-theme", theme);
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️" : "🌙";
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute("data-theme");
+  state.theme = current === "dark" ? "light" : "dark";
+  saveState();
+  applyTheme();
+}
 
 // ==================== ДАТЫ ====================
 function getMondayOfDate(d) {
@@ -1797,15 +1956,10 @@ function isoKey(d) {
 function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
-const FIRST_MONDAY = new Date(2026, 8, 21);
 
 // ==================== ПРОФИЛЬ ====================
-function openProfile() {
-  document.getElementById("profileModalBg").classList.add("active");
-}
-function closeProfile() {
-  document.getElementById("profileModalBg").classList.remove("active");
-}
+function openProfile() { document.getElementById("profileModalBg").classList.add("active"); }
+function closeProfile() { document.getElementById("profileModalBg").classList.remove("active"); }
 document.getElementById("profileModalBg").addEventListener("click", e => {
   if (e.target.id === "profileModalBg") closeProfile();
 });
@@ -1816,13 +1970,11 @@ function updateNowBar() {
   const iconEl = document.getElementById("nowIcon");
   const textEl = document.getElementById("nowText");
   const timeEl = document.getElementById("nowTime");
-
   bar.classList.remove("active", "lesson", "break", "soon");
 
   const now = new Date();
   const day = now.getDay();
   if (day === 0 || day === 6) return;
-
   const dayInfo = getDayType(now);
   if (dayInfo.type !== "school") return;
 
@@ -1832,39 +1984,32 @@ function updateNowBar() {
 
   for (let i = 0; i < BELLS.length; i++) {
     const bell = BELLS[i];
-    const s = timeToMin(bell.start);
-    const e = timeToMin(bell.end);
+    const s = timeToMin(bell.start), e = timeToMin(bell.end);
     const lesson = lessons[i];
     if (!lesson || !lesson.subject) continue;
-
     if (nowMin >= s && nowMin < e) {
       const room = lesson.room ? `, каб. ${lesson.room}` : "";
       textEl.textContent = `Сейчас идёт: ${lesson.subject}${room}, до ${bell.end}`;
-      const leftMin = e - nowMin;
-      timeEl.textContent = `${leftMin} мин`;
+      timeEl.textContent = `${e - nowMin} мин`;
       iconEl.textContent = "📘";
       bar.classList.add("active", "lesson");
       return;
     }
   }
-
   for (let i = 0; i < BELLS.length - 1; i++) {
     const curEnd = timeToMin(BELLS[i].end);
     const nextStart = timeToMin(BELLS[i + 1].start);
     const nextLesson = lessons[i + 1];
     if (!nextLesson || !nextLesson.subject) continue;
-
     if (nowMin >= curEnd && nowMin < nextStart) {
       const room = nextLesson.room ? `, каб. ${nextLesson.room}` : "";
       textEl.textContent = `Сейчас перемена, следующий урок: ${nextLesson.subject}${room} в ${BELLS[i + 1].start}`;
-      const leftMin = nextStart - nowMin;
-      timeEl.textContent = `${leftMin} мин`;
+      timeEl.textContent = `${nextStart - nowMin} мин`;
       iconEl.textContent = "☕";
       bar.classList.add("active", "break");
       return;
     }
   }
-
   const firstBellStart = timeToMin(BELLS[0].start);
   const firstLesson = lessons[0];
   if (firstLesson && firstLesson.subject && nowMin < firstBellStart) {
@@ -1885,18 +2030,15 @@ function renderTomorrowHW() {
   const wrap = document.getElementById("tomorrowHW");
   const list = document.getElementById("thList");
   const title = document.getElementById("thTitle");
-
   wrap.classList.remove("active");
   list.innerHTML = "";
 
   const today = new Date();
   const dow = today.getDay();
-
   if (dow === 5 || dow === 6) return;
 
   const tomorrow = addDays(today, 1);
   const tomDow = tomorrow.getDay();
-
   if (tomDow === 0 || tomDow === 6) return;
 
   const tomInfo = getDayType(tomorrow);
@@ -1913,9 +2055,7 @@ function renderTomorrowHW() {
     const hwKey = `${dateKey}|${tomDayIdx}|${slotIdx}`;
     const text = (state.homework[hwKey] || "").trim();
     const photos = state.hwPhotos[hwKey] || [];
-    if (text || photos.length > 0) {
-      items.push({ lesson, slotIdx, text, photos });
-    }
+    if (text || photos.length > 0) items.push({ lesson, slotIdx, text, photos });
   });
 
   title.textContent = `📝 Задано на завтра (${DAY_NAMES[tomDayIdx]}, ${formatFull(tomorrow)})`;
@@ -1958,7 +2098,7 @@ function viewTomorrowPhoto(slotIdx, idx) {
   document.getElementById("photoViewer").classList.add("active");
 }
 
-// ==================== РАСЧЁТ ДО 3.50 ====================
+// ==================== РАСЧЁТ ====================
 function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
   let sumWV = 0, sumW = 0;
   Object.values(subjGrades).forEach(v => {
@@ -1994,8 +2134,8 @@ function renderRiskBar() {
     return;
   }
   bar.classList.add("active");
-  wrap.innerHTML = top5.map(it => `
-    <div class="risk-item">
+  wrap.innerHTML = top5.map((it, i) => `
+    <div class="risk-item" style="animation-delay:${i * .05}s">
       <div><b>${it.subj}</b> — ${it.current.toFixed(2)}</div>
       <div class="hint">до 3.50 нужно <span class="need">${it.need} ${plural5(it.need)}</span></div>
     </div>
@@ -2018,16 +2158,14 @@ function render() {
   let html = '<th class="subject-col">Предмет</th>';
   dates.forEach(d => { html += `<th>${d}</th>`; });
   html += '<th class="avg-col">Средний балл</th>';
-  html += `<th class="quarter-col">
-    <span class="q-name">Четвертная</span>
-    <span class="q-sub">${activeQuarter} четверть</span>
-  </th>`;
+  html += `<th class="quarter-col"><span class="q-name">Четвертная</span><span class="q-sub">${activeQuarter} четверть</span></th>`;
   headerRow.innerHTML = html;
 
   tbody.innerHTML = "";
-  state.subjects.forEach(subj => {
+  state.subjects.forEach((subj, idx) => {
     const subjGrades = grades[subj] || {};
     const tr = document.createElement("tr");
+    tr.style.animation = `fadeIn .35s var(--ease) ${idx * .015}s backwards`;
 
     const tdName = document.createElement("td");
     tdName.className = "subject-col";
@@ -2058,7 +2196,7 @@ function render() {
         <div class="simple">простой: ${simple.toFixed(2)}</div>`;
     } else {
       tdAvg.textContent = "—";
-      tdAvg.style.color = "#9e9e9e";
+      tdAvg.style.color = "var(--text-mute)";
     }
     tr.appendChild(tdAvg);
 
@@ -2070,7 +2208,7 @@ function render() {
       tdQ.style.color = qv < 2.5 ? "#e53935" : qv < 3.5 ? "#fb8c00" : "#2e7d32";
     } else {
       tdQ.textContent = "—";
-      tdQ.style.color = "#cfd8dc";
+      tdQ.style.color = "var(--text-mute)";
     }
     tdQ.title = "Клик — выставить четвертную";
     tdQ.onclick = () => openQuarterModal(subj, activeQuarter);
@@ -2090,12 +2228,10 @@ function updateQuarterLabel() {
   document.getElementById("qPrev").disabled = activeQuarter <= 1;
   document.getElementById("qNext").disabled = activeQuarter >= 4;
 }
-
 function changeQuarter(delta) {
   activeQuarter = Math.max(1, Math.min(4, activeQuarter + delta));
   render();
 }
-
 function calcWeightedAvg(subjGrades) {
   let sumWV = 0, sumW = 0;
   Object.values(subjGrades).forEach(v => {
@@ -2107,9 +2243,7 @@ function calcWeightedAvg(subjGrades) {
 }
 function calcSimpleAvg(subjGrades) {
   const vals = [];
-  Object.values(subjGrades).forEach(v => {
-    const p = parseGrade(v); if (p) vals.push(p.grade);
-  });
+  Object.values(subjGrades).forEach(v => { const p = parseGrade(v); if (p) vals.push(p.grade); });
   if (!vals.length) return null;
   return vals.reduce((a,b)=>a+b,0) / vals.length;
 }
@@ -2244,9 +2378,10 @@ function uploadDiary(ev) {
       if (!state.hwPhotos) state.hwPhotos = {};
       if (!state.quarters) state.quarters = {};
       if (!Array.isArray(state.reminders)) state.reminders = [];
+      if (!state.theme || state.theme === "auto") state.theme = "light";
       saveState();
       render(); renderSchedule(); renderQuarters(); updateNowBar(); renderTomorrowHW();
-      renderReminders(); updateRemindBadge(); checkReminders();
+      renderReminders(); updateRemindBadge(); checkReminders(); applyTheme();
       alert("Дневник загружен! ✅");
     } catch(err) { alert("Ошибка: " + err.message); }
   };
@@ -2266,9 +2401,7 @@ function switchTab(name, btn) {
 }
 
 // ==================== РАСПИСАНИЕ ====================
-function getWeekDates(monday) {
-  return [0,1,2,3,4,5,6].map(i => addDays(monday, i));
-}
+function getWeekDates(monday) { return [0,1,2,3,4,5,6].map(i => addDays(monday, i)); }
 
 function renderSchedule() {
   if (!currentWeekStart) currentWeekStart = getMondayOfDate(new Date());
@@ -2292,7 +2425,7 @@ function renderSchedule() {
   for (let slot = 0; slot < BELLS.length; slot++) {
     const tr = document.createElement("tr");
     tr.innerHTML = `<td class="num-col">${slot + 1}</td>
-                    <td class="time-col">${BELLS[slot].start}<br>–<br>${BELLS[slot].end}</td>`;
+                    <td class="time-col">${BELLS[slot].start} – ${BELLS[slot].end}</td>`;
     for (let day = 0; day < 7; day++) {
       const td = document.createElement("td");
       const date = dates[day];
@@ -2341,7 +2474,6 @@ function renderSchedule() {
             html += `</div>`;
           }
         }
-
         td.innerHTML = html;
       }
       tr.appendChild(td);
@@ -2349,13 +2481,9 @@ function renderSchedule() {
     body.appendChild(tr);
   }
 
-  // Инфо о неделе
   const mon = dates[0], sun = dates[6];
-  const weekLabel = document.getElementById("weekLabel");
-  const weekDates = document.getElementById("weekDates");
-  weekLabel.textContent = `Неделя ${getWeekNumber(mon)}`;
-  weekDates.textContent = `${formatFull(mon)} — ${formatFull(sun)} ${sun.getFullYear()}`;
-
+  document.getElementById("weekLabel").textContent = `Неделя ${getWeekNumber(mon)}`;
+  document.getElementById("weekDates").textContent = `${formatFull(mon)} — ${formatFull(sun)} ${sun.getFullYear()}`;
   renderTomorrowHW();
 }
 
@@ -2366,19 +2494,9 @@ function getWeekNumber(d) {
   const week1 = new Date(date.getFullYear(), 0, 4);
   return 1 + Math.round(((date - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
-
-function prevWeek() {
-  currentWeekStart = addDays(currentWeekStart, -7);
-  renderSchedule();
-}
-function nextWeek() {
-  currentWeekStart = addDays(currentWeekStart, 7);
-  renderSchedule();
-}
-function goToToday() {
-  calMonth = new Date();
-  openCal();
-}
+function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderSchedule(); }
+function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7); renderSchedule(); }
+function goToToday() { calMonth = new Date(); openCal(); }
 
 // ==================== Д/З ====================
 function openHW(dayIdx, slotIdx, dateKey) {
@@ -2393,15 +2511,11 @@ function openHW(dayIdx, slotIdx, dateKey) {
   renderHWPhotos();
   document.getElementById("hwModalBg").classList.add("active");
 }
-
 function renderHWPhotos() {
   const wrap = document.getElementById("hwPhotoPreview");
   const empty = document.getElementById("hwPhotoEmpty");
   wrap.innerHTML = "";
-  if (hwPhotosTemp.length === 0) {
-    empty.style.display = "block";
-    return;
-  }
+  if (hwPhotosTemp.length === 0) { empty.style.display = "block"; return; }
   empty.style.display = "none";
   hwPhotosTemp.forEach((p, idx) => {
     const div = document.createElement("div");
@@ -2425,10 +2539,7 @@ function addHWPhoto(ev) {
   });
   ev.target.value = "";
 }
-function removeHWPhoto(idx) {
-  hwPhotosTemp.splice(idx, 1);
-  renderHWPhotos();
-}
+function removeHWPhoto(idx) { hwPhotosTemp.splice(idx, 1); renderHWPhotos(); }
 function viewPhotoTemp(idx) {
   document.getElementById("photoViewerImg").src = hwPhotosTemp[idx];
   document.getElementById("photoViewer").classList.add("active");
@@ -2439,20 +2550,15 @@ function viewHWPhoto(hwKey, idx) {
   document.getElementById("photoViewerImg").src = photos[idx];
   document.getElementById("photoViewer").classList.add("active");
 }
-function closePhotoViewer() {
-  document.getElementById("photoViewer").classList.remove("active");
-}
+function closePhotoViewer() { document.getElementById("photoViewer").classList.remove("active"); }
 function saveHW() {
   const { date, dayIdx, slotIdx } = currentHW;
   const hwKey = `${date}|${dayIdx}|${slotIdx}`;
   const text = document.getElementById("hwText").value.trim();
-
   if (text) state.homework[hwKey] = text;
   else delete state.homework[hwKey];
-
   if (hwPhotosTemp.length > 0) state.hwPhotos[hwKey] = [...hwPhotosTemp];
   else delete state.hwPhotos[hwKey];
-
   saveState();
   closeHW();
   renderSchedule();
@@ -2504,7 +2610,7 @@ function renderQuarters() {
         sumW += w; sumWV += qv * w;
       } else {
         td.textContent = "—";
-        td.style.color = "#cfd8dc";
+        td.style.color = "var(--text-mute)";
       }
       td.onclick = () => openQuarterModal(subj, q);
       tr.appendChild(td);
@@ -2519,10 +2625,9 @@ function renderQuarters() {
       tdFinal.style.color = final < 2.5 ? "#e53935" : final < 3.5 ? "#fb8c00" : "#2e7d32";
     } else {
       tdFinal.textContent = "—";
-      tdFinal.style.color = "#cfd8dc";
+      tdFinal.style.color = "var(--text-mute)";
     }
     tr.appendChild(tdFinal);
-
     tbody.appendChild(tr);
   });
 }
@@ -2551,9 +2656,7 @@ function openQuarterModal(subj, quarter) {
   });
   document.getElementById("qModalBg").classList.add("active");
 }
-function closeQModal() {
-  document.getElementById("qModalBg").classList.remove("active");
-}
+function closeQModal() { document.getElementById("qModalBg").classList.remove("active"); }
 function clearQuarter() {
   const { subj, quarter } = currentQuarterModal;
   if (state.quarters[subj]) {
@@ -2575,23 +2678,14 @@ function openCal() {
   renderCal();
   document.getElementById("calModalBg").classList.add("active");
 }
-function closeCal() {
-  document.getElementById("calModalBg").classList.remove("active");
-}
-function prevMonth() {
-  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1);
-  renderCal();
-}
-function nextMonth() {
-  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1);
-  renderCal();
-}
+function closeCal() { document.getElementById("calModalBg").classList.remove("active"); }
+function prevMonth() { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1); renderCal(); }
+function nextMonth() { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1); renderCal(); }
 function renderCal() {
   const grid = document.getElementById("calGrid");
   const title = document.getElementById("calMonthTitle");
   const y = calMonth.getFullYear(), m = calMonth.getMonth();
   title.textContent = `${MONTH_NAMES[m]} ${y}`;
-
   grid.innerHTML = "";
   ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(d => {
     const el = document.createElement("div");
@@ -2599,36 +2693,30 @@ function renderCal() {
     el.textContent = d;
     grid.appendChild(el);
   });
-
   const first = new Date(y, m, 1);
   const startDay = (first.getDay() + 6) % 7;
   const daysInMonth = new Date(y, m + 1, 0).getDate();
   const today = new Date(); today.setHours(0,0,0,0);
-
   for (let i = 0; i < startDay; i++) {
     const el = document.createElement("div");
     el.className = "cal-cell other-month";
     el.textContent = "";
     grid.appendChild(el);
   }
-
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(y, m, day);
     const el = document.createElement("div");
     el.className = "cal-cell";
     el.textContent = day;
-
     const info = getDayType(date);
     if (info.type === "holiday") el.classList.add("holiday");
     if (info.type === "vacation") el.classList.add("vacation");
     if (date < today) el.classList.add("past");
-
     el.onclick = () => {
       currentWeekStart = getMondayOfDate(date);
       closeCal();
       switchTab("schedule", document.querySelectorAll(".tab-btn")[1]);
     };
-
     grid.appendChild(el);
   }
 }
@@ -2637,17 +2725,11 @@ document.getElementById("calModalBg").addEventListener("click", e => {
 });
 
 // ==================== НАПОМИНАНИЯ ====================
-function ensureReminders() {
-  if (!Array.isArray(state.reminders)) state.reminders = [];
-}
-
+function ensureReminders() { if (!Array.isArray(state.reminders)) state.reminders = []; }
 function getUpcomingReminders() {
   ensureReminders();
-  return state.reminders
-    .filter(r => !r.fired)
-    .sort((a, b) => a.ts - b.ts);
+  return state.reminders.filter(r => !r.fired).sort((a, b) => a.ts - b.ts);
 }
-
 function updateRemindBadge() {
   const badge = document.getElementById("remindBadge");
   if (!badge) return;
@@ -2655,7 +2737,6 @@ function updateRemindBadge() {
   badge.textContent = n;
   badge.classList.toggle("empty", n === 0);
 }
-
 function openReminders() {
   ensureReminders();
   renderReminders();
@@ -2671,11 +2752,7 @@ function openReminders() {
   document.getElementById("remindModalBg").classList.add("active");
   updateRemindBadge();
 }
-
-function closeReminders() {
-  document.getElementById("remindModalBg").classList.remove("active");
-}
-
+function closeReminders() { document.getElementById("remindModalBg").classList.remove("active"); }
 document.getElementById("remindModalBg").addEventListener("click", e => {
   if (e.target.id === "remindModalBg") closeReminders();
 });
@@ -2684,37 +2761,26 @@ function addReminder() {
   const dEl = document.getElementById("remindDate");
   const tEl = document.getElementById("remindTime");
   const xEl = document.getElementById("remindText");
-
-  const dateVal = dEl.value;
-  const timeVal = tEl.value;
-  const text = xEl.value.trim();
-
+  const dateVal = dEl.value, timeVal = tEl.value, text = xEl.value.trim();
   if (!dateVal) { alert("Выбери дату"); return; }
   if (!timeVal) { alert("Выбери время"); return; }
   if (!text)    { alert("Напиши текст напоминания"); return; }
-
   const [Y, M, D] = dateVal.split("-").map(Number);
-  const [h, m]    = timeVal.split(":").map(Number);
+  const [h, m] = timeVal.split(":").map(Number);
   const ts = new Date(Y, M - 1, D, h, m, 0, 0).getTime();
-
   if (ts <= Date.now()) {
     if (!confirm("Это время уже прошло. Всё равно добавить? Оно сработает сразу.")) return;
   }
-
   const newRem = {
     id: "r_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
-    ts,
-    text,
-    fired: false
+    ts, text, fired: false
   };
   state.reminders.push(newRem);
   state.reminders.sort((a, b) => a.ts - b.ts);
   saveState();
-
   xEl.value = "";
   renderReminders();
   updateRemindBadge();
-
   if (ts <= Date.now()) {
     newRem.fired = true;
     fireReminder(newRem);
@@ -2726,34 +2792,30 @@ function addReminder() {
     checkReminders();
   }
 }
-
 function deleteReminder(id) {
   state.reminders = state.reminders.filter(r => r.id !== id);
   saveState();
   renderReminders();
   updateRemindBadge();
 }
-
 function renderReminders() {
   ensureReminders();
   const wrap = document.getElementById("remindList");
   if (!wrap) return;
   const items = [...state.reminders].sort((a, b) => a.ts - b.ts);
-
   if (items.length === 0) {
     wrap.innerHTML = `<div class="remind-empty">Напоминаний пока нет</div>`;
     updateRemindBadge();
     return;
   }
-
   const now = Date.now();
-  wrap.innerHTML = items.map(r => {
+  wrap.innerHTML = items.map((r, i) => {
     const d = new Date(r.ts);
     const isPast = r.fired || r.ts < now;
     const dateStr = formatDate(d);
     const timeStr = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
     return `
-      <div class="remind-item ${isPast ? "past" : ""}">
+      <div class="remind-item ${isPast ? "past" : ""}" style="animation-delay:${i * .04}s">
         <div class="ri-time">
           ${dateStr}<br>${timeStr}
           ${r.fired ? "<br><span style='color:#9e9e9e'>✓ показано</span>" : ""}
@@ -2763,15 +2825,12 @@ function renderReminders() {
       </div>
     `;
   }).join("");
-
   updateRemindBadge();
 }
-
 function checkReminders() {
   ensureReminders();
   const now = Date.now();
   let changed = false;
-
   state.reminders.forEach(r => {
     if (!r.fired && r.ts <= now) {
       r.fired = true;
@@ -2779,31 +2838,21 @@ function checkReminders() {
       fireReminder(r);
     }
   });
-
   if (changed) {
     state.reminders = state.reminders.filter(r => !r.fired);
     saveState();
     updateRemindBadge();
-    if (document.getElementById("remindModalBg").classList.contains("active")) {
-      renderReminders();
-    }
+    if (document.getElementById("remindModalBg").classList.contains("active")) renderReminders();
   }
 }
-
 function fireReminder(r) {
   showToast("🔔 Напоминание", r.text);
-
   if ("Notification" in window && Notification.permission === "granted") {
     try {
-      new Notification("🔔 Дневник.ру — напоминание", {
-        body: r.text,
-        icon: "icon.png",
-        tag: r.id
-      });
+      new Notification("🔔 Дневник.ру — напоминание", { body: r.text, icon: "icon.png", tag: r.id });
     } catch (e) {}
   }
 }
-
 function showToast(title, text) {
   const wrap = document.getElementById("toastWrap");
   const el = document.createElement("div");
@@ -2818,18 +2867,15 @@ function showToast(title, text) {
   `;
   const close = () => {
     el.classList.add("hide");
-    setTimeout(() => el.remove(), 250);
+    setTimeout(() => el.remove(), 300);
   };
   el.querySelector(".t-close").onclick = close;
   wrap.appendChild(el);
   setTimeout(close, 12000);
 }
-
 function askNotificationPermission() {
   if (!("Notification" in window)) return;
-  if (Notification.permission === "default") {
-    Notification.requestPermission();
-  }
+  if (Notification.permission === "default") Notification.requestPermission();
 }
 
 // ==================== ESCAPE ====================
@@ -2843,6 +2889,7 @@ function escapeHtml(s) {
 }
 
 // ==================== СТАРТ ====================
+applyTheme();
 activeQuarter = getCurrentQuarter();
 currentWeekStart = getMondayOfDate(new Date());
 render();
