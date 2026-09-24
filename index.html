@@ -2,13 +2,14 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Дневник.ру — Бакулин Д.А.</title>
 <link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="shortcut icon" href="icon.png">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     background: #eef1f5;
     color: #222;
     padding: 15px;
@@ -29,24 +30,12 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   }
   .header h1 { font-size: 24px; }
-  .header-right { display: flex; align-items: center; gap: 14px; }
 
-  .theme-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,.7);
-    background: rgba(255,255,255,.15);
-    cursor: pointer;
-    font-size: 20px;
+  .header-right {
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: .15s;
-    color: #fff;
+    gap: 14px;
   }
-  .theme-btn:hover { background: rgba(255,255,255,.3); }
-
   .avatar-btn {
     width: 56px;
     height: 56px;
@@ -56,16 +45,23 @@
     cursor: pointer;
     padding: 0;
     overflow: hidden;
-    transition: transform .15s;
+    transition: transform .15s, border-color .15s;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
   }
-  .avatar-btn:hover { transform: scale(1.06); }
-  .avatar-btn svg { width: 100%; height: 100%; display: block; }
+  .avatar-btn:hover {
+    transform: scale(1.06);
+    border-color: #fff;
+  }
+  .avatar-btn svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 
-  /* ============ Средний балл ============ */
+  /* ============ Панель среднего балла ============ */
   .score-bar {
     background: #e3f2fd;
     padding: 14px 28px;
@@ -79,12 +75,11 @@
   }
   .score-bar .label { color: #555; font-size: 13px; }
   .score-bar b { font-size: 22px; }
-  .avg-red { color: #e53935; }
+  .avg-red    { color: #e53935; }
   .avg-orange { color: #fb8c00; }
-  .avg-green { color: #2e7d32; }
-  #today { font-size: 13px; color: #555; }
+  .avg-green  { color: #2e7d32; }
 
-  /* ============ Сейчас идёт ============ */
+  /* ============ Плашка "Сейчас идёт" ============ */
   .now-bar {
     display: none;
     padding: 12px 28px;
@@ -93,12 +88,21 @@
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    color: #fff;
+    border-bottom: 1px solid rgba(0,0,0,.08);
   }
   .now-bar.active { display: flex; }
-  .now-bar.lesson { background: linear-gradient(135deg, #43a047, #2e7d32); }
-  .now-bar.break { background: linear-gradient(135deg, #fb8c00, #ef6c00); }
-  .now-bar.soon { background: linear-gradient(135deg, #1976d2, #0d47a1); }
+  .now-bar.lesson {
+    background: linear-gradient(135deg, #43a047, #2e7d32);
+    color: #fff;
+  }
+  .now-bar.break {
+    background: linear-gradient(135deg, #fb8c00, #ef6c00);
+    color: #fff;
+  }
+  .now-bar.soon {
+    background: linear-gradient(135deg, #1976d2, #0d47a1);
+    color: #fff;
+  }
   .now-bar .icon { font-size: 20px; }
   .now-bar .now-text { flex: 1; min-width: 200px; }
   .now-bar .now-time {
@@ -107,9 +111,74 @@
     border-radius: 6px;
     font-size: 14px;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
   }
 
-  /* ============ Риск ============ */
+  /* ============ Плашка "Задано на завтра" ============ */
+  .tomorrow-hw {
+    display: none;
+    background: #fff8e1;
+    border-top: 2px solid #ffcc80;
+    padding: 16px 28px;
+    font-size: 14px;
+  }
+  .tomorrow-hw.active { display: block; }
+  .tomorrow-hw .th-title {
+    font-weight: 700;
+    color: #e65100;
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tomorrow-hw .th-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tomorrow-hw .th-item {
+    background: #fff;
+    border: 1px solid #ffe082;
+    border-left: 4px solid #ff9800;
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tomorrow-hw .th-item .th-subj {
+    font-weight: 700;
+    color: #1a237e;
+    font-size: 14px;
+  }
+  .tomorrow-hw .th-item .th-meta {
+    font-size: 12px;
+    color: #666;
+  }
+  .tomorrow-hw .th-item .th-text {
+    color: #5d4037;
+    font-size: 13px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+  }
+  .tomorrow-hw .th-item .th-photo {
+    margin-top: 4px;
+  }
+  .tomorrow-hw .th-item .th-photo img {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 6px;
+    border: 1px solid #90caf9;
+    cursor: pointer;
+  }
+  .tomorrow-hw .th-empty {
+    color: #9e9e9e;
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  /* ============ Блок риска ============ */
   .risk-bar {
     background: #fff8e1;
     border-bottom: 1px solid #ffe082;
@@ -121,7 +190,12 @@
     font-size: 14px;
   }
   .risk-bar.active { display: flex; }
-  .risk-bar .risk-title { font-weight: 700; color: #e65100; font-size: 15px; white-space: nowrap; }
+  .risk-bar .risk-title {
+    font-weight: 700;
+    color: #e65100;
+    font-size: 15px;
+    white-space: nowrap;
+  }
   .risk-bar .risk-item {
     background: #fff;
     border: 1px solid #ffcc80;
@@ -135,8 +209,14 @@
     min-width: 220px;
   }
   .risk-bar .risk-item b { color: #e53935; }
-  .risk-bar .risk-item .hint { font-size: 11px; color: #6d4c41; }
-  .risk-bar .risk-item .need { color: #2e7d32; font-weight: 700; }
+  .risk-bar .risk-item .hint {
+    font-size: 11px;
+    color: #6d4c41;
+  }
+  .risk-bar .risk-item .need {
+    color: #2e7d32;
+    font-weight: 700;
+  }
 
   /* ============ Табы ============ */
   .tabs {
@@ -165,7 +245,7 @@
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
-  /* ============ Кнопки ============ */
+  /* ============ Кнопки управления ============ */
   .controls {
     background: #fff;
     padding: 10px 28px;
@@ -189,14 +269,10 @@
   .btn:hover { background: #1565c0; }
   .btn.danger { background: #e53935; }
   .btn.danger:hover { background: #c62828; }
-  .btn.gray { background: #607d8b; }
+  .btn.gray   { background: #607d8b; }
   .btn.gray:hover { background: #455a64; }
-  .btn.green { background: #43a047; }
+  .btn.green  { background: #43a047; }
   .btn.green:hover { background: #2e7d32; }
-  .btn.today { background: #ff9800; }
-  .btn.today:hover { background: #f57c00; }
-  .btn.remind { background: #8e24aa; }
-  .btn.remind:hover { background: #6a1b9a; }
 
   /* Переключатель четверти */
   .quarter-switcher {
@@ -249,22 +325,8 @@
   .week-info .week-dates { color: #6d4c41; font-size: 13px; }
   .week-nav { display: flex; gap: 6px; flex-wrap: wrap; }
   .week-nav .btn { padding: 6px 14px; font-size: 13px; }
-
-  .btn.remind .badge {
-    display: inline-block;
-    min-width: 18px;
-    height: 18px;
-    line-height: 18px;
-    padding: 0 5px;
-    margin-left: 6px;
-    background: #ff5252;
-    color: #fff;
-    border-radius: 9px;
-    font-size: 11px;
-    font-weight: 700;
-    text-align: center;
-  }
-  .btn.remind .badge.empty { display: none; }
+  .btn.today { background: #ff9800; }
+  .btn.today:hover { background: #f57c00; }
 
   /* ============ Таблица оценок ============ */
   .table-wrap {
@@ -325,7 +387,12 @@
   thead th.avg-col { z-index: 6; }
   td.avg-col { line-height: 1.3; }
   td.avg-col .weighted { font-size: 15px; }
-  td.avg-col .simple { font-size: 11px; color: #78909c; font-weight: normal; margin-top: 2px; }
+  td.avg-col .simple {
+    font-size: 11px;
+    color: #78909c;
+    font-weight: normal;
+    margin-top: 2px;
+  }
 
   th.quarter-col, td.quarter-col {
     background: #fff3e0;
@@ -344,7 +411,12 @@
     padding: 8px 6px;
   }
   thead th.quarter-col .q-name { display: block; font-size: 13px; }
-  thead th.quarter-col .q-sub { display: block; font-size: 10px; color: #bf360c; margin-top: 2px; }
+  thead th.quarter-col .q-sub {
+    display: block;
+    font-size: 10px;
+    color: #bf360c;
+    margin-top: 2px;
+  }
   td.quarter-cell-main {
     cursor: pointer;
     min-width: 90px;
@@ -385,7 +457,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,.15);
   }
   .g1, .g2 { background: #e53935; }
-  .g3 { background: #fb8c00; }
+  .g3      { background: #fb8c00; }
   .g4, .g5 { background: #43a047; }
 
   .type-label {
@@ -396,7 +468,7 @@
     letter-spacing: 0.3px;
   }
   .type-label.ur { color: #607d8b; background: #eceff1; }
-  .type-label.kr { color: #fff; background: #c62828; }
+  .type-label.kr { color: #fff; background: #c62828; box-shadow: 0 1px 2px rgba(198,40,40,.3); }
 
   /* ============ Таблица четвертных ============ */
   table.quarters-table {
@@ -445,11 +517,23 @@
     transition: background .12s;
   }
   table.quarters-table td.quarter-cell:hover { background: #e3f2fd; }
-  table.quarters-table td.quarter-cell.final { background: #fff3e0; font-size: 22px; cursor: default; }
+  table.quarters-table td.quarter-cell.final {
+    background: #fff3e0;
+    font-size: 22px;
+    cursor: default;
+  }
   table.quarters-table td.quarter-cell.final:hover { background: #fff3e0; }
-  table.quarters-table td.quarter-cell.final.has-grade { background: #e8f5e9; }
+  table.quarters-table td.quarter-cell.final.has-grade {
+    background: #e8f5e9;
+  }
   table.quarters-table td.quarter-cell.final.has-grade:hover { background: #e8f5e9; }
-  .quarter-weights { font-size: 10px; color: #78909c; font-weight: normal; display: block; margin-top: 2px; }
+  .quarter-weights {
+    font-size: 10px;
+    color: #78909c;
+    font-weight: normal;
+    display: block;
+    margin-top: 2px;
+  }
 
   /* ============ Расписание ============ */
   .schedule-wrap {
@@ -513,7 +597,6 @@
     min-width: 110px;
     font-size: 12px;
     color: #37474f;
-    white-space: nowrap;
   }
   .schedule-table td {
     background: #fff;
@@ -604,7 +687,7 @@
   }
   .hw-photo-thumb:hover { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
 
-  /* ============ Модалка ============ */
+  /* ============ Модальное окно ============ */
   .modal-bg {
     position: fixed;
     inset: 0;
@@ -630,7 +713,7 @@
   }
   @keyframes pop {
     from { transform: scale(.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    to   { transform: scale(1);  opacity: 1; }
   }
   .modal h3 { font-size: 17px; color: #1976d2; margin-bottom: 6px; }
   .modal .sub { font-size: 13px; color: #777; margin-bottom: 16px; }
@@ -655,10 +738,21 @@
     color: #fff; font-size: 22px; font-weight: bold;
     cursor: pointer; transition: .12s;
   }
-  .modal .grade-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.2); }
-  .modal .grade-btn.selected { outline: 3px solid #1976d2; outline-offset: 2px; }
+  .modal .grade-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,.2);
+  }
+  .modal .grade-btn.selected {
+    outline: 3px solid #1976d2;
+    outline-offset: 2px;
+  }
 
-  .modal .type-btns { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
+  .modal .type-btns {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
   .modal .type-btn {
     padding: 10px 24px;
     border: 2px solid #cfd8dc;
@@ -736,7 +830,10 @@
   .modal textarea:focus { outline: 2px solid #1976d2; border-color: #1976d2; }
 
   /* ============ Фото в модалке Д/З ============ */
-  .hw-photo-area { margin-bottom: 14px; text-align: left; }
+  .hw-photo-area {
+    margin-bottom: 14px;
+    text-align: left;
+  }
   .hw-photo-area .photo-label-row {
     display: flex;
     align-items: center;
@@ -765,15 +862,27 @@
     font-size: 14px;
     font-weight: 600;
     transition: .15s;
+    box-shadow: 0 2px 6px rgba(25,118,210,.3);
   }
   .gallery-btn:hover { background: #1565c0; }
+  .gallery-btn:active { transform: scale(.97); }
 
   #hwPhotoInput { display: none; }
 
-  .hw-photo-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-  .hw-photo-preview .thumb-wrap { position: relative; width: 82px; height: 82px; }
+  .hw-photo-preview {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .hw-photo-preview .thumb-wrap {
+    position: relative;
+    width: 82px;
+    height: 82px;
+  }
   .hw-photo-preview img {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     border-radius: 6px;
     border: 2px solid #90caf9;
@@ -793,10 +902,16 @@
     font-size: 13px;
     line-height: 1;
     font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,.2);
   }
   .hw-photo-preview .remove-photo:hover { background: #c62828; }
 
-  .hw-photo-empty { font-size: 12px; color: #9e9e9e; font-style: italic; margin-top: 6px; }
+  .hw-photo-empty {
+    font-size: 12px;
+    color: #9e9e9e;
+    font-style: italic;
+    margin-top: 6px;
+  }
 
   .photo-viewer {
     position: fixed;
@@ -823,7 +938,7 @@
     opacity: .8;
   }
 
-  /* ============ Профиль ============ */
+  /* ============ Модалка ПРОФИЛЯ ============ */
   .profile-modal {
     min-width: 420px;
     max-width: 90vw;
@@ -840,7 +955,11 @@
     box-shadow: 0 4px 16px rgba(245,184,0,.35);
     background: #f5b800;
   }
-  .profile-modal .profile-avatar-big svg { width: 100%; height: 100%; display: block; }
+  .profile-modal .profile-avatar-big svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
   .profile-modal .profile-name {
     font-size: 20px;
     font-weight: 700;
@@ -859,7 +978,11 @@
     font-size: 14px;
     text-align: left;
   }
-  .profile-modal .profile-row .pr-label { color: #607d8b; font-weight: 600; font-size: 13px; }
+  .profile-modal .profile-row .pr-label {
+    color: #607d8b;
+    font-weight: 600;
+    font-size: 13px;
+  }
   .profile-modal .profile-row .pr-value {
     color: #222;
     font-weight: 500;
@@ -898,7 +1021,11 @@
     border: 2px solid transparent;
   }
   .cal-cell:hover { background: #e3f2fd; }
-  .cal-cell.active { background: #1976d2; color: white; font-weight: bold; }
+  .cal-cell.active {
+    background: #1976d2;
+    color: white;
+    font-weight: bold;
+  }
   .cal-cell.header {
     background: #e3f2fd;
     cursor: default;
@@ -908,9 +1035,17 @@
   .cal-cell.header:hover { background: #e3f2fd; }
   .cal-cell.other-month { color: #bbb; background: #fafafa; }
   .cal-cell.past { color: #ccc; }
-  .cal-cell.holiday { background: #fff3e0; color: #e65100; font-weight: bold; }
+  .cal-cell.holiday {
+    background: #fff3e0;
+    color: #e65100;
+    font-weight: bold;
+  }
   .cal-cell.holiday:hover { background: #ffe0b2; }
-  .cal-cell.vacation { background: #e8f5e9; color: #2e7d32; font-weight: bold; }
+  .cal-cell.vacation {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: bold;
+  }
   .cal-cell.vacation:hover { background: #c8e6c9; }
   .cal-nav {
     display: flex;
@@ -918,7 +1053,11 @@
     align-items: center;
     margin-bottom: 14px;
   }
-  .cal-nav .month-title { font-size: 18px; font-weight: 700; color: #1976d2; }
+  .cal-nav .month-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1976d2;
+  }
   .cal-nav button {
     background: #1976d2;
     color: white;
@@ -933,8 +1072,30 @@
   #fileInput { display: none; }
 
   /* ============ НАПОМИНАНИЯ ============ */
+  .btn.remind {
+    background: #8e24aa;
+    position: relative;
+  }
+  .btn.remind:hover { background: #6a1b9a; }
+  .btn.remind .badge {
+    display: inline-block;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    padding: 0 5px;
+    margin-left: 6px;
+    background: #ff5252;
+    color: #fff;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .btn.remind .badge.empty { display: none; }
+
   .remind-modal { min-width: 460px; text-align: left; }
   .remind-modal h3, .remind-modal .sub { text-align: center; }
+
   .remind-form {
     background: #f5f9ff;
     border: 1px solid #bbdefb;
@@ -942,7 +1103,12 @@
     padding: 14px;
     margin-bottom: 16px;
   }
-  .remind-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .remind-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
   .remind-row label {
     display: flex;
     flex-direction: column;
@@ -964,8 +1130,21 @@
     color: #222;
   }
   .remind-row input:focus { outline: 2px solid #1976d2; border-color: #1976d2; }
-  .remind-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
-  .remind-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
+
+  .remind-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  .remind-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
   .remind-item {
     display: flex;
     align-items: flex-start;
@@ -982,7 +1161,7 @@
     font-weight: 700;
     color: #6a1b9a;
     white-space: nowrap;
-    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
   }
   .remind-item .ri-text {
     flex: 1;
@@ -1012,7 +1191,6 @@
     padding: 16px;
   }
 
-  /* Тосты */
   .toast-wrap {
     position: fixed;
     top: 16px;
@@ -1056,77 +1234,9 @@
   }
   .toast .t-close:hover { opacity: 1; }
   .toast.hide { animation: toastOut .25s ease forwards; }
-  @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-  @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 
-  /* ============ ТЁМНАЯ ТЕМА (по кнопке) ============ */
-  [data-theme="dark"] body { background: #0f1420; color: #e8eefc; }
-  [data-theme="dark"] .header { background: linear-gradient(135deg, #0d47a1, #1a1a3a); }
-  [data-theme="dark"] .score-bar { background: #1a2130; border-bottom-color: #2a3446; color: #e8eefc; }
-  [data-theme="dark"] .score-bar .label { color: #a8b3c8; }
-  [data-theme="dark"] #today { color: #a8b3c8; }
-  [data-theme="dark"] .risk-bar { background: #2e2010; border-bottom-color: #3a2a18; }
-  [data-theme="dark"] .risk-bar .risk-item { background: #1a2130; border-color: #2a3446; color: #e8eefc; }
-  [data-theme="dark"] .tabs { background: #1a2130; border-bottom-color: #2a3446; }
-  [data-theme="dark"] .tab-btn { background: #1a2130; color: #a8b3c8; }
-  [data-theme="dark"] .tab-btn.active { background: #1a2c48; }
-  [data-theme="dark"] .tab-btn:hover { background: #202a3d; }
-  [data-theme="dark"] .controls { background: #1a2130; border-bottom-color: #2a3446; }
-  [data-theme="dark"] .week-info { background: #2e2010; border-bottom-color: #3a2a18; }
-  [data-theme="dark"] .week-info .week-dates { color: #c8b8a8; }
-  [data-theme="dark"] .table-wrap { background: #1a2130; }
-  [data-theme="dark"] table.grades-table th,
-  [data-theme="dark"] table.grades-table td { border-color: #2a3446; }
-  [data-theme="dark"] table.grades-table thead th { background: #202a3d; color: #a8b3c8; }
-  [data-theme="dark"] th.subject-col, [data-theme="dark"] td.subject-col { background: #202a3d; color: #e8eefc; border-right-color: #2a3446; }
-  [data-theme="dark"] th.avg-col, [data-theme="dark"] td.avg-col { background: #202a3d; border-left-color: #2a3446; }
-  [data-theme="dark"] th.quarter-col, [data-theme="dark"] td.quarter-col { background: #2e2010; border-left-color: #3a2a18; }
-  [data-theme="dark"] td.quarter-cell-main:hover { background: #3a2a18; }
-  [data-theme="dark"] td.grade-cell:hover { background: #1a2c48; }
-  [data-theme="dark"] table.quarters-table th,
-  [data-theme="dark"] table.quarters-table td { border-color: #2a3446; }
-  [data-theme="dark"] table.quarters-table thead th { background: #202a3d; color: #a8b3c8; }
-  [data-theme="dark"] table.quarters-table th.subject-col,
-  [data-theme="dark"] table.quarters-table td.subject-col { background: #202a3d; border-right-color: #2a3446; }
-  [data-theme="dark"] table.quarters-table td.quarter-cell:hover { background: #1a2c48; }
-  [data-theme="dark"] table.quarters-table td.quarter-cell.final { background: #2e2010; }
-  [data-theme="dark"] table.quarters-table td.quarter-cell.final.has-grade { background: #1a2e1c; }
-  [data-theme="dark"] .schedule-wrap { background: #1a2130; }
-  [data-theme="dark"] .schedule-table th,
-  [data-theme="dark"] .schedule-table td { border-color: #2a3446; }
-  [data-theme="dark"] .schedule-table th { background: #1a2c48; color: #4a9eff; }
-  [data-theme="dark"] .schedule-table th .day-date { color: #4a9eff; }
-  [data-theme="dark"] .schedule-table th.num-col,
-  [data-theme="dark"] .schedule-table td.num-col { background: #202a3d; color: #a8b3c8; }
-  [data-theme="dark"] .schedule-table th.time-col,
-  [data-theme="dark"] .schedule-table td.time-col { background: #202a3d; color: #a8b3c8; }
-  [data-theme="dark"] .schedule-table td { background: #1a2130; color: #e8eefc; }
-  [data-theme="dark"] .schedule-table td .subj { color: #4a9eff; }
-  [data-theme="dark"] .schedule-table td .room { color: #a8b3c8; }
-  [data-theme="dark"] .schedule-table td .teacher { color: #a8b3c8; }
-  [data-theme="dark"] td.day-off { background: #202a3d !important; color: #6b7690; }
-  [data-theme="dark"] td.day-off.holiday { background: #2e2010 !important; color: #ff9800; }
-  [data-theme="dark"] td.day-off.weekend { background: #202a3d !important; color: #6b7690; }
-  [data-theme="dark"] td.day-off.vacation { background: #1a2e1c !important; color: #4caf50; }
-  [data-theme="dark"] .hw-btn { background: #2e2010; border-color: #3a2a18; color: #ff9800; }
-  [data-theme="dark"] .hw-text { background: #202a3d; color: #e8eefc; }
-  [data-theme="dark"] .hw-text:hover { background: #2e2010; }
-  [data-theme="dark"] .hw-text.done { background: #202a3d; }
-  [data-theme="dark"] .modal { background: #1a2130; color: #e8eefc; }
-  [data-theme="dark"] .modal h3 { color: #4a9eff; }
-  [data-theme="dark"] .modal .sub { color: #a8b3c8; }
-  [data-theme="dark"] .modal textarea { background: #202a3d; color: #e8eefc; border-color: #2a3446; }
-  [data-theme="dark"] .modal .type-btn { background: #1a2130; border-color: #2a3446; color: #a8b3c8; }
-  [data-theme="dark"] .profile-modal .profile-name { color: #4a9eff; }
-  [data-theme="dark"] .profile-modal .profile-row { background: #202a3d; }
-  [data-theme="dark"] .profile-modal .profile-row .pr-value { color: #e8eefc; }
-  [data-theme="dark"] .cal-cell { background: #202a3d; color: #e8eefc; }
-  [data-theme="dark"] .cal-cell.header { background: #1a2c48; color: #4a9eff; }
-  [data-theme="dark"] .cal-cell.other-month { background: #151c28; color: #4a5568; }
-  [data-theme="dark"] .remind-form { background: #1a2c48; border-color: #2a3446; }
-  [data-theme="dark"] .remind-row input { background: #1a2130; color: #e8eefc; border-color: #2a3446; }
-  [data-theme="dark"] .remind-item { background: #1a2130; border-color: #2a3446; }
-  [data-theme="dark"] .remind-item .ri-text { color: #e8eefc; }
+  @keyframes toastIn  { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 </style>
 </head>
 <body>
@@ -1135,7 +1245,6 @@
 <div class="header">
   <h1>📘 Дневник.ру</h1>
   <div class="header-right">
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
     <button class="avatar-btn" onclick="openProfile()" title="Профиль">
       <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
         <rect width="200" height="200" fill="#f5b800"/>
@@ -1166,17 +1275,17 @@
     <span class="label">Простой средний:</span>
     <b id="avgSimple" style="font-size:18px;">—</b>
   </div>
-  <div id="today">—</div>
+  <div id="today" style="font-size:13px;color:#555;"></div>
 </div>
 
-<!-- ===== Плашка «Сейчас идёт» ===== -->
+<!-- ===== Плашка "Сейчас идёт" ===== -->
 <div class="now-bar" id="nowBar">
   <span class="icon" id="nowIcon">🔔</span>
   <span class="now-text" id="nowText"></span>
   <span class="now-time" id="nowTime"></span>
 </div>
 
-<!-- ===== Блок риска ===== -->
+<!-- ===== Блок риска (Топ-5) ===== -->
 <div class="risk-bar" id="riskBar">
   <span class="risk-title">⚠ Внимание:</span>
   <div id="riskItems" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
@@ -1189,7 +1298,7 @@
   <button class="tab-btn" onclick="switchTab('quarters', this)">🎓 Четвертные</button>
 </div>
 
-<!-- ==================== ОЦЕНКИ ==================== -->
+<!-- ==================== ВКЛАДКА ОЦЕНКИ ==================== -->
 <div class="tab-content active" id="tab-grades">
   <div class="controls">
     <button class="btn green" onclick="downloadDiary()">💾 Скачать дневник</button>
@@ -1213,7 +1322,7 @@
   </div>
 </div>
 
-<!-- ==================== РАСПИСАНИЕ ==================== -->
+<!-- ==================== ВКЛАДКА РАСПИСАНИЕ ==================== -->
 <div class="tab-content" id="tab-schedule">
   <div class="week-info">
     <div>
@@ -1235,13 +1344,13 @@
     </table>
   </div>
 
-  <div class="tomorrow-hw" id="tomorrowHW" style="display:none;background:#fff8e1;border-top:2px solid #ffcc80;padding:16px 28px;font-size:14px;">
-    <div id="thTitle" style="font-weight:700;color:#e65100;font-size:15px;margin-bottom:10px;">📝 Задано на завтра</div>
-    <div id="thList" style="display:flex;flex-direction:column;gap:8px;"></div>
+  <div class="tomorrow-hw" id="tomorrowHW">
+    <div class="th-title" id="thTitle">📝 Задано на завтра</div>
+    <div class="th-list" id="thList"></div>
   </div>
 </div>
 
-<!-- ==================== ЧЕТВЕРТНЫЕ ==================== -->
+<!-- ==================== ВКЛАДКА ЧЕТВЕРТНЫЕ ==================== -->
 <div class="tab-content" id="tab-quarters">
   <div class="table-wrap">
     <table class="quarters-table" id="quartersTable">
@@ -1351,11 +1460,26 @@
     </div>
     <div class="profile-name">Бакулин Дмитрий Алексеевич</div>
 
-    <div class="profile-row"><span class="pr-label">Класс</span><span class="pr-value">9Б</span></div>
-    <div class="profile-row"><span class="pr-label">Школа</span><span class="pr-value">Гимназия №10, Воронеж</span></div>
-    <div class="profile-row"><span class="pr-label">Дата рождения</span><span class="pr-value">22.07.2011</span></div>
-    <div class="profile-row"><span class="pr-label">Телефон</span><span class="pr-value">+7 950 759-68-56</span></div>
-    <div class="profile-row"><span class="pr-label">Электронная почта</span><span class="pr-value">dimabaku017@gmail.com</span></div>
+    <div class="profile-row">
+      <span class="pr-label">Класс</span>
+      <span class="pr-value">9Б</span>
+    </div>
+    <div class="profile-row">
+      <span class="pr-label">Школа</span>
+      <span class="pr-value">Гимназия №10, Воронеж</span>
+    </div>
+    <div class="profile-row">
+      <span class="pr-label">Дата рождения</span>
+      <span class="pr-value">22.07.2011</span>
+    </div>
+    <div class="profile-row">
+      <span class="pr-label">Телефон</span>
+      <span class="pr-value">+7 950 759-68-56</span>
+    </div>
+    <div class="profile-row">
+      <span class="pr-label">Электронная почта</span>
+      <span class="pr-value">dimabaku017@gmail.com</span>
+    </div>
 
     <button class="profile-close" onclick="closeProfile()">Закрыть</button>
   </div>
@@ -1384,12 +1508,16 @@
 <div class="modal-bg" id="remindModalBg">
   <div class="modal remind-modal">
     <h3>🔔 Напоминания</h3>
-    <div class="sub">Уведомление придёт в указанное время</div>
+    <div class="sub">Уведомление придёт в указанное время и исчезнет</div>
 
     <div class="remind-form">
       <div class="remind-row">
-        <label>Дата <input type="date" id="remindDate"></label>
-        <label>Время <input type="time" id="remindTime"></label>
+        <label>Дата
+          <input type="date" id="remindDate">
+        </label>
+        <label>Время
+          <input type="time" id="remindTime">
+        </label>
       </div>
       <textarea id="remindText" placeholder="О чём напомнить?"></textarea>
       <div class="remind-actions">
@@ -1402,7 +1530,7 @@
   </div>
 </div>
 
-<!-- ===== Тосты ===== -->
+<!-- ===== Тосты уведомлений ===== -->
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
@@ -1411,8 +1539,8 @@ const WEIGHT_UR = 1;
 const WEIGHT_KR = 2;
 const QUARTER_WEIGHTS = { 1: 1, 2: 1, 3: 2, 4: 2 };
 const TARGET_AVG = 3.50;
-const STORAGE_KEY = "diary_html_v14";
 
+// ==================== РАСПИСАНИЕ ЗВОНКОВ ====================
 const BELLS = [
   { start: "08:30", end: "09:10" },
   { start: "09:30", end: "10:10" },
@@ -1422,67 +1550,114 @@ const BELLS = [
   { start: "13:20", end: "14:00" },
   { start: "14:10", end: "14:50" }
 ];
-function timeToMin(t) { const [h,m] = t.split(":").map(Number); return h*60+m; }
-
-const NO_HOMEWORK_SUBJECTS = ["Разговоры о важном", "Физкультура"];
-function hasHomework(s) { return !NO_HOMEWORK_SUBJECTS.includes(s); }
-
-const HOLIDAYS = [
-  { day: 23, month: 2, name: "День защитника Отечества" },
-  { day: 8, month: 3, name: "Международный женский день" },
-  { day: 1, month: 5, name: "Праздник Весны и Труда" },
-  { day: 9, month: 5, name: "День Победы" },
-  { day: 12, month: 6, name: "День России" },
-  { day: 4, month: 11, name: "День народного единства" }
-];
-
-const VACATIONS = [
-  { from: new Date(2026, 9, 27), to: new Date(2026, 10, 5), name: "Осенние каникулы" },
-  { from: new Date(2026, 11, 30), to: new Date(2027, 0, 11), name: "Зимние каникулы" },
-  { from: new Date(2027, 2, 24), to: new Date(2027, 2, 31), name: "Весенние каникулы" },
-  { from: new Date(2027, 4, 26), to: new Date(2027, 7, 31), name: "Летние каникулы" }
-];
-
-function getHoliday(d) { return HOLIDAYS.find(h => h.day === d.getDate() && h.month === d.getMonth()+1) || null; }
-function getVacation(d) {
-  const x = new Date(d); x.setHours(0,0,0,0);
-  return VACATIONS.find(v => x >= v.from && x <= v.to) || null;
+function timeToMin(t) {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
 }
-function getDayType(d) {
-  const v = getVacation(d);
-  if (v) return { type: "vacation", label: `🎒 ${v.name}`, name: v.name };
-  const h = getHoliday(d);
-  if (h) return { type: "holiday", label: `🎉 ${h.name}`, name: h.name };
-  const dow = d.getDay();
+
+// ==================== ПРЕДМЕТЫ БЕЗ Д/З ====================
+const NO_HOMEWORK_SUBJECTS = [
+  "Разговоры о важном",
+  "Физкультура"
+];
+function hasHomework(subject) {
+  return !NO_HOMEWORK_SUBJECTS.includes(subject);
+}
+
+// ==================== ПРАЗДНИКИ ====================
+const HOLIDAYS = [
+  { day: 23, month: 2,  name: "День защитника Отечества" },
+  { day: 8,  month: 3,  name: "Международный женский день" },
+  { day: 1,  month: 5,  name: "Праздник Весны и Труда" },
+  { day: 9,  month: 5,  name: "День Победы" },
+  { day: 12, month: 6,  name: "День России" },
+  { day: 4,  month: 11, name: "День народного единства" }
+];
+
+// ==================== КАНИКУЛЫ ====================
+const VACATIONS = [
+  { from: new Date(2026, 9, 27),  to: new Date(2026, 10, 5),  name: "Осенние каникулы" },
+  { from: new Date(2026, 11, 30), to: new Date(2027, 0, 11),  name: "Зимние каникулы" },
+  { from: new Date(2027, 0, 1),   to: new Date(2027, 0, 8),   name: "Новогодние каникулы" },
+  { from: new Date(2027, 2, 24),  to: new Date(2027, 2, 31),  name: "Весенние каникулы" },
+  { from: new Date(2027, 4, 26),  to: new Date(2027, 7, 31),  name: "Летние каникулы" }
+];
+
+function getHoliday(date) {
+  return HOLIDAYS.find(h => h.day === date.getDate() && h.month === date.getMonth() + 1) || null;
+}
+function getVacation(date) {
+  const d = new Date(date); d.setHours(0,0,0,0);
+  return VACATIONS.find(v => d >= v.from && d <= v.to) || null;
+}
+function getDayType(date) {
+  const vac = getVacation(date);
+  if (vac) return { type: "vacation", label: `🎒 ${vac.name}`, name: vac.name };
+  const hol = getHoliday(date);
+  if (hol) return { type: "holiday", label: `🎉 ${hol.name}`, name: hol.name };
+  const dow = date.getDay();
   if (dow === 0 || dow === 6) return { type: "weekend", label: "Выходной день", name: "Выходной" };
   return { type: "school", label: "", name: "" };
 }
 
+// ==================== АВТООПРЕДЕЛЕНИЕ ЧЕТВЕРТИ ====================
 function getQuarterByDate(date) {
   const d = new Date(date); d.setHours(0,0,0,0);
-  if (d <= new Date(2026, 9, 26)) return 1;
-  if (d >= new Date(2026, 10, 6) && d <= new Date(2026, 11, 29)) return 2;
-  if (d >= new Date(2027, 0, 12) && d <= new Date(2027, 2, 23)) return 3;
-  if (d >= new Date(2027, 3, 1) && d <= new Date(2027, 4, 25)) return 4;
+  const q1End = new Date(2026, 9, 26);
+  const q2Start = new Date(2026, 10, 6);
+  const q2End = new Date(2026, 11, 29);
+  const q3Start = new Date(2027, 0, 12);
+  const q3End = new Date(2027, 2, 23);
+  const q4Start = new Date(2027, 3, 1);
+  const q4End = new Date(2027, 4, 25);
+
+  if (d <= q1End) return 1;
+  if (d >= q2Start && d <= q2End) return 2;
+  if (d >= q3Start && d <= q3End) return 3;
+  if (d >= q4Start && d <= q4End) return 4;
   return 1;
 }
 function getCurrentQuarter() { return getQuarterByDate(new Date()); }
 
+// ==================== ДАННЫЕ ====================
 const SUBJECTS_DEFAULT = [
-  "Алгебра","Геометрия","Русский язык","Литература",
-  "Физика","Химия","История","Обществознание",
-  "Английский язык","Биология","География",
-  "Информатика","Физкультура","ОБЖ","Черчение","Технология"
+  "Алгебра", "Геометрия", "Русский язык", "Литература",
+  "Физика", "Химия", "История", "Обществознание",
+  "Английский язык", "Биология", "География",
+  "Информатика", "Физкультура", "ОБЖ",
+  "Черчение", "Технология"
 ];
 
 const DATES_BY_QUARTER_DEFAULT = {
-  1: ["01.09","03.09","05.09","08.09","10.09","12.09","15.09","17.09","19.09","22.09","24.09","26.09","29.09","01.10","03.10"],
-  2: ["06.11","10.11","12.11","14.11","17.11","19.11","21.11","24.11","26.11","28.11","01.12","03.12","05.12","08.12","10.12"],
-  3: ["12.01","14.01","16.01","19.01","21.01","23.01","26.01","28.01","30.01","02.02","04.02","06.02","09.02","11.02","13.02"],
-  4: ["01.04","03.04","06.04","08.04","10.04","13.04","15.04","17.04","20.04","22.04","24.04","27.04","29.04","04.05","06.05"]
+  1: [
+    "01.09", "03.09", "05.09", "08.09", "10.09",
+    "12.09", "15.09", "17.09", "19.09", "22.09",
+    "24.09", "26.09", "29.09", "01.10", "03.10"
+  ],
+  2: [
+    "06.11", "10.11", "12.11", "14.11", "17.11",
+    "19.11", "21.11", "24.11", "26.11", "28.11",
+    "01.12", "03.12", "05.12", "08.12", "10.12"
+  ],
+  3: [
+    "12.01", "14.01", "16.01", "19.01", "21.01",
+    "23.01", "26.01", "28.01", "30.01", "02.02",
+    "04.02", "06.02", "09.02", "11.02", "13.02"
+  ],
+  4: [
+    "01.04", "03.04", "06.04", "08.04", "10.04",
+    "13.04", "15.04", "17.04", "20.04", "22.04",
+    "24.04", "27.04", "29.04", "04.05", "06.05"
+  ]
 };
 
+const TIME_SLOTS = [
+  "08:30 – 09:10", "09:30 – 10:10", "10:30 – 11:10",
+  "11:20 – 12:00", "12:10 – 12:50", "13:20 – 14:00", "14:10 – 14:50"
+];
+
 const WEEK_SCHEDULE = [
+  // ============ ПОНЕДЕЛЬНИК ============
   [
     { subject: "Разговоры о важном", room: "16", teacher: "Уварова Ю.В." },
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
@@ -1492,6 +1667,7 @@ const WEEK_SCHEDULE = [
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." },
     { subject: "Литература", room: "44", teacher: "Подоляк С.В." }
   ],
+  // ============ ВТОРНИК ============
   [
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
@@ -1501,6 +1677,7 @@ const WEEK_SCHEDULE = [
     { subject: "Алгебра", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Физкультура", room: "", teacher: "Акимова Е.Н." }
   ],
+  // ============ СРЕДА ============
   [
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
     { subject: "Технология", room: "22", teacher: "Злобин А.И." },
@@ -1510,6 +1687,7 @@ const WEEK_SCHEDULE = [
     { subject: "ОБЖ", room: "41", teacher: "Миляков С.В." },
     { subject: "", room: "", teacher: "" }
   ],
+  // ============ ЧЕТВЕРГ ============
   [
     { subject: "Русский язык", room: "44", teacher: "Подоляк С.В." },
     { subject: "Физкультура", room: "", teacher: "Акимова Е.Н." },
@@ -1519,6 +1697,7 @@ const WEEK_SCHEDULE = [
     { subject: "Геометрия", room: "42", teacher: "Мещерякова О.А." },
     { subject: "Биология", room: "16", teacher: "Стожарова Е.В." }
   ],
+  // ============ ПЯТНИЦА ============
   [
     { subject: "Физика", room: "17", teacher: "Милякова Т.М." },
     { subject: "География", room: "30", teacher: "Блаженов В.А." },
@@ -1528,13 +1707,21 @@ const WEEK_SCHEDULE = [
     { subject: "История", room: "32", teacher: "Якунина К.П." },
     { subject: "История", room: "32", teacher: "Якунина К.П." }
   ],
-  [],
-  []
+  [], // СУББОТА — выходной
+  []  // ВОСКРЕСЕНЬЕ — выходной
 ];
 
-const DAY_NAMES = ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
-const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
-const MONTH_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
+const MONTH_NAMES = [
+  "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+  "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+];
+const MONTH_GEN = [
+  "января", "февраля", "марта", "апреля", "мая", "июня",
+  "июля", "августа", "сентября", "октября", "ноября", "декабря"
+];
+
+const STORAGE_KEY = "diary_html_v12";
 
 // ==================== СОСТОЯНИЕ ====================
 let state = loadState();
@@ -1545,6 +1732,7 @@ let hwPhotosTemp = [];
 let gradeModal = { subj: null, date: null, grade: null, type: "ur" };
 let currentQuarterModal = { subj: null, quarter: null };
 let activeQuarter = null;
+let nowTimer = null;
 
 function loadState() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -1552,127 +1740,222 @@ function loadState() {
     try {
       const s = JSON.parse(raw);
       if (!s.subjects) s.subjects = [...SUBJECTS_DEFAULT];
-      if (!s.gradesByQuarter) { s.gradesByQuarter = {1:{},2:{},3:{},4:{}}; if (s.grades) { s.gradesByQuarter[1] = s.grades; delete s.grades; } }
+      if (!s.gradesByQuarter) {
+        s.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
+        if (s.grades) { s.gradesByQuarter[1] = s.grades; delete s.grades; }
+      }
       if (!s.datesByQuarter) s.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
       if (!s.homework) s.homework = {};
       if (!s.hwDone) s.hwDone = {};
       if (!s.hwPhotos) s.hwPhotos = {};
       if (!s.quarters) s.quarters = {};
       if (!Array.isArray(s.reminders)) s.reminders = [];
-      // Светлая тема по умолчанию (auto убираем)
-      if (!s.theme || s.theme === "auto") s.theme = "light";
       return s;
     } catch(e) {}
   }
   return {
     subjects: [...SUBJECTS_DEFAULT],
-    gradesByQuarter: {1:{},2:{},3:{},4:{}},
+    gradesByQuarter: { 1: {}, 2: {}, 3: {}, 4: {} },
     datesByQuarter: JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT)),
-    homework: {}, hwDone: {}, hwPhotos: {}, quarters: {},
-    reminders: [], theme: "light"
+    homework: {},
+    hwDone: {},
+    hwPhotos: {},
+    quarters: {},
+    reminders: []
   };
 }
 function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
 function parseGrade(v) {
-  if (v == null) return null;
+  if (v === null || v === undefined) return null;
   if (typeof v === "number") return { grade: v, type: "ur" };
   if (typeof v === "object" && v.grade) return { grade: v.grade, type: v.type || "ur" };
   return null;
 }
-function getWeight(t) { return t === "kr" ? WEIGHT_KR : WEIGHT_UR; }
+function getWeight(type) { return type === "kr" ? WEIGHT_KR : WEIGHT_UR; }
+
 function getCurrentGrades() { return state.gradesByQuarter[activeQuarter] || {}; }
 function getCurrentDates() { return state.datesByQuarter[activeQuarter] || []; }
-
-// ==================== ТЕМА ====================
-function applyTheme() {
-  let theme = state.theme;
-  if (theme !== "dark" && theme !== "light") theme = "light";
-  document.documentElement.setAttribute("data-theme", theme);
-  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️" : "🌙";
-}
-function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme");
-  state.theme = current === "dark" ? "light" : "dark";
-  saveState();
-  applyTheme();
-}
 
 // ==================== ДАТЫ ====================
 function getMondayOfDate(d) {
   const date = new Date(d);
   const day = date.getDay();
-  date.setDate(date.getDate() + (day === 0 ? -6 : 1 - day));
+  const diff = day === 0 ? -6 : 1 - day;
+  date.setDate(date.getDate() + diff);
   date.setHours(0,0,0,0);
   return date;
 }
-function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate()+n); return x; }
-function formatDate(d) { return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`; }
+function addDays(d, n) { const date = new Date(d); date.setDate(date.getDate() + n); return date; }
+function formatDate(d) {
+  return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`;
+}
 function formatFull(d) { return `${d.getDate()} ${MONTH_GEN[d.getMonth()]}`; }
-function isoKey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
-function isSameDay(a,b) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+function isoKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function isSameDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+const FIRST_MONDAY = new Date(2026, 8, 21);
 
 // ==================== ПРОФИЛЬ ====================
-function openProfile() { document.getElementById("profileModalBg").classList.add("active"); }
-function closeProfile() { document.getElementById("profileModalBg").classList.remove("active"); }
-document.getElementById("profileModalBg").addEventListener("click", e => { if (e.target.id === "profileModalBg") closeProfile(); });
+function openProfile() {
+  document.getElementById("profileModalBg").classList.add("active");
+}
+function closeProfile() {
+  document.getElementById("profileModalBg").classList.remove("active");
+}
+document.getElementById("profileModalBg").addEventListener("click", e => {
+  if (e.target.id === "profileModalBg") closeProfile();
+});
 
-// ==================== СЕЙЧАС ИДЁТ ====================
+// ==================== "СЕЙЧАС ИДЁТ" ====================
 function updateNowBar() {
   const bar = document.getElementById("nowBar");
   const iconEl = document.getElementById("nowIcon");
   const textEl = document.getElementById("nowText");
   const timeEl = document.getElementById("nowTime");
-  bar.classList.remove("active","lesson","break","soon");
+
+  bar.classList.remove("active", "lesson", "break", "soon");
 
   const now = new Date();
   const day = now.getDay();
   if (day === 0 || day === 6) return;
+
   const dayInfo = getDayType(now);
   if (dayInfo.type !== "school") return;
 
   const dayIdx = day - 1;
   const lessons = WEEK_SCHEDULE[dayIdx] || [];
-  const nowMin = now.getHours()*60 + now.getMinutes();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
 
   for (let i = 0; i < BELLS.length; i++) {
-    const b = BELLS[i], s = timeToMin(b.start), e = timeToMin(b.end);
-    const l = lessons[i];
-    if (!l || !l.subject) continue;
+    const bell = BELLS[i];
+    const s = timeToMin(bell.start);
+    const e = timeToMin(bell.end);
+    const lesson = lessons[i];
+    if (!lesson || !lesson.subject) continue;
+
     if (nowMin >= s && nowMin < e) {
-      const room = l.room ? `, каб. ${l.room}` : "";
-      textEl.textContent = `Сейчас идёт: ${l.subject}${room}, до ${b.end}`;
-      timeEl.textContent = `${e - nowMin} мин`;
+      const room = lesson.room ? `, каб. ${lesson.room}` : "";
+      textEl.textContent = `Сейчас идёт: ${lesson.subject}${room}, до ${bell.end}`;
+      const leftMin = e - nowMin;
+      timeEl.textContent = `${leftMin} мин`;
       iconEl.textContent = "📘";
-      bar.classList.add("active","lesson");
+      bar.classList.add("active", "lesson");
       return;
     }
   }
-  for (let i = 0; i < BELLS.length-1; i++) {
-    const curEnd = timeToMin(BELLS[i].end), nextStart = timeToMin(BELLS[i+1].start);
-    const nl = lessons[i+1];
-    if (!nl || !nl.subject) continue;
+
+  for (let i = 0; i < BELLS.length - 1; i++) {
+    const curEnd = timeToMin(BELLS[i].end);
+    const nextStart = timeToMin(BELLS[i + 1].start);
+    const nextLesson = lessons[i + 1];
+    if (!nextLesson || !nextLesson.subject) continue;
+
     if (nowMin >= curEnd && nowMin < nextStart) {
-      const room = nl.room ? `, каб. ${nl.room}` : "";
-      textEl.textContent = `Сейчас перемена, следующий урок: ${nl.subject}${room} в ${BELLS[i+1].start}`;
-      timeEl.textContent = `${nextStart - nowMin} мин`;
+      const room = nextLesson.room ? `, каб. ${nextLesson.room}` : "";
+      textEl.textContent = `Сейчас перемена, следующий урок: ${nextLesson.subject}${room} в ${BELLS[i + 1].start}`;
+      const leftMin = nextStart - nowMin;
+      timeEl.textContent = `${leftMin} мин`;
       iconEl.textContent = "☕";
-      bar.classList.add("active","break");
+      bar.classList.add("active", "break");
       return;
     }
   }
-  const firstStart = timeToMin(BELLS[0].start);
-  const fl = lessons[0];
-  if (fl && fl.subject && nowMin < firstStart) {
-    const diff = firstStart - nowMin;
+
+  const firstBellStart = timeToMin(BELLS[0].start);
+  const firstLesson = lessons[0];
+  if (firstLesson && firstLesson.subject && nowMin < firstBellStart) {
+    const diff = firstBellStart - nowMin;
     if (diff <= 90) {
-      const room = fl.room ? `, каб. ${fl.room}` : "";
-      textEl.textContent = `Скоро начнётся: ${fl.subject}${room} в ${BELLS[0].start}`;
+      const room = firstLesson.room ? `, каб. ${firstLesson.room}` : "";
+      textEl.textContent = `Скоро начнётся: ${firstLesson.subject}${room} в ${BELLS[0].start}`;
       timeEl.textContent = `через ${diff} мин`;
       iconEl.textContent = "⏰";
-      bar.classList.add("active","soon");
+      bar.classList.add("active", "soon");
+      return;
     }
   }
+}
+
+// ==================== "ЗАДАНО НА ЗАВТРА" ====================
+function renderTomorrowHW() {
+  const wrap = document.getElementById("tomorrowHW");
+  const list = document.getElementById("thList");
+  const title = document.getElementById("thTitle");
+
+  wrap.classList.remove("active");
+  list.innerHTML = "";
+
+  const today = new Date();
+  const dow = today.getDay();
+
+  if (dow === 5 || dow === 6) return;
+
+  const tomorrow = addDays(today, 1);
+  const tomDow = tomorrow.getDay();
+
+  if (tomDow === 0 || tomDow === 6) return;
+
+  const tomInfo = getDayType(tomorrow);
+  if (tomInfo.type !== "school") return;
+
+  const tomDayIdx = tomDow - 1;
+  const lessons = WEEK_SCHEDULE[tomDayIdx] || [];
+  const dateKey = isoKey(tomorrow);
+
+  const items = [];
+  lessons.forEach((lesson, slotIdx) => {
+    if (!lesson || !lesson.subject) return;
+    if (!hasHomework(lesson.subject)) return;
+    const hwKey = `${dateKey}|${tomDayIdx}|${slotIdx}`;
+    const text = (state.homework[hwKey] || "").trim();
+    const photos = state.hwPhotos[hwKey] || [];
+    if (text || photos.length > 0) {
+      items.push({ lesson, slotIdx, text, photos });
+    }
+  });
+
+  title.textContent = `📝 Задано на завтра (${DAY_NAMES[tomDayIdx]}, ${formatFull(tomorrow)})`;
+
+  if (items.length === 0) {
+    list.innerHTML = `<div class="th-empty">Пока ничего не задано — или ты ещё не записал.</div>`;
+    wrap.classList.add("active");
+    return;
+  }
+
+  items.forEach(it => {
+    const div = document.createElement("div");
+    div.className = "th-item";
+    let html = `<div class="th-subj">${it.lesson.subject}${it.lesson.room ? ` · каб. ${it.lesson.room}` : ""}</div>`;
+    html += `<div class="th-meta">Урок ${it.slotIdx + 1} · ${BELLS[it.slotIdx] ? BELLS[it.slotIdx].start : ""}</div>`;
+    if (it.text) html += `<div class="th-text">${escapeHtml(it.text)}</div>`;
+    if (it.photos.length > 0) {
+      html += `<div class="th-photo">`;
+      it.photos.forEach((p, idx) => {
+        html += `<img src="${p}" onclick="viewTomorrowPhoto(${it.slotIdx}, ${idx})" alt="фото задания">`;
+      });
+      html += `</div>`;
+    }
+    div.innerHTML = html;
+    list.appendChild(div);
+  });
+
+  wrap.classList.add("active");
+}
+
+function viewTomorrowPhoto(slotIdx, idx) {
+  const tomorrow = addDays(new Date(), 1);
+  const tomDow = tomorrow.getDay();
+  const tomDayIdx = tomDow - 1;
+  const dateKey = isoKey(tomorrow);
+  const hwKey = `${dateKey}|${tomDayIdx}|${slotIdx}`;
+  const photos = state.hwPhotos[hwKey] || [];
+  if (!photos[idx]) return;
+  document.getElementById("photoViewerImg").src = photos[idx];
+  document.getElementById("photoViewer").classList.add("active");
 }
 
 // ==================== РАСЧЁТ ДО 3.50 ====================
@@ -1689,27 +1972,27 @@ function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
   const n = Math.ceil((target * sumW - sumWV) / (5 - target));
   return { need: n, current, target };
 }
-function plural5(n) {
-  const m10 = n % 10, m100 = n % 100;
-  if (m10 === 1 && m100 !== 11) return "пятёрка";
-  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return "пятёрки";
-  return "пятёрок";
-}
 
 function renderRiskBar() {
   const grades = getCurrentGrades();
   const items = [];
   state.subjects.forEach(subj => {
-    const sg = grades[subj]; if (!sg) return;
-    const info = calcNeedForTarget(sg); if (!info) return;
+    const sg = grades[subj];
+    if (!sg) return;
+    const info = calcNeedForTarget(sg);
+    if (!info) return;
     if (info.current < TARGET_AVG) items.push({ subj, ...info });
   });
-  items.sort((a,b) => a.current - b.current);
-  const top5 = items.slice(0,5);
+  items.sort((a, b) => a.current - b.current);
+  const top5 = items.slice(0, 5);
 
   const bar = document.getElementById("riskBar");
   const wrap = document.getElementById("riskItems");
-  if (!top5.length) { bar.classList.remove("active"); wrap.innerHTML = ""; return; }
+  if (top5.length === 0) {
+    bar.classList.remove("active");
+    wrap.innerHTML = "";
+    return;
+  }
   bar.classList.add("active");
   wrap.innerHTML = top5.map(it => `
     <div class="risk-item">
@@ -1717,6 +2000,12 @@ function renderRiskBar() {
       <div class="hint">до 3.50 нужно <span class="need">${it.need} ${plural5(it.need)}</span></div>
     </div>
   `).join("");
+}
+function plural5(n) {
+  const mod10 = n % 10, mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return "пятёрка";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return "пятёрки";
+  return "пятёрок";
 }
 
 // ==================== РЕНДЕР ОЦЕНОК ====================
@@ -1764,7 +2053,7 @@ function render() {
     const weighted = calcWeightedAvg(subjGrades);
     const simple = calcSimpleAvg(subjGrades);
     if (weighted !== null) {
-      const color = weighted < 2.5 ? "#e53935" : weighted < 3.5 ? "#fb8c00" : "#2e7d32";
+      let color = weighted < 2.5 ? "#e53935" : weighted < 3.5 ? "#fb8c00" : "#2e7d32";
       tdAvg.innerHTML = `<div class="weighted" style="color:${color};">${weighted.toFixed(2)}</div>
         <div class="simple">простой: ${simple.toFixed(2)}</div>`;
     } else {
@@ -1801,24 +2090,30 @@ function updateQuarterLabel() {
   document.getElementById("qPrev").disabled = activeQuarter <= 1;
   document.getElementById("qNext").disabled = activeQuarter >= 4;
 }
+
 function changeQuarter(delta) {
   activeQuarter = Math.max(1, Math.min(4, activeQuarter + delta));
   render();
 }
-function calcWeightedAvg(sg) {
+
+function calcWeightedAvg(subjGrades) {
   let sumWV = 0, sumW = 0;
-  Object.values(sg).forEach(v => {
+  Object.values(subjGrades).forEach(v => {
     const p = parseGrade(v); if (!p) return;
     const w = getWeight(p.type);
     sumWV += p.grade * w; sumW += w;
   });
   return sumW === 0 ? null : sumWV / sumW;
 }
-function calcSimpleAvg(sg) {
+function calcSimpleAvg(subjGrades) {
   const vals = [];
-  Object.values(sg).forEach(v => { const p = parseGrade(v); if (p) vals.push(p.grade); });
-  return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
+  Object.values(subjGrades).forEach(v => {
+    const p = parseGrade(v); if (p) vals.push(p.grade);
+  });
+  if (!vals.length) return null;
+  return vals.reduce((a,b)=>a+b,0) / vals.length;
 }
+
 function updateAvg() {
   const grades = getCurrentGrades();
   let sumWV = 0, sumW = 0, count = 0;
@@ -1836,26 +2131,30 @@ function updateAvg() {
   if (count === 0) {
     elW.textContent = "—"; elW.className = "";
     elS.textContent = "—"; elS.className = "";
-    cnt.textContent = `(${activeQuarter} четверть)`;
-    return;
+    cnt.textContent = `(${activeQuarter} четверть)`; return;
   }
   const wAvg = sumWV / sumW;
-  const sAvg = allSimple.reduce((a,b)=>a+b,0)/allSimple.length;
+  const sAvg = allSimple.reduce((a,b)=>a+b,0) / allSimple.length;
   elW.textContent = wAvg.toFixed(2);
   elW.className = wAvg < 2.5 ? "avg-red" : wAvg < 3.5 ? "avg-orange" : "avg-green";
   elS.textContent = sAvg.toFixed(2);
   elS.className = sAvg < 2.5 ? "avg-red" : sAvg < 3.5 ? "avg-orange" : "avg-green";
   cnt.textContent = `(${count} оценок в ${activeQuarter} четверти)`;
 }
+
 function updateToday() {
-  document.getElementById("today").textContent = "Сегодня: " + formatDate(new Date());
+  const d = new Date();
+  document.getElementById("today").textContent = "Сегодня: " + formatDate(d);
 }
 
 // ==================== МОДАЛКА ОЦЕНКИ ====================
 function openGradeModal(subj, date) {
   const grades = getCurrentGrades();
-  const existing = parseGrade((grades[subj]||{})[date]);
-  gradeModal = { subj, date, grade: existing ? existing.grade : null, type: existing ? existing.type : "ur" };
+  const existing = parseGrade((grades[subj] || {})[date]);
+  gradeModal.subj = subj;
+  gradeModal.date = date;
+  gradeModal.grade = existing ? existing.grade : null;
+  gradeModal.type = existing ? existing.type : "ur";
   document.getElementById("modalTitle").textContent = subj;
   document.getElementById("modalSub").textContent = `Дата: ${date} • ${activeQuarter} четверть`;
   const wrap = document.getElementById("modalBtns");
@@ -1876,10 +2175,13 @@ function openGradeModal(subj, date) {
   document.getElementById("modalBg").classList.add("active");
 }
 function updateTypeButtons() {
-  document.querySelectorAll(".type-btn").forEach(b => b.classList.toggle("selected", b.dataset.type === gradeModal.type));
+  document.querySelectorAll(".type-btn").forEach(b => {
+    b.classList.toggle("selected", b.dataset.type === gradeModal.type);
+  });
 }
-function selectType(t) { gradeModal.type = t; updateTypeButtons(); }
+function selectType(type) { gradeModal.type = type; updateTypeButtons(); }
 function closeModal() { document.getElementById("modalBg").classList.remove("active"); }
+
 function saveGrade() {
   if (!gradeModal.grade) { alert("Выберите оценку!"); return; }
   const { subj, date, grade, type } = gradeModal;
@@ -1897,15 +2199,18 @@ function clearGrade() {
   }
   saveState(); closeModal(); render();
 }
-document.getElementById("modalBg").addEventListener("click", e => { if (e.target.id === "modalBg") closeModal(); });
+document.getElementById("modalBg").addEventListener("click", e => {
+  if (e.target.id === "modalBg") closeModal();
+});
 
+// ==================== ОЧИСТКА ====================
 function clearAll() {
   if (!confirm(`Удалить ВСЕ оценки за ${activeQuarter} четверть?`)) return;
   state.gradesByQuarter[activeQuarter] = {};
   saveState(); render();
 }
 
-// ==================== ЭКСПОРТ/ИМПОРТ ====================
+// ==================== ЭКСПОРТ / ИМПОРТ ====================
 function downloadDiary() {
   const data = JSON.stringify(state, null, 2);
   const blob = new Blob([data], { type: "application/json" });
@@ -1918,8 +2223,10 @@ function downloadDiary() {
   URL.revokeObjectURL(url);
   alert("Файл скачан! 📁");
 }
+
 function uploadDiary(ev) {
-  const file = ev.target.files[0]; if (!file) return;
+  const file = ev.target.files[0];
+  if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
     try {
@@ -1927,17 +2234,19 @@ function uploadDiary(ev) {
       if (!loaded.subjects) { alert("Неверный файл!"); return; }
       if (!confirm("Загрузить дневник? Текущие данные будут заменены.")) return;
       state = loaded;
-      if (!state.gradesByQuarter) { state.gradesByQuarter = {1:{},2:{},3:{},4:{}}; if (state.grades) { state.gradesByQuarter[1] = state.grades; delete state.grades; } }
+      if (!state.gradesByQuarter) {
+        state.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
+        if (state.grades) { state.gradesByQuarter[1] = state.grades; delete state.grades; }
+      }
       if (!state.datesByQuarter) state.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
       if (!state.homework) state.homework = {};
       if (!state.hwDone) state.hwDone = {};
       if (!state.hwPhotos) state.hwPhotos = {};
       if (!state.quarters) state.quarters = {};
       if (!Array.isArray(state.reminders)) state.reminders = [];
-      if (!state.theme || state.theme === "auto") state.theme = "light";
       saveState();
-      render(); renderSchedule(); renderQuarters(); updateNowBar();
-      renderReminders(); updateRemindBadge(); checkReminders(); applyTheme();
+      render(); renderSchedule(); renderQuarters(); updateNowBar(); renderTomorrowHW();
+      renderReminders(); updateRemindBadge(); checkReminders();
       alert("Дневник загружен! ✅");
     } catch(err) { alert("Ошибка: " + err.message); }
   };
@@ -1957,7 +2266,9 @@ function switchTab(name, btn) {
 }
 
 // ==================== РАСПИСАНИЕ ====================
-function getWeekDates(monday) { return [0,1,2,3,4,5,6].map(i => addDays(monday, i)); }
+function getWeekDates(monday) {
+  return [0,1,2,3,4,5,6].map(i => addDays(monday, i));
+}
 
 function renderSchedule() {
   if (!currentWeekStart) currentWeekStart = getMondayOfDate(new Date());
@@ -1967,12 +2278,12 @@ function renderSchedule() {
   const today = new Date(); today.setHours(0,0,0,0);
 
   let headHTML = '<th class="num-col">№</th><th class="time-col">Время</th>';
-  dates.forEach((d,i) => {
+  dates.forEach((d, i) => {
     const isToday = isSameDay(d, today);
     const dateStr = `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}`;
     headHTML += `<th>
       <span class="day-name">${DAY_NAMES[i]}</span>
-      <span class="day-date ${isToday?"today":""}">${dateStr}</span>
+      <span class="day-date ${isToday ? "today" : ""}">${dateStr}</span>
     </th>`;
   });
   header.innerHTML = headHTML;
@@ -1980,9 +2291,8 @@ function renderSchedule() {
   body.innerHTML = "";
   for (let slot = 0; slot < BELLS.length; slot++) {
     const tr = document.createElement("tr");
-    // ⏰ ВРЕМЯ В ОДНУ СТРОКУ
     tr.innerHTML = `<td class="num-col">${slot + 1}</td>
-                    <td class="time-col">${BELLS[slot].start} – ${BELLS[slot].end}</td>`;
+                    <td class="time-col">${BELLS[slot].start}<br>–<br>${BELLS[slot].end}</td>`;
     for (let day = 0; day < 7; day++) {
       const td = document.createElement("td");
       const date = dates[day];
@@ -2019,11 +2329,11 @@ function renderSchedule() {
             </button>
           </div>`;
           if (hwText) {
-            html += `<div class="hw-text ${isDone?"done":""}"
+            html += `<div class="hw-text ${isDone ? "done" : ""}"
               onclick="toggleHWDone('${hwKey}')"
               title="Клик — отметить выполненным">${escapeHtml(hwText)}</div>`;
           }
-          if (hwPhotos.length) {
+          if (hwPhotos.length > 0) {
             html += `<div>`;
             hwPhotos.forEach((p, idx) => {
               html += `<img class="hw-photo-thumb" src="${p}" onclick="viewHWPhoto('${hwKey}', ${idx})" alt="фото">`;
@@ -2031,6 +2341,7 @@ function renderSchedule() {
             html += `</div>`;
           }
         }
+
         td.innerHTML = html;
       }
       tr.appendChild(td);
@@ -2038,90 +2349,35 @@ function renderSchedule() {
     body.appendChild(tr);
   }
 
+  // Инфо о неделе
   const mon = dates[0], sun = dates[6];
-  document.getElementById("weekLabel").textContent = `Неделя ${getWeekNumber(mon)}`;
-  document.getElementById("weekDates").textContent = `${formatFull(mon)} — ${formatFull(sun)} ${sun.getFullYear()}`;
+  const weekLabel = document.getElementById("weekLabel");
+  const weekDates = document.getElementById("weekDates");
+  weekLabel.textContent = `Неделя ${getWeekNumber(mon)}`;
+  weekDates.textContent = `${formatFull(mon)} — ${formatFull(sun)} ${sun.getFullYear()}`;
 
   renderTomorrowHW();
 }
 
 function getWeekNumber(d) {
-  const date = new Date(d); date.setHours(0,0,0,0);
+  const date = new Date(d);
+  date.setHours(0,0,0,0);
   date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
   const week1 = new Date(date.getFullYear(), 0, 4);
-  return 1 + Math.round(((date - week1)/86400000 - 3 + (week1.getDay()+6)%7)/7);
+  return 1 + Math.round(((date - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
-function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderSchedule(); }
-function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7); renderSchedule(); }
-function goToToday() { calMonth = new Date(); openCal(); }
 
-// ==================== ЗАДАНО НА ЗАВТРА ====================
-function renderTomorrowHW() {
-  const wrap = document.getElementById("tomorrowHW");
-  const list = document.getElementById("thList");
-  const title = document.getElementById("thTitle");
-  wrap.style.display = "none";
-  list.innerHTML = "";
-
-  const today = new Date();
-  const dow = today.getDay();
-  if (dow === 5 || dow === 6) return;
-
-  const tomorrow = addDays(today, 1);
-  const tomDow = tomorrow.getDay();
-  if (tomDow === 0 || tomDow === 6) return;
-
-  const tomInfo = getDayType(tomorrow);
-  if (tomInfo.type !== "school") return;
-
-  const tomDayIdx = tomDow - 1;
-  const lessons = WEEK_SCHEDULE[tomDayIdx] || [];
-  const dateKey = isoKey(tomorrow);
-
-  const items = [];
-  lessons.forEach((lesson, slotIdx) => {
-    if (!lesson || !lesson.subject || !hasHomework(lesson.subject)) return;
-    const hwKey = `${dateKey}|${tomDayIdx}|${slotIdx}`;
-    const text = (state.homework[hwKey] || "").trim();
-    const photos = state.hwPhotos[hwKey] || [];
-    if (text || photos.length) items.push({ lesson, slotIdx, text, photos });
-  });
-
-  title.textContent = `📝 Задано на завтра (${DAY_NAMES[tomDayIdx]}, ${formatFull(tomorrow)})`;
-
-  if (!items.length) {
-    list.innerHTML = `<div style="color:#9e9e9e;font-style:italic;font-size:13px;">Пока ничего не задано — или ты ещё не записал.</div>`;
-    wrap.style.display = "block";
-    return;
-  }
-
-  items.forEach(it => {
-    const div = document.createElement("div");
-    div.style.cssText = "background:#fff;border:1px solid #ffe082;border-left:4px solid #ff9800;border-radius:6px;padding:10px 14px;display:flex;flex-direction:column;gap:4px;";
-    let html = `<div style="font-weight:700;color:#1a237e;font-size:14px;">${it.lesson.subject}${it.lesson.room ? ` · каб. ${it.lesson.room}` : ""}</div>`;
-    html += `<div style="font-size:12px;color:#666;">Урок ${it.slotIdx+1} · ${BELLS[it.slotIdx] ? BELLS[it.slotIdx].start : ""}</div>`;
-    if (it.text) html += `<div style="color:#5d4037;font-size:13px;line-height:1.4;white-space:pre-wrap;">${escapeHtml(it.text)}</div>`;
-    if (it.photos.length) {
-      html += `<div style="margin-top:4px;">`;
-      it.photos.forEach((p, idx) => {
-        html += `<img src="${p}" onclick="viewTomorrowPhoto(${it.slotIdx}, ${idx})" style="max-width:100px;max-height:100px;border-radius:6px;border:1px solid #90caf9;cursor:pointer;margin-right:6px;">`;
-      });
-      html += `</div>`;
-    }
-    div.innerHTML = html;
-    list.appendChild(div);
-  });
-
-  wrap.style.display = "block";
+function prevWeek() {
+  currentWeekStart = addDays(currentWeekStart, -7);
+  renderSchedule();
 }
-function viewTomorrowPhoto(slotIdx, idx) {
-  const tomorrow = addDays(new Date(), 1);
-  const tomDayIdx = tomorrow.getDay() - 1;
-  const hwKey = `${isoKey(tomorrow)}|${tomDayIdx}|${slotIdx}`;
-  const photos = state.hwPhotos[hwKey] || [];
-  if (!photos[idx]) return;
-  document.getElementById("photoViewerImg").src = photos[idx];
-  document.getElementById("photoViewer").classList.add("active");
+function nextWeek() {
+  currentWeekStart = addDays(currentWeekStart, 7);
+  renderSchedule();
+}
+function goToToday() {
+  calMonth = new Date();
+  openCal();
 }
 
 // ==================== Д/З ====================
@@ -2129,18 +2385,23 @@ function openHW(dayIdx, slotIdx, dateKey) {
   currentHW = { date: dateKey, dayIdx, slotIdx };
   const lesson = WEEK_SCHEDULE[dayIdx][slotIdx];
   const hwKey = `${dateKey}|${dayIdx}|${slotIdx}`;
+
   document.getElementById("hwTitle").textContent = lesson.subject;
-  document.getElementById("hwSub").textContent = `${DAY_NAMES[dayIdx]} • Урок ${slotIdx+1} • ${BELLS[slotIdx].start}`;
+  document.getElementById("hwSub").textContent = `${DAY_NAMES[dayIdx]} • Урок ${slotIdx + 1} • ${BELLS[slotIdx].start}`;
   document.getElementById("hwText").value = state.homework[hwKey] || "";
   hwPhotosTemp = [...(state.hwPhotos[hwKey] || [])];
   renderHWPhotos();
   document.getElementById("hwModalBg").classList.add("active");
 }
+
 function renderHWPhotos() {
   const wrap = document.getElementById("hwPhotoPreview");
   const empty = document.getElementById("hwPhotoEmpty");
   wrap.innerHTML = "";
-  if (!hwPhotosTemp.length) { empty.style.display = "block"; return; }
+  if (hwPhotosTemp.length === 0) {
+    empty.style.display = "block";
+    return;
+  }
   empty.style.display = "none";
   hwPhotosTemp.forEach((p, idx) => {
     const div = document.createElement("div");
@@ -2153,14 +2414,21 @@ function renderHWPhotos() {
   });
 }
 function addHWPhoto(ev) {
-  Array.from(ev.target.files).forEach(file => {
+  const files = Array.from(ev.target.files);
+  files.forEach(file => {
     const reader = new FileReader();
-    reader.onload = e => { hwPhotosTemp.push(e.target.result); renderHWPhotos(); };
+    reader.onload = e => {
+      hwPhotosTemp.push(e.target.result);
+      renderHWPhotos();
+    };
     reader.readAsDataURL(file);
   });
   ev.target.value = "";
 }
-function removeHWPhoto(idx) { hwPhotosTemp.splice(idx, 1); renderHWPhotos(); }
+function removeHWPhoto(idx) {
+  hwPhotosTemp.splice(idx, 1);
+  renderHWPhotos();
+}
 function viewPhotoTemp(idx) {
   document.getElementById("photoViewerImg").src = hwPhotosTemp[idx];
   document.getElementById("photoViewer").classList.add("active");
@@ -2171,14 +2439,23 @@ function viewHWPhoto(hwKey, idx) {
   document.getElementById("photoViewerImg").src = photos[idx];
   document.getElementById("photoViewer").classList.add("active");
 }
-function closePhotoViewer() { document.getElementById("photoViewer").classList.remove("active"); }
+function closePhotoViewer() {
+  document.getElementById("photoViewer").classList.remove("active");
+}
 function saveHW() {
   const { date, dayIdx, slotIdx } = currentHW;
   const hwKey = `${date}|${dayIdx}|${slotIdx}`;
   const text = document.getElementById("hwText").value.trim();
-  if (text) state.homework[hwKey] = text; else delete state.homework[hwKey];
-  if (hwPhotosTemp.length) state.hwPhotos[hwKey] = [...hwPhotosTemp]; else delete state.hwPhotos[hwKey];
-  saveState(); closeHW(); renderSchedule();
+
+  if (text) state.homework[hwKey] = text;
+  else delete state.homework[hwKey];
+
+  if (hwPhotosTemp.length > 0) state.hwPhotos[hwKey] = [...hwPhotosTemp];
+  else delete state.hwPhotos[hwKey];
+
+  saveState();
+  closeHW();
+  renderSchedule();
 }
 function clearHW() {
   const { date, dayIdx, slotIdx } = currentHW;
@@ -2186,15 +2463,23 @@ function clearHW() {
   delete state.homework[hwKey];
   delete state.hwPhotos[hwKey];
   delete state.hwDone[hwKey];
-  saveState(); closeHW(); renderSchedule();
+  saveState();
+  closeHW();
+  renderSchedule();
 }
-function closeHW() { document.getElementById("hwModalBg").classList.remove("active"); hwPhotosTemp = []; }
+function closeHW() {
+  document.getElementById("hwModalBg").classList.remove("active");
+  hwPhotosTemp = [];
+}
 function toggleHWDone(hwKey) {
   state.hwDone[hwKey] = !state.hwDone[hwKey];
   if (!state.hwDone[hwKey]) delete state.hwDone[hwKey];
-  saveState(); renderSchedule();
+  saveState();
+  renderSchedule();
 }
-document.getElementById("hwModalBg").addEventListener("click", e => { if (e.target.id === "hwModalBg") closeHW(); });
+document.getElementById("hwModalBg").addEventListener("click", e => {
+  if (e.target.id === "hwModalBg") closeHW();
+});
 
 // ==================== ЧЕТВЕРТНЫЕ ====================
 function renderQuarters() {
@@ -2224,6 +2509,7 @@ function renderQuarters() {
       td.onclick = () => openQuarterModal(subj, q);
       tr.appendChild(td);
     }
+
     const tdFinal = document.createElement("td");
     tdFinal.className = "quarter-cell final";
     if (sumW > 0) {
@@ -2236,9 +2522,11 @@ function renderQuarters() {
       tdFinal.style.color = "#cfd8dc";
     }
     tr.appendChild(tdFinal);
+
     tbody.appendChild(tr);
   });
 }
+
 function openQuarterModal(subj, quarter) {
   currentQuarterModal = { subj, quarter };
   document.getElementById("qTitle").textContent = subj;
@@ -2254,22 +2542,32 @@ function openQuarterModal(subj, quarter) {
     btn.onclick = () => {
       if (!state.quarters[subj]) state.quarters[subj] = {};
       state.quarters[subj][quarter] = n;
-      saveState(); closeQModal(); renderQuarters(); render();
+      saveState();
+      closeQModal();
+      renderQuarters();
+      render();
     };
     wrap.appendChild(btn);
   });
   document.getElementById("qModalBg").classList.add("active");
 }
-function closeQModal() { document.getElementById("qModalBg").classList.remove("active"); }
+function closeQModal() {
+  document.getElementById("qModalBg").classList.remove("active");
+}
 function clearQuarter() {
   const { subj, quarter } = currentQuarterModal;
   if (state.quarters[subj]) {
     delete state.quarters[subj][quarter];
     if (!Object.keys(state.quarters[subj]).length) delete state.quarters[subj];
   }
-  saveState(); closeQModal(); renderQuarters(); render();
+  saveState();
+  closeQModal();
+  renderQuarters();
+  render();
 }
-document.getElementById("qModalBg").addEventListener("click", e => { if (e.target.id === "qModalBg") closeQModal(); });
+document.getElementById("qModalBg").addEventListener("click", e => {
+  if (e.target.id === "qModalBg") closeQModal();
+});
 
 // ==================== КАЛЕНДАРЬ ====================
 function openCal() {
@@ -2277,14 +2575,23 @@ function openCal() {
   renderCal();
   document.getElementById("calModalBg").classList.add("active");
 }
-function closeCal() { document.getElementById("calModalBg").classList.remove("active"); }
-function prevMonth() { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth()-1, 1); renderCal(); }
-function nextMonth() { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth()+1, 1); renderCal(); }
+function closeCal() {
+  document.getElementById("calModalBg").classList.remove("active");
+}
+function prevMonth() {
+  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1);
+  renderCal();
+}
+function nextMonth() {
+  calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1);
+  renderCal();
+}
 function renderCal() {
   const grid = document.getElementById("calGrid");
   const title = document.getElementById("calMonthTitle");
   const y = calMonth.getFullYear(), m = calMonth.getMonth();
   title.textContent = `${MONTH_NAMES[m]} ${y}`;
+
   grid.innerHTML = "";
   ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(d => {
     const el = document.createElement("div");
@@ -2292,38 +2599,55 @@ function renderCal() {
     el.textContent = d;
     grid.appendChild(el);
   });
-  const first = new Date(y,m,1);
-  const startDay = (first.getDay()+6)%7;
-  const daysInMonth = new Date(y,m+1,0).getDate();
+
+  const first = new Date(y, m, 1);
+  const startDay = (first.getDay() + 6) % 7;
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
   const today = new Date(); today.setHours(0,0,0,0);
+
   for (let i = 0; i < startDay; i++) {
     const el = document.createElement("div");
     el.className = "cal-cell other-month";
     el.textContent = "";
     grid.appendChild(el);
   }
+
   for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(y,m,day);
+    const date = new Date(y, m, day);
     const el = document.createElement("div");
     el.className = "cal-cell";
     el.textContent = day;
+
     const info = getDayType(date);
     if (info.type === "holiday") el.classList.add("holiday");
     if (info.type === "vacation") el.classList.add("vacation");
     if (date < today) el.classList.add("past");
+
     el.onclick = () => {
       currentWeekStart = getMondayOfDate(date);
       closeCal();
       switchTab("schedule", document.querySelectorAll(".tab-btn")[1]);
     };
+
     grid.appendChild(el);
   }
 }
-document.getElementById("calModalBg").addEventListener("click", e => { if (e.target.id === "calModalBg") closeCal(); });
+document.getElementById("calModalBg").addEventListener("click", e => {
+  if (e.target.id === "calModalBg") closeCal();
+});
 
 // ==================== НАПОМИНАНИЯ ====================
-function ensureReminders() { if (!Array.isArray(state.reminders)) state.reminders = []; }
-function getUpcomingReminders() { ensureReminders(); return state.reminders.filter(r => !r.fired).sort((a,b) => a.ts - b.ts); }
+function ensureReminders() {
+  if (!Array.isArray(state.reminders)) state.reminders = [];
+}
+
+function getUpcomingReminders() {
+  ensureReminders();
+  return state.reminders
+    .filter(r => !r.fired)
+    .sort((a, b) => a.ts - b.ts);
+}
+
 function updateRemindBadge() {
   const badge = document.getElementById("remindBadge");
   if (!badge) return;
@@ -2331,6 +2655,7 @@ function updateRemindBadge() {
   badge.textContent = n;
   badge.classList.toggle("empty", n === 0);
 }
+
 function openReminders() {
   ensureReminders();
   renderReminders();
@@ -2339,102 +2664,146 @@ function openReminders() {
   const tEl = document.getElementById("remindTime");
   if (!dEl.value) dEl.value = isoKey(now);
   if (!tEl.value) {
-    const hh = String(now.getHours()).padStart(2,"0");
-    const mm = String(now.getMinutes()).padStart(2,"0");
+    const hh = String(now.getHours()).padStart(2, "0");
+    const mm = String(now.getMinutes()).padStart(2, "0");
     tEl.value = `${hh}:${mm}`;
   }
   document.getElementById("remindModalBg").classList.add("active");
   updateRemindBadge();
 }
-function closeReminders() { document.getElementById("remindModalBg").classList.remove("active"); }
-document.getElementById("remindModalBg").addEventListener("click", e => { if (e.target.id === "remindModalBg") closeReminders(); });
+
+function closeReminders() {
+  document.getElementById("remindModalBg").classList.remove("active");
+}
+
+document.getElementById("remindModalBg").addEventListener("click", e => {
+  if (e.target.id === "remindModalBg") closeReminders();
+});
 
 function addReminder() {
   const dEl = document.getElementById("remindDate");
   const tEl = document.getElementById("remindTime");
   const xEl = document.getElementById("remindText");
-  const dateVal = dEl.value, timeVal = tEl.value, text = xEl.value.trim();
+
+  const dateVal = dEl.value;
+  const timeVal = tEl.value;
+  const text = xEl.value.trim();
+
   if (!dateVal) { alert("Выбери дату"); return; }
   if (!timeVal) { alert("Выбери время"); return; }
-  if (!text) { alert("Напиши текст напоминания"); return; }
-  const [Y,M,D] = dateVal.split("-").map(Number);
-  const [h,m] = timeVal.split(":").map(Number);
-  const ts = new Date(Y, M-1, D, h, m, 0, 0).getTime();
+  if (!text)    { alert("Напиши текст напоминания"); return; }
+
+  const [Y, M, D] = dateVal.split("-").map(Number);
+  const [h, m]    = timeVal.split(":").map(Number);
+  const ts = new Date(Y, M - 1, D, h, m, 0, 0).getTime();
+
   if (ts <= Date.now()) {
     if (!confirm("Это время уже прошло. Всё равно добавить? Оно сработает сразу.")) return;
   }
+
   const newRem = {
-    id: "r_" + Date.now() + "_" + Math.random().toString(36).slice(2,7),
-    ts, text, fired: false
+    id: "r_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+    ts,
+    text,
+    fired: false
   };
   state.reminders.push(newRem);
-  state.reminders.sort((a,b) => a.ts - b.ts);
+  state.reminders.sort((a, b) => a.ts - b.ts);
   saveState();
+
   xEl.value = "";
   renderReminders();
   updateRemindBadge();
+
   if (ts <= Date.now()) {
     newRem.fired = true;
     fireReminder(newRem);
     state.reminders = state.reminders.filter(r => !r.fired);
-    saveState(); renderReminders(); updateRemindBadge();
+    saveState();
+    renderReminders();
+    updateRemindBadge();
   } else {
     checkReminders();
   }
 }
+
 function deleteReminder(id) {
   state.reminders = state.reminders.filter(r => r.id !== id);
-  saveState(); renderReminders(); updateRemindBadge();
+  saveState();
+  renderReminders();
+  updateRemindBadge();
 }
+
 function renderReminders() {
   ensureReminders();
   const wrap = document.getElementById("remindList");
   if (!wrap) return;
-  const items = [...state.reminders].sort((a,b) => a.ts - b.ts);
-  if (!items.length) {
+  const items = [...state.reminders].sort((a, b) => a.ts - b.ts);
+
+  if (items.length === 0) {
     wrap.innerHTML = `<div class="remind-empty">Напоминаний пока нет</div>`;
-    updateRemindBadge(); return;
+    updateRemindBadge();
+    return;
   }
+
   const now = Date.now();
   wrap.innerHTML = items.map(r => {
     const d = new Date(r.ts);
     const isPast = r.fired || r.ts < now;
     const dateStr = formatDate(d);
-    const timeStr = String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+    const timeStr = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
     return `
-      <div class="remind-item ${isPast?"past":""}">
-        <div class="ri-time">${dateStr}<br>${timeStr}</div>
+      <div class="remind-item ${isPast ? "past" : ""}">
+        <div class="ri-time">
+          ${dateStr}<br>${timeStr}
+          ${r.fired ? "<br><span style='color:#9e9e9e'>✓ показано</span>" : ""}
+        </div>
         <div class="ri-text">${escapeHtml(r.text)}</div>
-        <button class="ri-del" onclick="deleteReminder('${r.id}')">✕</button>
+        <button class="ri-del" title="Удалить" onclick="deleteReminder('${r.id}')">✕</button>
       </div>
     `;
   }).join("");
+
   updateRemindBadge();
 }
+
 function checkReminders() {
   ensureReminders();
   const now = Date.now();
   let changed = false;
+
   state.reminders.forEach(r => {
     if (!r.fired && r.ts <= now) {
-      r.fired = true; changed = true;
+      r.fired = true;
+      changed = true;
       fireReminder(r);
     }
   });
+
   if (changed) {
     state.reminders = state.reminders.filter(r => !r.fired);
-    saveState(); updateRemindBadge();
-    if (document.getElementById("remindModalBg").classList.contains("active")) renderReminders();
+    saveState();
+    updateRemindBadge();
+    if (document.getElementById("remindModalBg").classList.contains("active")) {
+      renderReminders();
+    }
   }
 }
+
 function fireReminder(r) {
   showToast("🔔 Напоминание", r.text);
+
   if ("Notification" in window && Notification.permission === "granted") {
     try {
-      new Notification("🔔 Дневник.ру", { body: r.text, icon: "icon.png", tag: r.id });
-    } catch(e) {}
+      new Notification("🔔 Дневник.ру — напоминание", {
+        body: r.text,
+        icon: "icon.png",
+        tag: r.id
+      });
+    } catch (e) {}
   }
 }
+
 function showToast(title, text) {
   const wrap = document.getElementById("toastWrap");
   const el = document.createElement("div");
@@ -2445,27 +2814,35 @@ function showToast(title, text) {
       <div class="t-title">${escapeHtml(title)}</div>
       <div class="t-text">${escapeHtml(text)}</div>
     </div>
-    <button class="t-close">✕</button>
+    <button class="t-close" title="Закрыть">✕</button>
   `;
-  const close = () => { el.classList.add("hide"); setTimeout(() => el.remove(), 250); };
+  const close = () => {
+    el.classList.add("hide");
+    setTimeout(() => el.remove(), 250);
+  };
   el.querySelector(".t-close").onclick = close;
   wrap.appendChild(el);
   setTimeout(close, 12000);
 }
+
 function askNotificationPermission() {
   if (!("Notification" in window)) return;
-  if (Notification.permission === "default") Notification.requestPermission();
+  if (Notification.permission === "default") {
+    Notification.requestPermission();
+  }
 }
 
 // ==================== ESCAPE ====================
 function escapeHtml(s) {
   return String(s)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 // ==================== СТАРТ ====================
-applyTheme();
 activeQuarter = getCurrentQuarter();
 currentWeekStart = getMondayOfDate(new Date());
 render();
