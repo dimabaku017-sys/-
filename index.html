@@ -57,9 +57,6 @@
     --red-soft: #2e1414;
     --purple: #ba68c8;
     --purple-soft: #241430;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
-    --shadow-md: 0 4px 12px rgba(0,0,0,.35);
-    --shadow-lg: 0 12px 32px rgba(0,0,0,.5);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -72,7 +69,7 @@
       radial-gradient(circle at 100% 0%, rgba(123,31,162,.08), transparent 40%),
       radial-gradient(circle at 50% 100%, rgba(46,125,50,.06), transparent 50%);
     color: var(--text);
-    padding: 14px;
+    padding: 15px;
     min-height: 100vh;
     transition: background .4s ease, color .3s ease;
   }
@@ -88,7 +85,7 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ============ ШАПКА ============ */
+  /* ============ ШАПКА (DESKTOP) ============ */
   .header {
     background: linear-gradient(135deg, #1976d2 0%, #0d47a1 60%, #6a1b9a 140%);
     background-size: 200% 200%;
@@ -140,7 +137,6 @@
     position: relative;
     z-index: 1;
   }
-
   .theme-btn {
     width: 44px;
     height: 44px;
@@ -148,7 +144,6 @@
     border: 2px solid rgba(255,255,255,.5);
     background: rgba(255,255,255,.15);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     cursor: pointer;
     font-size: 20px;
     display: flex;
@@ -162,7 +157,6 @@
     background: rgba(255,255,255,.28);
     border-color: #fff;
   }
-
   .avatar-btn {
     width: 56px;
     height: 56px;
@@ -185,7 +179,7 @@
   }
   .avatar-btn svg { width: 100%; height: 100%; display: block; }
 
-  /* ============ ПАНЕЛЬ СРЕДНЕГО БАЛЛА ============ */
+  /* ============ СРЕДНИЙ БАЛЛ (DESKTOP) ============ */
   .score-bar {
     background: var(--bg-panel);
     padding: 16px 28px;
@@ -228,12 +222,11 @@
     font-weight: 600;
   }
   [data-theme="dark"] .score-bar #today { color: var(--primary); }
-
   .avg-red    { color: #ef4444; text-shadow: 0 0 12px rgba(239,68,68,.35); }
   .avg-orange { color: #f59e0b; text-shadow: 0 0 12px rgba(245,158,11,.35); }
   .avg-green  { color: #10b981; text-shadow: 0 0 12px rgba(16,185,129,.35); }
 
-  /* ============ ПЛАШКА «СЕЙЧАС ИДЁТ» ============ */
+  /* ============ СЕЙЧАС ИДЁТ (DESKTOP) ============ */
   .now-bar {
     display: none;
     padding: 14px 28px;
@@ -250,9 +243,9 @@
     from { opacity: 0; transform: translateY(-10px); max-height: 0; }
     to   { opacity: 1; transform: translateY(0); max-height: 200px; }
   }
-  .now-bar.lesson { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; box-shadow: inset 0 -2px 0 rgba(0,0,0,.1); }
-  .now-bar.break  { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; box-shadow: inset 0 -2px 0 rgba(0,0,0,.1); }
-  .now-bar.soon   { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #fff; box-shadow: inset 0 -2px 0 rgba(0,0,0,.1); }
+  .now-bar.lesson { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; }
+  .now-bar.break  { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; }
+  .now-bar.soon   { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #fff; }
   .now-bar::after {
     content: "";
     position: absolute;
@@ -278,7 +271,6 @@
   .now-bar .now-time {
     background: rgba(255,255,255,.28);
     backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     padding: 5px 14px;
     border-radius: 999px;
     font-size: 14px;
@@ -288,7 +280,7 @@
     z-index: 1;
   }
 
-  /* ============ БЛОК РИСКА ============ */
+  /* ============ РИСК (DESKTOP) ============ */
   .risk-bar {
     background: linear-gradient(135deg, var(--orange-soft), var(--bg-panel));
     border-bottom: 1px solid var(--border);
@@ -337,7 +329,7 @@
   .risk-bar .risk-item .hint { font-size: 11px; color: var(--text-soft); }
   .risk-bar .risk-item .need { color: var(--green); font-weight: 700; }
 
-  /* ============ ТАБЫ ============ */
+  /* ============ ТАБЫ (DESKTOP) ============ */
   .tabs {
     display: flex;
     background: var(--bg-panel);
@@ -384,7 +376,7 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ============ КНОПКИ ============ */
+  /* ============ КНОПКИ (DESKTOP) ============ */
   .controls {
     background: var(--bg-panel);
     padding: 12px 28px;
@@ -432,7 +424,7 @@
   .btn.today  { background: linear-gradient(135deg, #f59e0b, #d97706); }
   .btn.remind { background: linear-gradient(135deg, #a855f7, #7c3aed); }
 
-  /* ============ ПЕРЕКЛЮЧАТЕЛЬ ЧЕТВЕРТИ ============ */
+  /* ============ ЧЕТВЕРТЬ (DESKTOP) ============ */
   .quarter-switcher {
     display: inline-flex;
     align-items: center;
@@ -472,7 +464,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* ============ ИНФО О НЕДЕЛЕ ============ */
+  /* ============ НЕДЕЛЯ (DESKTOP) ============ */
   .week-info {
     background: linear-gradient(135deg, var(--orange-soft), var(--bg-panel));
     padding: 16px 28px;
@@ -516,7 +508,7 @@
   }
   .btn.remind .badge.empty { display: none; }
 
-  /* ============ ТАБЛИЦА ОЦЕНОК ============ */
+  /* ============ ТАБЛИЦА ОЦЕНОК (DESKTOP) ============ */
   .table-wrap {
     background: var(--bg-panel);
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
@@ -549,7 +541,6 @@
     color: var(--text-soft);
     padding: 12px 6px;
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
   }
   th.subject-col, td.subject-col {
     background: var(--bg-soft);
@@ -686,7 +677,7 @@
     box-shadow: 0 1px 4px rgba(198,40,40,.4);
   }
 
-  /* ============ ТАБЛИЦА ЧЕТВЕРТНЫХ ============ */
+  /* ============ ЧЕТВЕРТНЫЕ (DESKTOP) ============ */
   table.quarters-table {
     border-collapse: separate;
     border-spacing: 0;
@@ -755,7 +746,7 @@
     margin-top: 3px;
   }
 
-  /* ============ РАСПИСАНИЕ ============ */
+  /* ============ РАСПИСАНИЕ (DESKTOP) ============ */
   .schedule-wrap {
     background: var(--bg-panel);
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
@@ -788,7 +779,6 @@
     text-align: center;
     font-size: 13px;
     padding: 12px 8px;
-    position: relative;
   }
   [data-theme="dark"] .schedule-table th { color: var(--primary); }
   .schedule-table th .day-name { display: block; font-size: 14px; font-weight: 800; }
@@ -958,13 +948,12 @@
     border-color: var(--primary);
   }
 
-  /* ============ МОДАЛЬНОЕ ОКНО ============ */
+  /* ============ МОДАЛКА (DESKTOP) ============ */
   .modal-bg {
     position: fixed;
     inset: 0;
     background: rgba(10,20,40,.5);
     backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -972,10 +961,7 @@
     padding: 12px;
   }
   .modal-bg.active { display: flex; animation: modalBgIn .25s ease; }
-  @keyframes modalBgIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
+  @keyframes modalBgIn { from { opacity: 0; } to { opacity: 1; } }
   .modal {
     background: var(--bg-panel);
     border-radius: var(--radius-lg);
@@ -1002,7 +988,6 @@
     letter-spacing: -.2px;
   }
   .modal .sub { font-size: 13px; color: var(--text-soft); margin-bottom: 18px; }
-
   .modal .section-label {
     font-size: 12px;
     font-weight: 800;
@@ -1012,7 +997,6 @@
     margin-bottom: 10px;
     text-align: left;
   }
-
   .modal .grade-btns {
     display: flex; justify-content: center; gap: 10px;
     margin-bottom: 20px; flex-wrap: wrap;
@@ -1033,7 +1017,6 @@
     outline-offset: 3px;
     transform: scale(1.08);
   }
-
   .modal .type-btns {
     display: flex;
     justify-content: center;
@@ -1071,7 +1054,6 @@
     color: var(--text-mute);
     margin-top: 3px;
   }
-
   .modal .actions {
     display: flex;
     justify-content: center;
@@ -1116,7 +1098,6 @@
     box-shadow: 0 2px 8px rgba(16,185,129,.3);
   }
   .modal .save-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,185,129,.4); }
-
   .modal textarea {
     width: 100%;
     min-height: 110px;
@@ -1138,7 +1119,7 @@
     background: var(--bg-panel);
   }
 
-  /* ============ ФОТО В МОДАЛКЕ ============ */
+  /* ============ ФОТО (DESKTOP) ============ */
   .hw-photo-area { margin-bottom: 16px; text-align: left; }
   .hw-photo-area .photo-label-row {
     display: flex;
@@ -1174,10 +1155,7 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(25,118,210,.4);
   }
-  .gallery-btn:active { transform: scale(.97); }
-
   #hwPhotoInput { display: none; }
-
   .hw-photo-preview {
     display: flex;
     gap: 10px;
@@ -1223,7 +1201,6 @@
     transition: var(--transition);
   }
   .hw-photo-preview .remove-photo:hover { transform: scale(1.15) rotate(90deg); }
-
   .hw-photo-empty {
     font-size: 12px;
     color: var(--text-mute);
@@ -1236,7 +1213,6 @@
     inset: 0;
     background: rgba(0,0,0,.92);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -1260,10 +1236,9 @@
     background: rgba(255,255,255,.12);
     padding: 6px 14px;
     border-radius: 999px;
-    backdrop-filter: blur(10px);
   }
 
-  /* ============ ПРОФИЛЬ ============ */
+  /* ============ ПРОФИЛЬ (DESKTOP) ============ */
   .profile-modal {
     min-width: 420px;
     max-width: 90vw;
@@ -1342,7 +1317,7 @@
     box-shadow: 0 8px 22px rgba(25,118,210,.45);
   }
 
-  /* ============ КАЛЕНДАРЬ ============ */
+  /* ============ КАЛЕНДАРЬ (DESKTOP) ============ */
   .cal-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -1382,18 +1357,8 @@
   .cal-cell.header:hover { background: var(--primary-soft); transform: none; border-color: transparent; }
   .cal-cell.other-month { color: var(--text-mute); background: transparent; }
   .cal-cell.past { color: var(--text-mute); opacity: .5; }
-  .cal-cell.holiday {
-    background: var(--orange-soft);
-    color: var(--orange);
-    font-weight: 800;
-  }
-  .cal-cell.holiday:hover { background: var(--orange-soft); border-color: var(--orange); }
-  .cal-cell.vacation {
-    background: var(--green-soft);
-    color: var(--green);
-    font-weight: 800;
-  }
-  .cal-cell.vacation:hover { background: var(--green-soft); border-color: var(--green); }
+  .cal-cell.holiday { background: var(--orange-soft); color: var(--orange); font-weight: 800; }
+  .cal-cell.vacation { background: var(--green-soft); color: var(--green); font-weight: 800; }
   .cal-nav {
     display: flex;
     justify-content: space-between;
@@ -1419,17 +1384,13 @@
     transition: var(--transition);
     box-shadow: var(--shadow-sm);
   }
-  .cal-nav button:hover {
-    transform: scale(1.12);
-    box-shadow: var(--shadow-md);
-  }
+  .cal-nav button:hover { transform: scale(1.12); box-shadow: var(--shadow-md); }
 
   #fileInput { display: none; }
 
-  /* ============ НАПОМИНАНИЯ ============ */
+  /* ============ НАПОМИНАНИЯ (DESKTOP) ============ */
   .remind-modal { min-width: 460px; text-align: left; }
   .remind-modal h3, .remind-modal .sub { text-align: center; }
-
   .remind-form {
     background: var(--primary-soft);
     border: 1px solid var(--border);
@@ -1470,14 +1431,12 @@
     border-color: var(--primary);
     box-shadow: var(--shadow-glow);
   }
-
   .remind-actions {
     display: flex;
     gap: 10px;
     justify-content: flex-end;
     margin-top: 12px;
   }
-
   .remind-list {
     display: flex;
     flex-direction: column;
@@ -1498,10 +1457,7 @@
     transition: var(--transition);
     animation: fadeUp .3s ease backwards;
   }
-  .remind-item:hover {
-    transform: translateX(4px);
-    box-shadow: var(--shadow-sm);
-  }
+  .remind-item:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
   .remind-item.past { opacity: .5; border-left-color: var(--text-mute); }
   .remind-item .ri-time {
     font-size: 12px;
@@ -1541,7 +1497,7 @@
     padding: 20px;
   }
 
-  /* ============ ТОСТЫ ============ */
+  /* ============ ТОСТЫ (DESKTOP) ============ */
   .toast-wrap {
     position: fixed;
     top: 16px;
@@ -1586,7 +1542,6 @@
   }
   .toast .t-close:hover { background: rgba(255,255,255,.3); }
   .toast.hide { animation: toastOut .3s ease forwards; }
-
   @keyframes toastIn  { from { transform: translateX(120%) scale(.9); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
   @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 
@@ -1600,15 +1555,478 @@
   }
   ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-  /* ============ АДАПТИВ ============ */
+  /* =========================================================
+     ============ МОБИЛЬНАЯ ВЕРСИЯ (компактная) ==============
+     ========================================================= */
   @media (max-width: 720px) {
-    body { padding: 8px; }
-    .header { padding: 16px 18px; border-radius: var(--radius) var(--radius) 0 0; }
-    .header h1 { font-size: 20px; }
-    .score-bar, .controls, .week-info, .risk-bar { padding-left: 16px; padding-right: 16px; }
-    .modal { min-width: auto; width: 100%; padding: 20px; }
-    .remind-modal, .profile-modal { min-width: auto; }
-    .tab-btn { padding: 14px 18px; font-size: 14px; }
+    body {
+      padding: 8px;
+      background-image: none;
+    }
+    .app { animation: none; }
+
+    /* Шапка */
+    .header {
+      padding: 12px 16px;
+      border-radius: 12px 12px 0 0;
+      gap: 8px;
+      animation: none;
+      background: linear-gradient(135deg, #1976d2, #0d47a1);
+    }
+    .header h1 { font-size: 18px; gap: 6px; }
+    .header-right { gap: 8px; }
+    .theme-btn {
+      width: 34px; height: 34px;
+      font-size: 16px;
+      border-width: 2px;
+      backdrop-filter: none;
+    }
+    .avatar-btn {
+      width: 40px; height: 40px;
+      border-width: 2px;
+      box-shadow: none;
+    }
+
+    /* Средний балл */
+    .score-bar {
+      padding: 10px 16px;
+      font-size: 13px;
+      gap: 8px;
+    }
+    .score-bar .label { font-size: 12px; }
+    .score-bar b { font-size: 18px; }
+    .score-bar #today {
+      padding: 3px 10px;
+      font-size: 11px;
+    }
+    .avg-red, .avg-orange, .avg-green { text-shadow: none; }
+
+    /* Сейчас идёт */
+    .now-bar {
+      padding: 10px 16px;
+      font-size: 13px;
+      gap: 8px;
+    }
+    .now-bar .icon { font-size: 16px; }
+    .now-bar .now-time { padding: 3px 10px; font-size: 12px; }
+    .now-bar::after { display: none; }
+
+    /* Риск */
+    .risk-bar {
+      padding: 10px 16px;
+      font-size: 12px;
+      gap: 8px;
+      background: var(--orange-soft);
+    }
+    .risk-bar .risk-title { font-size: 13px; }
+    .risk-bar .risk-item {
+      padding: 6px 10px;
+      font-size: 11px;
+      min-width: 180px;
+      box-shadow: none;
+    }
+    .risk-bar .risk-item .hint { font-size: 10px; }
+
+    /* Табы */
+    .tabs { padding: 0; gap: 0; }
+    .tab-btn {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      flex: 1;
+      justify-content: center;
+      border-radius: 0;
+    }
+    .tab-btn:hover:not(.active) { transform: none; }
+
+    /* Кнопки */
+    .controls {
+      padding: 8px 16px;
+      gap: 8px;
+    }
+    .btn {
+      padding: 7px 14px;
+      font-size: 12px;
+      box-shadow: none;
+    }
+    .btn::before { display: none; }
+    .btn:hover { transform: none; box-shadow: none; }
+
+    /* Четверть */
+    .quarter-switcher {
+      padding: 2px;
+      margin-left: 4px;
+    }
+    .quarter-switcher .arrow {
+      width: 26px; height: 26px;
+      font-size: 16px;
+    }
+    .quarter-switcher .quarter-label {
+      font-size: 12px;
+      min-width: 100px;
+      padding: 0 6px;
+      font-weight: 700;
+    }
+
+    /* Неделя */
+    .week-info {
+      padding: 10px 16px;
+      font-size: 13px;
+      gap: 8px;
+      background: var(--orange-soft);
+    }
+    .week-info .week-label { font-size: 14px; font-weight: 700; }
+    .week-info .week-dates { font-size: 12px; }
+    .week-nav { gap: 6px; }
+    .week-nav .btn { padding: 6px 12px; font-size: 12px; }
+    .btn.remind .badge {
+      min-width: 16px; height: 16px; line-height: 16px;
+      font-size: 10px; padding: 0 5px;
+      margin-left: 4px;
+      animation: none;
+      box-shadow: none;
+    }
+
+    /* Таблица оценок */
+    .table-wrap {
+      max-height: calc(100vh - 260px);
+      box-shadow: var(--shadow-sm);
+    }
+    table.grades-table { font-size: 13px; }
+    table.grades-table th, table.grades-table td {
+      padding: 5px;
+    }
+    table.grades-table thead th {
+      padding: 8px 5px;
+      font-size: 12px;
+      font-weight: 600;
+      backdrop-filter: none;
+    }
+    th.subject-col, td.subject-col {
+      padding-left: 12px;
+      min-width: 170px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    tbody tr:hover td.subject-col { color: inherit; padding-left: 12px; }
+    tbody tr:hover { background: transparent; }
+
+    th.avg-col, td.avg-col {
+      min-width: 80px;
+      font-size: 13px;
+    }
+    td.avg-col .weighted { font-size: 14px; font-weight: 700; }
+    td.avg-col .simple { font-size: 10px; margin-top: 1px; }
+
+    th.quarter-col, td.quarter-col {
+      min-width: 80px;
+      font-size: 14px;
+    }
+    thead th.quarter-col { font-size: 11px; padding: 6px 5px; }
+    thead th.quarter-col .q-name { font-size: 12px; font-weight: 700; }
+    thead th.quarter-col .q-sub { font-size: 9px; margin-top: 1px; }
+    td.quarter-cell-main {
+      min-width: 80px;
+      height: 42px;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    td.quarter-cell-main:hover { transform: none; }
+
+    td.grade-cell {
+      min-width: 56px;
+      height: 46px;
+    }
+    td.grade-cell:hover { transform: none; }
+
+    .grade-badge {
+      width: 32px; height: 32px;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    }
+    .type-label { font-size: 8px; padding: 1px 4px; font-weight: 700; }
+
+    /* Четвертные */
+    table.quarters-table { font-size: 13px; min-width: 700px; }
+    table.quarters-table th, table.quarters-table td { padding: 6px; }
+    table.quarters-table thead th {
+      font-size: 12px;
+      padding: 8px 5px;
+      font-weight: 600;
+      backdrop-filter: none;
+    }
+    table.quarters-table th.subject-col,
+    table.quarters-table td.subject-col {
+      min-width: 180px;
+      padding-left: 12px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    table.quarters-table td.quarter-cell {
+      min-width: 80px;
+      height: 46px;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    table.quarters-table td.quarter-cell:hover { transform: none; }
+    table.quarters-table td.quarter-cell.final { font-size: 19px; }
+    .quarter-weights { font-size: 9px; margin-top: 2px; }
+
+    /* Расписание */
+    .schedule-wrap { padding: 10px; box-shadow: var(--shadow-sm); }
+    .schedule-table {
+      min-width: 1300px;
+      font-size: 12px;
+      border-radius: 0;
+    }
+    .schedule-table th, .schedule-table td {
+      padding: 7px 9px;
+      line-height: 1.35;
+    }
+    .schedule-table th {
+      font-size: 12px;
+      padding: 8px 5px;
+      font-weight: 700;
+    }
+    .schedule-table th .day-name { font-size: 13px; font-weight: 700; }
+    .schedule-table th .day-date { font-size: 11px; font-weight: 500; margin-top: 2px; }
+    .schedule-table th .day-date.today {
+      padding: 1px 6px;
+      animation: none;
+      box-shadow: none;
+    }
+    .schedule-table th.num-col,
+    .schedule-table td.num-col {
+      width: 36px; min-width: 36px;
+      font-size: 13px;
+    }
+    .schedule-table th.time-col,
+    .schedule-table td.time-col {
+      min-width: 110px;
+      font-size: 12px;
+    }
+    .schedule-table td {
+      font-size: 11px;
+      min-width: 160px;
+    }
+    .schedule-table td:hover { background: var(--bg-panel); }
+    .schedule-table td .subj { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+    .schedule-table td .room { font-size: 10px; padding: 0; background: transparent; }
+    .schedule-table td .teacher { font-size: 10px; }
+
+    td.day-off { font-size: 12px; font-weight: 600; }
+
+    .hw-row { margin-top: 5px; gap: 3px; }
+    .hw-btn {
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .hw-btn:hover { transform: none; box-shadow: none; }
+    .hw-btn .photo-badge {
+      font-size: 9px;
+      line-height: 14px;
+      padding: 0 5px;
+      margin-left: 3px;
+    }
+
+    .hw-text {
+      font-size: 10px;
+      padding: 3px 6px;
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+    .hw-text:hover { transform: none; }
+
+    .hw-photo-thumb {
+      width: 40px; height: 40px;
+      margin-top: 4px;
+    }
+    .hw-photo-thumb:hover { transform: none; box-shadow: none; }
+
+    /* Модалки */
+    .modal-bg { padding: 10px; backdrop-filter: none; }
+    .modal {
+      min-width: auto;
+      width: 100%;
+      max-width: 95vw;
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .modal h3 { font-size: 16px; }
+    .modal .sub { font-size: 12px; margin-bottom: 14px; }
+    .modal .section-label { font-size: 11px; margin-bottom: 8px; }
+    .modal .grade-btns { gap: 8px; margin-bottom: 14px; }
+    .modal .grade-btn {
+      width: 46px; height: 46px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .modal .grade-btn:hover { transform: none; box-shadow: none; }
+    .modal .type-btns { gap: 8px; margin-bottom: 14px; }
+    .modal .type-btn {
+      padding: 9px 18px;
+      font-size: 13px;
+      min-width: 110px;
+      font-weight: 600;
+    }
+    .modal .type-btn:hover { transform: none; }
+    .modal .type-btn .hint { font-size: 10px; margin-top: 2px; }
+    .modal .actions { gap: 6px; margin-top: 8px; }
+    .modal .clear-btn { padding: 9px 16px; font-size: 12px; font-weight: 600; }
+    .modal .cancel-btn { padding: 9px 16px; font-size: 12px; font-weight: 600; }
+    .modal .cancel-btn:hover { transform: none; box-shadow: none; }
+    .modal .save-btn {
+      padding: 9px 20px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .modal .save-btn:hover { transform: none; box-shadow: none; }
+    .modal textarea {
+      min-height: 90px;
+      padding: 10px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    /* Фото */
+    .hw-photo-area { margin-bottom: 12px; }
+    .hw-photo-area .photo-label-row { margin-bottom: 8px; gap: 6px; }
+    .hw-photo-area .photo-label { font-size: 11px; font-weight: 700; }
+    .gallery-btn {
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .gallery-btn:hover { transform: none; box-shadow: none; }
+    .hw-photo-preview { gap: 8px; margin-top: 10px; }
+    .hw-photo-preview .thumb-wrap { width: 72px; height: 72px; }
+    .hw-photo-preview img:hover { transform: none; }
+    .hw-photo-preview .remove-photo {
+      width: 20px; height: 20px;
+      font-size: 11px;
+      top: -6px; right: -6px;
+    }
+    .hw-photo-preview .remove-photo:hover { transform: none; }
+    .hw-photo-empty { font-size: 11px; margin-top: 6px; }
+
+    .photo-viewer .close-hint {
+      top: 12px; right: 16px;
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+
+    /* Профиль */
+    .profile-modal {
+      min-width: 320px;
+      padding: 22px 20px 18px;
+    }
+    .profile-modal .profile-avatar-big {
+      width: 100px; height: 100px;
+      border-width: 3px;
+      margin-bottom: 12px;
+      animation: none;
+      box-shadow: 0 4px 16px rgba(245,184,0,.35);
+    }
+    .profile-modal .profile-name { font-size: 17px; font-weight: 700; margin-bottom: 14px; }
+    .profile-modal .profile-row {
+      padding: 8px 12px;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+    .profile-modal .profile-row:hover {
+      background: var(--bg-soft);
+      border-left-color: transparent;
+      transform: none;
+    }
+    .profile-modal .profile-row .pr-label { font-size: 12px; font-weight: 600; }
+    .profile-modal .profile-close {
+      padding: 9px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+    .profile-modal .profile-close:hover { transform: none; }
+
+    /* Календарь */
+    .cal-grid { gap: 5px; margin-bottom: 12px; }
+    .cal-cell {
+      padding: 8px 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .cal-cell:hover { transform: none; }
+    .cal-cell.header { font-size: 11px; font-weight: 700; }
+    .cal-nav { margin-bottom: 12px; }
+    .cal-nav .month-title { font-size: 15px; font-weight: 700; }
+    .cal-nav button {
+      width: 32px; height: 32px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .cal-nav button:hover { transform: none; box-shadow: none; }
+
+    /* Напоминания */
+    .remind-modal { min-width: 320px; }
+    .remind-form { padding: 12px; margin-bottom: 14px; }
+    .remind-row { gap: 8px; margin-bottom: 10px; }
+    .remind-row label {
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 130px;
+      gap: 4px;
+    }
+    .remind-row input {
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+    .remind-actions { gap: 8px; margin-top: 8px; }
+    .remind-list { gap: 8px; max-height: 280px; }
+    .remind-item {
+      padding: 10px 12px;
+      gap: 10px;
+    }
+    .remind-item:hover { transform: none; box-shadow: none; }
+    .remind-item .ri-time { font-size: 11px; font-weight: 700; line-height: 1.3; }
+    .remind-item .ri-text { font-size: 12px; line-height: 1.35; }
+    .remind-item .ri-del {
+      width: 24px; height: 24px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .remind-item .ri-del:hover { transform: none; background: var(--red-soft); color: var(--red); }
+    .remind-empty { font-size: 12px; padding: 16px; }
+
+    /* Тосты */
+    .toast-wrap {
+      top: 12px; right: 12px;
+      gap: 8px;
+      max-width: calc(100vw - 24px);
+    }
+    .toast {
+      min-width: 220px;
+      max-width: 320px;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.35;
+      gap: 10px;
+    }
+    .toast .t-icon { font-size: 18px; }
+    .toast .t-title { font-size: 13px; margin-bottom: 3px; }
+    .toast .t-text { font-size: 12px; }
+    .toast .t-close { font-size: 12px; padding: 3px 6px; }
+
+    /* Скроллбар */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+  }
+
+  /* Очень маленькие экраны */
+  @media (max-width: 380px) {
+    .header h1 { font-size: 16px; }
+    .tab-btn { padding: 10px 10px; font-size: 12px; }
+    .btn { padding: 6px 10px; font-size: 11px; }
+    .score-bar b { font-size: 16px; }
   }
 </style>
 </head>
@@ -1616,7 +2034,7 @@
 
 <div class="app">
 
-<!-- ===== Шапка ===== -->
+<!-- ШАПКА -->
 <div class="header">
   <h1>📘 Дневник.ру</h1>
   <div class="header-right">
@@ -1640,7 +2058,7 @@
   </div>
 </div>
 
-<!-- ===== Средний балл ===== -->
+<!-- СРЕДНИЙ БАЛЛ -->
 <div class="score-bar">
   <div>
     <span class="label">Средневзвешенный:</span>
@@ -1654,34 +2072,34 @@
   <div id="today">—</div>
 </div>
 
-<!-- ===== Плашка "Сейчас идёт" ===== -->
+<!-- СЕЙЧАС ИДЁТ -->
 <div class="now-bar" id="nowBar">
   <span class="icon" id="nowIcon">🔔</span>
   <span class="now-text" id="nowText"></span>
   <span class="now-time" id="nowTime"></span>
 </div>
 
-<!-- ===== Блок риска ===== -->
+<!-- РИСК -->
 <div class="risk-bar" id="riskBar">
   <span class="risk-title">Внимание</span>
   <div id="riskItems" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
 </div>
 
-<!-- ===== Табы ===== -->
+<!-- ТАБЫ -->
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('grades', this)">📝 Оценки</button>
   <button class="tab-btn" onclick="switchTab('schedule', this)">📅 Расписание</button>
   <button class="tab-btn" onclick="switchTab('quarters', this)">🎓 Четвертные</button>
 </div>
 
-<!-- ==================== ВКЛАДКА ОЦЕНКИ ==================== -->
+<!-- ОЦЕНКИ -->
 <div class="tab-content active" id="tab-grades">
   <div class="controls">
     <button class="btn green" onclick="downloadDiary()">💾 Скачать</button>
     <button class="btn gray" onclick="document.getElementById('fileInput').click()">📂 Загрузить</button>
     <input type="file" id="fileInput" accept=".json" onchange="uploadDiary(event)">
 
-    <div class="quarter-switcher" title="Переключение между четвертями">
+    <div class="quarter-switcher">
       <button class="arrow" id="qPrev" onclick="changeQuarter(-1)">‹</button>
       <span class="quarter-label" id="qLabel">1 четверть</span>
       <button class="arrow" id="qNext" onclick="changeQuarter(1)">›</button>
@@ -1698,7 +2116,7 @@
   </div>
 </div>
 
-<!-- ==================== ВКЛАДКА РАСПИСАНИЕ ==================== -->
+<!-- РАСПИСАНИЕ -->
 <div class="tab-content" id="tab-schedule">
   <div class="week-info">
     <div>
@@ -1720,13 +2138,13 @@
     </table>
   </div>
 
-  <div class="tomorrow-hw" id="tomorrowHW" style="display:none;background:var(--orange-soft);border-top:2px solid var(--border);padding:18px 28px;font-size:14px;border-radius:0 0 var(--radius-lg) var(--radius-lg);">
-    <div class="th-title" id="thTitle" style="font-weight:800;color:var(--orange);font-size:15px;margin-bottom:12px;">📝 Задано на завтра</div>
-    <div class="th-list" id="thList" style="display:flex;flex-direction:column;gap:10px;"></div>
+  <div id="tomorrowHW" style="display:none;background:var(--orange-soft);border-top:2px solid var(--border);padding:18px 28px;font-size:14px;border-radius:0 0 var(--radius-lg) var(--radius-lg);">
+    <div id="thTitle" style="font-weight:800;color:var(--orange);font-size:15px;margin-bottom:12px;">📝 Задано на завтра</div>
+    <div id="thList" style="display:flex;flex-direction:column;gap:10px;"></div>
   </div>
 </div>
 
-<!-- ==================== ВКЛАДКА ЧЕТВЕРТНЫЕ ==================== -->
+<!-- ЧЕТВЕРТНЫЕ -->
 <div class="tab-content" id="tab-quarters">
   <div class="table-wrap">
     <table class="quarters-table" id="quartersTable">
@@ -1745,7 +2163,7 @@
   </div>
 </div>
 
-<!-- ===== Модалка ОЦЕНКИ ===== -->
+<!-- МОДАЛКА ОЦЕНКИ -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
@@ -1769,7 +2187,7 @@
   </div>
 </div>
 
-<!-- ===== Модалка Д/З ===== -->
+<!-- МОДАЛКА Д/З -->
 <div class="modal-bg" id="hwModalBg">
   <div class="modal">
     <h3 id="hwTitle">Домашнее задание</h3>
@@ -1796,13 +2214,13 @@
   </div>
 </div>
 
-<!-- ===== Просмотр фото ===== -->
+<!-- ФОТО -->
 <div class="photo-viewer" id="photoViewer" onclick="closePhotoViewer()">
   <span class="close-hint">Клик — закрыть</span>
-  <img id="photoViewerImg" src="" alt="Фото задания">
+  <img id="photoViewerImg" src="" alt="">
 </div>
 
-<!-- ===== Модалка ЧЕТВЕРТНОЙ ===== -->
+<!-- МОДАЛКА ЧЕТВЕРТНОЙ -->
 <div class="modal-bg" id="qModalBg">
   <div class="modal">
     <h3 id="qTitle">Четвертная оценка</h3>
@@ -1815,7 +2233,7 @@
   </div>
 </div>
 
-<!-- ===== Модалка ПРОФИЛЯ ===== -->
+<!-- ПРОФИЛЬ -->
 <div class="modal-bg" id="profileModalBg">
   <div class="modal profile-modal">
     <div class="profile-avatar-big">
@@ -1835,20 +2253,18 @@
       </svg>
     </div>
     <div class="profile-name">Бакулин Дмитрий Алексеевич</div>
-
     <div class="profile-row"><span class="pr-label">Класс</span><span class="pr-value">9Б</span></div>
     <div class="profile-row"><span class="pr-label">Школа</span><span class="pr-value">Гимназия №10, Воронеж</span></div>
     <div class="profile-row"><span class="pr-label">Дата рождения</span><span class="pr-value">22.07.2011</span></div>
     <div class="profile-row"><span class="pr-label">Телефон</span><span class="pr-value">+7 950 759-68-56</span></div>
     <div class="profile-row"><span class="pr-label">Электронная почта</span><span class="pr-value">dimabaku017@gmail.com</span></div>
-
     <button class="profile-close" onclick="closeProfile()">Закрыть</button>
   </div>
 </div>
 
-<!-- ===== Модалка КАЛЕНДАРЯ ===== -->
+<!-- КАЛЕНДАРЬ -->
 <div class="modal-bg" id="calModalBg">
-  <div class="modal" style="min-width: 520px;">
+  <div class="modal" style="min-width: 380px;">
     <h3>📅 Выбор недели</h3>
     <div class="sub">Учебный год 2026/2027</div>
     <div class="cal-nav">
@@ -1865,7 +2281,7 @@
   </div>
 </div>
 
-<!-- ===== Модалка НАПОМИНАНИЙ ===== -->
+<!-- НАПОМИНАНИЯ -->
 <div class="modal-bg" id="remindModalBg">
   <div class="modal remind-modal">
     <h3>🔔 Напоминания</h3>
@@ -1887,7 +2303,7 @@
   </div>
 </div>
 
-<!-- ===== Тосты ===== -->
+<!-- ТОСТЫ -->
 <div class="toast-wrap" id="toastWrap"></div>
 
 </div>
@@ -2104,7 +2520,7 @@ function openProfile() { document.getElementById("profileModalBg").classList.add
 function closeProfile() { document.getElementById("profileModalBg").classList.remove("active"); }
 document.getElementById("profileModalBg").addEventListener("click", e => { if (e.target.id === "profileModalBg") closeProfile(); });
 
-// ==================== "СЕЙЧАС ИДЁТ" ====================
+// ==================== СЕЙЧАС ИДЁТ ====================
 function updateNowBar() {
   const bar = document.getElementById("nowBar");
   const iconEl = document.getElementById("nowIcon");
@@ -2268,7 +2684,6 @@ function render() {
       tdQ.textContent = "—";
       tdQ.style.color = "var(--text-mute)";
     }
-    tdQ.title = "Клик — выставить четвертную";
     tdQ.onclick = () => openQuarterModal(subj, activeQuarter);
     tr.appendChild(tdQ);
 
@@ -2502,8 +2917,7 @@ function renderSchedule() {
           </div>`;
           if (hwText) {
             html += `<div class="hw-text ${isDone?"done":""}"
-              onclick="toggleHWDone('${hwKey}')"
-              title="Клик — отметить выполненным">${escapeHtml(hwText)}</div>`;
+              onclick="toggleHWDone('${hwKey}')">${escapeHtml(hwText)}</div>`;
           }
           if (hwPhotos.length) {
             html += `<div>`;
@@ -2537,7 +2951,7 @@ function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderSc
 function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7); renderSchedule(); }
 function goToToday() { calMonth = new Date(); openCal(); }
 
-// ==================== "ЗАДАНО НА ЗАВТРА" ====================
+// ==================== ЗАДАНО НА ЗАВТРА ====================
 function renderTomorrowHW() {
   const wrap = document.getElementById("tomorrowHW");
   const list = document.getElementById("thList");
@@ -2572,7 +2986,7 @@ function renderTomorrowHW() {
   title.textContent = `📝 Задано на завтра (${DAY_NAMES[tomDayIdx]}, ${formatFull(tomorrow)})`;
 
   if (!items.length) {
-    list.innerHTML = `<div style="color:var(--text-mute);font-style:italic;font-size:13px;">Пока ничего не задано.</div>`;
+    list.innerHTML = `<div style="color:var(--text-mute);font-style:italic;font-size:12px;">Пока ничего не задано.</div>`;
     wrap.style.display = "block";
     return;
   }
@@ -2682,9 +3096,8 @@ document.getElementById("hwModalBg").addEventListener("click", e => { if (e.targ
 function renderQuarters() {
   const tbody = document.getElementById("quartersBody");
   tbody.innerHTML = "";
-  state.subjects.forEach((subj, idx) => {
+  state.subjects.forEach(subj => {
     const tr = document.createElement("tr");
-    tr.style.animation = `fadeUp .3s ease ${idx*0.02}s backwards`;
     const tdName = document.createElement("td");
     tdName.className = "subject-col";
     tdName.textContent = subj;
@@ -2879,13 +3292,13 @@ function renderReminders() {
     updateRemindBadge(); return;
   }
   const now = Date.now();
-  wrap.innerHTML = items.map((r,i) => {
+  wrap.innerHTML = items.map(r => {
     const d = new Date(r.ts);
     const isPast = r.fired || r.ts < now;
     const dateStr = formatDate(d);
     const timeStr = String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
     return `
-      <div class="remind-item ${isPast?"past":""}" style="animation-delay:${i*0.04}s">
+      <div class="remind-item ${isPast?"past":""}">
         <div class="ri-time">${dateStr}<br>${timeStr}</div>
         <div class="ri-text">${escapeHtml(r.text)}</div>
         <button class="ri-del" onclick="deleteReminder('${r.id}')">✕</button>
