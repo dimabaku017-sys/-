@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Дневник.ру</title>
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
@@ -28,6 +29,8 @@
     --shadow-md: 0 4px 14px rgba(20,40,80,.10);
     --shadow-lg: 0 12px 32px rgba(20,40,80,.16);
     --ease: cubic-bezier(.4,0,.2,1);
+    --header-h: 64px;
+    --radius: 14px;
   }
 
   [data-theme="dark"] {
@@ -43,30 +46,41 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body { height: 100%; }
+
   body {
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
-    padding: 15px;
     min-height: 100vh;
     transition: background .3s var(--ease), color .3s var(--ease);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
+  /* ================= ОБЩИЙ КОНТЕЙНЕР ================= */
+  .app {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 12px 24px;
+  }
+
+  /* ================= ШАПКА ================= */
   .header {
     background: linear-gradient(135deg, #1976d2, #0d47a1);
     background-size: 200% 200%;
     animation: headerShift 16s ease infinite;
     color: #fff;
-    padding: 18px 28px;
-    border-radius: 12px 12px 0 0;
+    padding: 12px 16px;
+    border-radius: 0 0 var(--radius) var(--radius);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
     gap: 10px;
     box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
+    min-height: var(--header-h);
   }
   .header.eva {
     background: linear-gradient(135deg, #ec407a, #ad1457);
@@ -89,27 +103,71 @@
     0%, 100% { transform: translate(0,0) scale(1); opacity: .8; }
     50%      { transform: translate(5%, -4%) scale(1.08); opacity: 1; }
   }
-  .header h1 { font-size: 24px; position: relative; z-index: 1; }
-  .header-right { display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }
-  .theme-btn {
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,.7);
-    background: rgba(255,255,255,.15);
-    cursor: pointer;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+  }
+  .logo {
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: rgba(255,255,255,.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 20px;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,.25);
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .header-sub {
+    font-size: 11px;
+    opacity: .8;
+    font-weight: 400;
+    display: block;
+    margin-top: 1px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+  .theme-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.6);
+    background: rgba(255,255,255,.12);
+    cursor: pointer;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: .25s var(--ease);
     color: #fff;
   }
-  .theme-btn:hover { background: rgba(255,255,255,.3); transform: rotate(20deg); }
+  .theme-btn:hover { background: rgba(255,255,255,.28); transform: rotate(20deg); }
+
+  /* ================= АВАТАРКА (РАЗНОЦВЕТНАЯ ЛАДОНЬ) ================= */
   .avatar-btn {
-    width: 56px; height: 56px;
+    width: 48px; height: 48px;
     border-radius: 50%;
-    border: 3px solid rgba(255,255,255,.85);
-    background: #f5b800;
+    border: 2.5px solid rgba(255,255,255,.9);
+    background: #fff;
     cursor: pointer;
     padding: 0;
     overflow: hidden;
@@ -118,44 +176,62 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
   }
   .avatar-btn:hover { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(255,255,255,.25); }
   .avatar-btn svg { width: 100%; height: 100%; display: block; }
 
+  /* ================= СТАТИСТИКА ================= */
   .score-bar {
-    background: var(--primary-soft);
-    padding: 14px 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 15px;
-    border-bottom: 1px solid #bbdefb;
-    flex-wrap: wrap;
-    gap: 12px;
+    background: var(--panel);
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    border-radius: var(--radius);
+    margin-top: 12px;
+    box-shadow: var(--shadow-sm);
     transition: background .3s var(--ease);
   }
-  [data-theme="dark"] .score-bar { border-bottom-color: var(--border); }
   .score-bar.hidden { display: none; }
-  .score-bar .label { color: var(--text-soft); font-size: 13px; }
-  .score-bar b { font-size: 22px; transition: color .3s var(--ease); }
-  .avg-red    { color: #e53935; text-shadow: 0 0 10px rgba(229,57,53,.3); }
-  .avg-orange { color: #fb8c00; text-shadow: 0 0 10px rgba(251,140,0,.3); }
-  .avg-green  { color: #2e7d32; text-shadow: 0 0 10px rgba(46,125,50,.3); }
+  .score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 6px 4px;
+    border-right: 1px solid var(--border);
+  }
+  .score-item:last-child { border-right: none; }
+  .score-item .label {
+    color: var(--text-soft);
+    font-size: 11px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+  }
+  .score-item b { font-size: 20px; line-height: 1.1; }
+  .score-item .sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
+  .avg-red    { color: #e53935; }
+  .avg-orange { color: #fb8c00; }
+  .avg-green  { color: #2e7d32; }
   [data-theme="dark"] .avg-red    { color: #ff6b6b; }
   [data-theme="dark"] .avg-orange { color: #ffb74d; }
   [data-theme="dark"] .avg-green  { color: #66bb6a; }
 
+  /* ================= NOW BAR ================= */
   .now-bar {
     display: none;
-    padding: 12px 28px;
-    font-size: 15px;
+    padding: 12px 16px;
+    font-size: 14px;
     font-weight: 600;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    border-bottom: 1px solid rgba(0,0,0,.08);
+    border-radius: var(--radius);
+    margin-top: 10px;
     position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow-sm);
   }
   .now-bar.active { display: flex; animation: slideDown .3s var(--ease); }
   @keyframes slideDown {
@@ -185,106 +261,51 @@
     0%, 100% { transform: scale(1); }
     50%      { transform: scale(1.15); }
   }
-  .now-bar .now-text { flex: 1; min-width: 200px; position: relative; z-index: 1; }
+  .now-bar .now-text { flex: 1; min-width: 140px; position: relative; z-index: 1; }
   .now-bar .now-time {
     background: rgba(255,255,255,.25);
     padding: 4px 12px;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     position: relative;
     z-index: 1;
   }
 
-  .tomorrow-hw {
-    display: none;
-    background: var(--orange-soft);
-    border-top: 2px solid #ffcc80;
-    padding: 16px 28px;
-    font-size: 14px;
-  }
-  [data-theme="dark"] .tomorrow-hw { border-top-color: var(--border); }
-  .tomorrow-hw.active { display: block; animation: fadeIn .35s var(--ease); }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .tomorrow-hw .th-title {
-    font-weight: 700;
-    color: var(--orange);
-    font-size: 15px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .tomorrow-hw .th-list { display: flex; flex-direction: column; gap: 8px; }
-  .tomorrow-hw .th-item {
-    background: var(--panel);
-    border: 1px solid #ffe082;
-    border-left: 4px solid #ff9800;
-    border-radius: 6px;
-    padding: 10px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    transition: .25s var(--ease);
-    animation: fadeIn .3s var(--ease) backwards;
-  }
-  [data-theme="dark"] .tomorrow-hw .th-item { border-color: var(--border); }
-  .tomorrow-hw .th-item:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
-  .tomorrow-hw .th-item .th-subj { font-weight: 700; color: #1a237e; font-size: 14px; }
-  [data-theme="dark"] .tomorrow-hw .th-item .th-subj { color: #82b1ff; }
-  .tomorrow-hw .th-item .th-meta { font-size: 12px; color: var(--text-soft); }
-  .tomorrow-hw .th-item .th-text {
-    color: #5d4037;
-    font-size: 13px;
-    line-height: 1.4;
-    white-space: pre-wrap;
-  }
-  [data-theme="dark"] .tomorrow-hw .th-item .th-text { color: var(--text); }
-  .tomorrow-hw .th-item .th-photo { margin-top: 4px; }
-  .tomorrow-hw .th-item .th-photo img {
-    max-width: 100px;
-    max-height: 100px;
-    border-radius: 6px;
-    border: 1px solid #90caf9;
-    cursor: pointer;
-    transition: .2s var(--ease);
-  }
-  .tomorrow-hw .th-item .th-photo img:hover { transform: scale(1.08); }
-  .tomorrow-hw .th-empty { color: var(--text-mute); font-style: italic; font-size: 13px; }
-
+  /* ================= RISK BAR ================= */
   .risk-bar {
     background: var(--orange-soft);
-    border-bottom: 1px solid #ffe082;
-    padding: 12px 28px;
+    border: 1px solid #ffe082;
+    border-radius: var(--radius);
+    padding: 12px 16px;
     display: none;
     flex-wrap: wrap;
     gap: 10px;
     align-items: center;
-    font-size: 14px;
+    font-size: 13px;
+    margin-top: 10px;
+    box-shadow: var(--shadow-sm);
   }
-  [data-theme="dark"] .risk-bar { border-bottom-color: var(--border); }
+  [data-theme="dark"] .risk-bar { border-color: var(--border); }
   .risk-bar.active { display: flex; animation: slideDown .3s var(--ease); }
   .risk-bar .risk-title {
     font-weight: 700;
     color: var(--orange);
-    font-size: 15px;
+    font-size: 14px;
     white-space: nowrap;
   }
   .risk-bar .risk-item {
     background: var(--panel);
     border: 1px solid #ffcc80;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 8px 12px;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text);
     display: flex;
     flex-direction: column;
     gap: 2px;
-    min-width: 220px;
+    flex: 1 1 180px;
     transition: .25s var(--ease);
     animation: fadeIn .35s var(--ease) backwards;
   }
@@ -301,65 +322,85 @@
   .risk-bar .risk-item .need { color: var(--green); font-weight: 700; }
   [data-theme="dark"] .risk-bar .risk-item .need { color: #66bb6a; }
 
+  /* ================= ВКЛАДКИ ================= */
   .tabs {
     display: flex;
     background: var(--panel);
-    border-bottom: 1px solid var(--border);
-    transition: background .3s var(--ease);
+    border-radius: var(--radius);
+    margin-top: 12px;
+    padding: 6px;
+    gap: 4px;
+    box-shadow: var(--shadow-sm);
+    overflow-x: auto;
+    scrollbar-width: none;
   }
+  .tabs::-webkit-scrollbar { display: none; }
   .tab-btn {
-    padding: 14px 28px;
+    flex: 1;
+    min-width: max-content;
+    padding: 12px 16px;
     border: none;
-    background: var(--panel);
-    font-size: 15px;
-    font-weight: 500;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--text-soft);
     cursor: pointer;
-    border-bottom: 3px solid transparent;
+    border-radius: 10px;
     transition: .2s var(--ease);
-    position: relative;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
   .tab-btn.active {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
-    background: #f5f9ff;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    box-shadow: 0 2px 8px rgba(25,118,210,.3);
   }
-  [data-theme="dark"] .tab-btn.active { background: var(--primary-soft); color: #82b1ff; }
-  .tab-btn:hover { background: #f5f9ff; }
-  [data-theme="dark"] .tab-btn:hover { background: var(--primary-soft); }
+  [data-theme="dark"] .tab-btn.active { color: #fff; }
   .tab-btn.hidden { display: none; }
-  .tab-btn.eva.active { color: #ec407a; border-bottom-color: #ec407a; background: var(--pink-soft); }
-  .tab-btn.eva:hover { background: var(--pink-soft); }
+  .tab-btn.eva.active {
+    background: linear-gradient(135deg, #ec407a, #ad1457);
+    box-shadow: 0 2px 8px rgba(236,64,122,.3);
+  }
 
-  .tab-content { display: none; }
+  .tab-content { display: none; margin-top: 12px; }
   .tab-content.active { display: block; animation: tabIn .3s var(--ease); }
   @keyframes tabIn {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* ================= ПАНЕЛЬ УПРАВЛЕНИЯ ================= */
   .controls {
     background: var(--panel);
-    padding: 10px 28px;
+    padding: 12px 14px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
     align-items: center;
+    box-shadow: var(--shadow-sm);
     transition: background .3s var(--ease);
   }
   .btn {
-    padding: 9px 18px;
+    padding: 10px 16px;
     border: none;
     background: var(--primary);
     color: #fff;
-    border-radius: 6px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
     transition: .2s var(--ease);
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
   .btn::before {
     content: "";
@@ -379,85 +420,57 @@
   .btn.green  { background: #43a047; }
   .btn.green:hover { background: #2e7d32; }
 
+  /* ================= ПЕРЕКЛЮЧАТЕЛЬ ЧЕТВЕРТЕЙ ================= */
   .quarter-switcher {
     display: inline-flex;
     align-items: center;
     background: #fff3e0;
     border: 1px solid #ffcc80;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 2px;
     gap: 2px;
-    margin-left: 8px;
     transition: .25s var(--ease);
   }
   [data-theme="dark"] .quarter-switcher { background: var(--orange-soft); border-color: var(--border); }
   .quarter-switcher .arrow {
-    width: 32px; height: 32px;
+    width: 34px; height: 34px;
     border: none;
     background: transparent;
     color: var(--orange);
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: 8px;
     transition: .2s var(--ease);
   }
   .quarter-switcher .arrow:hover:not(:disabled) { background: #ffe0b2; transform: scale(1.1); }
   [data-theme="dark"] .quarter-switcher .arrow:hover:not(:disabled) { background: rgba(255,255,255,.1); }
   .quarter-switcher .arrow:disabled { color: #cfd8dc; cursor: not-allowed; }
-  .quarter-switcher .arrow:disabled:hover { background: transparent; }
   .quarter-switcher .quarter-label {
     font-weight: 700;
     color: var(--orange);
-    font-size: 14px;
-    min-width: 130px;
+    font-size: 13px;
+    min-width: 100px;
     text-align: center;
-    padding: 0 8px;
+    padding: 0 6px;
   }
 
-  .week-info {
-    background: var(--orange-soft);
-    padding: 12px 28px;
-    border-bottom: 1px solid #ffe082;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    font-size: 14px;
-  }
-  [data-theme="dark"] .week-info { border-bottom-color: var(--border); }
-  .week-info.eva { background: var(--pink-soft); border-bottom-color: #f8bbd0; }
-  [data-theme="dark"] .week-info.eva { border-bottom-color: var(--border); }
-  .week-info .week-label { font-weight: 700; color: var(--orange); font-size: 15px; }
-  .week-info.eva .week-label { color: #ec407a; }
-  .week-info .week-dates { color: #6d4c41; font-size: 13px; }
-  [data-theme="dark"] .week-info .week-dates { color: var(--text-soft); }
-  .week-info.eva .week-dates { color: #ad1457; }
-  [data-theme="dark"] .week-info.eva .week-dates { color: var(--text-soft); }
-  .week-nav { display: flex; gap: 6px; flex-wrap: wrap; }
-  .week-nav .btn { padding: 6px 14px; font-size: 13px; }
-  .btn.today { background: #ff9800; }
-  .btn.today:hover { background: #f57c00; }
-  .btn.today.eva { background: #ec407a; }
-  .btn.today.eva:hover { background: #ad1457; }
-  .btn.remind { background: #8e24aa; }
-  .btn.remind:hover { background: #6a1b9a; }
-
+  /* ================= ТАБЛИЦЫ ================= */
   .table-wrap {
     background: var(--panel);
-    border-radius: 0 0 12px 12px;
+    border-radius: var(--radius);
     overflow: auto;
     box-shadow: var(--shadow-md);
-    max-height: calc(100vh - 320px);
+    max-height: calc(100vh - 340px);
     transition: background .3s var(--ease);
+    -webkit-overflow-scrolling: touch;
   }
   table.grades-table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    min-width: 1300px;
-    font-size: 14px;
+    min-width: 900px;
+    font-size: 13px;
   }
   table.grades-table th, table.grades-table td {
     border-right: 1px solid var(--border);
@@ -472,7 +485,7 @@
     top: 0;
     z-index: 5;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     color: #37474f;
     padding: 10px 6px;
   }
@@ -480,10 +493,10 @@
   th.subject-col, td.subject-col {
     background: #fafbfc;
     text-align: left;
-    padding-left: 14px;
-    min-width: 190px;
+    padding-left: 12px;
+    min-width: 150px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     position: sticky;
     left: 0;
     z-index: 4;
@@ -498,16 +511,16 @@
   tbody tr { transition: .25s var(--ease); }
   tbody tr:hover { background: rgba(25,118,210,.04); }
   [data-theme="dark"] tbody tr:hover { background: rgba(74,158,255,.05); }
-  tbody tr:hover td.subject-col { color: var(--primary); padding-left: 20px; }
+  tbody tr:hover td.subject-col { color: var(--primary); }
 
   th.avg-col, td.avg-col {
     background: #f5f7fa;
     font-weight: bold;
-    font-size: 15px;
-    min-width: 90px;
+    font-size: 14px;
+    min-width: 80px;
     border-left: 2px solid #cfd8dc;
     position: sticky;
-    right: 100px;
+    right: 78px;
     z-index: 4;
   }
   [data-theme="dark"] th.avg-col, [data-theme="dark"] td.avg-col {
@@ -516,15 +529,15 @@
   }
   thead th.avg-col { z-index: 6; }
   td.avg-col { line-height: 1.3; }
-  td.avg-col .weighted { font-size: 15px; }
-  td.avg-col .simple { font-size: 11px; color: #78909c; font-weight: normal; margin-top: 2px; }
+  td.avg-col .weighted { font-size: 14px; }
+  td.avg-col .simple { font-size: 10px; color: #78909c; font-weight: normal; margin-top: 2px; }
   [data-theme="dark"] td.avg-col .simple { color: var(--text-mute); }
 
   th.quarter-col, td.quarter-col {
     background: #fff3e0;
     font-weight: bold;
-    font-size: 15px;
-    min-width: 90px;
+    font-size: 14px;
+    min-width: 78px;
     border-left: 2px solid #ffcc80;
     position: sticky;
     right: 0;
@@ -537,17 +550,17 @@
   thead th.quarter-col {
     z-index: 6;
     color: var(--orange);
-    font-size: 12px;
-    padding: 8px 6px;
+    font-size: 11px;
+    padding: 8px 4px;
   }
-  thead th.quarter-col .q-name { display: block; font-size: 13px; }
-  thead th.quarter-col .q-sub { display: block; font-size: 10px; color: #bf360c; margin-top: 2px; }
+  thead th.quarter-col .q-name { display: block; font-size: 12px; }
+  thead th.quarter-col .q-sub { display: block; font-size: 9px; color: #bf360c; margin-top: 2px; }
   [data-theme="dark"] thead th.quarter-col .q-sub { color: var(--text-soft); }
   td.quarter-cell-main {
     cursor: pointer;
-    min-width: 90px;
-    height: 48px;
-    font-size: 20px;
+    min-width: 78px;
+    height: 46px;
+    font-size: 19px;
     font-weight: bold;
     transition: .2s var(--ease);
     user-select: none;
@@ -557,8 +570,8 @@
 
   td.grade-cell {
     cursor: pointer;
-    min-width: 62px;
-    height: 52px;
+    min-width: 54px;
+    height: 50px;
     transition: .2s var(--ease);
     user-select: none;
   }
@@ -570,18 +583,18 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 1px;
   }
   .grade-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
     color: #fff;
     font-weight: bold;
-    font-size: 19px;
+    font-size: 17px;
     box-shadow: 0 2px 6px rgba(0,0,0,.2);
     animation: badgeIn .3s var(--ease);
     transition: .25s var(--ease);
@@ -596,22 +609,23 @@
   .g4, .g5 { background: linear-gradient(135deg, #66bb6a, #2e7d32); }
 
   .type-label {
-    font-size: 9px;
+    font-size: 8px;
     font-weight: bold;
     padding: 1px 4px;
     border-radius: 3px;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
   }
   .type-label.ur { color: #607d8b; background: #eceff1; }
   [data-theme="dark"] .type-label.ur { color: var(--text-soft); background: #2a3446; }
   .type-label.kr { color: #fff; background: #c62828; box-shadow: 0 1px 3px rgba(198,40,40,.4); }
 
+  /* ================= ЧЕТВЕРТНАЯ ТАБЛИЦА ================= */
   table.quarters-table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    min-width: 800px;
-    font-size: 14px;
+    min-width: 600px;
+    font-size: 13px;
   }
   table.quarters-table th, table.quarters-table td {
     border-right: 1px solid var(--border);
@@ -626,19 +640,19 @@
     top: 0;
     z-index: 5;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     color: #37474f;
-    padding: 12px 6px;
+    padding: 12px 4px;
   }
   [data-theme="dark"] table.quarters-table thead th { background: #202a3d; color: var(--text-soft); }
   table.quarters-table th.subject-col,
   table.quarters-table td.subject-col {
     background: #fafbfc;
     text-align: left;
-    padding-left: 14px;
-    min-width: 220px;
+    padding-left: 12px;
+    min-width: 160px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     position: sticky;
     left: 0;
     z-index: 4;
@@ -651,38 +665,88 @@
   }
   table.quarters-table td.quarter-cell {
     cursor: pointer;
-    min-width: 100px;
-    height: 52px;
-    font-size: 20px;
+    min-width: 80px;
+    height: 50px;
+    font-size: 19px;
     font-weight: bold;
     transition: .2s var(--ease);
   }
   table.quarters-table td.quarter-cell:hover { background: #e3f2fd; transform: scale(1.05); }
   [data-theme="dark"] table.quarters-table td.quarter-cell:hover { background: var(--primary-soft); }
-  table.quarters-table td.quarter-cell.final { background: #fff3e0; font-size: 22px; cursor: default; }
+  table.quarters-table td.quarter-cell.final { background: #fff3e0; font-size: 21px; cursor: default; }
   [data-theme="dark"] table.quarters-table td.quarter-cell.final { background: var(--orange-soft); }
   table.quarters-table td.quarter-cell.final.has-grade { background: #e8f5e9; }
   [data-theme="dark"] table.quarters-table td.quarter-cell.final.has-grade { background: #1a2e1c; }
-  .quarter-weights { font-size: 10px; color: #78909c; font-weight: normal; display: block; margin-top: 2px; }
+  .quarter-weights { font-size: 9px; color: #78909c; font-weight: normal; display: block; margin-top: 2px; }
   [data-theme="dark"] .quarter-weights { color: var(--text-mute); }
+
+  /* ================= РАСПИСАНИЕ ================= */
+  .week-info {
+    background: var(--panel);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 12px;
+  }
+  .week-info.eva { border-left: 4px solid #ec407a; }
+  .week-info .week-label { font-weight: 700; color: var(--orange); font-size: 15px; }
+  .week-info.eva .week-label { color: #ec407a; }
+  .week-info .week-dates { color: var(--text-soft); font-size: 12px; }
+  .week-info.eva .week-dates { color: #ad1457; }
+  [data-theme="dark"] .week-info .week-dates { color: var(--text-soft); }
+  .week-nav { display: flex; gap: 6px; flex-wrap: wrap; }
+  .week-nav .btn { padding: 8px 12px; font-size: 12px; }
+  .btn.today { background: #ff9800; }
+  .btn.today:hover { background: #f57c00; }
+  .btn.today.eva { background: #ec407a; }
+  .btn.today.eva:hover { background: #ad1457; }
+  .btn.remind { background: linear-gradient(135deg, #8e24aa, #6a1b9a); position: relative; }
+  .btn.remind:hover { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
+  .btn.remind .badge {
+    display: inline-block;
+    min-width: 18px; height: 18px;
+    line-height: 18px;
+    padding: 0 5px;
+    margin-left: 4px;
+    background: #ff5252;
+    color: #fff;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    box-shadow: 0 0 0 2px rgba(255,82,82,.3);
+    animation: badgePulse 2s infinite;
+  }
+  @keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(255,82,82,.3); }
+    50%      { box-shadow: 0 0 0 5px rgba(255,82,82,.1); }
+  }
+  .btn.remind .badge.empty { display: none; }
 
   .schedule-wrap {
     background: var(--panel);
-    border-radius: 0 0 12px 12px;
+    border-radius: var(--radius);
     overflow-x: auto;
     box-shadow: var(--shadow-md);
-    padding: 14px;
+    padding: 8px;
     transition: background .3s var(--ease);
+    -webkit-overflow-scrolling: touch;
   }
   .schedule-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1300px;
-    font-size: 13px;
+    min-width: 900px;
+    font-size: 12px;
   }
   .schedule-table th, .schedule-table td {
     border: 1px solid #d0d7de;
-    padding: 8px 10px;
+    padding: 6px 8px;
     text-align: left;
     vertical-align: top;
     line-height: 1.4;
@@ -695,8 +759,8 @@
     color: var(--primary-dark);
     font-weight: 700;
     text-align: center;
-    font-size: 13px;
-    padding: 10px 6px;
+    font-size: 12px;
+    padding: 8px 4px;
   }
   [data-theme="dark"] .schedule-table th {
     background: var(--primary-soft);
@@ -710,13 +774,13 @@
     background: var(--pink-soft);
     color: #f48fb1;
   }
-  .schedule-table th .day-name { display: block; font-size: 14px; }
+  .schedule-table th .day-name { display: block; font-size: 13px; }
   .schedule-table th .day-date {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     color: #1565c0;
-    margin-top: 3px;
+    margin-top: 2px;
   }
   [data-theme="dark"] .schedule-table th .day-date { color: #82b1ff; }
   .schedule-table.eva th .day-date { color: #ad1457; }
@@ -743,9 +807,9 @@
     background: #f5f7fa;
     font-weight: 700;
     text-align: center;
-    width: 42px;
-    min-width: 42px;
-    font-size: 15px;
+    width: 36px;
+    min-width: 36px;
+    font-size: 14px;
     color: #37474f;
   }
   [data-theme="dark"] .schedule-table th.num-col,
@@ -758,8 +822,8 @@
     background: #f5f7fa;
     font-weight: 700;
     text-align: center;
-    min-width: 110px;
-    font-size: 12px;
+    min-width: 90px;
+    font-size: 11px;
     color: #37474f;
     white-space: nowrap;
   }
@@ -770,18 +834,18 @@
   }
   .schedule-table td {
     background: var(--panel);
-    font-size: 12px;
-    min-width: 175px;
+    font-size: 11px;
+    min-width: 130px;
     vertical-align: top;
   }
   .schedule-table td:hover { background: var(--primary-soft); }
   .schedule-table.eva td:hover { background: var(--pink-soft); }
-  .schedule-table td .subj { font-weight: 600; color: #1a237e; font-size: 13px; }
+  .schedule-table td .subj { font-weight: 600; color: #1a237e; font-size: 12px; }
   [data-theme="dark"] .schedule-table td .subj { color: #82b1ff; }
   .schedule-table.eva td .subj { color: #ad1457; }
   [data-theme="dark"] .schedule-table.eva td .subj { color: #f48fb1; }
-  .schedule-table td .room { color: var(--text-soft); font-size: 11px; }
-  .schedule-table td .teacher { color: var(--text-soft); font-size: 11px; font-style: italic; }
+  .schedule-table td .room { color: var(--text-soft); font-size: 10px; }
+  .schedule-table td .teacher { color: var(--text-soft); font-size: 10px; font-style: italic; }
 
   td.day-off {
     background: #f5f5f5 !important;
@@ -789,7 +853,7 @@
     vertical-align: middle !important;
     color: var(--text-mute);
     font-style: italic;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
   }
   [data-theme="dark"] td.day-off { background: #202a3d !important; }
@@ -800,85 +864,71 @@
   td.day-off.vacation { background: #e8f5e9 !important; color: #2e7d32; }
   [data-theme="dark"] td.day-off.vacation { background: #1a2e1c !important; color: #66bb6a; }
 
-  .hw-row {
-    margin-top: 6px;
-    display: flex;
-    align-items: flex-start;
-    gap: 4px;
-    flex-wrap: wrap;
+  /* ================= ДОМАШНЕЕ ЗАДАНИЕ ================= */
+  .tomorrow-hw {
+    display: none;
+    background: var(--orange-soft);
+    border: 1px solid #ffe082;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-size: 13px;
+    margin-top: 12px;
+    box-shadow: var(--shadow-sm);
   }
-  .hw-btn {
-    background: #fff3e0;
+  [data-theme="dark"] .tomorrow-hw { border-color: var(--border); }
+  .tomorrow-hw.active { display: block; animation: fadeIn .35s var(--ease); }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .tomorrow-hw .th-title {
+    font-weight: 700;
     color: var(--orange);
-    border: 1px solid #ffcc80;
-    border-radius: 4px;
-    padding: 2px 7px;
-    font-size: 11px;
-    cursor: pointer;
-    font-weight: 600;
-    white-space: nowrap;
-    transition: .2s var(--ease);
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
-  [data-theme="dark"] .hw-btn { background: var(--orange-soft); border-color: var(--border); }
-  .hw-btn:hover {
-    background: linear-gradient(135deg, #ff9800, #f57c00);
-    color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(255,152,0,.4);
-  }
-  .hw-btn.has-hw { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; border-color: transparent; }
-  .hw-btn .photo-badge {
-    display: inline-block;
-    margin-left: 4px;
-    background: var(--primary);
-    color: #fff;
+  .tomorrow-hw .th-list { display: flex; flex-direction: column; gap: 8px; }
+  .tomorrow-hw .th-item {
+    background: var(--panel);
+    border: 1px solid #ffe082;
+    border-left: 4px solid #ff9800;
     border-radius: 8px;
-    padding: 0 5px;
-    font-size: 10px;
-    line-height: 14px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: .25s var(--ease);
+    animation: fadeIn .3s var(--ease) backwards;
   }
-
-  .hw-text {
-    font-size: 11px;
+  [data-theme="dark"] .tomorrow-hw .th-item { border-color: var(--border); }
+  .tomorrow-hw .th-item:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
+  .tomorrow-hw .th-item .th-subj { font-weight: 700; color: #1a237e; font-size: 13px; }
+  [data-theme="dark"] .tomorrow-hw .th-item .th-subj { color: #82b1ff; }
+  .tomorrow-hw .th-item .th-meta { font-size: 11px; color: var(--text-soft); }
+  .tomorrow-hw .th-item .th-text {
     color: #5d4037;
-    background: #fff8e1;
-    padding: 3px 6px;
-    border-radius: 3px;
-    display: inline-block;
-    margin-top: 3px;
-    max-width: 100%;
-    word-wrap: break-word;
-    line-height: 1.35;
-    cursor: pointer;
-    transition: .2s var(--ease);
-    user-select: none;
-    border-left: 3px solid var(--orange);
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: pre-wrap;
   }
-  [data-theme="dark"] .hw-text { background: #202a3d; color: var(--text); }
-  .hw-text:hover { background: #ffecb3; transform: translateX(2px); }
-  [data-theme="dark"] .hw-text:hover { background: var(--orange-soft); }
-  .hw-text.done {
-    text-decoration: line-through;
-    color: var(--text-mute);
-    background: #f5f5f5;
-    border-left-color: var(--green);
-    opacity: .7;
-  }
-  [data-theme="dark"] .hw-text.done { background: #202a3d; }
-
-  .hw-photo-thumb {
-    margin-top: 4px;
-    width: 44px;
-    height: 44px;
-    object-fit: cover;
-    border-radius: 4px;
+  [data-theme="dark"] .tomorrow-hw .th-item .th-text { color: var(--text); }
+  .tomorrow-hw .th-item .th-photo { margin-top: 4px; }
+  .tomorrow-hw .th-item .th-photo img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 6px;
     border: 1px solid #90caf9;
     cursor: pointer;
     transition: .2s var(--ease);
+    margin-right: 4px;
   }
-  [data-theme="dark"] .hw-photo-thumb { border-color: var(--border); }
-  .hw-photo-thumb:hover { transform: scale(1.15) rotate(-3deg); box-shadow: var(--shadow-md); }
+  .tomorrow-hw .th-item .th-photo img:hover { transform: scale(1.08); }
+  .tomorrow-hw .th-empty { color: var(--text-mute); font-style: italic; font-size: 12px; }
 
+  /* ================= МОДАЛЬНЫЕ ОКНА ================= */
   .modal-bg {
     position: fixed;
     inset: 0;
@@ -894,10 +944,10 @@
   @keyframes bgIn { from { opacity: 0; } to { opacity: 1; } }
   .modal {
     background: var(--panel);
-    border-radius: 12px;
-    padding: 24px;
-    min-width: 380px;
-    max-width: 90vw;
+    border-radius: var(--radius);
+    padding: 20px;
+    width: 100%;
+    max-width: 460px;
     max-height: 90vh;
     overflow-y: auto;
     text-align: center;
@@ -909,13 +959,13 @@
     from { transform: scale(.9); opacity: 0; }
     to   { transform: scale(1); opacity: 1; }
   }
-  .modal h3 { font-size: 17px; color: var(--primary); margin-bottom: 6px; }
+  .modal h3 { font-size: 16px; color: var(--primary); margin-bottom: 4px; }
   [data-theme="dark"] .modal h3 { color: #82b1ff; }
-  .modal .sub { font-size: 13px; color: #777; margin-bottom: 16px; }
+  .modal .sub { font-size: 12px; color: #777; margin-bottom: 14px; }
   [data-theme="dark"] .modal .sub { color: var(--text-soft); }
 
   .modal .section-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: #455a64;
     text-transform: uppercase;
@@ -926,31 +976,38 @@
   [data-theme="dark"] .modal .section-label { color: var(--text-soft); }
 
   .modal .grade-btns {
-    display: flex; justify-content: center; gap: 10px;
-    margin-bottom: 18px; flex-wrap: wrap;
+    display: flex; justify-content: center; gap: 8px;
+    margin-bottom: 16px; flex-wrap: wrap;
   }
   .modal .grade-btn {
-    width: 52px; height: 52px;
+    width: 48px; height: 48px;
     border: none; border-radius: 10px;
-    color: #fff; font-size: 22px; font-weight: bold;
+    color: #fff; font-size: 20px; font-weight: bold;
     cursor: pointer; transition: .2s var(--ease);
     box-shadow: 0 2px 8px rgba(0,0,0,.15);
   }
   .modal .grade-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
   .modal .grade-btn.selected { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.08); }
+  .modal .grade-btn:disabled {
+    opacity: .3;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none;
+  }
+  .modal .grade-btn:disabled:hover { transform: none !important; box-shadow: none; }
 
-  .modal .type-btns { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
+  .modal .type-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
   .modal .type-btn {
-    padding: 10px 24px;
+    padding: 10px 18px;
     border: 2px solid #cfd8dc;
     background: var(--panel);
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: #546e7a;
     transition: .2s var(--ease);
-    min-width: 130px;
+    min-width: 110px;
   }
   [data-theme="dark"] .modal .type-btn { border-color: var(--border); color: var(--text-soft); }
   .modal .type-btn:hover { border-color: #90a4ae; transform: translateY(-2px); }
@@ -958,33 +1015,33 @@
   [data-theme="dark"] .modal .type-btn.selected[data-type="ur"] { background: var(--primary-soft); color: var(--text); }
   .modal .type-btn.selected[data-type="kr"] { border-color: #c62828; background: #ffebee; color: #c62828; }
   [data-theme="dark"] .modal .type-btn.selected[data-type="kr"] { background: #2e1414; color: #ff6b6b; }
-  .modal .type-btn .hint { display: block; font-size: 11px; font-weight: normal; color: #999; margin-top: 2px; }
+  .modal .type-btn .hint { display: block; font-size: 10px; font-weight: normal; color: #999; margin-top: 2px; }
   .modal .type-btn.selected .hint { color: inherit; opacity: 0.7; }
 
   .modal .actions { display: flex; justify-content: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
   .modal .clear-btn {
     background: #eceff1; color: #455a64;
-    padding: 10px 18px; border: none; border-radius: 6px;
-    cursor: pointer; font-size: 13px;
+    padding: 10px 16px; border: none; border-radius: 8px;
+    cursor: pointer; font-size: 12px;
     transition: .2s var(--ease);
   }
   [data-theme="dark"] .modal .clear-btn { background: #2a3446; color: var(--text-soft); }
   .modal .clear-btn:hover { background: #cfd8dc; transform: translateY(-1px); }
   .modal .cancel-btn {
     background: #607d8b; color: white;
-    padding: 10px 18px; border: none; border-radius: 6px;
-    cursor: pointer; font-size: 13px;
+    padding: 10px 16px; border: none; border-radius: 8px;
+    cursor: pointer; font-size: 12px;
     transition: .2s var(--ease);
   }
   .modal .cancel-btn:hover { background: #455a64; transform: translateY(-1px); }
   .modal .save-btn {
     background: linear-gradient(135deg, #43a047, #2e7d32);
     color: white;
-    padding: 10px 22px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     transition: .2s var(--ease);
     box-shadow: 0 2px 8px rgba(67,160,71,.3);
@@ -993,14 +1050,14 @@
 
   .modal textarea {
     width: 100%;
-    min-height: 100px;
+    min-height: 90px;
     padding: 10px;
     border: 1px solid #cfd8dc;
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 13px;
     resize: vertical;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     background: var(--panel);
     color: var(--text);
     transition: .2s var(--ease);
@@ -1008,22 +1065,22 @@
   [data-theme="dark"] .modal textarea { border-color: var(--border); }
   .modal textarea:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
-  .hw-photo-area { margin-bottom: 14px; text-align: left; }
+  .hw-photo-area { margin-bottom: 12px; text-align: left; }
   .hw-photo-area .photo-label-row {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 8px; gap: 8px; flex-wrap: wrap;
   }
   .hw-photo-area .photo-label {
-    font-size: 12px; font-weight: 600; color: #455a64;
+    font-size: 11px; font-weight: 600; color: #455a64;
     text-transform: uppercase; letter-spacing: 0.5px;
   }
   [data-theme="dark"] .hw-photo-area .photo-label { color: var(--text-soft); }
   .gallery-btn {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 10px 18px;
+    padding: 10px 16px;
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: #fff; border: none; border-radius: 8px;
-    cursor: pointer; font-size: 14px; font-weight: 600;
+    color: #fff; border: none; border-radius: 10px;
+    cursor: pointer; font-size: 13px; font-weight: 600;
     transition: .2s var(--ease);
     box-shadow: 0 2px 6px rgba(25,118,210,.3);
   }
@@ -1034,13 +1091,13 @@
   .hw-photo-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .hw-photo-preview .thumb-wrap {
     position: relative;
-    width: 82px; height: 82px;
+    width: 72px; height: 72px;
     animation: badgeIn .3s var(--ease);
   }
   .hw-photo-preview img {
     width: 100%; height: 100%;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 2px solid #90caf9;
     cursor: pointer;
     transition: .25s var(--ease);
@@ -1055,14 +1112,15 @@
     color: #fff;
     border: 2px solid var(--panel);
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1;
     font-weight: bold;
     transition: .2s var(--ease);
   }
   .hw-photo-preview .remove-photo:hover { transform: scale(1.15) rotate(90deg); }
-  .hw-photo-empty { font-size: 12px; color: var(--text-mute); font-style: italic; margin-top: 6px; }
+  .hw-photo-empty { font-size: 11px; color: var(--text-mute); font-style: italic; margin-top: 6px; }
 
+  /* ================= ПРОСМОТР ФОТО ================= */
   .photo-viewer {
     position: fixed;
     inset: 0;
@@ -1073,32 +1131,34 @@
     justify-content: center;
     z-index: 200;
     cursor: zoom-out;
+    padding: 16px;
   }
   .photo-viewer.active { display: flex; animation: bgIn .25s var(--ease); }
   .photo-viewer img {
     max-width: 92vw;
     max-height: 92vh;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
     animation: pop .35s var(--ease);
   }
   .photo-viewer .close-hint {
     position: fixed;
-    top: 16px; right: 24px;
+    top: 16px; right: 20px;
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     opacity: .8;
   }
 
-  .profile-modal { min-width: 420px; max-width: 90vw; text-align: center; padding: 30px 26px 24px; }
+  /* ================= ПРОФИЛЬ ================= */
+  .profile-modal { max-width: 400px; text-align: center; padding: 24px 20px 20px; }
   .profile-modal .profile-avatar-big {
-    width: 150px; height: 150px;
+    width: 120px; height: 120px;
     border-radius: 50%;
-    margin: 0 auto 16px;
+    margin: 0 auto 14px;
     overflow: hidden;
     border: 4px solid #ffe082;
     box-shadow: 0 4px 16px rgba(245,184,0,.35);
-    background: #f5b800;
+    background: #fff;
     animation: avatarFloat 4s ease-in-out infinite;
   }
   .profile-modal.eva .profile-avatar-big {
@@ -1112,10 +1172,10 @@
   }
   .profile-modal .profile-avatar-big svg { width: 100%; height: 100%; display: block; }
   .profile-modal .profile-name {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--primary-dark);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   .profile-modal.eva .profile-name { color: #ad1457; }
   [data-theme="dark"] .profile-modal .profile-name { color: #82b1ff; }
@@ -1124,12 +1184,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
+    gap: 10px;
+    padding: 10px 12px;
     background: #f5f9ff;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    font-size: 14px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-size: 13px;
     text-align: left;
     transition: .2s var(--ease);
     border-left: 3px solid transparent;
@@ -1147,17 +1207,17 @@
     border-left-color: #ec407a;
   }
   [data-theme="dark"] .profile-modal.eva .profile-row:hover { background: #3a1a28; }
-  .profile-modal .profile-row .pr-label { color: #607d8b; font-weight: 600; font-size: 13px; }
+  .profile-modal .profile-row .pr-label { color: #607d8b; font-weight: 600; font-size: 12px; }
   [data-theme="dark"] .profile-modal .profile-row .pr-label { color: var(--text-soft); }
-  .profile-modal .profile-row .pr-value { color: var(--text); font-weight: 500; text-align: right; word-break: break-word; }
+  .profile-modal .profile-row .pr-value { color: var(--text); font-weight: 500; text-align: right; word-break: break-word; font-size: 12px; }
   .profile-modal .profile-close {
-    margin-top: 14px;
+    margin-top: 12px;
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 10px 24px;
-    font-size: 14px;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: .2s var(--ease);
@@ -1166,14 +1226,14 @@
   .profile-modal .profile-close:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(25,118,210,.45); }
 
   .profile-modal .family-btn {
-    margin-top: 14px;
+    margin-top: 12px;
     margin-right: 6px;
     background: linear-gradient(135deg, #7b1fa2, #4a148c);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 10px 24px;
-    font-size: 14px;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: .2s var(--ease);
@@ -1187,10 +1247,11 @@
     box-shadow: 0 6px 16px rgba(123,31,162,.5);
   }
 
-  .family-modal { min-width: 440px; max-width: 90vw; text-align: center; padding: 28px 24px 22px; }
-  .family-modal h3 { font-size: 18px; color: #7b1fa2; margin-bottom: 6px; }
+  /* ================= СЕМЬЯ ================= */
+  .family-modal { max-width: 420px; text-align: center; padding: 24px 20px 20px; }
+  .family-modal h3 { font-size: 17px; color: #7b1fa2; margin-bottom: 4px; }
   [data-theme="dark"] .family-modal h3 { color: #ba68c8; }
-  .family-modal .sub { font-size: 13px; color: #777; margin-bottom: 18px; }
+  .family-modal .sub { font-size: 12px; color: #777; margin-bottom: 16px; }
   [data-theme="dark"] .family-modal .sub { color: var(--text-soft); }
 
   .family-list {
@@ -1202,11 +1263,11 @@
   .family-item {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     background: #f5f9ff;
     border: 2px solid transparent;
     border-radius: 12px;
-    padding: 12px 16px;
+    padding: 12px 14px;
     cursor: pointer;
     transition: .25s var(--ease);
     text-align: left;
@@ -1236,12 +1297,12 @@
   [data-theme="dark"] .family-item.eva:hover { background: var(--pink-soft); }
 
   .family-item .fam-avatar {
-    width: 56px; height: 56px;
+    width: 52px; height: 52px;
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
     border: 3px solid #ffe082;
-    background: #f5b800;
+    background: #fff;
   }
   .family-item.eva .fam-avatar {
     border-color: #f8bbd0;
@@ -1252,15 +1313,15 @@
   .family-item .fam-name {
     font-weight: 700;
     color: var(--text);
-    font-size: 15px;
-    margin-bottom: 3px;
+    font-size: 14px;
+    margin-bottom: 2px;
   }
   .family-item .fam-role {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-soft);
   }
   .family-item .fam-check {
-    font-size: 20px;
+    font-size: 18px;
     color: var(--primary);
     opacity: 0;
     transition: .2s var(--ease);
@@ -1272,9 +1333,9 @@
     background: linear-gradient(135deg, #7b1fa2, #4a148c);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 10px 24px;
-    font-size: 14px;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: .2s var(--ease);
@@ -1282,14 +1343,15 @@
   }
   .family-close:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(123,31,162,.5); }
 
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 14px; }
+  /* ================= КАЛЕНДАРЬ ================= */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
   .cal-cell {
-    padding: 10px 6px;
+    padding: 10px 4px;
     text-align: center;
-    border-radius: 6px;
+    border-radius: 8px;
     background: #f5f7fa;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     transition: .2s var(--ease);
     border: 2px solid transparent;
     color: var(--text);
@@ -1315,77 +1377,53 @@
   .cal-cell.vacation { background: #e8f5e9; color: #2e7d32; font-weight: bold; }
   [data-theme="dark"] .cal-cell.vacation { background: #1a2e1c; color: #66bb6a; }
   .cal-cell.vacation:hover { background: #c8e6c9; }
-  .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .cal-nav .month-title { font-size: 18px; font-weight: 700; color: var(--primary); }
+  .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .cal-nav .month-title { font-size: 16px; font-weight: 700; color: var(--primary); }
   [data-theme="dark"] .cal-nav .month-title { color: #82b1ff; }
   .cal-nav button {
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
     border: none;
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     transition: .2s var(--ease);
     box-shadow: var(--shadow-sm);
   }
   .cal-nav button:hover { transform: scale(1.12); box-shadow: var(--shadow-md); }
 
-  #fileInput { display: none; }
-
-  .btn.remind { background: linear-gradient(135deg, #8e24aa, #6a1b9a); position: relative; }
-  .btn.remind:hover { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
-  .btn.remind .badge {
-    display: inline-block;
-    min-width: 18px; height: 18px;
-    line-height: 18px;
-    padding: 0 5px;
-    margin-left: 6px;
-    background: #ff5252;
-    color: #fff;
-    border-radius: 9px;
-    font-size: 11px;
-    font-weight: 700;
-    text-align: center;
-    box-shadow: 0 0 0 2px rgba(255,82,82,.3);
-    animation: badgePulse 2s infinite;
-  }
-  @keyframes badgePulse {
-    0%, 100% { box-shadow: 0 0 0 2px rgba(255,82,82,.3); }
-    50%      { box-shadow: 0 0 0 5px rgba(255,82,82,.1); }
-  }
-  .btn.remind .badge.empty { display: none; }
-
-  .remind-modal { min-width: 460px; text-align: left; }
+  /* ================= НАПОМИНАНИЯ ================= */
+  .remind-modal { max-width: 480px; text-align: left; }
   .remind-modal h3, .remind-modal .sub { text-align: center; }
   .remind-form {
     background: var(--primary-soft);
     border: 1px solid #bbdefb;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 14px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   [data-theme="dark"] .remind-form { border-color: var(--border); }
   .remind-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
   .remind-row label {
     display: flex;
     flex-direction: column;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: #455a64;
     text-transform: uppercase;
     letter-spacing: .5px;
     gap: 4px;
     flex: 1;
-    min-width: 140px;
+    min-width: 120px;
   }
   [data-theme="dark"] .remind-row label { color: var(--text-soft); }
   .remind-row input {
     padding: 8px 10px;
     border: 1px solid #cfd8dc;
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: 8px;
+    font-size: 13px;
     font-family: inherit;
     color: var(--text);
     background: var(--panel);
@@ -1395,7 +1433,7 @@
   .remind-row input:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
   .remind-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
-  .remind-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
+  .remind-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
   .remind-item {
     display: flex;
     align-items: flex-start;
@@ -1403,7 +1441,7 @@
     background: var(--panel);
     border: 1px solid var(--border);
     border-left: 4px solid var(--purple);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 10px 12px;
     transition: .25s var(--ease);
     animation: fadeIn .3s var(--ease) backwards;
@@ -1411,7 +1449,7 @@
   .remind-item:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
   .remind-item.past { opacity: .5; border-left-color: var(--text-mute); }
   .remind-item .ri-time {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     color: #6a1b9a;
     white-space: nowrap;
@@ -1420,7 +1458,7 @@
   [data-theme="dark"] .remind-item .ri-time { color: #ba68c8; }
   .remind-item .ri-text {
     flex: 1;
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text);
     line-height: 1.35;
     word-break: break-word;
@@ -1431,9 +1469,9 @@
     border: none;
     color: #c62828;
     width: 26px; height: 26px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     flex-shrink: 0;
     transition: .2s var(--ease);
   }
@@ -1443,37 +1481,39 @@
     text-align: center;
     color: var(--text-mute);
     font-style: italic;
-    font-size: 13px;
+    font-size: 12px;
     padding: 16px;
   }
 
+  /* ================= TOAST ================= */
   .toast-wrap {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: 12px;
+    right: 12px;
     z-index: 300;
     display: flex;
     flex-direction: column;
     gap: 10px;
     pointer-events: none;
+    max-width: calc(100vw - 24px);
   }
   .toast {
     pointer-events: auto;
-    min-width: 260px;
+    min-width: 240px;
     max-width: 360px;
     background: linear-gradient(135deg, #a855f7, #7c3aed);
     color: #fff;
     padding: 14px 16px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 12px 40px rgba(124,58,237,.5);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.4;
     animation: toastIn .35s var(--ease);
     display: flex;
     gap: 10px;
     align-items: flex-start;
   }
-  .toast .t-icon { font-size: 22px; flex-shrink: 0; animation: pulse 1.5s infinite; }
+  .toast .t-icon { font-size: 20px; flex-shrink: 0; animation: pulse 1.5s infinite; }
   .toast .t-body { flex: 1; }
   .toast .t-title { font-weight: 700; margin-bottom: 3px; }
   .toast .t-text { opacity: .95; white-space: pre-wrap; word-break: break-word; }
@@ -1482,7 +1522,7 @@
     border: none;
     color: #fff;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1;
     padding: 3px 7px;
     border-radius: 6px;
@@ -1495,131 +1535,302 @@
   @keyframes toastIn  { from { transform: translateX(120%) scale(.9); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
   @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  /* ================= СКРОЛЛБАР ================= */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #c5cdd6; border-radius: 999px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
   [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #3a4a60; }
+
+  /* ================= МОБИЛЬНАЯ АДАПТАЦИЯ ================= */
+  @media (max-width: 768px) {
+    .app { padding: 0 8px 20px; }
+    .header { padding: 10px 12px; min-height: 56px; border-radius: 0 0 12px 12px; }
+    .header h1 { font-size: 15px; }
+    .logo { width: 32px; height: 32px; font-size: 16px; border-radius: 8px; }
+    .theme-btn { width: 36px; height: 36px; font-size: 16px; }
+    .avatar-btn { width: 42px; height: 42px; }
+
+    .score-bar {
+      padding: 10px 8px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+    .score-item .label { font-size: 9px; }
+    .score-item b { font-size: 16px; }
+    .score-item .sub { font-size: 9px; }
+
+    .now-bar { padding: 10px 12px; font-size: 12px; border-radius: 12px; }
+    .now-bar .now-time { font-size: 11px; padding: 3px 8px; }
+
+    .risk-bar { padding: 10px 12px; border-radius: 12px; }
+    .risk-bar .risk-item { flex: 1 1 140px; font-size: 11px; padding: 6px 10px; }
+
+    .tabs { border-radius: 12px; padding: 4px; }
+    .tab-btn { padding: 10px 12px; font-size: 12px; }
+
+    .controls { padding: 10px; border-radius: 12px; gap: 6px; }
+    .btn { padding: 8px 12px; font-size: 12px; border-radius: 8px; }
+
+    .quarter-switcher .arrow { width: 30px; height: 30px; font-size: 16px; }
+    .quarter-switcher .quarter-label { font-size: 11px; min-width: 80px; }
+
+    .table-wrap { max-height: calc(100vh - 280px); border-radius: 12px; }
+    table.grades-table { min-width: 700px; font-size: 12px; }
+    table.grades-table thead th { font-size: 10px; padding: 6px 3px; }
+    th.subject-col, td.subject-col { min-width: 110px; font-size: 11px; padding-left: 8px; }
+    td.grade-cell { min-width: 44px; height: 44px; }
+    .grade-badge { width: 30px; height: 30px; font-size: 15px; border-radius: 8px; }
+    .type-label { font-size: 7px; }
+    td.avg-col .weighted { font-size: 12px; }
+    td.avg-col .simple { font-size: 9px; }
+    td.quarter-cell-main { min-width: 60px; height: 40px; font-size: 16px; }
+
+    .week-info { padding: 10px 12px; border-radius: 12px; font-size: 12px; }
+    .week-info .week-label { font-size: 13px; }
+    .week-info .week-dates { font-size: 11px; }
+    .week-nav .btn { padding: 6px 10px; font-size: 11px; }
+
+    .schedule-wrap { border-radius: 12px; padding: 6px; }
+    .schedule-table { min-width: 700px; font-size: 10px; }
+    .schedule-table th, .schedule-table td { padding: 5px 6px; }
+    .schedule-table th .day-name { font-size: 11px; }
+    .schedule-table th .day-date { font-size: 9px; }
+    .schedule-table td { min-width: 100px; }
+    .schedule-table td .subj { font-size: 10px; }
+    .schedule-table td .room, .schedule-table td .teacher { font-size: 9px; }
+    .schedule-table th.num-col, .schedule-table td.num-col { width: 28px; min-width: 28px; font-size: 12px; }
+    .schedule-table th.time-col, .schedule-table td.time-col { min-width: 70px; font-size: 9px; }
+
+    .tomorrow-hw { padding: 12px; border-radius: 12px; }
+    .tomorrow-hw .th-item { padding: 8px 10px; }
+
+    .modal { padding: 16px; border-radius: 14px; max-width: 95vw; }
+    .modal h3 { font-size: 15px; }
+    .modal .grade-btn { width: 44px; height: 44px; font-size: 18px; }
+    .modal .type-btn { padding: 8px 14px; font-size: 12px; min-width: 100px; }
+
+    .profile-modal { padding: 20px 16px 16px; }
+    .profile-modal .profile-avatar-big { width: 100px; height: 100px; }
+    .profile-modal .profile-name { font-size: 15px; }
+
+    .family-modal { padding: 20px 16px; }
+    .family-item { padding: 10px 12px; }
+    .family-item .fam-avatar { width: 44px; height: 44px; }
+    .family-item .fam-name { font-size: 13px; }
+
+    .cal-cell { padding: 8px 2px; font-size: 11px; border-radius: 6px; }
+    .remind-modal { max-width: 95vw; }
+
+    .toast-wrap { top: 8px; right: 8px; left: 8px; max-width: none; }
+    .toast { min-width: unset; max-width: none; }
+  }
+
+  @media (max-width: 400px) {
+    .header h1 { font-size: 13px; }
+    .header-sub { display: none; }
+    .tab-btn { font-size: 11px; padding: 8px 8px; }
+    .score-item b { font-size: 14px; }
+    .btn { padding: 7px 10px; font-size: 11px; }
+  }
+
+  /* ================= ПЛАНШЕТ ================= */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .app { max-width: 1000px; }
+    table.grades-table { min-width: 1000px; }
+  }
+
+  /* ================= ДЕСКТОП ================= */
+  @media (min-width: 1025px) {
+    .app { padding: 0 20px 30px; }
+    .header { padding: 16px 28px; border-radius: 0 0 16px 16px; }
+    .header h1 { font-size: 22px; }
+    .header-sub { font-size: 12px; }
+    .avatar-btn { width: 54px; height: 54px; }
+    .theme-btn { width: 44px; height: 44px; font-size: 20px; }
+
+    .score-bar { padding: 16px 28px; border-radius: 16px; margin-top: 16px; }
+    .score-item b { font-size: 24px; }
+    .score-item .label { font-size: 13px; }
+    .score-item .sub { font-size: 12px; }
+
+    .now-bar { padding: 14px 28px; border-radius: 16px; font-size: 15px; }
+    .risk-bar { padding: 14px 28px; border-radius: 16px; }
+    .tabs { border-radius: 16px; padding: 8px; margin-top: 16px; }
+    .tab-btn { padding: 14px 24px; font-size: 15px; }
+    .controls { padding: 14px 20px; border-radius: 16px; }
+    .btn { padding: 10px 20px; font-size: 14px; border-radius: 10px; }
+    .table-wrap { border-radius: 16px; max-height: calc(100vh - 380px); }
+    table.grades-table { min-width: 1200px; font-size: 14px; }
+    table.grades-table thead th { font-size: 13px; padding: 10px 6px; }
+    th.subject-col, td.subject-col { min-width: 180px; font-size: 14px; padding-left: 16px; }
+    td.grade-cell { min-width: 60px; height: 52px; }
+    .grade-badge { width: 36px; height: 36px; font-size: 18px; border-radius: 9px; }
+    td.quarter-cell-main { min-width: 90px; height: 50px; font-size: 20px; }
+    .week-info { padding: 16px 24px; border-radius: 16px; font-size: 14px; }
+    .schedule-wrap { border-radius: 16px; padding: 12px; }
+    .schedule-table { min-width: 1200px; font-size: 13px; }
+    .schedule-table td { min-width: 160px; }
+    .schedule-table td .subj { font-size: 13px; }
+    .modal { max-width: 500px; padding: 28px; }
+    .modal h3 { font-size: 18px; }
+    .modal .grade-btn { width: 54px; height: 54px; font-size: 22px; }
+    .profile-modal { max-width: 440px; }
+    .profile-modal .profile-avatar-big { width: 140px; height: 140px; }
+    .profile-modal .profile-name { font-size: 19px; }
+    .family-modal { max-width: 460px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="header" id="mainHeader">
-  <h1 id="headerTitle">📘 Дневник.ру</h1>
-  <div class="header-right">
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
-    <button class="avatar-btn" onclick="openProfile()" title="Профиль">
-      <svg id="avatarSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="200" fill="#f5b800"/>
-        <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
-        <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
-        <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-        <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-        <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
-        <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
-        <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-        <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-        <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
-        <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
-        <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
-      </svg>
-    </button>
-  </div>
-</div>
+<div class="app">
 
-<div class="score-bar" id="scoreBar">
-  <div>
-    <span class="label">Общий средневзвешенный:</span>
-    <b id="avgWeighted">—</b>
-    <span id="avgCount" style="font-size:12px;color:var(--text-soft);"></span>
-  </div>
-  <div>
-    <span class="label">Простой средний:</span>
-    <b id="avgSimple" style="font-size:18px;">—</b>
-  </div>
-  <div id="today" style="font-size:13px;color:var(--text-soft);"></div>
-</div>
-
-<div class="now-bar" id="nowBar">
-  <span class="icon" id="nowIcon">🔔</span>
-  <span class="now-text" id="nowText"></span>
-  <span class="now-time" id="nowTime"></span>
-</div>
-
-<div class="risk-bar" id="riskBar">
-  <span class="risk-title">⚠ Внимание:</span>
-  <div id="riskItems" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
-</div>
-
-<div class="tabs">
-  <button class="tab-btn active" id="tabBtnGrades" onclick="switchTab('grades', this)">📝 Оценки</button>
-  <button class="tab-btn" id="tabBtnSchedule" onclick="switchTab('schedule', this)">📅 Расписание</button>
-  <button class="tab-btn" id="tabBtnQuarters" onclick="switchTab('quarters', this)">🎓 Четвертные</button>
-</div>
-
-<div class="tab-content active" id="tab-grades">
-  <div class="controls">
-    <button class="btn green" onclick="downloadDiary()">💾 Скачать дневник</button>
-    <button class="btn gray" onclick="document.getElementById('fileInput').click()">📂 Загрузить дневник</button>
-    <input type="file" id="fileInput" accept=".json" onchange="uploadDiary(event)">
-    <div class="quarter-switcher" title="Переключение между четвертями">
-      <button class="arrow" id="qPrev" onclick="changeQuarter(-1)">‹</button>
-      <span class="quarter-label" id="qLabel">1 четверть</span>
-      <button class="arrow" id="qNext" onclick="changeQuarter(1)">›</button>
+  <!-- ================= ШАПКА ================= -->
+  <div class="header" id="mainHeader">
+    <div class="header-left">
+      <div class="logo">📘</div>
+      <div>
+        <h1 id="headerTitle">Дневник.ру</h1>
+        <span class="header-sub" id="headerSub">Электронный дневник</span>
+      </div>
     </div>
-    <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить всё</button>
-  </div>
-  <div class="table-wrap">
-    <table class="grades-table" id="diaryTable">
-      <thead><tr id="headerRow"></tr></thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
-</div>
-
-<div class="tab-content" id="tab-schedule">
-  <div class="week-info" id="weekInfo">
-    <div>
-      <div class="week-label" id="weekLabel">Неделя</div>
-      <div class="week-dates" id="weekDates">—</div>
-    </div>
-    <div class="week-nav">
-      <button class="btn" onclick="prevWeek()">← Предыдущая</button>
-      <button class="btn today" id="btnToday" onclick="goToToday()">📅 Календарь</button>
-      <button class="btn" onclick="nextWeek()">Следующая →</button>
-      <button class="btn remind" onclick="openReminders()">🔔 Напоминания <span id="remindBadge" class="badge empty">0</span></button>
+    <div class="header-right">
+      <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
+      <button class="avatar-btn" onclick="openProfile()" title="Профиль">
+        <svg id="avatarSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="200" fill="#fff"/>
+          <!-- Разноцветная ладонь -->
+          <g transform="translate(100,110) scale(0.9)">
+            <!-- Большой палец -->
+            <path d="M-38,-15 Q-52,-42 -42,-58 Q-32,-72 -22,-58 Q-12,-42 -18,-12 Z" fill="#ff9800" stroke="#fff" stroke-width="2"/>
+            <!-- Указательный -->
+            <path d="M-18,-28 Q-18,-68 -8,-78 Q2,-88 10,-76 Q16,-64 12,-24 Z" fill="#4caf50" stroke="#fff" stroke-width="2"/>
+            <!-- Средний -->
+            <path d="M10,-28 Q14,-72 24,-82 Q34,-90 40,-76 Q44,-62 38,-22 Z" fill="#2196f3" stroke="#fff" stroke-width="2"/>
+            <!-- Безымянный -->
+            <path d="M36,-24 Q44,-62 54,-70 Q64,-76 68,-62 Q70,-50 60,-18 Z" fill="#9c27b0" stroke="#fff" stroke-width="2"/>
+            <!-- Мизинец -->
+            <path d="M60,-18 Q70,-48 78,-54 Q88,-58 90,-46 Q90,-36 80,-12 Z" fill="#e91e63" stroke="#fff" stroke-width="2"/>
+            <!-- Ладонь -->
+            <path d="M-40,-12 Q-44,20 -36,42 Q-28,60 -10,68 Q10,74 30,66 Q50,56 58,36 Q64,16 60,-12 Z" fill="#ffc107" stroke="#fff" stroke-width="2"/>
+            <!-- Линии ладони -->
+            <path d="M-20,8 Q0,-4 20,8" stroke="#e65100" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+            <path d="M-10,28 Q5,16 18,28" stroke="#e65100" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
+          </g>
+        </svg>
+      </button>
     </div>
   </div>
-  <div class="schedule-wrap">
-    <table class="schedule-table" id="scheduleTable">
-      <thead><tr id="scheduleHeader"></tr></thead>
-      <tbody id="scheduleBody"></tbody>
-    </table>
+
+  <!-- ================= СТАТИСТИКА ================= -->
+  <div class="score-bar" id="scoreBar">
+    <div class="score-item">
+      <span class="label">Средневзвешенный</span>
+      <b id="avgWeighted">—</b>
+      <span class="sub" id="avgCount"></span>
+    </div>
+    <div class="score-item">
+      <span class="label">Простой средний</span>
+      <b id="avgSimple" style="font-size:18px;">—</b>
+      <span class="sub" id="avgQuarterLabel"></span>
+    </div>
+    <div class="score-item">
+      <span class="label">Сегодня</span>
+      <b id="today" style="font-size:14px;">—</b>
+      <span class="sub" id="todayWeekday"></span>
+    </div>
   </div>
-  <div class="tomorrow-hw" id="tomorrowHW">
-    <div class="th-title" id="thTitle">📝 Задано на завтра</div>
-    <div class="th-list" id="thList"></div>
+
+  <!-- ================= NOW BAR ================= -->
+  <div class="now-bar" id="nowBar">
+    <span class="icon" id="nowIcon">🔔</span>
+    <span class="now-text" id="nowText"></span>
+    <span class="now-time" id="nowTime"></span>
   </div>
+
+  <!-- ================= RISK BAR ================= -->
+  <div class="risk-bar" id="riskBar">
+    <span class="risk-title">⚠ Внимание:</span>
+    <div id="riskItems" style="display:flex;flex-wrap:wrap;gap:10px;flex:1;"></div>
+  </div>
+
+  <!-- ================= ВКЛАДКИ ================= -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtnGrades" onclick="switchTab('grades', this)">📝 Оценки</button>
+    <button class="tab-btn" id="tabBtnSchedule" onclick="switchTab('schedule', this)">📅 Расписание</button>
+    <button class="tab-btn" id="tabBtnQuarters" onclick="switchTab('quarters', this)">🎓 Четвертные</button>
+  </div>
+
+  <!-- ================= ОЦЕНКИ ================= -->
+  <div class="tab-content active" id="tab-grades">
+    <div class="controls">
+      <button class="btn green" onclick="downloadDiary()">💾 Скачать</button>
+      <button class="btn gray" onclick="document.getElementById('fileInput').click()">📂 Загрузить</button>
+      <input type="file" id="fileInput" accept=".json" onchange="uploadDiary(event)">
+      <div class="quarter-switcher" title="Переключение между четвертями">
+        <button class="arrow" id="qPrev" onclick="changeQuarter(-1)">‹</button>
+        <span class="quarter-label" id="qLabel">1 четверть</span>
+        <button class="arrow" id="qNext" onclick="changeQuarter(1)">›</button>
+      </div>
+      <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить</button>
+    </div>
+    <div class="table-wrap">
+      <table class="grades-table" id="diaryTable">
+        <thead><tr id="headerRow"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= РАСПИСАНИЕ ================= -->
+  <div class="tab-content" id="tab-schedule">
+    <div class="week-info" id="weekInfo">
+      <div>
+        <div class="week-label" id="weekLabel">Неделя</div>
+        <div class="week-dates" id="weekDates">—</div>
+      </div>
+      <div class="week-nav">
+        <button class="btn" onclick="prevWeek()">←</button>
+        <button class="btn today" id="btnToday" onclick="goToToday()">📅</button>
+        <button class="btn" onclick="nextWeek()">→</button>
+        <button class="btn remind" onclick="openReminders()">🔔 <span id="remindBadge" class="badge empty">0</span></button>
+      </div>
+    </div>
+    <div class="schedule-wrap">
+      <table class="schedule-table" id="scheduleTable">
+        <thead><tr id="scheduleHeader"></tr></thead>
+        <tbody id="scheduleBody"></tbody>
+      </table>
+    </div>
+    <div class="tomorrow-hw" id="tomorrowHW">
+      <div class="th-title" id="thTitle">📝 Задано на завтра</div>
+      <div class="th-list" id="thList"></div>
+    </div>
+  </div>
+
+  <!-- ================= ЧЕТВЕРТНЫЕ ================= -->
+  <div class="tab-content" id="tab-quarters">
+    <div class="table-wrap">
+      <table class="quarters-table" id="quartersTable">
+        <thead>
+          <tr>
+            <th class="subject-col">Предмет</th>
+            <th>1 четв.<span class="quarter-weights">вес 1</span></th>
+            <th>2 четв.<span class="quarter-weights">вес 1</span></th>
+            <th>3 четв.<span class="quarter-weights">вес 2</span></th>
+            <th>4 четв.<span class="quarter-weights">вес 2</span></th>
+            <th>Годовая</th>
+          </tr>
+        </thead>
+        <tbody id="quartersBody"></tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
-<div class="tab-content" id="tab-quarters">
-  <div class="table-wrap">
-    <table class="quarters-table" id="quartersTable">
-      <thead>
-        <tr>
-          <th class="subject-col">Предмет</th>
-          <th>1 четверть<span class="quarter-weights">вес 1</span></th>
-          <th>2 четверть<span class="quarter-weights">вес 1</span></th>
-          <th>3 четверть<span class="quarter-weights">вес 2</span></th>
-          <th>4 четверть<span class="quarter-weights">вес 2</span></th>
-          <th>Годовая</th>
-        </tr>
-      </thead>
-      <tbody id="quartersBody"></tbody>
-    </table>
-  </div>
-</div>
-
+<!-- ================= МОДАЛЬНОЕ ОКНО ОЦЕНКИ ================= -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
@@ -1643,6 +1854,7 @@
   </div>
 </div>
 
+<!-- ================= МОДАЛЬНОЕ ОКНО Д/З ================= -->
 <div class="modal-bg" id="hwModalBg">
   <div class="modal">
     <h3 id="hwTitle">Домашнее задание</h3>
@@ -1652,7 +1864,7 @@
       <div class="photo-label-row">
         <span class="photo-label">📷 Фото задания</span>
         <button class="gallery-btn" onclick="document.getElementById('hwPhotoInput').click()">
-          🖼 Выбрать из галереи
+          🖼 Выбрать
         </button>
         <input type="file" id="hwPhotoInput" accept="image/*" multiple onchange="addHWPhoto(event)">
       </div>
@@ -1667,11 +1879,13 @@
   </div>
 </div>
 
+<!-- ================= ПРОСМОТР ФОТО ================= -->
 <div class="photo-viewer" id="photoViewer" onclick="closePhotoViewer()">
   <span class="close-hint">Клик — закрыть</span>
-  <img id="photoViewerImg" src="" alt="Фото задания">
+  <img id="photoViewerImg" src="" alt="Фото">
 </div>
 
+<!-- ================= МОДАЛЬНОЕ ОКНО ЧЕТВЕРТНОЙ ================= -->
 <div class="modal-bg" id="qModalBg">
   <div class="modal">
     <h3 id="qTitle">Четвертная оценка</h3>
@@ -1684,24 +1898,10 @@
   </div>
 </div>
 
+<!-- ================= ПРОФИЛЬ ================= -->
 <div class="modal-bg" id="profileModalBg">
   <div class="modal profile-modal" id="profileModal">
-    <div class="profile-avatar-big" id="profileAvatarBig">
-      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="200" fill="#f5b800"/>
-        <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
-        <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
-        <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-        <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-        <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
-        <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
-        <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-        <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-        <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
-        <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
-        <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
-      </svg>
-    </div>
+    <div class="profile-avatar-big" id="profileAvatarBig"></div>
     <div class="profile-name" id="profileName">Бакулин Дмитрий Алексеевич</div>
     <div class="profile-row">
       <span class="pr-label">Класс</span>
@@ -1720,7 +1920,7 @@
       <span class="pr-value" id="profilePhone">+7 950 759-68-56</span>
     </div>
     <div class="profile-row" id="profileEmailRow">
-      <span class="pr-label">Электронная почта</span>
+      <span class="pr-label">Эл. почта</span>
       <span class="pr-value">dimabaku017@gmail.com</span>
     </div>
     <button class="family-btn" onclick="openFamily()">👨‍👩‍👧 Семья</button>
@@ -1728,28 +1928,14 @@
   </div>
 </div>
 
+<!-- ================= СЕМЬЯ ================= -->
 <div class="modal-bg" id="familyModalBg">
   <div class="modal family-modal">
     <h3>👨‍👩‍👧 Семья</h3>
     <div class="sub">Выберите профиль</div>
     <div class="family-list">
       <div class="family-item" id="famDima" onclick="switchUser('dima')">
-        <div class="fam-avatar">
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="200" fill="#f5b800"/>
-            <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
-            <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
-            <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-            <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-            <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
-            <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
-            <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-            <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-            <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
-            <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
-            <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
-          </svg>
-        </div>
+        <div class="fam-avatar" id="famDimaAvatar"></div>
         <div class="fam-info">
           <div class="fam-name">Дима</div>
           <div class="fam-role">Основной аккаунт · 9Б</div>
@@ -1757,27 +1943,7 @@
         <span class="fam-check">✓</span>
       </div>
       <div class="family-item eva" id="famEva" onclick="switchUser('eva')">
-        <div class="fam-avatar">
-          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="200" fill="#fce4ec"/>
-            <path d="M55 95 Q50 160 65 185 L135 185 Q150 160 145 95 Z" fill="#8d6e63"/>
-            <path d="M45 200 Q50 155 75 142 L100 152 L125 142 Q150 155 155 200 Z" fill="#f48fb1"/>
-            <path d="M75 142 Q100 162 125 142 Q115 152 100 155 Q85 152 75 142 Z" fill="#ec407a"/>
-            <path d="M87 122 L87 140 Q100 148 113 140 L113 122 Z" fill="#f5d4b8"/>
-            <path d="M72 78 Q72 48 100 46 Q128 48 128 78 L128 105 Q128 132 100 135 Q72 132 72 105 Z" fill="#fadcc0"/>
-            <ellipse cx="66" cy="95" rx="8" ry="12" fill="#fadcc0"/>
-            <ellipse cx="134" cy="95" rx="8" ry="12" fill="#fadcc0"/>
-            <path d="M64 82 Q60 40 100 32 Q140 40 136 82 Q132 62 120 55 Q124 42 108 42 Q112 54 96 48 Q102 36 82 44 Q88 56 72 58 Q66 66 64 82 Z" fill="#8d6e63"/>
-            <path d="M70 62 Q85 48 110 52 Q105 65 82 68 Z" fill="#8d6e63"/>
-            <ellipse cx="86" cy="92" rx="4" ry="5" fill="#3e2723"/>
-            <ellipse cx="114" cy="92" rx="4" ry="5" fill="#3e2723"/>
-            <circle cx="87" cy="90" r="1.5" fill="#fff"/>
-            <circle cx="115" cy="90" r="1.5" fill="#fff"/>
-            <ellipse cx="80" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
-            <ellipse cx="120" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
-            <path d="M92 115 Q100 122 108 115" stroke="#c2185b" stroke-width="2" fill="none" stroke-linecap="round"/>
-          </svg>
-        </div>
+        <div class="fam-avatar" id="famEvaAvatar"></div>
         <div class="fam-info">
           <div class="fam-name">Ева</div>
           <div class="fam-role">1Б · Сестра</div>
@@ -1789,8 +1955,9 @@
   </div>
 </div>
 
+<!-- ================= КАЛЕНДАРЬ ================= -->
 <div class="modal-bg" id="calModalBg">
-  <div class="modal" style="min-width: 520px;">
+  <div class="modal" style="max-width:500px;">
     <h3>📅 Выбор недели</h3>
     <div class="sub">Учебный год 2026/2027</div>
     <div class="cal-nav">
@@ -1799,18 +1966,19 @@
       <button onclick="nextMonth()">→</button>
     </div>
     <div class="cal-grid" id="calGrid"></div>
-    <div style="margin-top:8px; display:flex; gap:8px; justify-content:center;">
-      <span style="font-size:12px;padding:4px 10px;background:#e8f5e9;border-radius:4px;color:#2e7d32;font-weight:bold;">Каникулы</span>
-      <span style="font-size:12px;padding:4px 10px;background:#fff3e0;border-radius:4px;color:#e65100;font-weight:bold;">Праздник</span>
+    <div style="margin-top:8px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+      <span style="font-size:11px;padding:4px 8px;background:#e8f5e9;border-radius:6px;color:#2e7d32;font-weight:bold;">Каникулы</span>
+      <span style="font-size:11px;padding:4px 8px;background:#fff3e0;border-radius:6px;color:#e65100;font-weight:bold;">Праздник</span>
       <button class="cancel-btn" onclick="closeCal()">Закрыть</button>
     </div>
   </div>
 </div>
 
+<!-- ================= НАПОМИНАНИЯ ================= -->
 <div class="modal-bg" id="remindModalBg">
   <div class="modal remind-modal">
     <h3>🔔 Напоминания</h3>
-    <div class="sub">Уведомление придёт в указанное время и исчезнет</div>
+    <div class="sub">Уведомление придёт в указанное время</div>
     <div class="remind-form">
       <div class="remind-row">
         <label>Дата
@@ -1830,10 +1998,11 @@
   </div>
 </div>
 
+<!-- ================= TOAST ================= -->
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
-// ==================== ВЕСА ====================
+// ==================== КОНСТАНТЫ ====================
 const WEIGHT_UR = 1;
 const WEIGHT_KR = 2;
 const QUARTER_WEIGHTS = { 1: 1, 2: 1, 3: 2, 4: 2 };
@@ -1849,7 +2018,6 @@ const BELLS = [
   { start: "14:10", end: "14:50" }
 ];
 
-// Звонки Евы (1 класс): 1-й 08:30–09:10, 2-й 09:25–10:05, 3-й 10:35–11:35
 const BELLS_EVA = [
   { start: "08:30", end: "09:10" },
   { start: "09:25", end: "10:05" },
@@ -1973,7 +2141,6 @@ const WEEK_SCHEDULE = [
   []
 ];
 
-// Расписание Евы (1Б) — без кабинетов, учитель Любовь Евгеньевна
 const WEEK_SCHEDULE_EVA = [
   [
     { subject: "Разговоры о важном", room: "", teacher: "Любовь Евгеньевна" },
@@ -2028,7 +2195,7 @@ const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Ч
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const MONTH_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 
-const STORAGE_KEY = "diary_html_v14";
+const STORAGE_KEY = "diary_html_v15";
 
 const PROFILES = {
   dima: {
@@ -2117,6 +2284,7 @@ function getProfile() { return PROFILES[currentUser]; }
 function getBells() { return getProfile().bellType === "eva" ? BELLS_EVA : BELLS; }
 function getSchedule() { return getProfile().schedule; }
 
+// ==================== ТЕМА ====================
 function applyTheme() {
   let theme = state.theme;
   if (theme !== "dark" && theme !== "light") theme = "light";
@@ -2130,6 +2298,7 @@ function toggleTheme() {
   applyTheme();
 }
 
+// ==================== ДАТЫ ====================
 function getMondayOfDate(d) {
   const date = new Date(d);
   const day = date.getDay();
@@ -2150,6 +2319,7 @@ function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
+// ==================== ПРОФИЛЬ ====================
 function openProfile() {
   renderProfileContent();
   document.getElementById("profileModalBg").classList.add("active");
@@ -2179,47 +2349,48 @@ function renderProfileContent() {
   }
 }
 
+// ==================== АВАТАРКИ С РАЗНОЦВЕТНОЙ ЛАДОНЬЮ ====================
 function getDimaAvatarSVG() {
   return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" fill="#f5b800"/>
-    <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
-    <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
-    <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-    <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-    <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
-    <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
-    <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-    <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-    <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
-    <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
-    <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
+    <rect width="200" height="200" fill="#fff"/>
+    <g transform="translate(100,110) scale(0.9)">
+      <path d="M-38,-15 Q-52,-42 -42,-58 Q-32,-72 -22,-58 Q-12,-42 -18,-12 Z" fill="#ff9800" stroke="#fff" stroke-width="2"/>
+      <path d="M-18,-28 Q-18,-68 -8,-78 Q2,-88 10,-76 Q16,-64 12,-24 Z" fill="#4caf50" stroke="#fff" stroke-width="2"/>
+      <path d="M10,-28 Q14,-72 24,-82 Q34,-90 40,-76 Q44,-62 38,-22 Z" fill="#2196f3" stroke="#fff" stroke-width="2"/>
+      <path d="M36,-24 Q44,-62 54,-70 Q64,-76 68,-62 Q70,-50 60,-18 Z" fill="#9c27b0" stroke="#fff" stroke-width="2"/>
+      <path d="M60,-18 Q70,-48 78,-54 Q88,-58 90,-46 Q90,-36 80,-12 Z" fill="#e91e63" stroke="#fff" stroke-width="2"/>
+      <path d="M-40,-12 Q-44,20 -36,42 Q-28,60 -10,68 Q10,74 30,66 Q50,56 58,36 Q64,16 60,-12 Z" fill="#ffc107" stroke="#fff" stroke-width="2"/>
+      <path d="M-20,8 Q0,-4 20,8" stroke="#e65100" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+      <path d="M-10,28 Q5,16 18,28" stroke="#e65100" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
+    </g>
   </svg>`;
 }
 
 function getEvaAvatarSVG() {
   return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
     <rect width="200" height="200" fill="#fce4ec"/>
-    <path d="M55 95 Q50 160 65 185 L135 185 Q150 160 145 95 Z" fill="#8d6e63"/>
-    <path d="M45 200 Q50 155 75 142 L100 152 L125 142 Q150 155 155 200 Z" fill="#f48fb1"/>
-    <path d="M75 142 Q100 162 125 142 Q115 152 100 155 Q85 152 75 142 Z" fill="#ec407a"/>
-    <path d="M87 122 L87 140 Q100 148 113 140 L113 122 Z" fill="#f5d4b8"/>
-    <path d="M72 78 Q72 48 100 46 Q128 48 128 78 L128 105 Q128 132 100 135 Q72 132 72 105 Z" fill="#fadcc0"/>
-    <ellipse cx="66" cy="95" rx="8" ry="12" fill="#fadcc0"/>
-    <ellipse cx="134" cy="95" rx="8" ry="12" fill="#fadcc0"/>
-    <path d="M64 82 Q60 40 100 32 Q140 40 136 82 Q132 62 120 55 Q124 42 108 42 Q112 54 96 48 Q102 36 82 44 Q88 56 72 58 Q66 66 64 82 Z" fill="#8d6e63"/>
-    <path d="M70 62 Q85 48 110 52 Q105 65 82 68 Z" fill="#8d6e63"/>
-    <ellipse cx="86" cy="92" rx="4" ry="5" fill="#3e2723"/>
-    <ellipse cx="114" cy="92" rx="4" ry="5" fill="#3e2723"/>
-    <circle cx="87" cy="90" r="1.5" fill="#fff"/>
-    <circle cx="115" cy="90" r="1.5" fill="#fff"/>
-    <ellipse cx="80" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
-    <ellipse cx="120" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
-    <path d="M92 115 Q100 122 108 115" stroke="#c2185b" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <g transform="translate(100,110) scale(0.9)">
+      <path d="M-38,-15 Q-52,-42 -42,-58 Q-32,-72 -22,-58 Q-12,-42 -18,-12 Z" fill="#ff9800" stroke="#fff" stroke-width="2"/>
+      <path d="M-18,-28 Q-18,-68 -8,-78 Q2,-88 10,-76 Q16,-64 12,-24 Z" fill="#4caf50" stroke="#fff" stroke-width="2"/>
+      <path d="M10,-28 Q14,-72 24,-82 Q34,-90 40,-76 Q44,-62 38,-22 Z" fill="#2196f3" stroke="#fff" stroke-width="2"/>
+      <path d="M36,-24 Q44,-62 54,-70 Q64,-76 68,-62 Q70,-50 60,-18 Z" fill="#9c27b0" stroke="#fff" stroke-width="2"/>
+      <path d="M60,-18 Q70,-48 78,-54 Q88,-58 90,-46 Q90,-36 80,-12 Z" fill="#e91e63" stroke="#fff" stroke-width="2"/>
+      <path d="M-40,-12 Q-44,20 -36,42 Q-28,60 -10,68 Q10,74 30,66 Q50,56 58,36 Q64,16 60,-12 Z" fill="#ffc107" stroke="#fff" stroke-width="2"/>
+      <path d="M-20,8 Q0,-4 20,8" stroke="#e65100" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+      <path d="M-10,28 Q5,16 18,28" stroke="#e65100" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
+      <!-- Бантик для Евы -->
+      <path d="M-30,-70 Q-40,-85 -30,-90 Q-20,-85 -30,-70 Z" fill="#ec407a" stroke="#fff" stroke-width="1.5"/>
+      <path d="M30,-70 Q40,-85 30,-90 Q20,-85 30,-70 Z" fill="#ec407a" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="0" cy="-80" r="4" fill="#f48fb1" stroke="#fff" stroke-width="1"/>
+    </g>
   </svg>`;
 }
 
+// ==================== СЕМЬЯ ====================
 function openFamily() {
   updateFamilySelection();
+  document.getElementById("famDimaAvatar").innerHTML = getDimaAvatarSVG();
+  document.getElementById("famEvaAvatar").innerHTML = getEvaAvatarSVG();
   document.getElementById("familyModalBg").classList.add("active");
 }
 function closeFamily() {
@@ -2290,12 +2461,16 @@ function refreshUIToUser() {
     ? getEvaAvatarSVG().replace("<svg", '<svg id="avatarSvg"')
     : getDimaAvatarSVG().replace("<svg", '<svg id="avatarSvg"');
 
+  document.getElementById("headerTitle").textContent = currentUser === "eva" ? "Дневник Евы" : "Дневник.ру";
+  document.getElementById("headerSub").textContent = currentUser === "eva" ? "1Б · Гимназия №10" : "Электронный дневник";
+
   render();
   renderSchedule();
   renderQuarters();
   updateNowBar();
 }
 
+// ==================== NOW BAR ====================
 function updateNowBar() {
   const bar = document.getElementById("nowBar");
   const iconEl = document.getElementById("nowIcon");
@@ -2336,7 +2511,7 @@ function updateNowBar() {
     if (!nextLesson || !nextLesson.subject) continue;
     if (nowMin >= curEnd && nowMin < nextStart) {
       const room = nextLesson.room ? `, каб. ${nextLesson.room}` : "";
-      textEl.textContent = `Сейчас перемена, следующий урок: ${nextLesson.subject}${room} в ${bells[i + 1].start}`;
+      textEl.textContent = `Перемена, следующий урок: ${nextLesson.subject}${room} в ${bells[i + 1].start}`;
       timeEl.textContent = `${nextStart - nowMin} мин`;
       iconEl.textContent = "☕";
       bar.classList.add("active", "break");
@@ -2349,7 +2524,7 @@ function updateNowBar() {
     const diff = firstBellStart - nowMin;
     if (diff <= 90) {
       const room = firstLesson.room ? `, каб. ${firstLesson.room}` : "";
-      textEl.textContent = `Скоро начнётся: ${firstLesson.subject}${room} в ${bells[0].start}`;
+      textEl.textContent = `Скоро: ${firstLesson.subject}${room} в ${bells[0].start}`;
       timeEl.textContent = `через ${diff} мин`;
       iconEl.textContent = "⏰";
       bar.classList.add("active", "soon");
@@ -2358,6 +2533,7 @@ function updateNowBar() {
   }
 }
 
+// ==================== Д/З НА ЗАВТРА ====================
 function renderTomorrowHW() {
   const wrap = document.getElementById("tomorrowHW");
   const list = document.getElementById("thList");
@@ -2433,6 +2609,7 @@ function viewTomorrowPhoto(slotIdx, idx) {
   document.getElementById("photoViewer").classList.add("active");
 }
 
+// ==================== СРЕДНИЙ БАЛЛ И РИСКИ ====================
 function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
   let sumWV = 0, sumW = 0;
   Object.values(subjGrades).forEach(v => {
@@ -2486,6 +2663,7 @@ function plural5(n) {
   return "пятёрок";
 }
 
+// ==================== РЕНДЕР ТАБЛИЦЫ ОЦЕНОК ====================
 function render() {
   if (!getProfile().showGrades) return;
   const dates = getCurrentDates();
@@ -2495,8 +2673,8 @@ function render() {
 
   let html = '<th class="subject-col">Предмет</th>';
   dates.forEach(d => { html += `<th>${d}</th>`; });
-  html += '<th class="avg-col">Средний балл</th>';
-  html += `<th class="quarter-col"><span class="q-name">Четвертная</span><span class="q-sub">${activeQuarter} четверть</span></th>`;
+  html += '<th class="avg-col">Средний</th>';
+  html += `<th class="quarter-col"><span class="q-name">Четвертная</span><span class="q-sub">${activeQuarter} четв.</span></th>`;
   headerRow.innerHTML = html;
 
   tbody.innerHTML = "";
@@ -2600,10 +2778,13 @@ function updateAvg() {
   const elW = document.getElementById("avgWeighted");
   const elS = document.getElementById("avgSimple");
   const cnt = document.getElementById("avgCount");
+  const qLabel = document.getElementById("avgQuarterLabel");
   if (count === 0) {
     elW.textContent = "—"; elW.className = "";
     elS.textContent = "—"; elS.className = "";
-    cnt.textContent = `(${activeQuarter} четверть)`; return;
+    cnt.textContent = "";
+    qLabel.textContent = `${activeQuarter} четверть`;
+    return;
   }
   const wAvg = sumWV / sumW;
   const sAvg = allSimple.reduce((a,b)=>a+b,0) / allSimple.length;
@@ -2611,14 +2792,17 @@ function updateAvg() {
   elW.className = wAvg < 2.5 ? "avg-red" : wAvg < 3.5 ? "avg-orange" : "avg-green";
   elS.textContent = sAvg.toFixed(2);
   elS.className = sAvg < 2.5 ? "avg-red" : sAvg < 3.5 ? "avg-orange" : "avg-green";
-  cnt.textContent = `(${count} оценок в ${activeQuarter} четверти)`;
+  cnt.textContent = `${count} оценок`;
+  qLabel.textContent = `${activeQuarter} четверть`;
 }
 
 function updateToday() {
   const d = new Date();
-  document.getElementById("today").textContent = "Сегодня: " + formatDate(d);
+  document.getElementById("today").textContent = formatDate(d);
+  document.getElementById("todayWeekday").textContent = DAY_NAMES[(d.getDay() + 6) % 7];
 }
 
+// ==================== МОДАЛЬНОЕ ОКНО ОЦЕНКИ ====================
 function openGradeModal(subj, date) {
   const grades = getCurrentGrades();
   const existing = parseGrade((grades[subj] || {})[date]);
@@ -2680,6 +2864,7 @@ function clearAll() {
   saveState(); render();
 }
 
+// ==================== ЭКСПОРТ / ИМПОРТ ====================
 function downloadDiary() {
   const data = JSON.stringify(state, null, 2);
   const blob = new Blob([data], { type: "application/json" });
@@ -2728,6 +2913,7 @@ function uploadDiary(ev) {
   ev.target.value = "";
 }
 
+// ==================== ВКЛАДКИ ====================
 function switchTab(name, btn) {
   if (name === "grades" && !getProfile().showGrades) return;
   if (name === "quarters" && !getProfile().showQuarters) return;
@@ -2740,6 +2926,7 @@ function switchTab(name, btn) {
   if (name === "grades") render();
 }
 
+// ==================== РАСПИСАНИЕ ====================
 function getWeekDates(monday) { return [0,1,2,3,4,5,6].map(i => addDays(monday, i)); }
 
 function renderSchedule() {
@@ -2756,7 +2943,6 @@ function renderSchedule() {
   let headHTML = '<th class="num-col">№</th><th class="time-col">Время</th>';
   dates.forEach((d, i) => {
     const isToday = isSameDay(d, today);
-    // Формат: "22 октября"
     const dateStr = `${d.getDate()} ${MONTH_GEN[d.getMonth()]}`;
     headHTML += `<th>
       <span class="day-name">${DAY_NAMES[i]}</span>
@@ -2842,6 +3028,7 @@ function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderSc
 function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7); renderSchedule(); }
 function goToToday() { calMonth = new Date(); openCal(); }
 
+// ==================== Д/З ====================
 function openHW(dayIdx, slotIdx, dateKey) {
   if (!getProfile().showHW) return;
   currentHW = { date: dateKey, dayIdx, slotIdx };
@@ -2934,6 +3121,7 @@ document.getElementById("hwModalBg").addEventListener("click", e => {
   if (e.target.id === "hwModalBg") closeHW();
 });
 
+// ==================== ЧЕТВЕРТНЫЕ ====================
 function renderQuarters() {
   if (!getProfile().showQuarters) return;
   const tbody = document.getElementById("quartersBody");
@@ -2977,6 +3165,31 @@ function renderQuarters() {
   });
 }
 
+// ==================== ЛОГИКА ОГРАНИЧЕНИЯ ЧЕТВЕРТНЫХ ОЦЕНОК ====================
+function getQuarterGradeLimits(subj, quarter) {
+  // Получаем средний балл по предмету за указанную четверть
+  const grades = state.gradesByQuarter[quarter] || {};
+  const subjGrades = grades[subj] || {};
+  const avg = calcWeightedAvg(subjGrades);
+  
+  if (avg === null) {
+    // Нет оценок — все оценки доступны
+    return { min: 1, max: 5, avg: null };
+  }
+  
+  // Правило: если средний >= 4.5 — только 5; если >= 3.5 — только 4 или 5;
+  // если >= 2.5 — только 3, 4 или 5; иначе — любые
+  if (avg >= 4.5) {
+    return { min: 5, max: 5, avg };
+  } else if (avg >= 3.5) {
+    return { min: 4, max: 5, avg };
+  } else if (avg >= 2.5) {
+    return { min: 3, max: 5, avg };
+  } else {
+    return { min: 1, max: 5, avg };
+  }
+}
+
 function openQuarterModal(subj, quarter) {
   currentQuarterModal = { subj, quarter };
   document.getElementById("qTitle").textContent = subj;
@@ -2984,19 +3197,41 @@ function openQuarterModal(subj, quarter) {
   const wrap = document.getElementById("qBtns");
   wrap.innerHTML = "";
   const current = (state.quarters[subj] || {})[quarter];
+  const limits = getQuarterGradeLimits(subj, quarter);
+  
+  // Показываем подсказку о среднем балле
+  const subEl = document.getElementById("qSub");
+  if (limits.avg !== null) {
+    let hint = "";
+    if (limits.avg >= 4.5) hint = ` • средний ${limits.avg.toFixed(2)} — доступна только 5`;
+    else if (limits.avg >= 3.5) hint = ` • средний ${limits.avg.toFixed(2)} — доступны 4 и 5`;
+    else if (limits.avg >= 2.5) hint = ` • средний ${limits.avg.toFixed(2)} — доступны 3, 4 и 5`;
+    else hint = ` • средний ${limits.avg.toFixed(2)} — доступны любые`;
+    subEl.textContent = `${quarter} четверть${hint}`;
+  }
+  
   [1,2,3,4,5].forEach(n => {
     const btn = document.createElement("button");
     btn.className = "grade-btn g" + n;
     btn.textContent = n;
     if (current === n) btn.classList.add("selected");
-    btn.onclick = () => {
-      if (!state.quarters[subj]) state.quarters[subj] = {};
-      state.quarters[subj][quarter] = n;
-      saveState();
-      closeQModal();
-      renderQuarters();
-      render();
-    };
+    
+    // Блокируем оценки, которые нельзя выставить
+    if (n < limits.min || n > limits.max) {
+      btn.disabled = true;
+      btn.style.opacity = "0.3";
+      btn.style.cursor = "not-allowed";
+      btn.title = `Нельзя выставить: средний балл ${limits.avg ? limits.avg.toFixed(2) : "—"}`;
+    } else {
+      btn.onclick = () => {
+        if (!state.quarters[subj]) state.quarters[subj] = {};
+        state.quarters[subj][quarter] = n;
+        saveState();
+        closeQModal();
+        renderQuarters();
+        render();
+      };
+    }
     wrap.appendChild(btn);
   });
   document.getElementById("qModalBg").classList.add("active");
@@ -3017,6 +3252,7 @@ document.getElementById("qModalBg").addEventListener("click", e => {
   if (e.target.id === "qModalBg") closeQModal();
 });
 
+// ==================== КАЛЕНДАРЬ ====================
 function openCal() {
   if (!calMonth) calMonth = new Date();
   renderCal();
@@ -3068,6 +3304,7 @@ document.getElementById("calModalBg").addEventListener("click", e => {
   if (e.target.id === "calModalBg") closeCal();
 });
 
+// ==================== НАПОМИНАНИЯ ====================
 function ensureReminders() { if (!Array.isArray(state.reminders)) state.reminders = []; }
 function getUpcomingReminders() {
   ensureReminders();
