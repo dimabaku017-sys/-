@@ -58,7 +58,6 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* ================= ОБЩИЙ КОНТЕЙНЕР ================= */
   .app {
     max-width: 1440px;
     margin: 0 auto;
@@ -162,12 +161,12 @@
   }
   .theme-btn:hover { background: rgba(255,255,255,.28); transform: rotate(20deg); }
 
-  /* ================= АВАТАРКА (РАЗНОЦВЕТНАЯ ЛАДОНЬ) ================= */
+  /* ================= АВАТАРКА ================= */
   .avatar-btn {
     width: 48px; height: 48px;
     border-radius: 50%;
     border: 2.5px solid rgba(255,255,255,.9);
-    background: #fff;
+    background: #f5b800;
     cursor: pointer;
     padding: 0;
     overflow: hidden;
@@ -701,7 +700,7 @@
   .week-info.eva .week-dates { color: #ad1457; }
   [data-theme="dark"] .week-info .week-dates { color: var(--text-soft); }
   .week-nav { display: flex; gap: 6px; flex-wrap: wrap; }
-  .week-nav .btn { padding: 8px 12px; font-size: 12px; }
+  .week-nav .btn { padding: 10px 20px; font-size: 14px; }
   .btn.today { background: #ff9800; }
   .btn.today:hover { background: #f57c00; }
   .btn.today.eva { background: #ec407a; }
@@ -865,6 +864,86 @@
   [data-theme="dark"] td.day-off.vacation { background: #1a2e1c !important; color: #66bb6a; }
 
   /* ================= ДОМАШНЕЕ ЗАДАНИЕ ================= */
+  .hw-row {
+    margin-top: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .hw-btn {
+    background: #fff3e0;
+    color: var(--orange);
+    border: 1px solid #ffcc80;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: .2s var(--ease);
+  }
+  [data-theme="dark"] .hw-btn { background: var(--orange-soft); border-color: var(--border); }
+  .hw-btn:hover {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(255,152,0,.4);
+  }
+  .hw-btn.has-hw { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; border-color: transparent; }
+  .hw-btn .photo-badge {
+    display: inline-block;
+    margin-left: 4px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 8px;
+    padding: 0 5px;
+    font-size: 10px;
+    line-height: 14px;
+  }
+
+  .hw-text {
+    font-size: 11px;
+    color: #5d4037;
+    background: #fff8e1;
+    padding: 3px 6px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-top: 3px;
+    max-width: 100%;
+    word-wrap: break-word;
+    line-height: 1.35;
+    cursor: pointer;
+    transition: .2s var(--ease);
+    user-select: none;
+    border-left: 3px solid var(--orange);
+  }
+  [data-theme="dark"] .hw-text { background: #202a3d; color: var(--text); }
+  .hw-text:hover { background: #ffecb3; transform: translateX(2px); }
+  [data-theme="dark"] .hw-text:hover { background: var(--orange-soft); }
+  .hw-text.done {
+    text-decoration: line-through;
+    color: var(--text-mute);
+    background: #f5f5f5;
+    border-left-color: var(--green);
+    opacity: .7;
+  }
+  [data-theme="dark"] .hw-text.done { background: #202a3d; }
+
+  .hw-photo-thumb {
+    margin-top: 4px;
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #90caf9;
+    cursor: pointer;
+    transition: .2s var(--ease);
+    margin-right: 4px;
+  }
+  [data-theme="dark"] .hw-photo-thumb { border-color: var(--border); }
+  .hw-photo-thumb:hover { transform: scale(1.15) rotate(-3deg); box-shadow: var(--shadow-md); }
+
   .tomorrow-hw {
     display: none;
     background: var(--orange-soft);
@@ -1158,7 +1237,7 @@
     overflow: hidden;
     border: 4px solid #ffe082;
     box-shadow: 0 4px 16px rgba(245,184,0,.35);
-    background: #fff;
+    background: #f5b800;
     animation: avatarFloat 4s ease-in-out infinite;
   }
   .profile-modal.eva .profile-avatar-big {
@@ -1302,7 +1381,7 @@
     overflow: hidden;
     flex-shrink: 0;
     border: 3px solid #ffe082;
-    background: #fff;
+    background: #f5b800;
   }
   .family-item.eva .fam-avatar {
     border-color: #f8bbd0;
@@ -1589,7 +1668,8 @@
     .week-info { padding: 10px 12px; border-radius: 12px; font-size: 12px; }
     .week-info .week-label { font-size: 13px; }
     .week-info .week-dates { font-size: 11px; }
-    .week-nav .btn { padding: 6px 10px; font-size: 11px; }
+    .week-nav { width: 100%; justify-content: center; }
+    .week-nav .btn { padding: 10px 16px; font-size: 13px; flex: 1; justify-content: center; }
 
     .schedule-wrap { border-radius: 12px; padding: 6px; }
     .schedule-table { min-width: 700px; font-size: 10px; }
@@ -1634,13 +1714,11 @@
     .btn { padding: 7px 10px; font-size: 11px; }
   }
 
-  /* ================= ПЛАНШЕТ ================= */
   @media (min-width: 769px) and (max-width: 1024px) {
     .app { max-width: 1000px; }
     table.grades-table { min-width: 1000px; }
   }
 
-  /* ================= ДЕСКТОП ================= */
   @media (min-width: 1025px) {
     .app { padding: 0 20px 30px; }
     .header { padding: 16px 28px; border-radius: 0 0 16px 16px; }
@@ -1668,6 +1746,7 @@
     .grade-badge { width: 36px; height: 36px; font-size: 18px; border-radius: 9px; }
     td.quarter-cell-main { min-width: 90px; height: 50px; font-size: 20px; }
     .week-info { padding: 16px 24px; border-radius: 16px; font-size: 14px; }
+    .week-nav .btn { padding: 12px 26px; font-size: 15px; }
     .schedule-wrap { border-radius: 16px; padding: 12px; }
     .schedule-table { min-width: 1200px; font-size: 13px; }
     .schedule-table td { min-width: 160px; }
@@ -1699,25 +1778,18 @@
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
       <button class="avatar-btn" onclick="openProfile()" title="Профиль">
         <svg id="avatarSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <rect width="200" height="200" fill="#fff"/>
-          <!-- Разноцветная ладонь -->
-          <g transform="translate(100,110) scale(0.9)">
-            <!-- Большой палец -->
-            <path d="M-38,-15 Q-52,-42 -42,-58 Q-32,-72 -22,-58 Q-12,-42 -18,-12 Z" fill="#ff9800" stroke="#fff" stroke-width="2"/>
-            <!-- Указательный -->
-            <path d="M-18,-28 Q-18,-68 -8,-78 Q2,-88 10,-76 Q16,-64 12,-24 Z" fill="#4caf50" stroke="#fff" stroke-width="2"/>
-            <!-- Средний -->
-            <path d="M10,-28 Q14,-72 24,-82 Q34,-90 40,-76 Q44,-62 38,-22 Z" fill="#2196f3" stroke="#fff" stroke-width="2"/>
-            <!-- Безымянный -->
-            <path d="M36,-24 Q44,-62 54,-70 Q64,-76 68,-62 Q70,-50 60,-18 Z" fill="#9c27b0" stroke="#fff" stroke-width="2"/>
-            <!-- Мизинец -->
-            <path d="M60,-18 Q70,-48 78,-54 Q88,-58 90,-46 Q90,-36 80,-12 Z" fill="#e91e63" stroke="#fff" stroke-width="2"/>
-            <!-- Ладонь -->
-            <path d="M-40,-12 Q-44,20 -36,42 Q-28,60 -10,68 Q10,74 30,66 Q50,56 58,36 Q64,16 60,-12 Z" fill="#ffc107" stroke="#fff" stroke-width="2"/>
-            <!-- Линии ладони -->
-            <path d="M-20,8 Q0,-4 20,8" stroke="#e65100" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5"/>
-            <path d="M-10,28 Q5,16 18,28" stroke="#e65100" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
-          </g>
+          <rect width="200" height="200" fill="#f5b800"/>
+          <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
+          <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
+          <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+          <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+          <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
+          <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
+          <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+          <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+          <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
+          <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
+          <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
         </svg>
       </button>
     </div>
@@ -1767,7 +1839,7 @@
     <div class="controls">
       <button class="btn green" onclick="downloadDiary()">💾 Скачать</button>
       <button class="btn gray" onclick="document.getElementById('fileInput').click()">📂 Загрузить</button>
-      <input type="file" id="fileInput" accept=".json" onchange="uploadDiary(event)">
+      <input type="file" id="fileInput" accept=".json" onchange="uploadDiary(event)" style="display:none;">
       <div class="quarter-switcher" title="Переключение между четвертями">
         <button class="arrow" id="qPrev" onclick="changeQuarter(-1)">‹</button>
         <span class="quarter-label" id="qLabel">1 четверть</span>
@@ -1791,10 +1863,10 @@
         <div class="week-dates" id="weekDates">—</div>
       </div>
       <div class="week-nav">
-        <button class="btn" onclick="prevWeek()">←</button>
-        <button class="btn today" id="btnToday" onclick="goToToday()">📅</button>
-        <button class="btn" onclick="nextWeek()">→</button>
-        <button class="btn remind" onclick="openReminders()">🔔 <span id="remindBadge" class="badge empty">0</span></button>
+        <button class="btn" onclick="prevWeek()">← Предыдущая</button>
+        <button class="btn today" id="btnToday" onclick="goToToday()">📅 Календарь</button>
+        <button class="btn" onclick="nextWeek()">Следующая →</button>
+        <button class="btn remind" onclick="openReminders()">🔔 Напоминания <span id="remindBadge" class="badge empty">0</span></button>
       </div>
     </div>
     <div class="schedule-wrap">
@@ -1864,9 +1936,9 @@
       <div class="photo-label-row">
         <span class="photo-label">📷 Фото задания</span>
         <button class="gallery-btn" onclick="document.getElementById('hwPhotoInput').click()">
-          🖼 Выбрать
+          🖼 Выбрать из галереи
         </button>
-        <input type="file" id="hwPhotoInput" accept="image/*" multiple onchange="addHWPhoto(event)">
+        <input type="file" id="hwPhotoInput" accept="image/*" multiple onchange="addHWPhoto(event)" style="display:none;">
       </div>
       <div class="hw-photo-preview" id="hwPhotoPreview"></div>
       <div class="hw-photo-empty" id="hwPhotoEmpty">Фото пока нет</div>
@@ -2195,7 +2267,7 @@ const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Ч
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const MONTH_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 
-const STORAGE_KEY = "diary_html_v15";
+const STORAGE_KEY = "diary_html_v16";
 
 const PROFILES = {
   dima: {
@@ -2284,7 +2356,6 @@ function getProfile() { return PROFILES[currentUser]; }
 function getBells() { return getProfile().bellType === "eva" ? BELLS_EVA : BELLS; }
 function getSchedule() { return getProfile().schedule; }
 
-// ==================== ТЕМА ====================
 function applyTheme() {
   let theme = state.theme;
   if (theme !== "dark" && theme !== "light") theme = "light";
@@ -2298,7 +2369,6 @@ function toggleTheme() {
   applyTheme();
 }
 
-// ==================== ДАТЫ ====================
 function getMondayOfDate(d) {
   const date = new Date(d);
   const day = date.getDay();
@@ -2319,7 +2389,6 @@ function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
-// ==================== ПРОФИЛЬ ====================
 function openProfile() {
   renderProfileContent();
   document.getElementById("profileModalBg").classList.add("active");
@@ -2349,44 +2418,45 @@ function renderProfileContent() {
   }
 }
 
-// ==================== АВАТАРКИ С РАЗНОЦВЕТНОЙ ЛАДОНЬЮ ====================
 function getDimaAvatarSVG() {
   return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" fill="#fff"/>
-    <g transform="translate(100,110) scale(0.9)">
-      <path d="M-38,-15 Q-52,-42 -42,-58 Q-32,-72 -22,-58 Q-12,-42 -18,-12 Z" fill="#ff9800" stroke="#fff" stroke-width="2"/>
-      <path d="M-18,-28 Q-18,-68 -8,-78 Q2,-88 10,-76 Q16,-64 12,-24 Z" fill="#4caf50" stroke="#fff" stroke-width="2"/>
-      <path d="M10,-28 Q14,-72 24,-82 Q34,-90 40,-76 Q44,-62 38,-22 Z" fill="#2196f3" stroke="#fff" stroke-width="2"/>
-      <path d="M36,-24 Q44,-62 54,-70 Q64,-76 68,-62 Q70,-50 60,-18 Z" fill="#9c27b0" stroke="#fff" stroke-width="2"/>
-      <path d="M60,-18 Q70,-48 78,-54 Q88,-58 90,-46 Q90,-36 80,-12 Z" fill="#e91e63" stroke="#fff" stroke-width="2"/>
-      <path d="M-40,-12 Q-44,20 -36,42 Q-28,60 -10,68 Q10,74 30,66 Q50,56 58,36 Q64,16 60,-12 Z" fill="#ffc107" stroke="#fff" stroke-width="2"/>
-      <path d="M-20,8 Q0,-4 20,8" stroke="#e65100" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5"/>
-      <path d="M-10,28 Q5,16 18,28" stroke="#e65100" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
-    </g>
+    <rect width="200" height="200" fill="#f5b800"/>
+    <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
+    <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
+    <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+    <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
+    <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
+    <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
+    <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+    <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
+    <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
+    <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
+    <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
   </svg>`;
 }
 
 function getEvaAvatarSVG() {
   return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
     <rect width="200" height="200" fill="#fce4ec"/>
-    <g transform="translate(100,110) scale(0.9)">
-      <path d="M-38,-15 Q-52,-42 -42,-58 Q-32,-72 -22,-58 Q-12,-42 -18,-12 Z" fill="#ff9800" stroke="#fff" stroke-width="2"/>
-      <path d="M-18,-28 Q-18,-68 -8,-78 Q2,-88 10,-76 Q16,-64 12,-24 Z" fill="#4caf50" stroke="#fff" stroke-width="2"/>
-      <path d="M10,-28 Q14,-72 24,-82 Q34,-90 40,-76 Q44,-62 38,-22 Z" fill="#2196f3" stroke="#fff" stroke-width="2"/>
-      <path d="M36,-24 Q44,-62 54,-70 Q64,-76 68,-62 Q70,-50 60,-18 Z" fill="#9c27b0" stroke="#fff" stroke-width="2"/>
-      <path d="M60,-18 Q70,-48 78,-54 Q88,-58 90,-46 Q90,-36 80,-12 Z" fill="#e91e63" stroke="#fff" stroke-width="2"/>
-      <path d="M-40,-12 Q-44,20 -36,42 Q-28,60 -10,68 Q10,74 30,66 Q50,56 58,36 Q64,16 60,-12 Z" fill="#ffc107" stroke="#fff" stroke-width="2"/>
-      <path d="M-20,8 Q0,-4 20,8" stroke="#e65100" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5"/>
-      <path d="M-10,28 Q5,16 18,28" stroke="#e65100" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
-      <!-- Бантик для Евы -->
-      <path d="M-30,-70 Q-40,-85 -30,-90 Q-20,-85 -30,-70 Z" fill="#ec407a" stroke="#fff" stroke-width="1.5"/>
-      <path d="M30,-70 Q40,-85 30,-90 Q20,-85 30,-70 Z" fill="#ec407a" stroke="#fff" stroke-width="1.5"/>
-      <circle cx="0" cy="-80" r="4" fill="#f48fb1" stroke="#fff" stroke-width="1"/>
-    </g>
+    <path d="M55 95 Q50 160 65 185 L135 185 Q150 160 145 95 Z" fill="#8d6e63"/>
+    <path d="M45 200 Q50 155 75 142 L100 152 L125 142 Q150 155 155 200 Z" fill="#f48fb1"/>
+    <path d="M75 142 Q100 162 125 142 Q115 152 100 155 Q85 152 75 142 Z" fill="#ec407a"/>
+    <path d="M87 122 L87 140 Q100 148 113 140 L113 122 Z" fill="#f5d4b8"/>
+    <path d="M72 78 Q72 48 100 46 Q128 48 128 78 L128 105 Q128 132 100 135 Q72 132 72 105 Z" fill="#fadcc0"/>
+    <ellipse cx="66" cy="95" rx="8" ry="12" fill="#fadcc0"/>
+    <ellipse cx="134" cy="95" rx="8" ry="12" fill="#fadcc0"/>
+    <path d="M64 82 Q60 40 100 32 Q140 40 136 82 Q132 62 120 55 Q124 42 108 42 Q112 54 96 48 Q102 36 82 44 Q88 56 72 58 Q66 66 64 82 Z" fill="#8d6e63"/>
+    <path d="M70 62 Q85 48 110 52 Q105 65 82 68 Z" fill="#8d6e63"/>
+    <ellipse cx="86" cy="92" rx="4" ry="5" fill="#3e2723"/>
+    <ellipse cx="114" cy="92" rx="4" ry="5" fill="#3e2723"/>
+    <circle cx="87" cy="90" r="1.5" fill="#fff"/>
+    <circle cx="115" cy="90" r="1.5" fill="#fff"/>
+    <ellipse cx="80" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
+    <ellipse cx="120" cy="105" rx="6" ry="4" fill="#f8bbd0" opacity=".7"/>
+    <path d="M92 115 Q100 122 108 115" stroke="#c2185b" stroke-width="2" fill="none" stroke-linecap="round"/>
   </svg>`;
 }
 
-// ==================== СЕМЬЯ ====================
 function openFamily() {
   updateFamilySelection();
   document.getElementById("famDimaAvatar").innerHTML = getDimaAvatarSVG();
@@ -2470,7 +2540,6 @@ function refreshUIToUser() {
   updateNowBar();
 }
 
-// ==================== NOW BAR ====================
 function updateNowBar() {
   const bar = document.getElementById("nowBar");
   const iconEl = document.getElementById("nowIcon");
@@ -2533,7 +2602,6 @@ function updateNowBar() {
   }
 }
 
-// ==================== Д/З НА ЗАВТРА ====================
 function renderTomorrowHW() {
   const wrap = document.getElementById("tomorrowHW");
   const list = document.getElementById("thList");
@@ -2609,7 +2677,6 @@ function viewTomorrowPhoto(slotIdx, idx) {
   document.getElementById("photoViewer").classList.add("active");
 }
 
-// ==================== СРЕДНИЙ БАЛЛ И РИСКИ ====================
 function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
   let sumWV = 0, sumW = 0;
   Object.values(subjGrades).forEach(v => {
@@ -2663,7 +2730,6 @@ function plural5(n) {
   return "пятёрок";
 }
 
-// ==================== РЕНДЕР ТАБЛИЦЫ ОЦЕНОК ====================
 function render() {
   if (!getProfile().showGrades) return;
   const dates = getCurrentDates();
@@ -2802,7 +2868,6 @@ function updateToday() {
   document.getElementById("todayWeekday").textContent = DAY_NAMES[(d.getDay() + 6) % 7];
 }
 
-// ==================== МОДАЛЬНОЕ ОКНО ОЦЕНКИ ====================
 function openGradeModal(subj, date) {
   const grades = getCurrentGrades();
   const existing = parseGrade((grades[subj] || {})[date]);
@@ -2864,7 +2929,6 @@ function clearAll() {
   saveState(); render();
 }
 
-// ==================== ЭКСПОРТ / ИМПОРТ ====================
 function downloadDiary() {
   const data = JSON.stringify(state, null, 2);
   const blob = new Blob([data], { type: "application/json" });
@@ -2913,7 +2977,6 @@ function uploadDiary(ev) {
   ev.target.value = "";
 }
 
-// ==================== ВКЛАДКИ ====================
 function switchTab(name, btn) {
   if (name === "grades" && !getProfile().showGrades) return;
   if (name === "quarters" && !getProfile().showQuarters) return;
@@ -2926,7 +2989,6 @@ function switchTab(name, btn) {
   if (name === "grades") render();
 }
 
-// ==================== РАСПИСАНИЕ ====================
 function getWeekDates(monday) { return [0,1,2,3,4,5,6].map(i => addDays(monday, i)); }
 
 function renderSchedule() {
@@ -3028,7 +3090,6 @@ function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderSc
 function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7); renderSchedule(); }
 function goToToday() { calMonth = new Date(); openCal(); }
 
-// ==================== Д/З ====================
 function openHW(dayIdx, slotIdx, dateKey) {
   if (!getProfile().showHW) return;
   currentHW = { date: dateKey, dayIdx, slotIdx };
@@ -3121,7 +3182,6 @@ document.getElementById("hwModalBg").addEventListener("click", e => {
   if (e.target.id === "hwModalBg") closeHW();
 });
 
-// ==================== ЧЕТВЕРТНЫЕ ====================
 function renderQuarters() {
   if (!getProfile().showQuarters) return;
   const tbody = document.getElementById("quartersBody");
@@ -3165,20 +3225,13 @@ function renderQuarters() {
   });
 }
 
-// ==================== ЛОГИКА ОГРАНИЧЕНИЯ ЧЕТВЕРТНЫХ ОЦЕНОК ====================
 function getQuarterGradeLimits(subj, quarter) {
-  // Получаем средний балл по предмету за указанную четверть
   const grades = state.gradesByQuarter[quarter] || {};
   const subjGrades = grades[subj] || {};
   const avg = calcWeightedAvg(subjGrades);
-  
   if (avg === null) {
-    // Нет оценок — все оценки доступны
     return { min: 1, max: 5, avg: null };
   }
-  
-  // Правило: если средний >= 4.5 — только 5; если >= 3.5 — только 4 или 5;
-  // если >= 2.5 — только 3, 4 или 5; иначе — любые
   if (avg >= 4.5) {
     return { min: 5, max: 5, avg };
   } else if (avg >= 3.5) {
@@ -3199,7 +3252,6 @@ function openQuarterModal(subj, quarter) {
   const current = (state.quarters[subj] || {})[quarter];
   const limits = getQuarterGradeLimits(subj, quarter);
   
-  // Показываем подсказку о среднем балле
   const subEl = document.getElementById("qSub");
   if (limits.avg !== null) {
     let hint = "";
@@ -3216,7 +3268,6 @@ function openQuarterModal(subj, quarter) {
     btn.textContent = n;
     if (current === n) btn.classList.add("selected");
     
-    // Блокируем оценки, которые нельзя выставить
     if (n < limits.min || n > limits.max) {
       btn.disabled = true;
       btn.style.opacity = "0.3";
@@ -3252,7 +3303,6 @@ document.getElementById("qModalBg").addEventListener("click", e => {
   if (e.target.id === "qModalBg") closeQModal();
 });
 
-// ==================== КАЛЕНДАРЬ ====================
 function openCal() {
   if (!calMonth) calMonth = new Date();
   renderCal();
@@ -3304,7 +3354,6 @@ document.getElementById("calModalBg").addEventListener("click", e => {
   if (e.target.id === "calModalBg") closeCal();
 });
 
-// ==================== НАПОМИНАНИЯ ====================
 function ensureReminders() { if (!Array.isArray(state.reminders)) state.reminders = []; }
 function getUpcomingReminders() {
   ensureReminders();
@@ -3467,7 +3516,6 @@ function escapeHtml(s) {
     .replace(/'/g, "&#039;");
 }
 
-// ==================== СТАРТ ====================
 applyTheme();
 currentUser = state.user || "dima";
 applyUserTheme();
