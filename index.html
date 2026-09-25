@@ -56,12 +56,92 @@
     min-height: 100vh;
     transition: background .3s var(--ease), color .3s var(--ease);
     padding-bottom: env(safe-area-inset-bottom);
+    position: relative;
+  }
+
+  /* ================= АНИМИРОВАННЫЙ MESH-ФОН ================= */
+  .mesh-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .mesh-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
+    will-change: transform;
+  }
+  .mesh-blob.b1 {
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, #1976d2 0%, transparent 70%);
+    top: -10%; left: -8%;
+    animation: meshFloat1 26s ease-in-out infinite;
+  }
+  .mesh-blob.b2 {
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, #8e24aa 0%, transparent 70%);
+    top: 30%; right: -10%;
+    animation: meshFloat2 32s ease-in-out infinite;
+  }
+  .mesh-blob.b3 {
+    width: 560px; height: 560px;
+    background: radial-gradient(circle, #ec407a 0%, transparent 70%);
+    bottom: -15%; left: 25%;
+    animation: meshFloat3 38s ease-in-out infinite;
+  }
+  .mesh-blob.b4 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, #26c6da 0%, transparent 70%);
+    top: 55%; left: 5%;
+    animation: meshFloat4 30s ease-in-out infinite;
+  }
+  @keyframes meshFloat1 {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33%      { transform: translate(80px, 60px) scale(1.15); }
+    66%      { transform: translate(40px, 120px) scale(0.95); }
+  }
+  @keyframes meshFloat2 {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33%      { transform: translate(-100px, 40px) scale(1.1); }
+    66%      { transform: translate(-40px, -60px) scale(1.2); }
+  }
+  @keyframes meshFloat3 {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    33%      { transform: translate(60px, -80px) scale(1.1); }
+    66%      { transform: translate(-60px, -40px) scale(0.9); }
+  }
+  @keyframes meshFloat4 {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50%      { transform: translate(100px, -60px) scale(1.2); }
+  }
+  [data-theme="dark"] .mesh-blob { opacity: 0.35; }
+
+  .mesh-veil {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--bg);
+    opacity: 0.55;
+    transition: opacity .3s var(--ease);
+  }
+  [data-theme="dark"] .mesh-veil { opacity: 0.7; }
+
+  @media (max-width: 768px) {
+    .mesh-blob { filter: blur(60px); }
+    .mesh-blob.b1, .mesh-blob.b2 { width: 340px; height: 340px; }
+    .mesh-blob.b3 { width: 380px; height: 380px; }
+    .mesh-blob.b4 { width: 300px; height: 300px; }
   }
 
   .app {
     max-width: 1440px;
     margin: 0 auto;
     padding: 0 12px 24px;
+    position: relative;
   }
 
   /* ================= ШАПКА ================= */
@@ -81,10 +161,25 @@
     overflow: hidden;
     min-height: var(--header-h);
   }
+  .header.has-custom-bg {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    animation: none !important;
+  }
+  .header.has-custom-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15));
+    pointer-events: none;
+    z-index: 0;
+  }
   .header.eva {
     background: linear-gradient(135deg, #ec407a, #ad1457);
     background-size: 200% 200%;
   }
+  .header.eva.has-custom-bg { background: var(--header-custom-bg); }
   .header::after {
     content: "";
     position: absolute;
@@ -93,7 +188,9 @@
                 radial-gradient(circle at 80% 80%, rgba(255,255,255,.10), transparent 45%);
     pointer-events: none;
     animation: headerGlow 12s ease-in-out infinite;
+    z-index: 0;
   }
+  .header.has-custom-bg::after { opacity: .35; }
   @keyframes headerShift {
     0%, 100% { background-position: 0% 50%; }
     50%      { background-position: 100% 50%; }
@@ -129,13 +226,15 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-shadow: 0 1px 4px rgba(0,0,0,.25);
   }
   .header-sub {
     font-size: 11px;
-    opacity: .8;
+    opacity: .9;
     font-weight: 400;
     display: block;
     margin-top: 1px;
+    text-shadow: 0 1px 3px rgba(0,0,0,.25);
   }
 
   .header-right {
@@ -158,6 +257,7 @@
     justify-content: center;
     transition: .25s var(--ease);
     color: #fff;
+    backdrop-filter: blur(4px);
   }
   .theme-btn:hover { background: rgba(255,255,255,.28); transform: rotate(20deg); }
 
@@ -182,7 +282,8 @@
 
   /* ================= СТАТИСТИКА ================= */
   .score-bar {
-    background: var(--panel);
+    background: color-mix(in srgb, var(--panel) 88%, transparent);
+    backdrop-filter: blur(8px);
     padding: 12px 16px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -324,7 +425,8 @@
   /* ================= ВКЛАДКИ ================= */
   .tabs {
     display: flex;
-    background: var(--panel);
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    backdrop-filter: blur(8px);
     border-radius: var(--radius);
     margin-top: 12px;
     padding: 6px;
@@ -373,7 +475,8 @@
 
   /* ================= ПАНЕЛЬ УПРАВЛЕНИЯ ================= */
   .controls {
-    background: var(--panel);
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    backdrop-filter: blur(8px);
     padding: 12px 14px;
     display: flex;
     gap: 8px;
@@ -419,7 +522,6 @@
   .btn.green  { background: #43a047; }
   .btn.green:hover { background: #2e7d32; }
 
-  /* ================= ПЕРЕКЛЮЧАТЕЛЬ ЧЕТВЕРТЕЙ ================= */
   .quarter-switcher {
     display: inline-flex;
     align-items: center;
@@ -681,7 +783,8 @@
 
   /* ================= РАСПИСАНИЕ ================= */
   .week-info {
-    background: var(--panel);
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    backdrop-filter: blur(8px);
     border-radius: var(--radius);
     padding: 12px 16px;
     display: flex;
@@ -836,6 +939,7 @@
     font-size: 11px;
     min-width: 130px;
     vertical-align: top;
+    transition: .25s var(--ease);
   }
   .schedule-table td:hover { background: var(--primary-soft); }
   .schedule-table.eva td:hover { background: var(--pink-soft); }
@@ -845,6 +949,117 @@
   [data-theme="dark"] .schedule-table.eva td .subj { color: #f48fb1; }
   .schedule-table td .room { color: var(--text-soft); font-size: 10px; }
   .schedule-table td .teacher { color: var(--text-soft); font-size: 10px; font-style: italic; }
+
+  /* Скрытие выходных */
+  .schedule-table.hide-weekend th:nth-child(8),
+  .schedule-table.hide-weekend th:nth-child(9),
+  .schedule-table.hide-weekend td:nth-child(8),
+  .schedule-table.hide-weekend td:nth-child(9) {
+    display: none;
+  }
+
+  /* Пульсация текущего урока */
+  .schedule-table td.current-lesson {
+    background: linear-gradient(135deg, rgba(67,160,71,.22), rgba(46,125,50,.22)) !important;
+    border: 2px solid #43a047 !important;
+    position: relative;
+    animation: lessonCellPulse 2s ease-in-out infinite;
+  }
+  .schedule-table.eva td.current-lesson {
+    background: linear-gradient(135deg, rgba(236,64,122,.22), rgba(173,20,87,.22)) !important;
+    border-color: #ec407a !important;
+  }
+  [data-theme="dark"] .schedule-table td.current-lesson {
+    background: linear-gradient(135deg, rgba(67,160,71,.28), rgba(46,125,50,.28)) !important;
+  }
+  [data-theme="dark"] .schedule-table.eva td.current-lesson {
+    background: linear-gradient(135deg, rgba(236,64,122,.28), rgba(173,20,87,.28)) !important;
+  }
+  @keyframes lessonCellPulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(67,160,71,.45), inset 0 0 12px rgba(67,160,71,.15);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(67,160,71,0), inset 0 0 22px rgba(67,160,71,.35);
+      transform: scale(1.025);
+    }
+  }
+  .schedule-table.eva td.current-lesson {
+    animation: lessonCellPulseEva 2s ease-in-out infinite;
+  }
+  @keyframes lessonCellPulseEva {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(236,64,122,.45), inset 0 0 12px rgba(236,64,122,.15);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(236,64,122,0), inset 0 0 22px rgba(236,64,122,.35);
+      transform: scale(1.025);
+    }
+  }
+  .schedule-table td.current-lesson::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #43a047;
+    box-shadow: 0 0 0 0 rgba(67,160,71,.7);
+    animation: liveDot 1.5s ease-in-out infinite;
+    z-index: 2;
+  }
+  .schedule-table.eva td.current-lesson::before {
+    background: #ec407a;
+    box-shadow: 0 0 0 0 rgba(236,64,122,.7);
+  }
+  @keyframes liveDot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(67,160,71,.7); opacity: 1; }
+    50%      { box-shadow: 0 0 0 8px rgba(67,160,71,0); opacity: .85; }
+  }
+  .schedule-table.eva td.current-lesson::before {
+    animation: liveDotEva 1.5s ease-in-out infinite;
+  }
+  @keyframes liveDotEva {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(236,64,122,.7); opacity: 1; }
+    50%      { box-shadow: 0 0 0 8px rgba(236,64,122,0); opacity: .85; }
+  }
+  .schedule-table td.current-lesson .live-badge {
+    position: absolute;
+    top: -8px;
+    left: 8px;
+    background: linear-gradient(135deg, #43a047, #2e7d32);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    box-shadow: 0 2px 8px rgba(67,160,71,.55);
+    animation: badgeLivePulse 1.8s ease-in-out infinite;
+    z-index: 3;
+  }
+  .schedule-table.eva td.current-lesson .live-badge {
+    background: linear-gradient(135deg, #ec407a, #ad1457);
+    box-shadow: 0 2px 8px rgba(236,64,122,.55);
+  }
+  @keyframes badgeLivePulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.08); }
+  }
+  .schedule-table tr.current-lesson-row td.num-col,
+  .schedule-table tr.current-lesson-row td.time-col {
+    background: linear-gradient(135deg, #43a047, #2e7d32) !important;
+    color: #fff !important;
+    font-weight: 700;
+  }
+  .schedule-table.eva tr.current-lesson-row td.num-col,
+  .schedule-table.eva tr.current-lesson-row td.time-col {
+    background: linear-gradient(135deg, #ec407a, #ad1457) !important;
+  }
 
   td.day-off {
     background: #f5f5f5 !important;
@@ -940,9 +1155,36 @@
     cursor: pointer;
     transition: .2s var(--ease);
     margin-right: 4px;
+    position: relative;
   }
   [data-theme="dark"] .hw-photo-thumb { border-color: var(--border); }
   .hw-photo-thumb:hover { transform: scale(1.15) rotate(-3deg); box-shadow: var(--shadow-md); }
+
+  /* Обёртка превью с бейджем +N */
+  .hw-photo-wrap {
+    position: relative;
+    display: inline-block;
+    margin-top: 4px;
+    margin-right: 4px;
+    vertical-align: top;
+  }
+  .hw-photo-wrap .hw-photo-thumb { margin: 0; display: block; }
+  .hw-photo-more {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: .2s var(--ease);
+  }
+  .hw-photo-more:hover { background: rgba(0,0,0,.75); }
 
   .tomorrow-hw {
     display: none;
@@ -1166,7 +1408,7 @@
   .gallery-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(25,118,210,.45); }
   .gallery-btn:active { transform: scale(.97); }
 
-  #hwPhotoInput { display: none; }
+  #hwPhotoInput, #headerBgInput { display: none; }
   .hw-photo-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .hw-photo-preview .thumb-wrap {
     position: relative;
@@ -1229,27 +1471,120 @@
   }
 
   /* ================= ПРОФИЛЬ ================= */
-  .profile-modal { max-width: 400px; text-align: center; padding: 24px 20px 20px; }
-  .profile-modal .profile-avatar-big {
-    width: 120px; height: 120px;
-    border-radius: 50%;
+  .profile-modal { max-width: 440px; text-align: center; padding: 24px 20px 20px; }
+
+  /* Аватарка с рамкой */
+  .avatar-frame-wrap {
+    width: 130px;
+    height: 130px;
     margin: 0 auto 14px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: avatarFloat 4s ease-in-out infinite;
+  }
+  @keyframes avatarFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+  }
+  .profile-modal .profile-avatar-big {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
     overflow: hidden;
     border: 4px solid #ffe082;
     box-shadow: 0 4px 16px rgba(245,184,0,.35);
     background: #f5b800;
-    animation: avatarFloat 4s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+    transition: border .3s var(--ease), box-shadow .3s var(--ease);
   }
   .profile-modal.eva .profile-avatar-big {
     border-color: #f8bbd0;
     box-shadow: 0 4px 16px rgba(236,64,122,.35);
     background: #fce4ec;
   }
-  @keyframes avatarFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
-  }
   .profile-modal .profile-avatar-big svg { width: 100%; height: 100%; display: block; }
+
+  /* Рамка поверх аватарки */
+  .avatar-frame-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+    transition: .3s var(--ease);
+  }
+
+  /* Золотая */
+  .avatar-frame-wrap[data-frame="gold"] .profile-avatar-big {
+    border-color: #ffd700;
+    box-shadow: 0 0 0 3px #fff8e1, 0 0 20px rgba(255,215,0,.55), 0 4px 16px rgba(255,215,0,.4);
+  }
+  .avatar-frame-wrap[data-frame="gold"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #fff8e1, #ffd700, #ffb300, #ffe082, #fff8e1);
+    -webkit-mask: radial-gradient(circle, transparent 68%, #000 69%);
+            mask: radial-gradient(circle, transparent 68%, #000 69%);
+    animation: rotateRing 6s linear infinite;
+  }
+
+  /* Светящаяся */
+  .avatar-frame-wrap[data-frame="glow"] .profile-avatar-big {
+    border-color: #4fc3f7;
+    box-shadow: 0 0 25px rgba(79,195,247,.75), 0 0 45px rgba(79,195,247,.35), inset 0 0 20px rgba(79,195,247,.25);
+    animation: glowPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(79,195,247,.75), 0 0 45px rgba(79,195,247,.35), inset 0 0 20px rgba(79,195,247,.25); }
+    50%      { box-shadow: 0 0 40px rgba(79,195,247,1), 0 0 70px rgba(79,195,247,.55), inset 0 0 30px rgba(79,195,247,.45); }
+  }
+
+  /* Огненная */
+  .avatar-frame-wrap[data-frame="fire"] .profile-avatar-big {
+    border-color: #ff5722;
+    box-shadow: 0 0 22px rgba(255,87,34,.85), 0 0 45px rgba(255,152,0,.55), inset 0 0 15px rgba(255,152,0,.3);
+  }
+  .avatar-frame-wrap[data-frame="fire"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #ff5722, #ff9800, #ffeb3b, #ff9800, #ff5722);
+    -webkit-mask: radial-gradient(circle, transparent 70%, #000 71%);
+            mask: radial-gradient(circle, transparent 70%, #000 71%);
+    animation: rotateRing 3s linear infinite, fireFlicker 0.8s ease-in-out infinite;
+  }
+  @keyframes fireFlicker {
+    0%, 100% { filter: brightness(1) blur(0.5px); }
+    50%      { filter: brightness(1.35) blur(1.5px); }
+  }
+
+  /* Ледяная */
+  .avatar-frame-wrap[data-frame="ice"] .profile-avatar-big {
+    border-color: #81d4fa;
+    box-shadow: 0 0 20px rgba(129,212,250,.75), 0 0 40px rgba(224,247,250,.45), inset 0 0 18px rgba(200,240,255,.4);
+  }
+  .avatar-frame-wrap[data-frame="ice"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #e0f7fa, #81d4fa, #4fc3f7, #e1f5fe, #e0f7fa);
+    -webkit-mask: radial-gradient(circle, transparent 70%, #000 71%);
+            mask: radial-gradient(circle, transparent 70%, #000 71%);
+    animation: rotateRing 8s linear infinite;
+  }
+
+  /* Радужная */
+  .avatar-frame-wrap[data-frame="rainbow"] .profile-avatar-big {
+    border-color: transparent;
+    box-shadow: 0 0 22px rgba(255,0,128,.5), 0 0 40px rgba(0,200,255,.4);
+  }
+  .avatar-frame-wrap[data-frame="rainbow"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #ff0000, #ff9800, #ffeb3b, #4caf50, #2196f3, #9c27b0, #ff0000);
+    -webkit-mask: radial-gradient(circle, transparent 68%, #000 69%);
+            mask: radial-gradient(circle, transparent 68%, #000 69%);
+    animation: rotateRing 4s linear infinite;
+    filter: saturate(1.4) blur(0.4px);
+  }
+  @keyframes rotateRing {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
   .profile-modal .profile-name {
     font-size: 17px;
     font-weight: 700;
@@ -1289,8 +1624,208 @@
   .profile-modal .profile-row .pr-label { color: #607d8b; font-weight: 600; font-size: 12px; }
   [data-theme="dark"] .profile-modal .profile-row .pr-label { color: var(--text-soft); }
   .profile-modal .profile-row .pr-value { color: var(--text); font-weight: 500; text-align: right; word-break: break-word; font-size: 12px; }
+
+  /* Выбор рамки — палитра */
+  .frame-picker {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-align: left;
+  }
+  .frame-picker .fp-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .frame-options {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+  .frame-opt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    transition: .2s var(--ease);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: .3px;
+  }
+  .frame-opt:hover {
+    background: var(--primary-soft);
+    transform: translateY(-2px);
+  }
+  .frame-opt.active {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+  [data-theme="dark"] .frame-opt.active { color: #82b1ff; }
+  .frame-opt .fo-preview {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: #f5b800;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #ffe082;
+  }
+  .frame-opt[data-frame="gold"] .fo-preview {
+    border-color: #ffd700;
+    box-shadow: 0 0 10px rgba(255,215,0,.65);
+  }
+  .frame-opt[data-frame="glow"] .fo-preview {
+    border-color: #4fc3f7;
+    box-shadow: 0 0 12px rgba(79,195,247,.85);
+  }
+  .frame-opt[data-frame="fire"] .fo-preview {
+    border-color: #ff5722;
+    box-shadow: 0 0 12px rgba(255,87,34,.85);
+  }
+  .frame-opt[data-frame="ice"] .fo-preview {
+    border-color: #81d4fa;
+    box-shadow: 0 0 12px rgba(129,212,250,.85);
+  }
+  .frame-opt[data-frame="rainbow"] .fo-preview {
+    border-color: transparent;
+    background:
+      radial-gradient(circle, #f5b800 55%, transparent 60%),
+      conic-gradient(from 0deg, #ff0000, #ff9800, #ffeb3b, #4caf50, #2196f3, #9c27b0, #ff0000);
+  }
+  .frame-opt[data-frame="none"] .fo-preview {
+    border-color: #cfd8dc;
+  }
+  .frame-opt .fo-preview::before {
+    content: "";
+    width: 100%; height: 100%;
+    border-radius: 50%;
+  }
+
+  /* ================= МАЛЕНЬКАЯ КНОПКА-ПЕРЕКЛЮЧАТЕЛЬ ВЫХОДНЫХ ================= */
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-top: 14px;
+    text-align: left;
+  }
+  .toggle-row .tr-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-soft);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .toggle-row .tr-label .tr-emoji { font-size: 15px; }
+  .toggle-switch {
+    position: relative;
+    width: 42px;
+    height: 24px;
+    border-radius: 12px;
+    background: #cfd8dc;
+    cursor: pointer;
+    border: none;
+    transition: .25s var(--ease);
+    flex-shrink: 0;
+    padding: 0;
+  }
+  [data-theme="dark"] .toggle-switch { background: #3a4a60; }
+  .toggle-switch::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.25);
+    transition: .25s var(--ease);
+  }
+  .toggle-switch.on {
+    background: linear-gradient(135deg, #43a047, #2e7d32);
+  }
+  .toggle-switch.on::after {
+    left: 21px;
+  }
+
+  /* ================= БЛОК ФОНА ШАПКИ ================= */
+  .header-bg-block {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .header-bg-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .hbbtn {
+    padding: 7px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s var(--ease);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    flex: 1;
+    min-width: 100px;
+  }
+  .hbbtn.upload {
+    background: linear-gradient(135deg, #7b1fa2, #4a148c);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(123,31,162,.3);
+  }
+  .hbbtn.upload:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(123,31,162,.45); }
+  .hbbtn.remove {
+    background: #eceff1;
+    color: #455a64;
+  }
+  [data-theme="dark"] .hbbtn.remove { background: #2a3446; color: var(--text-soft); }
+  .hbbtn.remove:hover { background: #cfd8dc; transform: translateY(-2px); }
+  [data-theme="dark"] .hbbtn.remove:hover { background: #3a4a60; }
+  .hbbtn.remove:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+  .hbbtn.remove:disabled:hover { transform: none; }
+
+  /* ================= КНОПКИ ВНИЗУ ПРОФИЛЯ ================= */
+  .profile-bottom-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
   .profile-modal .profile-close {
-    margin-top: 12px;
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: #fff;
     border: none;
@@ -1301,12 +1836,12 @@
     cursor: pointer;
     transition: .2s var(--ease);
     box-shadow: 0 2px 8px rgba(25,118,210,.3);
+    flex: 1;
+    min-width: 120px;
   }
   .profile-modal .profile-close:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(25,118,210,.45); }
 
   .profile-modal .family-btn {
-    margin-top: 12px;
-    margin-right: 6px;
     background: linear-gradient(135deg, #7b1fa2, #4a148c);
     color: #fff;
     border: none;
@@ -1319,7 +1854,10 @@
     box-shadow: 0 2px 8px rgba(123,31,162,.35);
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
+    flex: 1;
+    min-width: 120px;
   }
   .profile-modal .family-btn:hover {
     transform: translateY(-2px);
@@ -1630,11 +2168,7 @@
     .theme-btn { width: 36px; height: 36px; font-size: 16px; }
     .avatar-btn { width: 42px; height: 42px; }
 
-    .score-bar {
-      padding: 10px 8px;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-    }
+    .score-bar { padding: 10px 8px; gap: 4px; }
     .score-item .label { font-size: 9px; }
     .score-item b { font-size: 16px; }
     .score-item .sub { font-size: 9px; }
@@ -1681,6 +2215,8 @@
     .schedule-table td .room, .schedule-table td .teacher { font-size: 9px; }
     .schedule-table th.num-col, .schedule-table td.num-col { width: 28px; min-width: 28px; font-size: 12px; }
     .schedule-table th.time-col, .schedule-table td.time-col { min-width: 70px; font-size: 9px; }
+    .schedule-table td.current-lesson .live-badge { font-size: 8px; padding: 1px 4px; top: -6px; left: 4px; }
+    .schedule-table td.current-lesson::before { width: 8px; height: 8px; top: 4px; right: 4px; }
 
     .tomorrow-hw { padding: 12px; border-radius: 12px; }
     .tomorrow-hw .th-item { padding: 8px 10px; }
@@ -1691,8 +2227,11 @@
     .modal .type-btn { padding: 8px 14px; font-size: 12px; min-width: 100px; }
 
     .profile-modal { padding: 20px 16px 16px; }
-    .profile-modal .profile-avatar-big { width: 100px; height: 100px; }
+    .avatar-frame-wrap { width: 110px; height: 110px; }
     .profile-modal .profile-name { font-size: 15px; }
+    .frame-options { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .frame-opt { padding: 6px 4px; font-size: 8px; }
+    .frame-opt .fo-preview { width: 30px; height: 30px; }
 
     .family-modal { padding: 20px 16px; }
     .family-item { padding: 10px 12px; }
@@ -1712,6 +2251,7 @@
     .tab-btn { font-size: 11px; padding: 8px 8px; }
     .score-item b { font-size: 14px; }
     .btn { padding: 7px 10px; font-size: 11px; }
+    .frame-options { grid-template-columns: repeat(3, 1fr); }
   }
 
   @media (min-width: 769px) and (max-width: 1024px) {
@@ -1754,8 +2294,8 @@
     .modal { max-width: 500px; padding: 28px; }
     .modal h3 { font-size: 18px; }
     .modal .grade-btn { width: 54px; height: 54px; font-size: 22px; }
-    .profile-modal { max-width: 440px; }
-    .profile-modal .profile-avatar-big { width: 140px; height: 140px; }
+    .profile-modal { max-width: 460px; }
+    .avatar-frame-wrap { width: 150px; height: 150px; }
     .profile-modal .profile-name { font-size: 19px; }
     .family-modal { max-width: 460px; }
   }
@@ -1763,9 +2303,16 @@
 </head>
 <body>
 
+<div class="mesh-bg" aria-hidden="true">
+  <div class="mesh-blob b1"></div>
+  <div class="mesh-blob b2"></div>
+  <div class="mesh-blob b3"></div>
+  <div class="mesh-blob b4"></div>
+</div>
+<div class="mesh-veil" aria-hidden="true"></div>
+
 <div class="app">
 
-  <!-- ================= ШАПКА ================= -->
   <div class="header" id="mainHeader">
     <div class="header-left">
       <div class="logo">📘</div>
@@ -1795,7 +2342,6 @@
     </div>
   </div>
 
-  <!-- ================= СТАТИСТИКА ================= -->
   <div class="score-bar" id="scoreBar">
     <div class="score-item">
       <span class="label">Средневзвешенный</span>
@@ -1814,27 +2360,23 @@
     </div>
   </div>
 
-  <!-- ================= NOW BAR ================= -->
   <div class="now-bar" id="nowBar">
     <span class="icon" id="nowIcon">🔔</span>
     <span class="now-text" id="nowText"></span>
     <span class="now-time" id="nowTime"></span>
   </div>
 
-  <!-- ================= RISK BAR ================= -->
   <div class="risk-bar" id="riskBar">
     <span class="risk-title">⚠ Внимание:</span>
     <div id="riskItems" style="display:flex;flex-wrap:wrap;gap:10px;flex:1;"></div>
   </div>
 
-  <!-- ================= ВКЛАДКИ ================= -->
   <div class="tabs">
     <button class="tab-btn active" id="tabBtnGrades" onclick="switchTab('grades', this)">📝 Оценки</button>
     <button class="tab-btn" id="tabBtnSchedule" onclick="switchTab('schedule', this)">📅 Расписание</button>
     <button class="tab-btn" id="tabBtnQuarters" onclick="switchTab('quarters', this)">🎓 Четвертные</button>
   </div>
 
-  <!-- ================= ОЦЕНКИ ================= -->
   <div class="tab-content active" id="tab-grades">
     <div class="controls">
       <button class="btn green" onclick="downloadDiary()">💾 Скачать</button>
@@ -1855,7 +2397,6 @@
     </div>
   </div>
 
-  <!-- ================= РАСПИСАНИЕ ================= -->
   <div class="tab-content" id="tab-schedule">
     <div class="week-info" id="weekInfo">
       <div>
@@ -1881,7 +2422,6 @@
     </div>
   </div>
 
-  <!-- ================= ЧЕТВЕРТНЫЕ ================= -->
   <div class="tab-content" id="tab-quarters">
     <div class="table-wrap">
       <table class="quarters-table" id="quartersTable">
@@ -1902,7 +2442,6 @@
 
 </div>
 
-<!-- ================= МОДАЛЬНОЕ ОКНО ОЦЕНКИ ================= -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
@@ -1926,7 +2465,6 @@
   </div>
 </div>
 
-<!-- ================= МОДАЛЬНОЕ ОКНО Д/З ================= -->
 <div class="modal-bg" id="hwModalBg">
   <div class="modal">
     <h3 id="hwTitle">Домашнее задание</h3>
@@ -1951,13 +2489,11 @@
   </div>
 </div>
 
-<!-- ================= ПРОСМОТР ФОТО ================= -->
 <div class="photo-viewer" id="photoViewer" onclick="closePhotoViewer()">
   <span class="close-hint">Клик — закрыть</span>
   <img id="photoViewerImg" src="" alt="Фото">
 </div>
 
-<!-- ================= МОДАЛЬНОЕ ОКНО ЧЕТВЕРТНОЙ ================= -->
 <div class="modal-bg" id="qModalBg">
   <div class="modal">
     <h3 id="qTitle">Четвертная оценка</h3>
@@ -1973,7 +2509,10 @@
 <!-- ================= ПРОФИЛЬ ================= -->
 <div class="modal-bg" id="profileModalBg">
   <div class="modal profile-modal" id="profileModal">
-    <div class="profile-avatar-big" id="profileAvatarBig"></div>
+    <div class="avatar-frame-wrap" id="avatarFrameWrap" data-frame="none">
+      <div class="avatar-frame-ring"></div>
+      <div class="profile-avatar-big" id="profileAvatarBig"></div>
+    </div>
     <div class="profile-name" id="profileName">Бакулин Дмитрий Алексеевич</div>
     <div class="profile-row">
       <span class="pr-label">Класс</span>
@@ -1995,8 +2534,61 @@
       <span class="pr-label">Эл. почта</span>
       <span class="pr-value">dimabaku017@gmail.com</span>
     </div>
-    <button class="family-btn" onclick="openFamily()">👨‍👩‍👧 Семья</button>
-    <button class="profile-close" onclick="closeProfile()">Закрыть</button>
+
+    <!-- Рамка аватарки -->
+    <div class="frame-picker">
+      <div class="fp-title">🖼 Рамка аватарки</div>
+      <div class="frame-options">
+        <button class="frame-opt" data-frame="none" onclick="setAvatarFrame('none')">
+          <div class="fo-preview"></div>
+          Нет
+        </button>
+        <button class="frame-opt" data-frame="gold" onclick="setAvatarFrame('gold')">
+          <div class="fo-preview"></div>
+          Золото
+        </button>
+        <button class="frame-opt" data-frame="glow" onclick="setAvatarFrame('glow')">
+          <div class="fo-preview"></div>
+          Свет
+        </button>
+        <button class="frame-opt" data-frame="fire" onclick="setAvatarFrame('fire')">
+          <div class="fo-preview"></div>
+          Огонь
+        </button>
+        <button class="frame-opt" data-frame="ice" onclick="setAvatarFrame('ice')">
+          <div class="fo-preview"></div>
+          Лёд
+        </button>
+        <button class="frame-opt" data-frame="rainbow" onclick="setAvatarFrame('rainbow')">
+          <div class="fo-preview"></div>
+          Радуга
+        </button>
+      </div>
+    </div>
+
+    <!-- Показ выходных в расписании -->
+    <div class="toggle-row">
+      <span class="tr-label"><span class="tr-emoji">📅</span> Показ выходных</span>
+      <button class="toggle-switch" id="weekendToggle" onclick="toggleWeekend()" title="Показывать Сб и Вс"></button>
+    </div>
+
+    <!-- Фон шапки — компактно -->
+    <div class="header-bg-block">
+      <div class="header-bg-actions">
+        <button class="hbbtn upload" onclick="document.getElementById('headerBgInput').click()">
+          📷 Загрузить картинку
+        </button>
+        <button class="hbbtn remove" id="headerBgRemoveBtn" onclick="removeHeaderBg()">
+          🗑 Убрать
+        </button>
+        <input type="file" id="headerBgInput" accept="image/*" onchange="uploadHeaderBg(event)" style="display:none;">
+      </div>
+    </div>
+
+    <div class="profile-bottom-actions">
+      <button class="family-btn" onclick="openFamily()">👨‍👩‍👧 Семья</button>
+      <button class="profile-close" onclick="closeProfile()">Закрыть</button>
+    </div>
   </div>
 </div>
 
@@ -2027,7 +2619,6 @@
   </div>
 </div>
 
-<!-- ================= КАЛЕНДАРЬ ================= -->
 <div class="modal-bg" id="calModalBg">
   <div class="modal" style="max-width:500px;">
     <h3>📅 Выбор недели</h3>
@@ -2046,7 +2637,6 @@
   </div>
 </div>
 
-<!-- ================= НАПОМИНАНИЯ ================= -->
 <div class="modal-bg" id="remindModalBg">
   <div class="modal remind-modal">
     <h3>🔔 Напоминания</h3>
@@ -2070,7 +2660,6 @@
   </div>
 </div>
 
-<!-- ================= TOAST ================= -->
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
@@ -2267,7 +2856,9 @@ const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Ч
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const MONTH_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 
-const STORAGE_KEY = "diary_html_v16";
+const STORAGE_KEY = "diary_html_v18";
+const DB_NAME = "diary_db_v18";
+const DB_STORE = "kv";
 
 const PROFILES = {
   dima: {
@@ -2302,7 +2893,63 @@ const PROFILES = {
   }
 };
 
-let state = loadState();
+// ==================== IndexedDB ====================
+let dbPromise = null;
+
+function openDB() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    if (!("indexedDB" in window)) {
+      reject(new Error("IndexedDB не поддерживается"));
+      return;
+    }
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(DB_STORE)) {
+        db.createObjectStore(DB_STORE);
+      }
+    };
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = e => reject(e.target.error);
+  });
+  return dbPromise;
+}
+
+async function idbGet(key) {
+  try {
+    const db = await openDB();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(DB_STORE, "readonly");
+      const store = tx.objectStore(DB_STORE);
+      const req = store.get(key);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  } catch (e) {
+    console.warn("idbGet error:", e);
+    return null;
+  }
+}
+
+async function idbSet(key, value) {
+  try {
+    const db = await openDB();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(DB_STORE, "readwrite");
+      const store = tx.objectStore(DB_STORE);
+      const req = store.put(value, key);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => reject(req.error);
+    });
+  } catch (e) {
+    console.warn("idbSet error:", e);
+    return false;
+  }
+}
+
+// ==================== СОСТОЯНИЕ ====================
+let state = null;
 let currentWeekStart = null;
 let calMonth = null;
 let currentHW = { date: null, dayIdx: 0, slotIdx: 0 };
@@ -2312,37 +2959,87 @@ let currentQuarterModal = { subj: null, quarter: null };
 let activeQuarter = null;
 let currentUser = "dima";
 
-function loadState() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (raw) {
-    try {
-      const s = JSON.parse(raw);
-      if (!s.subjects) s.subjects = [...SUBJECTS_DEFAULT];
-      if (!s.gradesByQuarter) {
-        s.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
-        if (s.grades) { s.gradesByQuarter[1] = s.grades; delete s.grades; }
-      }
-      if (!s.datesByQuarter) s.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
-      if (!s.homework) s.homework = {};
-      if (!s.hwDone) s.hwDone = {};
-      if (!s.hwPhotos) s.hwPhotos = {};
-      if (!s.quarters) s.quarters = {};
-      if (!Array.isArray(s.reminders)) s.reminders = [];
-      if (!s.theme || s.theme === "auto") s.theme = "light";
-      if (!s.user) s.user = "dima";
-      return s;
-    } catch(e) {}
+function getHeaderBg(user) {
+  return state.headerBgs && state.headerBgs[user] ? state.headerBgs[user] : null;
+}
+function getAvatarFrame(user) {
+  return state.avatarFrames && state.avatarFrames[user] ? state.avatarFrames[user] : "none";
+}
+
+async function loadStateAsync() {
+  let s = await idbGet("state");
+  if (s && typeof s === "object" && s.subjects) {
+    return normalizeState(s);
   }
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.subjects) {
+        const normalized = normalizeState(parsed);
+        await idbSet("state", normalized);
+        try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+        return normalized;
+      }
+    }
+  } catch (e) {}
+  return defaultState();
+}
+
+function defaultState() {
   return {
     subjects: [...SUBJECTS_DEFAULT],
     gradesByQuarter: { 1: {}, 2: {}, 3: {}, 4: {} },
     datesByQuarter: JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT)),
     homework: {}, hwDone: {}, hwPhotos: {}, quarters: {},
-    reminders: [], theme: "light", user: "dima"
+    reminders: [], theme: "light", user: "dima",
+    headerBgs: {}, avatarFrames: {},
+    showWeekends: true
   };
 }
-function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
+function normalizeState(s) {
+  if (!s.subjects) s.subjects = [...SUBJECTS_DEFAULT];
+  if (!s.gradesByQuarter) {
+    s.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
+    if (s.grades) { s.gradesByQuarter[1] = s.grades; delete s.grades; }
+  }
+  if (!s.datesByQuarter) s.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
+  if (!s.homework) s.homework = {};
+  if (!s.hwDone) s.hwDone = {};
+  if (!s.hwPhotos) s.hwPhotos = {};
+  if (!s.quarters) s.quarters = {};
+  if (!Array.isArray(s.reminders)) s.reminders = [];
+  if (!s.theme || s.theme === "auto") s.theme = "light";
+  if (!s.user) s.user = "dima";
+  if (!s.headerBgs || typeof s.headerBgs !== "object") s.headerBgs = {};
+  if (!s.avatarFrames || typeof s.avatarFrames !== "object") s.avatarFrames = {};
+  if (s.showWeekends === undefined) s.showWeekends = true;
+  return s;
+}
+
+let saveTimer = null;
+function saveState() {
+  if (!state) return;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    const ok = await idbSet("state", state);
+    if (!ok) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+    }
+  }, 120);
+}
+
+async function saveStateNow() {
+  if (!state) return;
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+  const ok = await idbSet("state", state);
+  if (!ok) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
+}
+
+// ==================== УТИЛИТЫ ====================
 function parseGrade(v) {
   if (v === null || v === undefined) return null;
   if (typeof v === "number") return { grade: v, type: "ur" };
@@ -2389,6 +3086,132 @@ function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
+// ==================== ФОН ШАПКИ ====================
+function applyHeaderBg() {
+  const header = document.getElementById("mainHeader");
+  const bg = getHeaderBg(currentUser);
+  if (bg) {
+    header.classList.add("has-custom-bg");
+    header.style.backgroundImage = `url("${bg}")`;
+  } else {
+    header.classList.remove("has-custom-bg");
+    header.style.backgroundImage = "";
+  }
+}
+
+function updateHeaderBgButtons() {
+  const removeBtn = document.getElementById("headerBgRemoveBtn");
+  if (removeBtn) removeBtn.disabled = !getHeaderBg(currentUser);
+}
+
+function uploadHeaderBg(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    alert("Выберите изображение!");
+    ev.target.value = "";
+    return;
+  }
+  if (file.size > 4 * 1024 * 1024) {
+    alert("Файл слишком большой. Максимум 4 МБ.");
+    ev.target.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const dataUrl = e.target.result;
+    const compressed = await compressImage(dataUrl, 1200, 0.8);
+    if (!state.headerBgs) state.headerBgs = {};
+    state.headerBgs[currentUser] = compressed;
+    await saveStateNow();
+    applyHeaderBg();
+    updateHeaderBgButtons();
+    showToast("🎨 Фон шапки", "Картинка установлена!");
+  };
+  reader.readAsDataURL(file);
+  ev.target.value = "";
+}
+
+async function removeHeaderBg() {
+  if (!getHeaderBg(currentUser)) return;
+  if (!confirm("Убрать свой фон шапки?")) return;
+  if (state.headerBgs) delete state.headerBgs[currentUser];
+  await saveStateNow();
+  applyHeaderBg();
+  updateHeaderBgButtons();
+  showToast("🎨 Фон шапки", "Картинка убрана");
+}
+
+function compressImage(dataUrl, maxWidth = 1200, quality = 0.8) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      let { width, height } = img;
+      if (width > maxWidth) {
+        height = Math.round(height * maxWidth / width);
+        width = maxWidth;
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+      try {
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      } catch (e) {
+        resolve(dataUrl);
+      }
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+// ==================== РАМКА АВАТАРКИ ====================
+function applyAvatarFrame() {
+  const wrap = document.getElementById("avatarFrameWrap");
+  if (!wrap) return;
+  wrap.setAttribute("data-frame", getAvatarFrame(currentUser));
+  // Обновляем активную опцию в picker
+  document.querySelectorAll(".frame-opt").forEach(opt => {
+    opt.classList.toggle("active", opt.dataset.frame === getAvatarFrame(currentUser));
+  });
+}
+
+function setAvatarFrame(frame) {
+  if (!state.avatarFrames) state.avatarFrames = {};
+  state.avatarFrames[currentUser] = frame;
+  saveState();
+  applyAvatarFrame();
+  const names = {
+    none: "без рамки",
+    gold: "золотая",
+    glow: "светящаяся",
+    fire: "огненная",
+    ice: "ледяная",
+    rainbow: "радужная"
+  };
+  showToast("🖼 Рамка", `Установлена ${names[frame] || frame}`);
+}
+
+// ==================== ПОКАЗ ВЫХОДНЫХ ====================
+function applyWeekendVisibility() {
+  const table = document.getElementById("scheduleTable");
+  if (!table) return;
+  table.classList.toggle("hide-weekend", !state.showWeekends);
+  const toggle = document.getElementById("weekendToggle");
+  if (toggle) toggle.classList.toggle("on", !!state.showWeekends);
+}
+
+function toggleWeekend() {
+  state.showWeekends = !state.showWeekends;
+  saveState();
+  applyWeekendVisibility();
+  renderSchedule();
+  showToast("📅 Выходные", state.showWeekends ? "Показываются" : "Скрыты");
+}
+
+// ==================== ПРОФИЛЬ ====================
 function openProfile() {
   renderProfileContent();
   document.getElementById("profileModalBg").classList.add("active");
@@ -2416,6 +3239,9 @@ function renderProfileContent() {
   } else {
     emailRow.style.display = "none";
   }
+  applyAvatarFrame();
+  updateHeaderBgButtons();
+  applyWeekendVisibility();
 }
 
 function getDimaAvatarSVG() {
@@ -2485,6 +3311,7 @@ function switchUser(user) {
   saveState();
   updateFamilySelection();
   applyUserTheme();
+  applyHeaderBg();
   refreshUIToUser();
   closeFamily();
   closeProfile();
@@ -2534,6 +3361,7 @@ function refreshUIToUser() {
   document.getElementById("headerTitle").textContent = currentUser === "eva" ? "Дневник Евы" : "Дневник.ру";
   document.getElementById("headerSub").textContent = currentUser === "eva" ? "1Б · Гимназия №10" : "Электронный дневник";
 
+  applyWeekendVisibility();
   render();
   renderSchedule();
   renderQuarters();
@@ -2653,9 +3481,13 @@ function renderTomorrowHW() {
     if (it.text) html += `<div class="th-text">${escapeHtml(it.text)}</div>`;
     if (it.photos.length > 0) {
       html += `<div class="th-photo">`;
-      it.photos.forEach((p, idx) => {
-        html += `<img src="${p}" onclick="viewTomorrowPhoto(${it.slotIdx}, ${idx})" alt="фото задания">`;
-      });
+      const showCount = Math.min(it.photos.length, 2);
+      for (let i = 0; i < showCount; i++) {
+        html += `<img src="${it.photos[i]}" onclick="viewTomorrowPhoto(${it.slotIdx}, ${i})" alt="фото задания">`;
+      }
+      if (it.photos.length > 2) {
+        html += `<img src="${it.photos[2]}" onclick="viewTomorrowPhoto(${it.slotIdx}, 2)" alt="фото задания" style="opacity:.6;">`;
+      }
       html += `</div>`;
     }
     div.innerHTML = html;
@@ -2942,32 +3774,21 @@ function downloadDiary() {
   alert("Файл скачан! 📁");
 }
 
-function uploadDiary(ev) {
+async function uploadDiary(ev) {
   const file = ev.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     try {
       const loaded = JSON.parse(e.target.result);
       if (!loaded.subjects) { alert("Неверный файл!"); return; }
       if (!confirm("Загрузить дневник? Текущие данные будут заменены.")) return;
-      state = loaded;
-      if (!state.gradesByQuarter) {
-        state.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
-        if (state.grades) { state.gradesByQuarter[1] = state.grades; delete state.grades; }
-      }
-      if (!state.datesByQuarter) state.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
-      if (!state.homework) state.homework = {};
-      if (!state.hwDone) state.hwDone = {};
-      if (!state.hwPhotos) state.hwPhotos = {};
-      if (!state.quarters) state.quarters = {};
-      if (!Array.isArray(state.reminders)) state.reminders = [];
-      if (!state.theme || state.theme === "auto") state.theme = "light";
-      if (!state.user) state.user = "dima";
+      state = normalizeState(loaded);
       currentUser = state.user;
-      saveState();
+      await saveStateNow();
       applyTheme();
       applyUserTheme();
+      applyHeaderBg();
       refreshUIToUser();
       renderReminders(); updateRemindBadge(); checkReminders();
       alert("Дневник загружен! ✅");
@@ -2991,6 +3812,22 @@ function switchTab(name, btn) {
 
 function getWeekDates(monday) { return [0,1,2,3,4,5,6].map(i => addDays(monday, i)); }
 
+function getCurrentLessonSlotIndex() {
+  const now = new Date();
+  const day = now.getDay();
+  if (day === 0 || day === 6) return -1;
+  const dayInfo = getDayType(now);
+  if (dayInfo.type !== "school") return -1;
+  const bells = getBells();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  for (let i = 0; i < bells.length; i++) {
+    const s = timeToMin(bells[i].start);
+    const e = timeToMin(bells[i].end);
+    if (nowMin >= s && nowMin < e) return i;
+  }
+  return -1;
+}
+
 function renderSchedule() {
   if (!currentWeekStart) currentWeekStart = getMondayOfDate(new Date());
   const dates = getWeekDates(currentWeekStart);
@@ -3001,6 +3838,9 @@ function renderSchedule() {
   const bells = getBells();
   const schedule = getSchedule();
   const showHW = getProfile().showHW;
+
+  const todayIdx = dates.findIndex(d => isSameDay(d, today));
+  const currentSlot = todayIdx >= 0 ? getCurrentLessonSlotIndex() : -1;
 
   let headHTML = '<th class="num-col">№</th><th class="time-col">Время</th>';
   dates.forEach((d, i) => {
@@ -3016,6 +3856,9 @@ function renderSchedule() {
   body.innerHTML = "";
   for (let slot = 0; slot < bells.length; slot++) {
     const tr = document.createElement("tr");
+    const isCurrentRow = (slot === currentSlot && todayIdx >= 0);
+    if (isCurrentRow) tr.classList.add("current-lesson-row");
+
     tr.innerHTML = `<td class="num-col">${slot + 1}</td>
                     <td class="time-col">${bells[slot].start} – ${bells[slot].end}</td>`;
     for (let day = 0; day < 7; day++) {
@@ -3060,12 +3903,24 @@ function renderSchedule() {
           }
           if (hwPhotos.length > 0) {
             html += `<div>`;
-            hwPhotos.forEach((p, idx) => {
-              html += `<img class="hw-photo-thumb" src="${p}" onclick="viewHWPhoto('${hwKey}', ${idx})" alt="фото">`;
-            });
+            // Показываем только первое фото, если больше — бейдж +N
+            if (hwPhotos.length === 1) {
+              html += `<img class="hw-photo-thumb" src="${hwPhotos[0]}" onclick="viewHWPhoto('${hwKey}', 0)" alt="фото">`;
+            } else {
+              html += `<div class="hw-photo-wrap">`;
+              html += `<img class="hw-photo-thumb" src="${hwPhotos[0]}" alt="фото">`;
+              html += `<div class="hw-photo-more" onclick="openHW(${day}, ${slot}, '${dateKey}')">+${hwPhotos.length - 1}</div>`;
+              html += `</div>`;
+            }
             html += `</div>`;
           }
         }
+
+        if (day === todayIdx && slot === currentSlot) {
+          td.classList.add("current-lesson");
+          html = `<span class="live-badge">Сейчас</span>` + html;
+        }
+
         td.innerHTML = html;
       }
       tr.appendChild(td);
@@ -3076,6 +3931,7 @@ function renderSchedule() {
   const mon = dates[0], sun = dates[6];
   document.getElementById("weekLabel").textContent = `Неделя ${getWeekNumber(mon)}`;
   document.getElementById("weekDates").textContent = `${formatFull(mon)} — ${formatFull(sun)} ${sun.getFullYear()}`;
+  applyWeekendVisibility();
   renderTomorrowHW();
 }
 
@@ -3251,7 +4107,7 @@ function openQuarterModal(subj, quarter) {
   wrap.innerHTML = "";
   const current = (state.quarters[subj] || {})[quarter];
   const limits = getQuarterGradeLimits(subj, quarter);
-  
+
   const subEl = document.getElementById("qSub");
   if (limits.avg !== null) {
     let hint = "";
@@ -3261,13 +4117,13 @@ function openQuarterModal(subj, quarter) {
     else hint = ` • средний ${limits.avg.toFixed(2)} — доступны любые`;
     subEl.textContent = `${quarter} четверть${hint}`;
   }
-  
+
   [1,2,3,4,5].forEach(n => {
     const btn = document.createElement("button");
     btn.className = "grade-btn g" + n;
     btn.textContent = n;
     if (current === n) btn.classList.add("selected");
-    
+
     if (n < limits.min || n > limits.max) {
       btn.disabled = true;
       btn.style.opacity = "0.3";
@@ -3516,37 +4372,49 @@ function escapeHtml(s) {
     .replace(/'/g, "&#039;");
 }
 
-applyTheme();
-currentUser = state.user || "dima";
-applyUserTheme();
-activeQuarter = getCurrentQuarter();
-currentWeekStart = getMondayOfDate(new Date());
+// ==================== СТАРТ ====================
+async function init() {
+  state = await loadStateAsync();
 
-if (currentUser === "eva") {
-  document.getElementById("tabBtnGrades").classList.add("hidden");
-  document.getElementById("tabBtnQuarters").classList.add("hidden");
-  document.getElementById("tabBtnSchedule").classList.add("active");
-  document.getElementById("tab-schedule").classList.add("active");
-  document.getElementById("tab-grades").classList.remove("active");
-  document.getElementById("scoreBar").classList.add("hidden");
-} else {
-  document.getElementById("tabBtnGrades").classList.add("active");
-  document.getElementById("tab-grades").classList.add("active");
+  applyTheme();
+  currentUser = state.user || "dima";
+  applyUserTheme();
+  applyHeaderBg();
+  activeQuarter = getCurrentQuarter();
+  currentWeekStart = getMondayOfDate(new Date());
+
+  if (currentUser === "eva") {
+    document.getElementById("tabBtnGrades").classList.add("hidden");
+    document.getElementById("tabBtnQuarters").classList.add("hidden");
+    document.getElementById("tabBtnSchedule").classList.add("active");
+    document.getElementById("tab-schedule").classList.add("active");
+    document.getElementById("tab-grades").classList.remove("active");
+    document.getElementById("scoreBar").classList.add("hidden");
+  } else {
+    document.getElementById("tabBtnGrades").classList.add("active");
+    document.getElementById("tab-grades").classList.add("active");
+  }
+
+  render();
+  renderSchedule();
+  renderQuarters();
+
+  setInterval(updateNowBar, 30000);
+  setInterval(checkReminders, 1000);
+  setInterval(renderReminders, 30000);
+  setInterval(() => {
+    const schedTab = document.getElementById("tab-schedule");
+    if (schedTab && schedTab.classList.contains("active")) renderSchedule();
+  }, 60000);
+
+  updateNowBar();
+  checkReminders();
+  updateRemindBadge();
+
+  document.addEventListener("click", askNotificationPermission, { once: true });
 }
 
-render();
-renderSchedule();
-renderQuarters();
-
-setInterval(updateNowBar, 30000);
-setInterval(checkReminders, 1000);
-setInterval(renderReminders, 30000);
-
-updateNowBar();
-checkReminders();
-updateRemindBadge();
-
-document.addEventListener("click", askNotificationPermission, { once: true });
+init();
 </script>
 </body>
 </html>
