@@ -46,7 +46,6 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
   html, body { height: 100%; }
 
   body {
@@ -59,14 +58,43 @@
     position: relative;
   }
 
-  /* ================= АНИМИРОВАННЫЙ MESH-ФОН ================= */
-  .mesh-bg {
+  /* ================= АНИМИРОВАННЫЙ ФОН (MESH + VIDEO/PHOTO) ================= */
+  .bg-layer {
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: -2;
     overflow: hidden;
     pointer-events: none;
+    background: var(--bg);
   }
+  .bg-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+  .bg-media.active { display: block; }
+  .bg-media-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    opacity: 0.72;
+    pointer-events: none;
+    display: none;
+  }
+  .bg-media-overlay.active { display: block; }
+  [data-theme="dark"] .bg-media-overlay { opacity: 0.78; }
+
+  .mesh-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition: opacity .3s var(--ease);
+  }
+  .mesh-bg.hidden { opacity: 0; }
   .mesh-blob {
     position: absolute;
     border-radius: 50%;
@@ -119,17 +147,6 @@
   }
   [data-theme="dark"] .mesh-blob { opacity: 0.35; }
 
-  .mesh-veil {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: var(--bg);
-    opacity: 0.55;
-    transition: opacity .3s var(--ease);
-  }
-  [data-theme="dark"] .mesh-veil { opacity: 0.7; }
-
   @media (max-width: 768px) {
     .mesh-blob { filter: blur(60px); }
     .mesh-blob.b1, .mesh-blob.b2 { width: 340px; height: 340px; }
@@ -175,10 +192,7 @@
     pointer-events: none;
     z-index: 0;
   }
-  .header.eva {
-    background: linear-gradient(135deg, #ec407a, #ad1457);
-    background-size: 200% 200%;
-  }
+  .header.eva { background: linear-gradient(135deg, #ec407a, #ad1457); background-size: 200% 200%; }
   .header.eva.has-custom-bg { background: var(--header-custom-bg); }
   .header::after {
     content: "";
@@ -200,14 +214,7 @@
     50%      { transform: translate(5%, -4%) scale(1.08); opacity: 1; }
   }
 
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: relative;
-    z-index: 1;
-    min-width: 0;
-  }
+  .header-left { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; min-width: 0; }
   .logo {
     width: 38px; height: 38px;
     flex-shrink: 0;
@@ -237,14 +244,7 @@
     text-shadow: 0 1px 3px rgba(0,0,0,.25);
   }
 
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: relative;
-    z-index: 1;
-    flex-shrink: 0;
-  }
+  .header-right { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
   .theme-btn {
     width: 40px; height: 40px;
     border-radius: 50%;
@@ -261,7 +261,6 @@
   }
   .theme-btn:hover { background: rgba(255,255,255,.28); transform: rotate(20deg); }
 
-  /* ================= АВАТАРКА ================= */
   .avatar-btn {
     width: 48px; height: 48px;
     border-radius: 50%;
@@ -276,9 +275,78 @@
     justify-content: center;
     flex-shrink: 0;
     box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    position: relative;
   }
   .avatar-btn:hover { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(255,255,255,.25); }
   .avatar-btn svg { width: 100%; height: 100%; display: block; }
+  .avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Мини-рамки для шапки */
+  .avatar-btn[data-frame="gold"] { border-color: #ffd700; box-shadow: 0 0 15px rgba(255,215,0,.75), 0 2px 10px rgba(0,0,0,.2); }
+  .avatar-btn[data-frame="glow"] { border-color: #4fc3f7; box-shadow: 0 0 18px rgba(79,195,247,.85), 0 2px 10px rgba(0,0,0,.2); animation: glowBtnPulse 2.4s ease-in-out infinite; }
+  @keyframes glowBtnPulse {
+    0%, 100% { box-shadow: 0 0 18px rgba(79,195,247,.85), 0 2px 10px rgba(0,0,0,.2); }
+    50%      { box-shadow: 0 0 28px rgba(79,195,247,1), 0 2px 10px rgba(0,0,0,.2); }
+  }
+  .avatar-btn[data-frame="fire"] { border-color: #ff5722; box-shadow: 0 0 18px rgba(255,87,34,.9), 0 2px 10px rgba(0,0,0,.2); animation: fireBtn 1.6s ease-in-out infinite; }
+  @keyframes fireBtn {
+    0%, 100% { box-shadow: 0 0 18px rgba(255,87,34,.9), 0 2px 10px rgba(0,0,0,.2); }
+    50%      { box-shadow: 0 0 26px rgba(255,152,0,1), 0 2px 10px rgba(0,0,0,.2); }
+  }
+  .avatar-btn[data-frame="ice"] { border-color: #81d4fa; box-shadow: 0 0 18px rgba(129,212,250,.9), 0 2px 10px rgba(0,0,0,.2); }
+  .avatar-btn[data-frame="rainbow"] {
+    border-color: transparent;
+    background-image: linear-gradient(#fff,#fff), conic-gradient(from 0deg, #ff0000, #ff9800, #ffeb3b, #4caf50, #2196f3, #9c27b0, #ff0000);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    animation: hueRotate 4s linear infinite;
+    box-shadow: 0 0 15px rgba(255,0,128,.6);
+  }
+  @keyframes hueRotate {
+    from { filter: hue-rotate(0deg); }
+    to   { filter: hue-rotate(360deg); }
+  }
+  .avatar-btn[data-frame="neon"] { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0,229,255,.95), 0 0 35px rgba(0,229,255,.5), 0 2px 10px rgba(0,0,0,.2); animation: neonBtn 1.8s ease-in-out infinite; }
+  @keyframes neonBtn {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,229,255,.95), 0 0 35px rgba(0,229,255,.5), 0 2px 10px rgba(0,0,0,.2); }
+    50%      { box-shadow: 0 0 32px rgba(0,229,255,1), 0 0 55px rgba(0,229,255,.75), 0 2px 10px rgba(0,0,0,.2); }
+  }
+  .avatar-btn[data-frame="galaxy"] { border-color: transparent; background-image: linear-gradient(#000,#000), conic-gradient(from 0deg, #1a237e, #4a148c, #880e4f, #1a237e); background-origin: border-box; background-clip: content-box, border-box; box-shadow: 0 0 18px rgba(74,20,140,.9); animation: galaxyBtn 6s linear infinite; }
+  @keyframes galaxyBtn {
+    from { filter: hue-rotate(0deg) brightness(1.15); }
+    to   { filter: hue-rotate(360deg) brightness(1.15); }
+  }
+  .avatar-btn[data-frame="emerald"] { border-color: #00e676; box-shadow: 0 0 20px rgba(0,230,118,.9), inset 0 0 12px rgba(0,230,118,.4); animation: emeraldBtn 3s ease-in-out infinite; }
+  @keyframes emeraldBtn {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,230,118,.9), inset 0 0 12px rgba(0,230,118,.4); }
+    50%      { box-shadow: 0 0 32px rgba(0,230,118,1), inset 0 0 20px rgba(0,230,118,.65); }
+  }
+  .avatar-btn[data-frame="sunset"] { border-color: transparent; background-image: linear-gradient(#fff,#fff), conic-gradient(from 0deg, #ff6f00, #f44336, #e91e63, #9c27b0, #ff6f00); background-origin: border-box; background-clip: content-box, border-box; box-shadow: 0 0 18px rgba(244,67,54,.8); animation: sunsetBtn 5s linear infinite; }
+  @keyframes sunsetBtn {
+    from { filter: hue-rotate(0deg); }
+    to   { filter: hue-rotate(360deg); }
+  }
+  .avatar-btn[data-frame="ocean"] { border-color: #006064; box-shadow: 0 0 22px rgba(38,198,218,.9), inset 0 0 14px rgba(38,198,218,.45); animation: oceanBtn 4s ease-in-out infinite; }
+  @keyframes oceanBtn {
+    0%, 100% { box-shadow: 0 0 22px rgba(38,198,218,.9), inset 0 0 14px rgba(38,198,218,.45); }
+    50%      { box-shadow: 0 0 34px rgba(38,198,218,1), inset 0 0 22px rgba(38,198,218,.7); }
+  }
+  .avatar-btn[data-frame="matrix"] { border-color: #00ff41; box-shadow: 0 0 18px rgba(0,255,65,.85); animation: matrixBtn 1.2s steps(2) infinite; }
+  @keyframes matrixBtn {
+    0%   { box-shadow: 0 0 18px rgba(0,255,65,.85); }
+    50%  { box-shadow: 0 0 26px rgba(0,255,65,1), inset 0 0 14px rgba(0,255,65,.5); }
+    100% { box-shadow: 0 0 18px rgba(0,255,65,.85); }
+  }
+  .avatar-btn[data-frame="aurora"] { border-color: transparent; background-image: linear-gradient(#fff,#fff), conic-gradient(from 0deg, #00e5ff, #64ffda, #1de9b6, #00bcd4, #00e5ff); background-origin: border-box; background-clip: content-box, border-box; box-shadow: 0 0 20px rgba(100,255,218,.85); animation: auroraBtn 5s linear infinite; }
+  @keyframes auroraBtn {
+    from { filter: hue-rotate(0deg); }
+    to   { filter: hue-rotate(360deg); }
+  }
+  .avatar-btn[data-frame="blood"] { border-color: #b71c1c; box-shadow: 0 0 22px rgba(183,28,28,.95), inset 0 0 12px rgba(183,28,28,.5); animation: bloodBtn 2s ease-in-out infinite; }
+  @keyframes bloodBtn {
+    0%, 100% { box-shadow: 0 0 22px rgba(183,28,28,.95), inset 0 0 12px rgba(183,28,28,.5); }
+    50%      { box-shadow: 0 0 34px rgba(229,57,53,1), inset 0 0 20px rgba(229,57,53,.7); }
+  }
 
   /* ================= СТАТИСТИКА ================= */
   .score-bar {
@@ -291,7 +359,6 @@
     border-radius: var(--radius);
     margin-top: 12px;
     box-shadow: var(--shadow-sm);
-    transition: background .3s var(--ease);
   }
   .score-bar.hidden { display: none; }
   .score-item {
@@ -303,12 +370,7 @@
     border-right: 1px solid var(--border);
   }
   .score-item:last-child { border-right: none; }
-  .score-item .label {
-    color: var(--text-soft);
-    font-size: 11px;
-    margin-bottom: 3px;
-    white-space: nowrap;
-  }
+  .score-item .label { color: var(--text-soft); font-size: 11px; margin-bottom: 3px; white-space: nowrap; }
   .score-item b { font-size: 20px; line-height: 1.1; }
   .score-item .sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
   .avg-red    { color: #e53935; }
@@ -389,12 +451,7 @@
   }
   [data-theme="dark"] .risk-bar { border-color: var(--border); }
   .risk-bar.active { display: flex; animation: slideDown .3s var(--ease); }
-  .risk-bar .risk-title {
-    font-weight: 700;
-    color: var(--orange);
-    font-size: 14px;
-    white-space: nowrap;
-  }
+  .risk-bar .risk-title { font-weight: 700; color: var(--orange); font-size: 14px; white-space: nowrap; }
   .risk-bar .risk-item {
     background: var(--panel);
     border: 1px solid #ffcc80;
@@ -410,11 +467,7 @@
     animation: fadeIn .35s var(--ease) backwards;
   }
   [data-theme="dark"] .risk-bar .risk-item { border-color: var(--border); }
-  .risk-bar .risk-item:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-sm);
-    border-color: var(--orange);
-  }
+  .risk-bar .risk-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); border-color: var(--orange); }
   .risk-bar .risk-item b { color: var(--red); }
   [data-theme="dark"] .risk-bar .risk-item b { color: #ff6b6b; }
   .risk-bar .risk-item .hint { font-size: 11px; color: #6d4c41; }
@@ -485,7 +538,6 @@
     margin-bottom: 12px;
     align-items: center;
     box-shadow: var(--shadow-sm);
-    transition: background .3s var(--ease);
   }
   .btn {
     padding: 10px 16px;
@@ -558,12 +610,12 @@
 
   /* ================= ТАБЛИЦЫ ================= */
   .table-wrap {
-    background: var(--panel);
+    background: color-mix(in srgb, var(--panel) 94%, transparent);
+    backdrop-filter: blur(10px);
     border-radius: var(--radius);
     overflow: auto;
     box-shadow: var(--shadow-md);
     max-height: calc(100vh - 340px);
-    transition: background .3s var(--ease);
     -webkit-overflow-scrolling: touch;
   }
   table.grades-table {
@@ -648,12 +700,7 @@
     background: var(--orange-soft);
     border-left-color: var(--border);
   }
-  thead th.quarter-col {
-    z-index: 6;
-    color: var(--orange);
-    font-size: 11px;
-    padding: 8px 4px;
-  }
+  thead th.quarter-col { z-index: 6; color: var(--orange); font-size: 11px; padding: 8px 4px; }
   thead th.quarter-col .q-name { display: block; font-size: 12px; }
   thead th.quarter-col .q-sub { display: block; font-size: 9px; color: #bf360c; margin-top: 2px; }
   [data-theme="dark"] thead th.quarter-col .q-sub { color: var(--text-soft); }
@@ -678,6 +725,34 @@
   }
   td.grade-cell:hover { background: #e3f2fd; transform: scale(1.05); }
   [data-theme="dark"] td.grade-cell:hover { background: var(--primary-soft); }
+
+  /* Прячем плохие оценки */
+  body.hide-bad-grades td.grade-cell .grade-badge.g1,
+  body.hide-bad-grades td.grade-cell .grade-badge.g2,
+  body.hide-bad-grades td.grade-cell .grade-badge.g3,
+  body.hide-bad-grades td.quarter-cell-main.bad-grade {
+    display: none;
+  }
+  body.hide-bad-grades td.grade-cell .hidden-placeholder {
+    display: inline-flex;
+  }
+  .hidden-placeholder {
+    display: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-mute);
+    font-size: 18px;
+    font-weight: bold;
+    background: color-mix(in srgb, var(--panel) 60%, transparent);
+    border: 1px dashed var(--border);
+  }
+  body.hide-bad-grades td.quarter-cell-main.bad-grade::before {
+    content: "•";
+    color: var(--text-mute);
+  }
 
   .grade-wrap {
     display: flex;
@@ -781,6 +856,13 @@
   .quarter-weights { font-size: 9px; color: #78909c; font-weight: normal; display: block; margin-top: 2px; }
   [data-theme="dark"] .quarter-weights { color: var(--text-mute); }
 
+  /* Скрытие плохих четвертных */
+  body.hide-bad-grades table.quarters-table td.quarter-cell.bad-quarter,
+  body.hide-bad-grades table.quarters-table td.quarter-cell.final.bad-quarter {
+    color: var(--text-mute) !important;
+    font-size: 14px !important;
+  }
+
   /* ================= РАСПИСАНИЕ ================= */
   .week-info {
     background: color-mix(in srgb, var(--panel) 90%, transparent);
@@ -832,12 +914,12 @@
   .btn.remind .badge.empty { display: none; }
 
   .schedule-wrap {
-    background: var(--panel);
+    background: color-mix(in srgb, var(--panel) 94%, transparent);
+    backdrop-filter: blur(10px);
     border-radius: var(--radius);
     overflow-x: auto;
     box-shadow: var(--shadow-md);
     padding: 8px;
-    transition: background .3s var(--ease);
     -webkit-overflow-scrolling: touch;
   }
   .schedule-table {
@@ -935,11 +1017,10 @@
     color: var(--text-soft);
   }
   .schedule-table td {
-    background: var(--panel);
+    background: color-mix(in srgb, var(--panel) 92%, transparent);
     font-size: 11px;
     min-width: 130px;
     vertical-align: top;
-    transition: .25s var(--ease);
   }
   .schedule-table td:hover { background: var(--primary-soft); }
   .schedule-table.eva td:hover { background: var(--pink-soft); }
@@ -950,7 +1031,6 @@
   .schedule-table td .room { color: var(--text-soft); font-size: 10px; }
   .schedule-table td .teacher { color: var(--text-soft); font-size: 10px; font-style: italic; }
 
-  /* Скрытие выходных */
   .schedule-table.hide-weekend th:nth-child(8),
   .schedule-table.hide-weekend th:nth-child(9),
   .schedule-table.hide-weekend td:nth-child(8),
@@ -958,7 +1038,6 @@
     display: none;
   }
 
-  /* Пульсация текущего урока */
   .schedule-table td.current-lesson {
     background: linear-gradient(135deg, rgba(67,160,71,.22), rgba(46,125,50,.22)) !important;
     border: 2px solid #43a047 !important;
@@ -976,27 +1055,13 @@
     background: linear-gradient(135deg, rgba(236,64,122,.28), rgba(173,20,87,.28)) !important;
   }
   @keyframes lessonCellPulse {
-    0%, 100% {
-      box-shadow: 0 0 0 0 rgba(67,160,71,.45), inset 0 0 12px rgba(67,160,71,.15);
-      transform: scale(1);
-    }
-    50% {
-      box-shadow: 0 0 0 8px rgba(67,160,71,0), inset 0 0 22px rgba(67,160,71,.35);
-      transform: scale(1.025);
-    }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(67,160,71,.45), inset 0 0 12px rgba(67,160,71,.15); transform: scale(1); }
+    50%      { box-shadow: 0 0 0 8px rgba(67,160,71,0), inset 0 0 22px rgba(67,160,71,.35); transform: scale(1.025); }
   }
-  .schedule-table.eva td.current-lesson {
-    animation: lessonCellPulseEva 2s ease-in-out infinite;
-  }
+  .schedule-table.eva td.current-lesson { animation: lessonCellPulseEva 2s ease-in-out infinite; }
   @keyframes lessonCellPulseEva {
-    0%, 100% {
-      box-shadow: 0 0 0 0 rgba(236,64,122,.45), inset 0 0 12px rgba(236,64,122,.15);
-      transform: scale(1);
-    }
-    50% {
-      box-shadow: 0 0 0 8px rgba(236,64,122,0), inset 0 0 22px rgba(236,64,122,.35);
-      transform: scale(1.025);
-    }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(236,64,122,.45), inset 0 0 12px rgba(236,64,122,.15); transform: scale(1); }
+    50%      { box-shadow: 0 0 0 8px rgba(236,64,122,0), inset 0 0 22px rgba(236,64,122,.35); transform: scale(1.025); }
   }
   .schedule-table td.current-lesson::before {
     content: "";
@@ -1019,9 +1084,7 @@
     0%, 100% { box-shadow: 0 0 0 0 rgba(67,160,71,.7); opacity: 1; }
     50%      { box-shadow: 0 0 0 8px rgba(67,160,71,0); opacity: .85; }
   }
-  .schedule-table.eva td.current-lesson::before {
-    animation: liveDotEva 1.5s ease-in-out infinite;
-  }
+  .schedule-table.eva td.current-lesson::before { animation: liveDotEva 1.5s ease-in-out infinite; }
   @keyframes liveDotEva {
     0%, 100% { box-shadow: 0 0 0 0 rgba(236,64,122,.7); opacity: 1; }
     50%      { box-shadow: 0 0 0 8px rgba(236,64,122,0); opacity: .85; }
@@ -1160,7 +1223,6 @@
   [data-theme="dark"] .hw-photo-thumb { border-color: var(--border); }
   .hw-photo-thumb:hover { transform: scale(1.15) rotate(-3deg); box-shadow: var(--shadow-md); }
 
-  /* Обёртка превью с бейджем +N */
   .hw-photo-wrap {
     position: relative;
     display: inline-block;
@@ -1229,12 +1291,7 @@
   .tomorrow-hw .th-item .th-subj { font-weight: 700; color: #1a237e; font-size: 13px; }
   [data-theme="dark"] .tomorrow-hw .th-item .th-subj { color: #82b1ff; }
   .tomorrow-hw .th-item .th-meta { font-size: 11px; color: var(--text-soft); }
-  .tomorrow-hw .th-item .th-text {
-    color: #5d4037;
-    font-size: 12px;
-    line-height: 1.4;
-    white-space: pre-wrap;
-  }
+  .tomorrow-hw .th-item .th-text { color: #5d4037; font-size: 12px; line-height: 1.4; white-space: pre-wrap; }
   [data-theme="dark"] .tomorrow-hw .th-item .th-text { color: var(--text); }
   .tomorrow-hw .th-item .th-photo { margin-top: 4px; }
   .tomorrow-hw .th-item .th-photo img {
@@ -1275,6 +1332,7 @@
     box-shadow: var(--shadow-lg);
     animation: pop .25s var(--ease);
     color: var(--text);
+    position: relative;
   }
   @keyframes pop {
     from { transform: scale(.9); opacity: 0; }
@@ -1285,7 +1343,77 @@
   .modal .sub { font-size: 12px; color: #777; margin-bottom: 14px; }
   [data-theme="dark"] .modal .sub { color: var(--text-soft); }
 
-  .modal .section-label {
+  /* ================= КНОПКИ ДЕЙСТВИЙ ================= */
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .action-btn {
+    flex: 1;
+    min-width: 100px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: .2s var(--ease);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: .2px;
+  }
+  .action-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35), transparent 70%);
+    transform: translateX(-100%);
+    transition: transform .5s;
+  }
+  .action-btn:hover::before { transform: translateX(100%); }
+  .action-btn:active { transform: scale(.97); }
+  .action-btn .ab-emoji { font-size: 15px; }
+  .action-btn.save {
+    background: linear-gradient(135deg, #43a047, #2e7d32);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(67,160,71,.35), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .action-btn.save:hover { background: linear-gradient(135deg, #4caf50, #1b5e20); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(67,160,71,.5), inset 0 1px 0 rgba(255,255,255,.3); }
+  .action-btn.clear {
+    background: linear-gradient(135deg, #ff9800, #ef6c00);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(239,108,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .action-btn.clear:hover { background: linear-gradient(135deg, #ffa726, #e65100); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(239,108,0,.5), inset 0 1px 0 rgba(255,255,255,.3); }
+  .action-btn.cancel {
+    background: linear-gradient(135deg, #78909c, #546e7a);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(84,110,122,.35), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .action-btn.cancel:hover { background: linear-gradient(135deg, #90a4ae, #455a64); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(84,110,122,.5), inset 0 1px 0 rgba(255,255,255,.3); }
+  .action-btn.done {
+    background: linear-gradient(135deg, #2196f3, #0d47a1);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(13,71,161,.35), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .action-btn.done:hover { background: linear-gradient(135deg, #42a5f5, #0d47a1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(13,71,161,.5), inset 0 1px 0 rgba(255,255,255,.3); }
+  .action-btn.back {
+    background: linear-gradient(135deg, #8e24aa, #4a148c);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(74,20,140,.35), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .action-btn.back:hover { background: linear-gradient(135deg, #ab47bc, #4a148c); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(74,20,140,.5), inset 0 1px 0 rgba(255,255,255,.3); }
+  .action-btn.full { flex: 1 1 100%; }
+
+  .section-label {
     font-size: 11px;
     font-weight: 600;
     color: #455a64;
@@ -1294,31 +1422,25 @@
     margin-bottom: 8px;
     text-align: left;
   }
-  [data-theme="dark"] .modal .section-label { color: var(--text-soft); }
+  [data-theme="dark"] .section-label { color: var(--text-soft); }
 
-  .modal .grade-btns {
+  .grade-btns {
     display: flex; justify-content: center; gap: 8px;
     margin-bottom: 16px; flex-wrap: wrap;
   }
-  .modal .grade-btn {
+  .grade-btn {
     width: 48px; height: 48px;
     border: none; border-radius: 10px;
     color: #fff; font-size: 20px; font-weight: bold;
     cursor: pointer; transition: .2s var(--ease);
     box-shadow: 0 2px 8px rgba(0,0,0,.15);
   }
-  .modal .grade-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
-  .modal .grade-btn.selected { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.08); }
-  .modal .grade-btn:disabled {
-    opacity: .3;
-    cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none;
-  }
-  .modal .grade-btn:disabled:hover { transform: none !important; box-shadow: none; }
+  .grade-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+  .grade-btn.selected { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.08); }
+  .grade-btn:disabled { opacity: .3; cursor: not-allowed; transform: none !important; box-shadow: none; }
 
-  .modal .type-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
-  .modal .type-btn {
+  .type-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+  .type-btn {
     padding: 10px 18px;
     border: 2px solid #cfd8dc;
     background: var(--panel);
@@ -1330,46 +1452,16 @@
     transition: .2s var(--ease);
     min-width: 110px;
   }
-  [data-theme="dark"] .modal .type-btn { border-color: var(--border); color: var(--text-soft); }
-  .modal .type-btn:hover { border-color: #90a4ae; transform: translateY(-2px); }
-  .modal .type-btn.selected[data-type="ur"] { border-color: #607d8b; background: #eceff1; color: #37474f; }
-  [data-theme="dark"] .modal .type-btn.selected[data-type="ur"] { background: var(--primary-soft); color: var(--text); }
-  .modal .type-btn.selected[data-type="kr"] { border-color: #c62828; background: #ffebee; color: #c62828; }
-  [data-theme="dark"] .modal .type-btn.selected[data-type="kr"] { background: #2e1414; color: #ff6b6b; }
-  .modal .type-btn .hint { display: block; font-size: 10px; font-weight: normal; color: #999; margin-top: 2px; }
-  .modal .type-btn.selected .hint { color: inherit; opacity: 0.7; }
+  [data-theme="dark"] .type-btn { border-color: var(--border); color: var(--text-soft); }
+  .type-btn:hover { border-color: #90a4ae; transform: translateY(-2px); }
+  .type-btn.selected[data-type="ur"] { border-color: #607d8b; background: #eceff1; color: #37474f; }
+  [data-theme="dark"] .type-btn.selected[data-type="ur"] { background: var(--primary-soft); color: var(--text); }
+  .type-btn.selected[data-type="kr"] { border-color: #c62828; background: #ffebee; color: #c62828; }
+  [data-theme="dark"] .type-btn.selected[data-type="kr"] { background: #2e1414; color: #ff6b6b; }
+  .type-btn .hint { display: block; font-size: 10px; font-weight: normal; color: #999; margin-top: 2px; }
+  .type-btn.selected .hint { color: inherit; opacity: 0.7; }
 
-  .modal .actions { display: flex; justify-content: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-  .modal .clear-btn {
-    background: #eceff1; color: #455a64;
-    padding: 10px 16px; border: none; border-radius: 8px;
-    cursor: pointer; font-size: 12px;
-    transition: .2s var(--ease);
-  }
-  [data-theme="dark"] .modal .clear-btn { background: #2a3446; color: var(--text-soft); }
-  .modal .clear-btn:hover { background: #cfd8dc; transform: translateY(-1px); }
-  .modal .cancel-btn {
-    background: #607d8b; color: white;
-    padding: 10px 16px; border: none; border-radius: 8px;
-    cursor: pointer; font-size: 12px;
-    transition: .2s var(--ease);
-  }
-  .modal .cancel-btn:hover { background: #455a64; transform: translateY(-1px); }
-  .modal .save-btn {
-    background: linear-gradient(135deg, #43a047, #2e7d32);
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    transition: .2s var(--ease);
-    box-shadow: 0 2px 8px rgba(67,160,71,.3);
-  }
-  .modal .save-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(67,160,71,.45); }
-
-  .modal textarea {
+  textarea {
     width: 100%;
     min-height: 90px;
     padding: 10px;
@@ -1383,8 +1475,8 @@
     color: var(--text);
     transition: .2s var(--ease);
   }
-  [data-theme="dark"] .modal textarea { border-color: var(--border); }
-  .modal textarea:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
+  [data-theme="dark"] textarea { border-color: var(--border); }
+  textarea:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
   .hw-photo-area { margin-bottom: 12px; text-align: left; }
   .hw-photo-area .photo-label-row {
@@ -1408,7 +1500,7 @@
   .gallery-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(25,118,210,.45); }
   .gallery-btn:active { transform: scale(.97); }
 
-  #hwPhotoInput, #headerBgInput { display: none; }
+  #hwPhotoInput, #headerBgInput, #avatarUploadInput, #headerBgUploadInput, #bgMediaInput { display: none; }
   .hw-photo-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .hw-photo-preview .thumb-wrap {
     position: relative;
@@ -1471,9 +1563,31 @@
   }
 
   /* ================= ПРОФИЛЬ ================= */
+  .profile-settings-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    color: var(--text-soft);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .3s var(--ease);
+    z-index: 5;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(6px);
+  }
+  .profile-settings-btn:hover { background: var(--primary); color: #fff; transform: rotate(90deg) scale(1.1); box-shadow: 0 4px 14px rgba(25,118,210,.4); }
+  .profile-settings-btn:active { transform: rotate(90deg) scale(.95); }
+
   .profile-modal { max-width: 440px; text-align: center; padding: 24px 20px 20px; }
 
-  /* Аватарка с рамкой */
   .avatar-frame-wrap {
     width: 130px;
     height: 130px;
@@ -1505,9 +1619,11 @@
     box-shadow: 0 4px 16px rgba(236,64,122,.35);
     background: #fce4ec;
   }
-  .profile-modal .profile-avatar-big svg { width: 100%; height: 100%; display: block; }
+  .profile-modal .profile-avatar-big svg,
+  .profile-modal .profile-avatar-big img {
+    width: 100%; height: 100%; display: block; object-fit: cover;
+  }
 
-  /* Рамка поверх аватарки */
   .avatar-frame-ring {
     position: absolute;
     inset: -6px;
@@ -1528,7 +1644,6 @@
             mask: radial-gradient(circle, transparent 68%, #000 69%);
     animation: rotateRing 6s linear infinite;
   }
-
   /* Светящаяся */
   .avatar-frame-wrap[data-frame="glow"] .profile-avatar-big {
     border-color: #4fc3f7;
@@ -1539,7 +1654,6 @@
     0%, 100% { box-shadow: 0 0 25px rgba(79,195,247,.75), 0 0 45px rgba(79,195,247,.35), inset 0 0 20px rgba(79,195,247,.25); }
     50%      { box-shadow: 0 0 40px rgba(79,195,247,1), 0 0 70px rgba(79,195,247,.55), inset 0 0 30px rgba(79,195,247,.45); }
   }
-
   /* Огненная */
   .avatar-frame-wrap[data-frame="fire"] .profile-avatar-big {
     border-color: #ff5722;
@@ -1555,7 +1669,6 @@
     0%, 100% { filter: brightness(1) blur(0.5px); }
     50%      { filter: brightness(1.35) blur(1.5px); }
   }
-
   /* Ледяная */
   .avatar-frame-wrap[data-frame="ice"] .profile-avatar-big {
     border-color: #81d4fa;
@@ -1567,7 +1680,6 @@
             mask: radial-gradient(circle, transparent 70%, #000 71%);
     animation: rotateRing 8s linear infinite;
   }
-
   /* Радужная */
   .avatar-frame-wrap[data-frame="rainbow"] .profile-avatar-big {
     border-color: transparent;
@@ -1583,6 +1695,149 @@
   @keyframes rotateRing {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
+  }
+  /* NEON */
+  .avatar-frame-wrap[data-frame="neon"] .profile-avatar-big {
+    border-color: #00e5ff;
+    box-shadow: 0 0 25px rgba(0,229,255,.95), 0 0 55px rgba(0,229,255,.6), inset 0 0 20px rgba(0,229,255,.35);
+    animation: neonPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes neonPulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(0,229,255,.95), 0 0 55px rgba(0,229,255,.6), inset 0 0 20px rgba(0,229,255,.35); }
+    50%      { box-shadow: 0 0 45px rgba(0,229,255,1), 0 0 90px rgba(0,229,255,.85), inset 0 0 30px rgba(0,229,255,.6); }
+  }
+  .avatar-frame-wrap[data-frame="neon"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #00e5ff, #1de9b6, #00e5ff, #18ffff, #00e5ff);
+    -webkit-mask: radial-gradient(circle, transparent 66%, #000 67%);
+            mask: radial-gradient(circle, transparent 66%, #000 67%);
+    animation: rotateRing 3s linear infinite;
+    filter: blur(0.6px);
+  }
+  /* GALAXY */
+  .avatar-frame-wrap[data-frame="galaxy"] .profile-avatar-big {
+    border-color: transparent;
+    box-shadow: 0 0 30px rgba(74,20,140,.9), 0 0 55px rgba(26,35,126,.7);
+  }
+  .avatar-frame-wrap[data-frame="galaxy"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #1a237e, #4a148c, #880e4f, #311b92, #1a237e);
+    -webkit-mask: radial-gradient(circle, transparent 62%, #000 63%);
+            mask: radial-gradient(circle, transparent 62%, #000 63%);
+    animation: rotateRing 8s linear infinite;
+    filter: saturate(1.5) blur(0.5px);
+  }
+  .avatar-frame-wrap[data-frame="galaxy"] .profile-avatar-big::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle, rgba(255,255,255,.9) 1px, transparent 2px),
+                radial-gradient(circle, rgba(255,255,255,.6) 1px, transparent 2px),
+                radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 2px);
+    background-size: 30px 30px, 50px 50px, 70px 70px;
+    background-position: 0 0, 20px 20px, 40px 40px;
+    animation: starMove 20s linear infinite;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: .7;
+  }
+  @keyframes starMove {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  /* EMERALD */
+  .avatar-frame-wrap[data-frame="emerald"] .profile-avatar-big {
+    border-color: #00e676;
+    box-shadow: 0 0 25px rgba(0,230,118,.9), 0 0 50px rgba(0,230,118,.5), inset 0 0 20px rgba(0,230,118,.4);
+    animation: emeraldPulse 3s ease-in-out infinite;
+  }
+  @keyframes emeraldPulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(0,230,118,.9), 0 0 50px rgba(0,230,118,.5), inset 0 0 20px rgba(0,230,118,.4); }
+    50%      { box-shadow: 0 0 42px rgba(0,230,118,1), 0 0 80px rgba(0,230,118,.7), inset 0 0 30px rgba(0,230,118,.65); }
+  }
+  .avatar-frame-wrap[data-frame="emerald"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #00e676, #69f0ae, #00c853, #b9f6ca, #00e676);
+    -webkit-mask: radial-gradient(circle, transparent 66%, #000 67%);
+            mask: radial-gradient(circle, transparent 66%, #000 67%);
+    animation: rotateRing 5s linear infinite;
+  }
+  /* SUNSET */
+  .avatar-frame-wrap[data-frame="sunset"] .profile-avatar-big {
+    border-color: transparent;
+    box-shadow: 0 0 28px rgba(244,67,54,.85), 0 0 55px rgba(233,30,99,.6);
+  }
+  .avatar-frame-wrap[data-frame="sunset"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #ff6f00, #f44336, #e91e63, #9c27b0, #ff6f00);
+    -webkit-mask: radial-gradient(circle, transparent 64%, #000 65%);
+            mask: radial-gradient(circle, transparent 64%, #000 65%);
+    animation: rotateRing 4s linear infinite;
+    filter: saturate(1.5);
+  }
+  /* OCEAN */
+  .avatar-frame-wrap[data-frame="ocean"] .profile-avatar-big {
+    border-color: #006064;
+    box-shadow: 0 0 25px rgba(38,198,218,.9), 0 0 55px rgba(0,131,143,.6), inset 0 0 22px rgba(38,198,218,.5);
+    animation: oceanPulse 4s ease-in-out infinite;
+  }
+  @keyframes oceanPulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(38,198,218,.9), 0 0 55px rgba(0,131,143,.6), inset 0 0 22px rgba(38,198,218,.5); transform: translateY(-6px) scale(1); }
+    50%      { box-shadow: 0 0 42px rgba(38,198,218,1), 0 0 85px rgba(0,131,143,.85), inset 0 0 32px rgba(38,198,218,.75); transform: translateY(-6px) scale(1.02); }
+  }
+  .avatar-frame-wrap[data-frame="ocean"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #006064, #26c6da, #18ffff, #0097a7, #006064);
+    -webkit-mask: radial-gradient(circle, transparent 66%, #000 67%);
+            mask: radial-gradient(circle, transparent 66%, #000 67%);
+    animation: rotateRing 7s linear infinite;
+    filter: blur(0.6px);
+  }
+  /* MATRIX */
+  .avatar-frame-wrap[data-frame="matrix"] .profile-avatar-big {
+    border-color: #00ff41;
+    box-shadow: 0 0 25px rgba(0,255,65,.9), inset 0 0 20px rgba(0,255,65,.55);
+    animation: matrixGlow 1.2s steps(2) infinite;
+  }
+  @keyframes matrixGlow {
+    0%   { box-shadow: 0 0 25px rgba(0,255,65,.9), inset 0 0 20px rgba(0,255,65,.55); }
+    50%  { box-shadow: 0 0 40px rgba(0,255,65,1), inset 0 0 32px rgba(0,255,65,.8); }
+    100% { box-shadow: 0 0 25px rgba(0,255,65,.9), inset 0 0 20px rgba(0,255,65,.55); }
+  }
+  .avatar-frame-wrap[data-frame="matrix"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #00ff41, #00b248, #00ff41, #69f0ae, #00ff41);
+    -webkit-mask: radial-gradient(circle, transparent 68%, #000 69%);
+            mask: radial-gradient(circle, transparent 68%, #000 69%);
+    animation: rotateRing 1.8s linear infinite;
+  }
+  /* AURORA */
+  .avatar-frame-wrap[data-frame="aurora"] .profile-avatar-big {
+    border-color: transparent;
+    box-shadow: 0 0 30px rgba(100,255,218,.85), 0 0 60px rgba(0,229,255,.55);
+    animation: auroraShift 4s ease-in-out infinite;
+  }
+  @keyframes auroraShift {
+    0%, 100% { filter: hue-rotate(0deg); }
+    50%      { filter: hue-rotate(60deg); }
+  }
+  .avatar-frame-wrap[data-frame="aurora"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #00e5ff, #64ffda, #1de9b6, #00bcd4, #80deea, #00e5ff);
+    -webkit-mask: radial-gradient(circle, transparent 64%, #000 65%);
+            mask: radial-gradient(circle, transparent 64%, #000 65%);
+    animation: rotateRing 6s linear infinite;
+    filter: saturate(1.4) blur(0.8px);
+  }
+  /* BLOOD */
+  .avatar-frame-wrap[data-frame="blood"] .profile-avatar-big {
+    border-color: #b71c1c;
+    box-shadow: 0 0 25px rgba(183,28,28,.95), 0 0 50px rgba(229,57,53,.6), inset 0 0 20px rgba(183,28,28,.55);
+    animation: bloodPulse 2s ease-in-out infinite;
+  }
+  @keyframes bloodPulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(183,28,28,.95), 0 0 50px rgba(229,57,53,.6), inset 0 0 20px rgba(183,28,28,.55); }
+    50%      { box-shadow: 0 0 42px rgba(229,57,53,1), 0 0 80px rgba(229,57,53,.85), inset 0 0 32px rgba(229,57,53,.8); }
+  }
+  .avatar-frame-wrap[data-frame="blood"] .avatar-frame-ring {
+    background: conic-gradient(from 0deg, #b71c1c, #e53935, #ff5252, #c62828, #b71c1c);
+    -webkit-mask: radial-gradient(circle, transparent 66%, #000 67%);
+            mask: radial-gradient(circle, transparent 66%, #000 67%);
+    animation: rotateRing 5s linear infinite;
+    filter: blur(0.6px);
   }
 
   .profile-modal .profile-name {
@@ -1611,30 +1866,26 @@
   [data-theme="dark"] .profile-modal .profile-row { background: #202a3d; }
   .profile-modal.eva .profile-row { background: #fce4ec; }
   [data-theme="dark"] .profile-modal.eva .profile-row { background: #2a1520; }
-  .profile-modal .profile-row:hover {
-    background: var(--primary-soft);
-    border-left-color: var(--primary);
-    transform: translateX(4px);
-  }
-  .profile-modal.eva .profile-row:hover {
-    background: #f8bbd0;
-    border-left-color: #ec407a;
-  }
+  .profile-modal .profile-row:hover { background: var(--primary-soft); border-left-color: var(--primary); transform: translateX(4px); }
+  .profile-modal.eva .profile-row:hover { background: #f8bbd0; border-left-color: #ec407a; }
   [data-theme="dark"] .profile-modal.eva .profile-row:hover { background: #3a1a28; }
   .profile-modal .profile-row .pr-label { color: #607d8b; font-weight: 600; font-size: 12px; }
   [data-theme="dark"] .profile-modal .profile-row .pr-label { color: var(--text-soft); }
   .profile-modal .profile-row .pr-value { color: var(--text); font-weight: 500; text-align: right; word-break: break-word; font-size: 12px; }
 
-  /* Выбор рамки — палитра */
-  .frame-picker {
-    margin-top: 14px;
-    padding: 12px 14px;
+  /* ================= НАСТРОЙКИ ================= */
+  .settings-modal { max-width: 420px; text-align: left; }
+  .settings-modal h3 { text-align: center; }
+  .settings-modal .sub { text-align: center; }
+  .settings-section {
     background: color-mix(in srgb, var(--panel) 90%, transparent);
     border: 1px solid var(--border);
     border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
     text-align: left;
   }
-  .frame-picker .fp-title {
+  .settings-section .ss-title {
     font-size: 11px;
     font-weight: 700;
     color: var(--text-soft);
@@ -1645,101 +1896,35 @@
     align-items: center;
     gap: 6px;
   }
-  .frame-options {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-  }
-  .frame-opt {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 8px 4px;
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background: transparent;
-    cursor: pointer;
-    transition: .2s var(--ease);
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--text-soft);
-    text-transform: uppercase;
-    letter-spacing: .3px;
-  }
-  .frame-opt:hover {
-    background: var(--primary-soft);
-    transform: translateY(-2px);
-  }
-  .frame-opt.active {
-    border-color: var(--primary);
-    background: var(--primary-soft);
-    color: var(--primary);
-  }
-  [data-theme="dark"] .frame-opt.active { color: #82b1ff; }
-  .frame-opt .fo-preview {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: #f5b800;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid #ffe082;
-  }
-  .frame-opt[data-frame="gold"] .fo-preview {
-    border-color: #ffd700;
-    box-shadow: 0 0 10px rgba(255,215,0,.65);
-  }
-  .frame-opt[data-frame="glow"] .fo-preview {
-    border-color: #4fc3f7;
-    box-shadow: 0 0 12px rgba(79,195,247,.85);
-  }
-  .frame-opt[data-frame="fire"] .fo-preview {
-    border-color: #ff5722;
-    box-shadow: 0 0 12px rgba(255,87,34,.85);
-  }
-  .frame-opt[data-frame="ice"] .fo-preview {
-    border-color: #81d4fa;
-    box-shadow: 0 0 12px rgba(129,212,250,.85);
-  }
-  .frame-opt[data-frame="rainbow"] .fo-preview {
-    border-color: transparent;
-    background:
-      radial-gradient(circle, #f5b800 55%, transparent 60%),
-      conic-gradient(from 0deg, #ff0000, #ff9800, #ffeb3b, #4caf50, #2196f3, #9c27b0, #ff0000);
-  }
-  .frame-opt[data-frame="none"] .fo-preview {
-    border-color: #cfd8dc;
-  }
-  .frame-opt .fo-preview::before {
-    content: "";
-    width: 100%; height: 100%;
-    border-radius: 50%;
-  }
-
-  /* ================= МАЛЕНЬКАЯ КНОПКА-ПЕРЕКЛЮЧАТЕЛЬ ВЫХОДНЫХ ================= */
-  .toggle-row {
+  .settings-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 10px 12px;
-    background: color-mix(in srgb, var(--panel) 90%, transparent);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-top: 14px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: .2s var(--ease);
+    background: transparent;
+    border: none;
+    width: 100%;
     text-align: left;
+    color: var(--text);
+    font-family: inherit;
   }
-  .toggle-row .tr-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-soft);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .toggle-row .tr-label .tr-emoji { font-size: 15px; }
+  .settings-row:last-child { margin-bottom: 0; }
+  .settings-row:hover { background: var(--primary-soft); transform: translateX(3px); }
+  [data-theme="dark"] .settings-row:hover { background: var(--primary-soft); }
+  .settings-row .sr-left { display: flex; align-items: center; gap: 10px; font-weight: 500; min-width: 0; }
+  .settings-row .sr-left .sr-emoji { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+  .settings-row .sr-left .sr-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .settings-row .sr-left .sr-text b { font-weight: 600; font-size: 13px; }
+  .settings-row .sr-left .sr-text span { font-size: 11px; color: var(--text-soft); }
+  .settings-row .sr-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; color: var(--text-mute); font-size: 15px; }
+  .settings-row.chevron .sr-right::after { content: "›"; font-size: 20px; font-weight: bold; color: var(--text-mute); }
+
   .toggle-switch {
     position: relative;
     width: 42px;
@@ -1751,6 +1936,7 @@
     transition: .25s var(--ease);
     flex-shrink: 0;
     padding: 0;
+    pointer-events: none;
   }
   [data-theme="dark"] .toggle-switch { background: #3a4a60; }
   .toggle-switch::after {
@@ -1765,103 +1951,306 @@
     box-shadow: 0 1px 4px rgba(0,0,0,.25);
     transition: .25s var(--ease);
   }
-  .toggle-switch.on {
-    background: linear-gradient(135deg, #43a047, #2e7d32);
+  .toggle-switch.on { background: linear-gradient(135deg, #43a047, #2e7d32); }
+  .toggle-switch.on::after { left: 21px; }
+
+  .settings-avatar-mini {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid #ffe082;
+    background: #f5b800;
   }
-  .toggle-switch.on::after {
-    left: 21px;
+  .settings-avatar-mini svg,
+  .settings-avatar-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .settings-submodal { max-width: 400px; text-align: left; }
+  .settings-submodal h3 { text-align: center; }
+  .settings-submodal .sub { text-align: center; }
+  .field-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+  .field-row label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .field-row input,
+  .field-row textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--panel);
+    color: var(--text);
+    transition: .2s var(--ease);
+    width: 100%;
+  }
+  .field-row input:focus,
+  .field-row textarea:focus {
+    outline: 2px solid var(--primary);
+    border-color: var(--primary);
   }
 
-  /* ================= БЛОК ФОНА ШАПКИ ================= */
-  .header-bg-block {
-    margin-top: 14px;
-    display: flex;
-    align-items: center;
+  /* Палитра рамок */
+  .frame-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    flex-wrap: wrap;
+    margin-bottom: 12px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
   }
-  .header-bg-actions {
+  .frame-opt {
     display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    flex: 1;
-  }
-  .hbbtn {
-    padding: 7px 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: .2s var(--ease);
-    display: inline-flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 5px;
-    flex: 1;
-    min-width: 100px;
+    padding: 10px 6px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    cursor: pointer;
+    transition: .2s var(--ease);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: .3px;
   }
-  .hbbtn.upload {
-    background: linear-gradient(135deg, #7b1fa2, #4a148c);
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(123,31,162,.3);
-  }
-  .hbbtn.upload:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(123,31,162,.45); }
-  .hbbtn.remove {
-    background: #eceff1;
-    color: #455a64;
-  }
-  [data-theme="dark"] .hbbtn.remove { background: #2a3446; color: var(--text-soft); }
-  .hbbtn.remove:hover { background: #cfd8dc; transform: translateY(-2px); }
-  [data-theme="dark"] .hbbtn.remove:hover { background: #3a4a60; }
-  .hbbtn.remove:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-  .hbbtn.remove:disabled:hover { transform: none; }
-
-  /* ================= КНОПКИ ВНИЗУ ПРОФИЛЯ ================= */
-  .profile-bottom-actions {
+  .frame-opt:hover { background: var(--primary-soft); transform: translateY(-2px); }
+  .frame-opt.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+  [data-theme="dark"] .frame-opt.active { color: #82b1ff; }
+  .frame-opt .fo-preview {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #f5b800;
+    position: relative;
     display: flex;
-    gap: 8px;
-    margin-top: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .profile-modal .profile-close {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 22px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: .2s var(--ease);
-    box-shadow: 0 2px 8px rgba(25,118,210,.3);
-    flex: 1;
-    min-width: 120px;
-  }
-  .profile-modal .profile-close:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(25,118,210,.45); }
-
-  .profile-modal .family-btn {
-    background: linear-gradient(135deg, #7b1fa2, #4a148c);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 22px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: .2s var(--ease);
-    box-shadow: 0 2px 8px rgba(123,31,162,.35);
-    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    flex: 1;
-    min-width: 120px;
+    border: 3px solid #ffe082;
+    transition: .2s var(--ease);
   }
-  .profile-modal .family-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(123,31,162,.5);
+  .frame-opt[data-frame="none"] .fo-preview { border-color: #cfd8dc; }
+  .frame-opt[data-frame="gold"] .fo-preview { border-color: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,.65); }
+  .frame-opt[data-frame="glow"] .fo-preview { border-color: #4fc3f7; box-shadow: 0 0 12px rgba(79,195,247,.85); }
+  .frame-opt[data-frame="fire"] .fo-preview { border-color: #ff5722; box-shadow: 0 0 12px rgba(255,87,34,.85); }
+  .frame-opt[data-frame="ice"] .fo-preview { border-color: #81d4fa; box-shadow: 0 0 12px rgba(129,212,250,.85); }
+  .frame-opt[data-frame="rainbow"] .fo-preview {
+    border-color: transparent;
+    background:
+      radial-gradient(circle, #f5b800 55%, transparent 60%),
+      conic-gradient(from 0deg, #ff0000, #ff9800, #ffeb3b, #4caf50, #2196f3, #9c27b0, #ff0000);
+  }
+  .frame-opt[data-frame="neon"] .fo-preview { border-color: #00e5ff; box-shadow: 0 0 14px rgba(0,229,255,1); }
+  .frame-opt[data-frame="galaxy"] .fo-preview {
+    border-color: transparent;
+    background:
+      radial-gradient(circle, #f5b800 55%, transparent 60%),
+      conic-gradient(from 0deg, #1a237e, #4a148c, #880e4f, #1a237e);
+  }
+  .frame-opt[data-frame="emerald"] .fo-preview { border-color: #00e676; box-shadow: 0 0 14px rgba(0,230,118,1); }
+  .frame-opt[data-frame="sunset"] .fo-preview {
+    border-color: transparent;
+    background:
+      radial-gradient(circle, #f5b800 55%, transparent 60%),
+      conic-gradient(from 0deg, #ff6f00, #f44336, #e91e63, #9c27b0, #ff6f00);
+  }
+  .frame-opt[data-frame="ocean"] .fo-preview { border-color: #26c6da; box-shadow: 0 0 14px rgba(38,198,218,1); }
+  .frame-opt[data-frame="matrix"] .fo-preview { border-color: #00ff41; box-shadow: 0 0 14px rgba(0,255,65,1); }
+  .frame-opt[data-frame="aurora"] .fo-preview {
+    border-color: transparent;
+    background:
+      radial-gradient(circle, #f5b800 55%, transparent 60%),
+      conic-gradient(from 0deg, #00e5ff, #64ffda, #1de9b6, #00bcd4, #00e5ff);
+  }
+  .frame-opt[data-frame="blood"] .fo-preview { border-color: #b71c1c; box-shadow: 0 0 14px rgba(183,28,28,1); }
+
+  /* PIN */
+  .pin-display {
+    font-family: 'Courier New', monospace;
+    font-size: 32px;
+    letter-spacing: 12px;
+    text-align: center;
+    padding: 16px;
+    background: var(--bg);
+    border-radius: 12px;
+    color: var(--primary);
+    font-weight: bold;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  [data-theme="dark"] .pin-display { background: #0f1420; color: #82b1ff; }
+  .pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .pin-key {
+    padding: 16px 8px;
+    font-size: 20px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    color: var(--text);
+    cursor: pointer;
+    transition: .15s var(--ease);
+    box-shadow: var(--shadow-sm);
+    font-family: inherit;
+  }
+  .pin-key:hover { background: var(--primary-soft); transform: scale(1.03); }
+  .pin-key:active { transform: scale(.95); }
+  .pin-key.clear { background: #ffebee; color: #c62828; }
+  [data-theme="dark"] .pin-key.clear { background: #2e1414; color: #ff6b6b; }
+  .pin-key.backspace { background: #fff3e0; color: var(--orange); }
+  [data-theme="dark"] .pin-key.backspace { background: var(--orange-soft); }
+
+  .pass-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .pass-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: .2s var(--ease);
+    text-align: left;
+    font-family: inherit;
+    color: var(--text);
+    width: 100%;
+  }
+  .pass-option:hover { border-color: var(--primary); background: var(--primary-soft); }
+  .pass-option.active { border-color: var(--primary); background: var(--primary-soft); }
+  .pass-option .po-radio {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid #cfd8dc;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s var(--ease);
+  }
+  [data-theme="dark"] .pass-option .po-radio { border-color: var(--border); }
+  .pass-option.active .po-radio { border-color: var(--primary); background: var(--primary); }
+  .pass-option.active .po-radio::after {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #fff;
+  }
+  .pass-option .po-text b { font-size: 13px; display: block; margin-bottom: 2px; }
+  .pass-option .po-text span { font-size: 11px; color: var(--text-soft); }
+
+  /* Выбор куда загрузить */
+  .upload-choice { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .upload-choice-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: .2s var(--ease);
+    text-align: left;
+    font-family: inherit;
+    color: var(--text);
+    width: 100%;
+  }
+  .upload-choice-btn:hover { border-color: var(--primary); background: var(--primary-soft); transform: translateY(-2px); }
+  .upload-choice-btn .ucb-emoji { font-size: 28px; flex-shrink: 0; }
+  .upload-choice-btn .ucb-text { flex: 1; }
+  .upload-choice-btn .ucb-text b { font-size: 14px; font-weight: 700; display: block; margin-bottom: 3px; }
+  .upload-choice-btn .ucb-text span { font-size: 11px; color: var(--text-soft); line-height: 1.35; display: block; }
+  .upload-choice-btn .ucb-arrow { font-size: 20px; color: var(--text-mute); flex-shrink: 0; }
+
+  .settings-profile-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .settings-profile-preview .spp-info { flex: 1; text-align: left; min-width: 0; }
+  .settings-profile-preview .spp-info b { font-size: 14px; font-weight: 700; display: block; margin-bottom: 2px; color: var(--text); }
+  .settings-profile-preview .spp-info span { font-size: 11px; color: var(--text-soft); }
+
+  /* Выбор видео/фото фона */
+  .bg-choice { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .bg-choice-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: .2s var(--ease);
+    text-align: left;
+    font-family: inherit;
+    color: var(--text);
+    width: 100%;
+  }
+  .bg-choice-btn:hover { border-color: var(--primary); background: var(--primary-soft); transform: translateY(-2px); }
+  .bg-choice-btn .bcb-emoji { font-size: 28px; flex-shrink: 0; }
+  .bg-choice-btn .bcb-text { flex: 1; }
+  .bg-choice-btn .bcb-text b { font-size: 14px; font-weight: 700; display: block; margin-bottom: 3px; }
+  .bg-choice-btn .bcb-text span { font-size: 11px; color: var(--text-soft); line-height: 1.35; display: block; }
+  .bg-choice-btn .bcb-arrow { font-size: 20px; color: var(--text-mute); flex-shrink: 0; }
+
+  .bg-current-preview {
+    width: 100%;
+    height: 100px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .bg-current-preview video,
+  .bg-current-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .bg-current-preview .bg-label {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    background: rgba(0,0,0,.6);
+    color: #fff;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  .bg-current-preview.empty::before {
+    content: "Фон не установлен";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    text-shadow: 0 1px 4px rgba(0,0,0,.5);
+    font-weight: 600;
   }
 
   /* ================= СЕМЬЯ ================= */
@@ -1871,12 +2260,7 @@
   .family-modal .sub { font-size: 12px; color: #777; margin-bottom: 16px; }
   [data-theme="dark"] .family-modal .sub { color: var(--text-soft); }
 
-  .family-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
+  .family-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
   .family-item {
     display: flex;
     align-items: center;
@@ -1890,29 +2274,14 @@
     text-align: left;
   }
   [data-theme="dark"] .family-item { background: #202a3d; }
-  .family-item:hover {
-    background: var(--primary-soft);
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-  }
+  .family-item:hover { background: var(--primary-soft); border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
   [data-theme="dark"] .family-item:hover { background: var(--primary-soft); }
-  .family-item.active {
-    border-color: var(--primary);
-    background: var(--primary-soft);
-  }
+  .family-item.active { border-color: var(--primary); background: var(--primary-soft); }
   [data-theme="dark"] .family-item.active { background: var(--primary-soft); }
-  .family-item.eva.active {
-    border-color: #ec407a;
-    background: var(--pink-soft);
-  }
+  .family-item.eva.active { border-color: #ec407a; background: var(--pink-soft); }
   [data-theme="dark"] .family-item.eva.active { background: var(--pink-soft); }
-  .family-item.eva:hover {
-    background: var(--pink-soft);
-    border-color: #ec407a;
-  }
+  .family-item.eva:hover { background: var(--pink-soft); border-color: #ec407a; }
   [data-theme="dark"] .family-item.eva:hover { background: var(--pink-soft); }
-
   .family-item .fam-avatar {
     width: 52px; height: 52px;
     border-radius: 50%;
@@ -1921,44 +2290,14 @@
     border: 3px solid #ffe082;
     background: #f5b800;
   }
-  .family-item.eva .fam-avatar {
-    border-color: #f8bbd0;
-    background: #fce4ec;
-  }
+  .family-item.eva .fam-avatar { border-color: #f8bbd0; background: #fce4ec; }
   .family-item .fam-avatar svg { width: 100%; height: 100%; display: block; }
   .family-item .fam-info { flex: 1; }
-  .family-item .fam-name {
-    font-weight: 700;
-    color: var(--text);
-    font-size: 14px;
-    margin-bottom: 2px;
-  }
-  .family-item .fam-role {
-    font-size: 11px;
-    color: var(--text-soft);
-  }
-  .family-item .fam-check {
-    font-size: 18px;
-    color: var(--primary);
-    opacity: 0;
-    transition: .2s var(--ease);
-  }
+  .family-item .fam-name { font-weight: 700; color: var(--text); font-size: 14px; margin-bottom: 2px; }
+  .family-item .fam-role { font-size: 11px; color: var(--text-soft); }
+  .family-item .fam-check { font-size: 18px; color: var(--primary); opacity: 0; transition: .2s var(--ease); }
   .family-item.eva .fam-check { color: #ec407a; }
   .family-item.active .fam-check { opacity: 1; }
-
-  .family-close {
-    background: linear-gradient(135deg, #7b1fa2, #4a148c);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 22px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: .2s var(--ease);
-    box-shadow: 0 2px 8px rgba(123,31,162,.35);
-  }
-  .family-close:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(123,31,162,.5); }
 
   /* ================= КАЛЕНДАРЬ ================= */
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
@@ -1977,12 +2316,7 @@
   .cal-cell:hover { background: #e3f2fd; transform: scale(1.08); }
   [data-theme="dark"] .cal-cell:hover { background: var(--primary-soft); }
   .cal-cell.active { background: var(--primary); color: white; font-weight: bold; }
-  .cal-cell.header {
-    background: #e3f2fd;
-    cursor: default;
-    font-weight: 600;
-    color: var(--primary-dark);
-  }
+  .cal-cell.header { background: #e3f2fd; cursor: default; font-weight: 600; color: var(--primary-dark); }
   [data-theme="dark"] .cal-cell.header { background: var(--primary-soft); color: #82b1ff; }
   .cal-cell.header:hover { background: #e3f2fd; transform: none; }
   [data-theme="dark"] .cal-cell.header:hover { background: var(--primary-soft); }
@@ -2065,22 +2399,9 @@
   }
   .remind-item:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
   .remind-item.past { opacity: .5; border-left-color: var(--text-mute); }
-  .remind-item .ri-time {
-    font-size: 11px;
-    font-weight: 700;
-    color: #6a1b9a;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-  }
+  .remind-item .ri-time { font-size: 11px; font-weight: 700; color: #6a1b9a; white-space: nowrap; font-variant-numeric: tabular-nums; }
   [data-theme="dark"] .remind-item .ri-time { color: #ba68c8; }
-  .remind-item .ri-text {
-    flex: 1;
-    font-size: 12px;
-    color: var(--text);
-    line-height: 1.35;
-    word-break: break-word;
-    white-space: pre-wrap;
-  }
+  .remind-item .ri-text { flex: 1; font-size: 12px; color: var(--text); line-height: 1.35; word-break: break-word; white-space: pre-wrap; }
   .remind-item .ri-del {
     background: #ffebee;
     border: none;
@@ -2094,13 +2415,7 @@
   }
   [data-theme="dark"] .remind-item .ri-del { background: #2e1414; color: #ff6b6b; }
   .remind-item .ri-del:hover { background: #c62828; color: #fff; transform: rotate(90deg); }
-  .remind-empty {
-    text-align: center;
-    color: var(--text-mute);
-    font-style: italic;
-    font-size: 12px;
-    padding: 16px;
-  }
+  .remind-empty { text-align: center; color: var(--text-mute); font-style: italic; font-size: 12px; padding: 16px; }
 
   /* ================= TOAST ================= */
   .toast-wrap {
@@ -2152,14 +2467,16 @@
   @keyframes toastIn  { from { transform: translateX(120%) scale(.9); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
   @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 
-  /* ================= СКРОЛЛБАР ================= */
+  .password-prompt-modal { max-width: 380px; }
+  .password-prompt-modal .pin-display { margin: 14px 0; }
+
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #c5cdd6; border-radius: 999px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
   [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #3a4a60; }
 
-  /* ================= МОБИЛЬНАЯ АДАПТАЦИЯ ================= */
+  /* ================= МОБИЛЬНАЯ ================= */
   @media (max-width: 768px) {
     .app { padding: 0 8px 20px; }
     .header { padding: 10px 12px; min-height: 56px; border-radius: 0 0 12px 12px; }
@@ -2167,44 +2484,36 @@
     .logo { width: 32px; height: 32px; font-size: 16px; border-radius: 8px; }
     .theme-btn { width: 36px; height: 36px; font-size: 16px; }
     .avatar-btn { width: 42px; height: 42px; }
-
     .score-bar { padding: 10px 8px; gap: 4px; }
     .score-item .label { font-size: 9px; }
     .score-item b { font-size: 16px; }
     .score-item .sub { font-size: 9px; }
-
     .now-bar { padding: 10px 12px; font-size: 12px; border-radius: 12px; }
     .now-bar .now-time { font-size: 11px; padding: 3px 8px; }
-
     .risk-bar { padding: 10px 12px; border-radius: 12px; }
     .risk-bar .risk-item { flex: 1 1 140px; font-size: 11px; padding: 6px 10px; }
-
     .tabs { border-radius: 12px; padding: 4px; }
     .tab-btn { padding: 10px 12px; font-size: 12px; }
-
     .controls { padding: 10px; border-radius: 12px; gap: 6px; }
     .btn { padding: 8px 12px; font-size: 12px; border-radius: 8px; }
-
     .quarter-switcher .arrow { width: 30px; height: 30px; font-size: 16px; }
     .quarter-switcher .quarter-label { font-size: 11px; min-width: 80px; }
-
     .table-wrap { max-height: calc(100vh - 280px); border-radius: 12px; }
     table.grades-table { min-width: 700px; font-size: 12px; }
     table.grades-table thead th { font-size: 10px; padding: 6px 3px; }
     th.subject-col, td.subject-col { min-width: 110px; font-size: 11px; padding-left: 8px; }
     td.grade-cell { min-width: 44px; height: 44px; }
     .grade-badge { width: 30px; height: 30px; font-size: 15px; border-radius: 8px; }
+    .hidden-placeholder { width: 30px; height: 30px; font-size: 16px; border-radius: 8px; }
     .type-label { font-size: 7px; }
     td.avg-col .weighted { font-size: 12px; }
     td.avg-col .simple { font-size: 9px; }
     td.quarter-cell-main { min-width: 60px; height: 40px; font-size: 16px; }
-
     .week-info { padding: 10px 12px; border-radius: 12px; font-size: 12px; }
     .week-info .week-label { font-size: 13px; }
     .week-info .week-dates { font-size: 11px; }
     .week-nav { width: 100%; justify-content: center; }
     .week-nav .btn { padding: 10px 16px; font-size: 13px; flex: 1; justify-content: center; }
-
     .schedule-wrap { border-radius: 12px; padding: 6px; }
     .schedule-table { min-width: 700px; font-size: 10px; }
     .schedule-table th, .schedule-table td { padding: 5px 6px; }
@@ -2217,32 +2526,31 @@
     .schedule-table th.time-col, .schedule-table td.time-col { min-width: 70px; font-size: 9px; }
     .schedule-table td.current-lesson .live-badge { font-size: 8px; padding: 1px 4px; top: -6px; left: 4px; }
     .schedule-table td.current-lesson::before { width: 8px; height: 8px; top: 4px; right: 4px; }
-
     .tomorrow-hw { padding: 12px; border-radius: 12px; }
     .tomorrow-hw .th-item { padding: 8px 10px; }
-
     .modal { padding: 16px; border-radius: 14px; max-width: 95vw; }
     .modal h3 { font-size: 15px; }
     .modal .grade-btn { width: 44px; height: 44px; font-size: 18px; }
     .modal .type-btn { padding: 8px 14px; font-size: 12px; min-width: 100px; }
-
     .profile-modal { padding: 20px 16px 16px; }
     .avatar-frame-wrap { width: 110px; height: 110px; }
     .profile-modal .profile-name { font-size: 15px; }
-    .frame-options { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .frame-options { grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 300px; }
     .frame-opt { padding: 6px 4px; font-size: 8px; }
-    .frame-opt .fo-preview { width: 30px; height: 30px; }
-
+    .frame-opt .fo-preview { width: 28px; height: 28px; }
+    .profile-settings-btn { top: 8px; right: 8px; width: 36px; height: 36px; font-size: 17px; }
     .family-modal { padding: 20px 16px; }
     .family-item { padding: 10px 12px; }
     .family-item .fam-avatar { width: 44px; height: 44px; }
     .family-item .fam-name { font-size: 13px; }
-
     .cal-cell { padding: 8px 2px; font-size: 11px; border-radius: 6px; }
     .remind-modal { max-width: 95vw; }
-
     .toast-wrap { top: 8px; right: 8px; left: 8px; max-width: none; }
     .toast { min-width: unset; max-width: none; }
+    .pin-key { padding: 14px 6px; font-size: 18px; }
+    .pin-display { font-size: 26px; letter-spacing: 10px; }
+    .action-btn { padding: 11px 14px; font-size: 12px; min-width: 90px; }
+    .action-btn .ab-emoji { font-size: 13px; }
   }
 
   @media (max-width: 400px) {
@@ -2251,7 +2559,7 @@
     .tab-btn { font-size: 11px; padding: 8px 8px; }
     .score-item b { font-size: 14px; }
     .btn { padding: 7px 10px; font-size: 11px; }
-    .frame-options { grid-template-columns: repeat(3, 1fr); }
+    .action-btn { padding: 10px 10px; font-size: 11px; min-width: 80px; }
   }
 
   @media (min-width: 769px) and (max-width: 1024px) {
@@ -2266,12 +2574,10 @@
     .header-sub { font-size: 12px; }
     .avatar-btn { width: 54px; height: 54px; }
     .theme-btn { width: 44px; height: 44px; font-size: 20px; }
-
     .score-bar { padding: 16px 28px; border-radius: 16px; margin-top: 16px; }
     .score-item b { font-size: 24px; }
     .score-item .label { font-size: 13px; }
     .score-item .sub { font-size: 12px; }
-
     .now-bar { padding: 14px 28px; border-radius: 16px; font-size: 15px; }
     .risk-bar { padding: 14px 28px; border-radius: 16px; }
     .tabs { border-radius: 16px; padding: 8px; margin-top: 16px; }
@@ -2284,6 +2590,7 @@
     th.subject-col, td.subject-col { min-width: 180px; font-size: 14px; padding-left: 16px; }
     td.grade-cell { min-width: 60px; height: 52px; }
     .grade-badge { width: 36px; height: 36px; font-size: 18px; border-radius: 9px; }
+    .hidden-placeholder { width: 36px; height: 36px; font-size: 19px; }
     td.quarter-cell-main { min-width: 90px; height: 50px; font-size: 20px; }
     .week-info { padding: 16px 24px; border-radius: 16px; font-size: 14px; }
     .week-nav .btn { padding: 12px 26px; font-size: 15px; }
@@ -2303,13 +2610,18 @@
 </head>
 <body>
 
-<div class="mesh-bg" aria-hidden="true">
-  <div class="mesh-blob b1"></div>
-  <div class="mesh-blob b2"></div>
-  <div class="mesh-blob b3"></div>
-  <div class="mesh-blob b4"></div>
+<!-- ================= ФОН: MESH + VIDEO/PHOTO ================= -->
+<div class="bg-layer" id="bgLayer">
+  <div class="mesh-bg" id="meshBg">
+    <div class="mesh-blob b1"></div>
+    <div class="mesh-blob b2"></div>
+    <div class="mesh-blob b3"></div>
+    <div class="mesh-blob b4"></div>
+  </div>
+  <img class="bg-media" id="bgImage" alt="">
+  <video class="bg-media" id="bgVideo" autoplay muted loop playsinline></video>
+  <div class="bg-media-overlay" id="bgMediaOverlay"></div>
 </div>
-<div class="mesh-veil" aria-hidden="true"></div>
 
 <div class="app">
 
@@ -2323,21 +2635,8 @@
     </div>
     <div class="header-right">
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
-      <button class="avatar-btn" onclick="openProfile()" title="Профиль">
-        <svg id="avatarSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <rect width="200" height="200" fill="#f5b800"/>
-          <path d="M40 200 Q40 145 70 130 L100 145 L130 130 Q160 145 160 200 Z" fill="#5c6672"/>
-          <path d="M70 130 Q100 155 130 130 Q120 145 100 150 Q80 145 70 130 Z" fill="#4a535e"/>
-          <rect x="88" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-          <rect x="108" y="150" width="4" height="45" rx="2" fill="#e8e8e8"/>
-          <path d="M85 115 L85 135 Q100 145 115 135 L115 115 Z" fill="#e8c9a0"/>
-          <path d="M82 118 Q100 138 118 118 Q115 130 100 135 Q85 130 82 118 Z" fill="#d4b088"/>
-          <ellipse cx="63" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-          <ellipse cx="137" cy="88" rx="10" ry="14" fill="#e8c9a0"/>
-          <path d="M70 70 Q70 40 100 38 Q130 40 130 70 L130 95 Q130 125 100 128 Q70 125 70 95 Z" fill="#f0d4ab"/>
-          <path d="M62 75 Q58 30 100 22 Q145 25 142 65 Q140 50 130 45 Q135 35 120 33 Q125 45 110 42 Q118 28 95 32 Q105 45 88 42 Q92 30 75 40 Q80 50 68 55 Q62 60 62 75 Z" fill="#6b4226"/>
-          <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
-        </svg>
+      <button class="avatar-btn" id="headerAvatarBtn" onclick="openProfile()" title="Профиль">
+        <span id="headerAvatarInner"></span>
       </button>
     </div>
   </div>
@@ -2442,6 +2741,8 @@
 
 </div>
 
+<!-- ================= МОДАЛЬНЫЕ ОКНА ================= -->
+
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
@@ -2458,9 +2759,9 @@
       </button>
     </div>
     <div class="actions">
-      <button class="save-btn" onclick="saveGrade()">💾 Сохранить</button>
-      <button class="clear-btn" onclick="clearGrade()">🗑 Убрать</button>
-      <button class="cancel-btn" onclick="closeModal()">Отмена</button>
+      <button class="action-btn save" onclick="saveGrade()"><span class="ab-emoji">💾</span> Сохранить</button>
+      <button class="action-btn clear" onclick="clearGrade()"><span class="ab-emoji">🗑</span> Убрать</button>
+      <button class="action-btn cancel" onclick="closeModal()"><span class="ab-emoji">✕</span> Отмена</button>
     </div>
   </div>
 </div>
@@ -2482,9 +2783,9 @@
       <div class="hw-photo-empty" id="hwPhotoEmpty">Фото пока нет</div>
     </div>
     <div class="actions">
-      <button class="save-btn" onclick="saveHW()">💾 Сохранить</button>
-      <button class="clear-btn" onclick="clearHW()">🗑 Убрать</button>
-      <button class="cancel-btn" onclick="closeHW()">Отмена</button>
+      <button class="action-btn save" onclick="saveHW()"><span class="ab-emoji">💾</span> Сохранить</button>
+      <button class="action-btn clear" onclick="clearHW()"><span class="ab-emoji">🗑</span> Убрать</button>
+      <button class="action-btn cancel" onclick="closeHW()"><span class="ab-emoji">✕</span> Отмена</button>
     </div>
   </div>
 </div>
@@ -2500,99 +2801,284 @@
     <div class="sub" id="qSub"></div>
     <div class="grade-btns" id="qBtns"></div>
     <div class="actions">
-      <button class="clear-btn" onclick="clearQuarter()">🗑 Убрать</button>
-      <button class="cancel-btn" onclick="closeQModal()">Отмена</button>
+      <button class="action-btn clear" onclick="clearQuarter()"><span class="ab-emoji">🗑</span> Убрать</button>
+      <button class="action-btn cancel" onclick="closeQModal()"><span class="ab-emoji">✕</span> Отмена</button>
     </div>
   </div>
 </div>
 
-<!-- ================= ПРОФИЛЬ ================= -->
 <div class="modal-bg" id="profileModalBg">
   <div class="modal profile-modal" id="profileModal">
+    <button class="profile-settings-btn" onclick="openSettings()" title="Настройки">⚙️</button>
     <div class="avatar-frame-wrap" id="avatarFrameWrap" data-frame="none">
       <div class="avatar-frame-ring"></div>
       <div class="profile-avatar-big" id="profileAvatarBig"></div>
     </div>
     <div class="profile-name" id="profileName">Бакулин Дмитрий Алексеевич</div>
-    <div class="profile-row">
-      <span class="pr-label">Класс</span>
-      <span class="pr-value" id="profileClass">9Б</span>
-    </div>
-    <div class="profile-row">
-      <span class="pr-label">Школа</span>
-      <span class="pr-value">Гимназия №10, Воронеж</span>
-    </div>
-    <div class="profile-row">
-      <span class="pr-label">Дата рождения</span>
-      <span class="pr-value" id="profileBirth">22.07.2011</span>
-    </div>
-    <div class="profile-row">
-      <span class="pr-label">Телефон</span>
-      <span class="pr-value" id="profilePhone">+7 950 759-68-56</span>
-    </div>
-    <div class="profile-row" id="profileEmailRow">
-      <span class="pr-label">Эл. почта</span>
-      <span class="pr-value">dimabaku017@gmail.com</span>
-    </div>
-
-    <!-- Рамка аватарки -->
-    <div class="frame-picker">
-      <div class="fp-title">🖼 Рамка аватарки</div>
-      <div class="frame-options">
-        <button class="frame-opt" data-frame="none" onclick="setAvatarFrame('none')">
-          <div class="fo-preview"></div>
-          Нет
-        </button>
-        <button class="frame-opt" data-frame="gold" onclick="setAvatarFrame('gold')">
-          <div class="fo-preview"></div>
-          Золото
-        </button>
-        <button class="frame-opt" data-frame="glow" onclick="setAvatarFrame('glow')">
-          <div class="fo-preview"></div>
-          Свет
-        </button>
-        <button class="frame-opt" data-frame="fire" onclick="setAvatarFrame('fire')">
-          <div class="fo-preview"></div>
-          Огонь
-        </button>
-        <button class="frame-opt" data-frame="ice" onclick="setAvatarFrame('ice')">
-          <div class="fo-preview"></div>
-          Лёд
-        </button>
-        <button class="frame-opt" data-frame="rainbow" onclick="setAvatarFrame('rainbow')">
-          <div class="fo-preview"></div>
-          Радуга
-        </button>
-      </div>
-    </div>
-
-    <!-- Показ выходных в расписании -->
-    <div class="toggle-row">
-      <span class="tr-label"><span class="tr-emoji">📅</span> Показ выходных</span>
-      <button class="toggle-switch" id="weekendToggle" onclick="toggleWeekend()" title="Показывать Сб и Вс"></button>
-    </div>
-
-    <!-- Фон шапки — компактно -->
-    <div class="header-bg-block">
-      <div class="header-bg-actions">
-        <button class="hbbtn upload" onclick="document.getElementById('headerBgInput').click()">
-          📷 Загрузить картинку
-        </button>
-        <button class="hbbtn remove" id="headerBgRemoveBtn" onclick="removeHeaderBg()">
-          🗑 Убрать
-        </button>
-        <input type="file" id="headerBgInput" accept="image/*" onchange="uploadHeaderBg(event)" style="display:none;">
-      </div>
-    </div>
-
-    <div class="profile-bottom-actions">
-      <button class="family-btn" onclick="openFamily()">👨‍👩‍👧 Семья</button>
-      <button class="profile-close" onclick="closeProfile()">Закрыть</button>
+    <div class="profile-row"><span class="pr-label">Класс</span><span class="pr-value" id="profileClass">9Б</span></div>
+    <div class="profile-row"><span class="pr-label">Школа</span><span class="pr-value" id="profileSchool">Гимназия №10, Воронеж</span></div>
+    <div class="profile-row"><span class="pr-label">Дата рождения</span><span class="pr-value" id="profileBirth">22.07.2011</span></div>
+    <div class="profile-row"><span class="pr-label">Телефон</span><span class="pr-value" id="profilePhone">+7 950 759-68-56</span></div>
+    <div class="profile-row" id="profileEmailRow"><span class="pr-label">Эл. почта</span><span class="pr-value" id="profileEmail">dimabaku017@gmail.com</span></div>
+    <div class="actions">
+      <button class="action-btn done full" onclick="closeProfile()"><span class="ab-emoji">✓</span> Закрыть</button>
     </div>
   </div>
 </div>
 
-<!-- ================= СЕМЬЯ ================= -->
+<div class="modal-bg" id="settingsModalBg">
+  <div class="modal settings-modal">
+    <h3>⚙️ Настройки</h3>
+    <div class="sub">Профиль и приложение</div>
+
+    <div class="settings-profile-preview">
+      <div class="settings-avatar-mini" id="settingsAvatarMini"></div>
+      <div class="spp-info">
+        <b id="settingsProfileName">Бакулин Дмитрий</b>
+        <span id="settingsProfileClass">9Б · Гимназия №10</span>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="ss-title">👤 Профиль</div>
+      <button class="settings-row chevron" onclick="openEditProfile()">
+        <span class="sr-left">
+          <span class="sr-emoji">✏️</span>
+          <span class="sr-text"><b>Редактировать профиль</b><span>Имя, класс, школа, контакты</span></span>
+        </span>
+        <span class="sr-right"></span>
+      </button>
+      <button class="settings-row chevron" onclick="openUploadChoice()">
+        <span class="sr-left">
+          <span class="sr-emoji">📷</span>
+          <span class="sr-text"><b>Загрузить фото</b><span>В аватарку или в шапку профиля</span></span>
+        </span>
+        <span class="sr-right"></span>
+      </button>
+      <button class="settings-row chevron" onclick="openBgPicker()">
+        <span class="sr-left">
+          <span class="sr-emoji">🎬</span>
+          <span class="sr-text"><b>Фон приложения</b><span>Фото или видео до 10 сек</span></span>
+        </span>
+        <span class="sr-right"></span>
+      </button>
+      <button class="settings-row chevron" onclick="openFramePicker()">
+        <span class="sr-left">
+          <span class="sr-emoji">🖼</span>
+          <span class="sr-text"><b>Рамка аватарки</b><span id="frameLabel">Сейчас: нет</span></span>
+        </span>
+        <span class="sr-right"></span>
+      </button>
+      <button class="settings-row chevron" onclick="openFamilyFromSettings()">
+        <span class="sr-left">
+          <span class="sr-emoji">👨‍👩‍👧</span>
+          <span class="sr-text"><b>Семья</b><span>Переключение между профилями</span></span>
+        </span>
+        <span class="sr-right"></span>
+      </button>
+    </div>
+
+    <div class="settings-section">
+      <div class="ss-title">🔒 Безопасность</div>
+      <button class="settings-row chevron" onclick="openPasswordSettings()">
+        <span class="sr-left">
+          <span class="sr-emoji">🔑</span>
+          <span class="sr-text">
+            <b id="passwordTitle">Установить пароль</b>
+            <span id="passwordSubtitle">Защита входа в профиль</span>
+          </span>
+        </span>
+        <span class="sr-right"></span>
+      </button>
+    </div>
+
+    <div class="settings-section">
+      <div class="ss-title">⚙️ Приложение</div>
+      <div class="settings-row" onclick="toggleWeekendFromSettings(event)">
+        <span class="sr-left">
+          <span class="sr-emoji">📅</span>
+          <span class="sr-text"><b>Показ выходных</b><span>Сб и Вс в расписании</span></span>
+        </span>
+        <span class="sr-right"><span class="toggle-switch" id="settingsWeekendToggle"></span></span>
+      </div>
+      <div class="settings-row" onclick="toggleHideBadGrades(event)">
+        <span class="sr-left">
+          <span class="sr-emoji">⭐</span>
+          <span class="sr-text"><b>Только хорошие оценки</b><span>Скрыть 1, 2, 3 в таблице</span></span>
+        </span>
+        <span class="sr-right"><span class="toggle-switch" id="settingsHideBadToggle"></span></span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="action-btn done full" onclick="closeSettings()"><span class="ab-emoji">✓</span> Готово</button>
+    </div>
+  </div>
+</div>
+
+<!-- Редактирование профиля -->
+<div class="modal-bg" id="editProfileModalBg">
+  <div class="modal settings-submodal">
+    <h3>✏️ Редактировать профиль</h3>
+    <div class="sub">Изменения сохраняются локально</div>
+    <div class="field-row"><label>Имя и фамилия</label><input type="text" id="editName"></div>
+    <div class="field-row"><label>Класс</label><input type="text" id="editClass"></div>
+    <div class="field-row"><label>Школа</label><input type="text" id="editSchool"></div>
+    <div class="field-row"><label>Дата рождения</label><input type="text" id="editBirth"></div>
+    <div class="field-row"><label>Телефон</label><input type="tel" id="editPhone"></div>
+    <div class="field-row"><label>Электронная почта</label><input type="email" id="editEmail"></div>
+    <div class="actions">
+      <button class="action-btn save" onclick="saveProfileEdit()"><span class="ab-emoji">💾</span> Сохранить</button>
+      <button class="action-btn back" onclick="closeEditProfile()"><span class="ab-emoji">↩</span> Назад</button>
+    </div>
+  </div>
+</div>
+
+<!-- Выбор куда загрузить -->
+<div class="modal-bg" id="uploadChoiceModalBg">
+  <div class="modal settings-submodal">
+    <h3>📷 Загрузить фото</h3>
+    <div class="sub">Куда загрузить картинку?</div>
+    <div class="upload-choice">
+      <button class="upload-choice-btn" onclick="document.getElementById('avatarUploadInput').click()">
+        <span class="ucb-emoji">👤</span>
+        <span class="ucb-text"><b>В аватарку</b><span>Круглая фотография в шапке и профиле</span></span>
+        <span class="ucb-arrow">›</span>
+      </button>
+      <button class="upload-choice-btn" onclick="document.getElementById('headerBgUploadInput').click()">
+        <span class="ucb-emoji">🎨</span>
+        <span class="ucb-text"><b>В шапку профиля</b><span>Фон верхней части страницы</span></span>
+        <span class="ucb-arrow">›</span>
+      </button>
+    </div>
+    <input type="file" id="avatarUploadInput" accept="image/*" onchange="uploadAvatar(event)" style="display:none;">
+    <input type="file" id="headerBgUploadInput" accept="image/*" onchange="uploadHeaderBgFromChoice(event)" style="display:none;">
+    <div class="actions">
+      <button class="action-btn back full" onclick="closeUploadChoice()"><span class="ab-emoji">↩</span> Назад</button>
+    </div>
+  </div>
+</div>
+
+<!-- Фон приложения -->
+<div class="modal-bg" id="bgPickerModalBg">
+  <div class="modal settings-submodal">
+    <h3>🎬 Фон приложения</h3>
+    <div class="sub">Фото или видео до 10 секунд</div>
+    <div class="bg-current-preview empty" id="bgCurrentPreview">
+      <span class="bg-label" id="bgCurrentLabel" style="display:none;">Текущий фон</span>
+    </div>
+    <div class="bg-choice">
+      <button class="bg-choice-btn" onclick="document.getElementById('bgMediaInput').click()">
+        <span class="bcb-emoji">📁</span>
+        <span class="bcb-text"><b>Выбрать файл</b><span>Фото или видео (до 10 сек)</span></span>
+        <span class="bcb-arrow">›</span>
+      </button>
+      <button class="bg-choice-btn" onclick="removeBgMedia()">
+        <span class="bcb-emoji">🗑</span>
+        <span class="bcb-text"><b>Убрать фон</b><span>Вернуть анимированный mesh</span></span>
+        <span class="bcb-arrow">›</span>
+      </button>
+    </div>
+    <input type="file" id="bgMediaInput" accept="image/*,video/*" onchange="uploadBgMedia(event)" style="display:none;">
+    <div class="actions">
+      <button class="action-btn back full" onclick="closeBgPicker()"><span class="ab-emoji">↩</span> Назад</button>
+    </div>
+  </div>
+</div>
+
+<!-- Рамка аватарки -->
+<div class="modal-bg" id="framePickerModalBg">
+  <div class="modal settings-submodal">
+    <h3>🖼 Рамка аватарки</h3>
+    <div class="sub">Выберите стиль</div>
+    <div class="frame-options" id="frameOptions">
+      <button class="frame-opt" data-frame="none" onclick="setAvatarFrame('none')"><div class="fo-preview"></div>Нет</button>
+      <button class="frame-opt" data-frame="gold" onclick="setAvatarFrame('gold')"><div class="fo-preview"></div>Золото</button>
+      <button class="frame-opt" data-frame="glow" onclick="setAvatarFrame('glow')"><div class="fo-preview"></div>Свет</button>
+      <button class="frame-opt" data-frame="fire" onclick="setAvatarFrame('fire')"><div class="fo-preview"></div>Огонь</button>
+      <button class="frame-opt" data-frame="ice" onclick="setAvatarFrame('ice')"><div class="fo-preview"></div>Лёд</button>
+      <button class="frame-opt" data-frame="rainbow" onclick="setAvatarFrame('rainbow')"><div class="fo-preview"></div>Радуга</button>
+      <button class="frame-opt" data-frame="neon" onclick="setAvatarFrame('neon')"><div class="fo-preview"></div>Неон</button>
+      <button class="frame-opt" data-frame="galaxy" onclick="setAvatarFrame('galaxy')"><div class="fo-preview"></div>Галактика</button>
+      <button class="frame-opt" data-frame="emerald" onclick="setAvatarFrame('emerald')"><div class="fo-preview"></div>Изумруд</button>
+      <button class="frame-opt" data-frame="sunset" onclick="setAvatarFrame('sunset')"><div class="fo-preview"></div>Закат</button>
+      <button class="frame-opt" data-frame="ocean" onclick="setAvatarFrame('ocean')"><div class="fo-preview"></div>Океан</button>
+      <button class="frame-opt" data-frame="matrix" onclick="setAvatarFrame('matrix')"><div class="fo-preview"></div>Матрица</button>
+      <button class="frame-opt" data-frame="aurora" onclick="setAvatarFrame('aurora')"><div class="fo-preview"></div>Сияние</button>
+      <button class="frame-opt" data-frame="blood" onclick="setAvatarFrame('blood')"><div class="fo-preview"></div>Кровь</button>
+    </div>
+    <div class="actions">
+      <button class="action-btn done full" onclick="closeFramePicker()"><span class="ab-emoji">✓</span> Готово</button>
+    </div>
+  </div>
+</div>
+
+<!-- Пароль -->
+<div class="modal-bg" id="passwordModalBg">
+  <div class="modal settings-submodal">
+    <h3 id="passwordModalTitle">🔒 Пароль</h3>
+    <div class="sub" id="passwordModalSub">Выберите длину пароля</div>
+
+    <div id="passwordStep1">
+      <div class="pass-options">
+        <button class="pass-option" data-len="4" onclick="selectPasswordLength(4)">
+          <span class="po-radio"></span>
+          <span class="po-text"><b>4 цифры</b><span>Быстрый ввод · 0000–9999</span></span>
+        </button>
+        <button class="pass-option" data-len="6" onclick="selectPasswordLength(6)">
+          <span class="po-radio"></span>
+          <span class="po-text"><b>6 цифр</b><span>Более надёжный · 000000–999999</span></span>
+        </button>
+        <button class="pass-option" data-len="0" onclick="selectPasswordLength(0)">
+          <span class="po-radio"></span>
+          <span class="po-text"><b>Без пароля</b><span>Вход без запроса кода</span></span>
+        </button>
+      </div>
+      <div class="actions">
+        <button class="action-btn back full" onclick="closePasswordSettings()"><span class="ab-emoji">↩</span> Назад</button>
+      </div>
+    </div>
+
+    <div id="passwordStep2" style="display:none;">
+      <div class="sub" id="passwordStep2Sub">Введите пароль</div>
+      <div class="pin-display" id="pinDisplay">••••</div>
+      <div class="pin-keypad" id="pinKeypad"></div>
+      <div class="actions">
+        <button class="action-btn back full" onclick="cancelPinEntry()"><span class="ab-emoji">↩</span> Назад</button>
+      </div>
+    </div>
+
+    <div id="passwordStep3" style="display:none;">
+      <div class="sub">Когда запрашивать пароль?</div>
+      <div class="pass-options">
+        <button class="pass-option" data-mode="always" onclick="selectPasswordMode('always')">
+          <span class="po-radio"></span>
+          <span class="po-text"><b>Всегда при входе</b><span>Пароль запрашивается каждый раз</span></span>
+        </button>
+        <button class="pass-option" data-mode="other-device" onclick="selectPasswordMode('other-device')">
+          <span class="po-radio"></span>
+          <span class="po-text"><b>Только на других устройствах</b><span>На этом устройстве вход без пароля</span></span>
+        </button>
+      </div>
+      <div class="actions">
+        <button class="action-btn back full" onclick="cancelPasswordMode()"><span class="ab-emoji">↩</span> Назад</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="passwordPromptBg">
+  <div class="modal settings-submodal password-prompt-modal">
+    <h3>🔒 Введите пароль</h3>
+    <div class="sub" id="passwordPromptSub">Введите 4-значный код</div>
+    <div class="pin-display" id="promptPinDisplay">••••</div>
+    <div class="pin-keypad" id="promptPinKeypad"></div>
+    <div class="actions">
+      <button class="action-btn cancel full" onclick="cancelPasswordPrompt()"><span class="ab-emoji">✕</span> Отмена</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="familyModalBg">
   <div class="modal family-modal">
     <h3>👨‍👩‍👧 Семья</h3>
@@ -2600,22 +3086,18 @@
     <div class="family-list">
       <div class="family-item" id="famDima" onclick="switchUser('dima')">
         <div class="fam-avatar" id="famDimaAvatar"></div>
-        <div class="fam-info">
-          <div class="fam-name">Дима</div>
-          <div class="fam-role">Основной аккаунт · 9Б</div>
-        </div>
+        <div class="fam-info"><div class="fam-name">Дима</div><div class="fam-role">Основной аккаунт · 9Б</div></div>
         <span class="fam-check">✓</span>
       </div>
       <div class="family-item eva" id="famEva" onclick="switchUser('eva')">
         <div class="fam-avatar" id="famEvaAvatar"></div>
-        <div class="fam-info">
-          <div class="fam-name">Ева</div>
-          <div class="fam-role">1Б · Сестра</div>
-        </div>
+        <div class="fam-info"><div class="fam-name">Ева</div><div class="fam-role">1Б · Сестра</div></div>
         <span class="fam-check">✓</span>
       </div>
     </div>
-    <button class="family-close" onclick="closeFamily()">Закрыть</button>
+    <div class="actions">
+      <button class="action-btn back full" onclick="closeFamily()"><span class="ab-emoji">↩</span> Назад</button>
+    </div>
   </div>
 </div>
 
@@ -2632,7 +3114,9 @@
     <div style="margin-top:8px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
       <span style="font-size:11px;padding:4px 8px;background:#e8f5e9;border-radius:6px;color:#2e7d32;font-weight:bold;">Каникулы</span>
       <span style="font-size:11px;padding:4px 8px;background:#fff3e0;border-radius:6px;color:#e65100;font-weight:bold;">Праздник</span>
-      <button class="cancel-btn" onclick="closeCal()">Закрыть</button>
+    </div>
+    <div class="actions">
+      <button class="action-btn cancel full" onclick="closeCal()"><span class="ab-emoji">✕</span> Закрыть</button>
     </div>
   </div>
 </div>
@@ -2643,17 +3127,13 @@
     <div class="sub">Уведомление придёт в указанное время</div>
     <div class="remind-form">
       <div class="remind-row">
-        <label>Дата
-          <input type="date" id="remindDate">
-        </label>
-        <label>Время
-          <input type="time" id="remindTime">
-        </label>
+        <label>Дата<input type="date" id="remindDate"></label>
+        <label>Время<input type="time" id="remindTime"></label>
       </div>
       <textarea id="remindText" placeholder="О чём напомнить?"></textarea>
-      <div class="remind-actions">
-        <button class="save-btn" onclick="addReminder()">➕ Добавить</button>
-        <button class="cancel-btn" onclick="closeReminders()">Закрыть</button>
+      <div class="actions">
+        <button class="action-btn save" onclick="addReminder()"><span class="ab-emoji">➕</span> Добавить</button>
+        <button class="action-btn cancel" onclick="closeReminders()"><span class="ab-emoji">✕</span> Закрыть</button>
       </div>
     </div>
     <div class="remind-list" id="remindList"></div>
@@ -2668,6 +3148,7 @@ const WEIGHT_UR = 1;
 const WEIGHT_KR = 2;
 const QUARTER_WEIGHTS = { 1: 1, 2: 1, 3: 2, 4: 2 };
 const TARGET_AVG = 3.50;
+const MAX_VIDEO_DURATION = 10; // секунд
 
 const BELLS = [
   { start: "08:30", end: "09:10" },
@@ -2737,8 +3218,9 @@ function getQuarterByDate(date) {
 }
 function getCurrentQuarter() { return getQuarterByDate(new Date()); }
 
+// Добавлен предмет "Вероятность и статистика"
 const SUBJECTS_DEFAULT = [
-  "Алгебра", "Геометрия", "Русский язык", "Литература",
+  "Алгебра", "Геометрия", "Вероятность и статистика", "Русский язык", "Литература",
   "Физика", "Химия", "История", "Обществознание",
   "Английский язык", "Биология", "География",
   "Информатика", "Физкультура", "ОБЖ",
@@ -2856,96 +3338,62 @@ const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Ч
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const MONTH_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 
-const STORAGE_KEY = "diary_html_v18";
-const DB_NAME = "diary_db_v18";
+const STORAGE_KEY = "diary_html_v21";
+const DB_NAME = "diary_db_v21";
 const DB_STORE = "kv";
 
 const PROFILES = {
   dima: {
-    name: "Бакулин Дмитрий Алексеевич",
-    class: "9Б",
-    school: "Гимназия №10, Воронеж",
-    birth: "22.07.2011",
-    phone: "+7 950 759-68-56",
-    email: "dimabaku017@gmail.com",
-    showEmail: true,
-    showGrades: true,
-    showQuarters: true,
-    showHW: true,
-    showScoreBar: true,
-    bellType: "default",
-    schedule: WEEK_SCHEDULE
+    name: "Бакулин Дмитрий Алексеевич", class: "9Б", school: "Гимназия №10, Воронеж",
+    birth: "22.07.2011", phone: "+7 950 759-68-56", email: "dimabaku017@gmail.com",
+    showEmail: true, showGrades: true, showQuarters: true, showHW: true, showScoreBar: true,
+    bellType: "default", schedule: WEEK_SCHEDULE
   },
   eva: {
-    name: "Бакулина Ева Алексеевна",
-    class: "1Б",
-    school: "Гимназия №10, Воронеж",
-    birth: "19.02.2019",
-    phone: "+7 993 299-46-56",
-    email: "",
-    showEmail: false,
-    showGrades: false,
-    showQuarters: false,
-    showHW: false,
-    showScoreBar: false,
-    bellType: "eva",
-    schedule: WEEK_SCHEDULE_EVA
+    name: "Бакулина Ева Алексеевна", class: "1Б", school: "Гимназия №10, Воронеж",
+    birth: "19.02.2019", phone: "+7 993 299-46-56", email: "",
+    showEmail: false, showGrades: false, showQuarters: false, showHW: false, showScoreBar: false,
+    bellType: "eva", schedule: WEEK_SCHEDULE_EVA
   }
 };
 
 // ==================== IndexedDB ====================
 let dbPromise = null;
-
 function openDB() {
   if (dbPromise) return dbPromise;
   dbPromise = new Promise((resolve, reject) => {
-    if (!("indexedDB" in window)) {
-      reject(new Error("IndexedDB не поддерживается"));
-      return;
-    }
+    if (!("indexedDB" in window)) { reject(new Error("IndexedDB не поддерживается")); return; }
     const req = indexedDB.open(DB_NAME, 1);
     req.onupgradeneeded = e => {
       const db = e.target.result;
-      if (!db.objectStoreNames.contains(DB_STORE)) {
-        db.createObjectStore(DB_STORE);
-      }
+      if (!db.objectStoreNames.contains(DB_STORE)) db.createObjectStore(DB_STORE);
     };
     req.onsuccess = e => resolve(e.target.result);
     req.onerror = e => reject(e.target.error);
   });
   return dbPromise;
 }
-
 async function idbGet(key) {
   try {
     const db = await openDB();
     return await new Promise((resolve, reject) => {
       const tx = db.transaction(DB_STORE, "readonly");
-      const store = tx.objectStore(DB_STORE);
-      const req = store.get(key);
+      const req = tx.objectStore(DB_STORE).get(key);
       req.onsuccess = () => resolve(req.result);
       req.onerror = () => reject(req.error);
     });
-  } catch (e) {
-    console.warn("idbGet error:", e);
-    return null;
-  }
+  } catch (e) { console.warn("idbGet error:", e); return null; }
 }
-
 async function idbSet(key, value) {
   try {
     const db = await openDB();
     return await new Promise((resolve, reject) => {
       const tx = db.transaction(DB_STORE, "readwrite");
-      const store = tx.objectStore(DB_STORE);
-      const req = store.put(value, key);
+      const req = tx.objectStore(DB_STORE).put(value, key);
       req.onsuccess = () => resolve(true);
       req.onerror = () => reject(req.error);
     });
-  } catch (e) {
-    console.warn("idbSet error:", e);
-    return false;
-  }
+  } catch (e) { console.warn("idbSet error:", e); return false; }
 }
 
 // ==================== СОСТОЯНИЕ ====================
@@ -2959,18 +3407,29 @@ let currentQuarterModal = { subj: null, quarter: null };
 let activeQuarter = null;
 let currentUser = "dima";
 
-function getHeaderBg(user) {
-  return state.headerBgs && state.headerBgs[user] ? state.headerBgs[user] : null;
-}
-function getAvatarFrame(user) {
-  return state.avatarFrames && state.avatarFrames[user] ? state.avatarFrames[user] : "none";
+let pinEntryBuffer = "";
+let pendingPassword = null;
+
+let modalStack = [];
+function pushModalParent(parentId) { modalStack.push(parentId); }
+function popModalParent() { return modalStack.pop(); }
+function returnToParent() {
+  const parent = popModalParent();
+  if (parent === "settings") setTimeout(() => openSettingsInternal(), 100);
+  else if (parent === "profile") setTimeout(() => openProfileInternal(), 100);
 }
 
+// ==================== ГЕТТЕРЫ ====================
+function getHeaderBg(user) { return state.headerBgs && state.headerBgs[user] ? state.headerBgs[user] : null; }
+function getAvatarFrame(user) { return state.avatarFrames && state.avatarFrames[user] ? state.avatarFrames[user] : "none"; }
+function getUserAvatar(user) { return state.customAvatars && state.customAvatars[user] ? state.customAvatars[user] : null; }
+function getUserProfile(user) { return state.userProfiles && state.userProfiles[user] ? { ...PROFILES[user], ...state.userProfiles[user] } : PROFILES[user]; }
+function getBgMedia() { return state.bgMedia || null; } // { type: "image"/"video", data: "dataURL" }
+
+// ==================== ЗАГРУЗКА / СОХРАНЕНИЕ ====================
 async function loadStateAsync() {
   let s = await idbGet("state");
-  if (s && typeof s === "object" && s.subjects) {
-    return normalizeState(s);
-  }
+  if (s && typeof s === "object" && s.subjects) return normalizeState(s);
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
@@ -2993,13 +3452,24 @@ function defaultState() {
     datesByQuarter: JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT)),
     homework: {}, hwDone: {}, hwPhotos: {}, quarters: {},
     reminders: [], theme: "light", user: "dima",
-    headerBgs: {}, avatarFrames: {},
-    showWeekends: true
+    headerBgs: {}, avatarFrames: {}, customAvatars: {}, userProfiles: {},
+    bgMedia: null,
+    showWeekends: true,
+    hideBadGrades: false,
+    passwords: {},
+    deviceId: generateDeviceId()
   };
+}
+
+function generateDeviceId() {
+  return "dev_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
 }
 
 function normalizeState(s) {
   if (!s.subjects) s.subjects = [...SUBJECTS_DEFAULT];
+  // Добавляем новые предметы, если их нет
+  const extra = ["Вероятность и статистика"].filter(x => !s.subjects.includes(x));
+  if (extra.length) s.subjects.push(...extra);
   if (!s.gradesByQuarter) {
     s.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
     if (s.grades) { s.gradesByQuarter[1] = s.grades; delete s.grades; }
@@ -3014,7 +3484,13 @@ function normalizeState(s) {
   if (!s.user) s.user = "dima";
   if (!s.headerBgs || typeof s.headerBgs !== "object") s.headerBgs = {};
   if (!s.avatarFrames || typeof s.avatarFrames !== "object") s.avatarFrames = {};
+  if (!s.customAvatars || typeof s.customAvatars !== "object") s.customAvatars = {};
+  if (!s.userProfiles || typeof s.userProfiles !== "object") s.userProfiles = {};
   if (s.showWeekends === undefined) s.showWeekends = true;
+  if (s.hideBadGrades === undefined) s.hideBadGrades = false;
+  if (!s.passwords || typeof s.passwords !== "object") s.passwords = {};
+  if (!s.deviceId) s.deviceId = generateDeviceId();
+  if (!("bgMedia" in s)) s.bgMedia = null;
   return s;
 }
 
@@ -3024,19 +3500,14 @@ function saveState() {
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
     const ok = await idbSet("state", state);
-    if (!ok) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
-    }
+    if (!ok) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
   }, 120);
 }
-
 async function saveStateNow() {
   if (!state) return;
   if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
   const ok = await idbSet("state", state);
-  if (!ok) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
-  }
+  if (!ok) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
 }
 
 // ==================== УТИЛИТЫ ====================
@@ -3049,9 +3520,9 @@ function parseGrade(v) {
 function getWeight(type) { return type === "kr" ? WEIGHT_KR : WEIGHT_UR; }
 function getCurrentGrades() { return state.gradesByQuarter[activeQuarter] || {}; }
 function getCurrentDates() { return state.datesByQuarter[activeQuarter] || []; }
-function getProfile() { return PROFILES[currentUser]; }
-function getBells() { return getProfile().bellType === "eva" ? BELLS_EVA : BELLS; }
-function getSchedule() { return getProfile().schedule; }
+function getProfile() { return getUserProfile(currentUser); }
+function getBells() { return PROFILES[currentUser].bellType === "eva" ? BELLS_EVA : BELLS; }
+function getSchedule() { return PROFILES[currentUser].schedule; }
 
 function applyTheme() {
   let theme = state.theme;
@@ -3086,6 +3557,176 @@ function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
+// ==================== ФОН (МЕДИА) ====================
+function applyBgMedia() {
+  const bg = getBgMedia();
+  const img = document.getElementById("bgImage");
+  const video = document.getElementById("bgVideo");
+  const overlay = document.getElementById("bgMediaOverlay");
+  const mesh = document.getElementById("meshBg");
+
+  img.classList.remove("active");
+  video.classList.remove("active");
+  video.pause();
+  video.src = "";
+  img.src = "";
+  overlay.classList.remove("active");
+  mesh.classList.remove("hidden");
+
+  if (!bg) return;
+
+  if (bg.type === "image") {
+    img.src = bg.data;
+    img.classList.add("active");
+    overlay.classList.add("active");
+    mesh.classList.add("hidden");
+  } else if (bg.type === "video") {
+    video.src = bg.data;
+    video.classList.add("active");
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.play().catch(() => {});
+    overlay.classList.add("active");
+    mesh.classList.add("hidden");
+  }
+}
+
+function openBgPicker() {
+  closeSettings();
+  pushModalParent("settings");
+  renderBgPickerPreview();
+  document.getElementById("bgPickerModalBg").classList.add("active");
+}
+function closeBgPicker() {
+  document.getElementById("bgPickerModalBg").classList.remove("active");
+  returnToParent();
+}
+document.getElementById("bgPickerModalBg").addEventListener("click", e => {
+  if (e.target.id === "bgPickerModalBg") closeBgPicker();
+});
+
+function renderBgPickerPreview() {
+  const preview = document.getElementById("bgCurrentPreview");
+  const label = document.getElementById("bgCurrentLabel");
+  preview.innerHTML = "";
+  preview.appendChild(label);
+  const bg = getBgMedia();
+  if (!bg) {
+    preview.classList.add("empty");
+    preview.style.backgroundImage = "";
+    label.style.display = "none";
+    return;
+  }
+  preview.classList.remove("empty");
+  preview.style.backgroundImage = "";
+  if (bg.type === "image") {
+    const img = document.createElement("img");
+    img.src = bg.data;
+    preview.insertBefore(img, label);
+    label.textContent = "📷 Фото";
+  } else if (bg.type === "video") {
+    const vid = document.createElement("video");
+    vid.src = bg.data;
+    vid.muted = true;
+    vid.loop = true;
+    vid.autoplay = true;
+    vid.playsInline = true;
+    preview.insertBefore(vid, label);
+    vid.play().catch(() => {});
+    label.textContent = "🎬 Видео";
+  }
+  label.style.display = "block";
+}
+
+async function uploadBgMedia(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const isImage = file.type.startsWith("image/");
+  const isVideo = file.type.startsWith("video/");
+  if (!isImage && !isVideo) {
+    alert("Выберите изображение или видео!");
+    ev.target.value = "";
+    return;
+  }
+  if (isVideo) {
+    // Проверка длительности
+    const video = document.createElement("video");
+    video.preload = "metadata";
+    video.src = URL.createObjectURL(file);
+    video.onloadedmetadata = async () => {
+      const duration = video.duration;
+      URL.revokeObjectURL(video.src);
+      if (duration > MAX_VIDEO_DURATION + 0.5) {
+        alert(`Видео слишком длинное: ${duration.toFixed(1)} сек. Максимум ${MAX_VIDEO_DURATION} секунд.`);
+        ev.target.value = "";
+        return;
+      }
+      await processBgMediaFile(file, "video");
+      ev.target.value = "";
+    };
+    video.onerror = () => {
+      alert("Не удалось прочитать видео.");
+      ev.target.value = "";
+    };
+    return;
+  }
+  // Фото
+  await processBgMediaFile(file, "image");
+  ev.target.value = "";
+}
+
+async function processBgMediaFile(file, type) {
+  if (type === "image") {
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Файл слишком большой. Максимум 5 МБ.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async e => {
+      const compressed = await compressImage(e.target.result, 1600, 0.82);
+      state.bgMedia = { type: "image", data: compressed };
+      await saveStateNow();
+      applyBgMedia();
+      renderBgPickerPreview();
+      showToast("🎬 Фон", "Фото установлено!");
+      document.getElementById("bgPickerModalBg").classList.remove("active");
+      returnToParent();
+    };
+    reader.readAsDataURL(file);
+  } else {
+    // Видео — ограничение 15 МБ (чтобы IndexedDB не пухла)
+    if (file.size > 15 * 1024 * 1024) {
+      alert("Видео слишком большое. Максимум 15 МБ для видео до 10 сек.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async e => {
+      state.bgMedia = { type: "video", data: e.target.result };
+      await saveStateNow();
+      applyBgMedia();
+      renderBgPickerPreview();
+      showToast("🎬 Фон", "Видео установлено!");
+      document.getElementById("bgPickerModalBg").classList.remove("active");
+      returnToParent();
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+async function removeBgMedia() {
+  if (!getBgMedia()) {
+    showToast("🎬 Фон", "Фон уже не установлен");
+    return;
+  }
+  if (!confirm("Убрать фон приложения? Вернётся анимированный mesh.")) return;
+  state.bgMedia = null;
+  await saveStateNow();
+  applyBgMedia();
+  renderBgPickerPreview();
+  showToast("🎬 Фон", "Фон убран");
+}
+
 // ==================== ФОН ШАПКИ ====================
 function applyHeaderBg() {
   const header = document.getElementById("mainHeader");
@@ -3097,49 +3738,6 @@ function applyHeaderBg() {
     header.classList.remove("has-custom-bg");
     header.style.backgroundImage = "";
   }
-}
-
-function updateHeaderBgButtons() {
-  const removeBtn = document.getElementById("headerBgRemoveBtn");
-  if (removeBtn) removeBtn.disabled = !getHeaderBg(currentUser);
-}
-
-function uploadHeaderBg(ev) {
-  const file = ev.target.files[0];
-  if (!file) return;
-  if (!file.type.startsWith("image/")) {
-    alert("Выберите изображение!");
-    ev.target.value = "";
-    return;
-  }
-  if (file.size > 4 * 1024 * 1024) {
-    alert("Файл слишком большой. Максимум 4 МБ.");
-    ev.target.value = "";
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = async e => {
-    const dataUrl = e.target.result;
-    const compressed = await compressImage(dataUrl, 1200, 0.8);
-    if (!state.headerBgs) state.headerBgs = {};
-    state.headerBgs[currentUser] = compressed;
-    await saveStateNow();
-    applyHeaderBg();
-    updateHeaderBgButtons();
-    showToast("🎨 Фон шапки", "Картинка установлена!");
-  };
-  reader.readAsDataURL(file);
-  ev.target.value = "";
-}
-
-async function removeHeaderBg() {
-  if (!getHeaderBg(currentUser)) return;
-  if (!confirm("Убрать свой фон шапки?")) return;
-  if (state.headerBgs) delete state.headerBgs[currentUser];
-  await saveStateNow();
-  applyHeaderBg();
-  updateHeaderBgButtons();
-  showToast("🎨 Фон шапки", "Картинка убрана");
 }
 
 function compressImage(dataUrl, maxWidth = 1200, quality = 0.8) {
@@ -3156,54 +3754,68 @@ function compressImage(dataUrl, maxWidth = 1200, quality = 0.8) {
       canvas.height = height;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, width, height);
-      try {
-        resolve(canvas.toDataURL("image/jpeg", quality));
-      } catch (e) {
-        resolve(dataUrl);
-      }
+      try { resolve(canvas.toDataURL("image/jpeg", quality)); }
+      catch (e) { resolve(dataUrl); }
     };
     img.onerror = () => resolve(dataUrl);
     img.src = dataUrl;
   });
 }
 
-// ==================== РАМКА АВАТАРКИ ====================
+// ==================== АВАТАРКА ====================
+function renderAvatarInto(container, user, withFrame) {
+  const custom = getUserAvatar(user);
+  const frame = getAvatarFrame(user);
+  if (custom) container.innerHTML = `<img src="${custom}" alt="avatar">`;
+  else container.innerHTML = user === "eva" ? getEvaAvatarSVG() : getDimaAvatarSVG();
+  if (withFrame) {
+    const wrap = container.closest(".avatar-frame-wrap");
+    if (wrap) wrap.setAttribute("data-frame", frame);
+  }
+  container.setAttribute("data-frame", frame);
+}
+
+function applyHeaderAvatar() {
+  const inner = document.getElementById("headerAvatarInner");
+  if (!inner) return;
+  const custom = getUserAvatar(currentUser);
+  if (custom) inner.innerHTML = `<img src="${custom}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="avatar">`;
+  else inner.innerHTML = currentUser === "eva" ? getEvaAvatarSVG() : getDimaAvatarSVG();
+  document.getElementById("headerAvatarBtn").setAttribute("data-frame", getAvatarFrame(currentUser));
+}
+
+// ==================== РАМКА ====================
 function applyAvatarFrame() {
   const wrap = document.getElementById("avatarFrameWrap");
   if (!wrap) return;
   wrap.setAttribute("data-frame", getAvatarFrame(currentUser));
-  // Обновляем активную опцию в picker
   document.querySelectorAll(".frame-opt").forEach(opt => {
     opt.classList.toggle("active", opt.dataset.frame === getAvatarFrame(currentUser));
   });
+  const frameLabel = document.getElementById("frameLabel");
+  if (frameLabel) {
+    const names = {
+      none: "нет", gold: "золотая", glow: "светящаяся", fire: "огненная", ice: "ледяная",
+      rainbow: "радужная", neon: "неон", galaxy: "галактика", emerald: "изумруд",
+      sunset: "закат", ocean: "океан", matrix: "матрица", aurora: "сияние", blood: "кровавая"
+    };
+    frameLabel.textContent = "Сейчас: " + (names[getAvatarFrame(currentUser)] || "нет");
+  }
+  const mini = document.getElementById("settingsAvatarMini");
+  if (mini) renderAvatarInto(mini, currentUser, false);
+  applyHeaderAvatar();
 }
 
-function setAvatarFrame(frame) {
-  if (!state.avatarFrames) state.avatarFrames = {};
-  state.avatarFrames[currentUser] = frame;
-  saveState();
-  applyAvatarFrame();
-  const names = {
-    none: "без рамки",
-    gold: "золотая",
-    glow: "светящаяся",
-    fire: "огненная",
-    ice: "ледяная",
-    rainbow: "радужная"
-  };
-  showToast("🖼 Рамка", `Установлена ${names[frame] || frame}`);
-}
-
-// ==================== ПОКАЗ ВЫХОДНЫХ ====================
+// ==================== ВЫХОДНЫЕ И СКРЫТИЕ ОЦЕНОК ====================
 function applyWeekendVisibility() {
   const table = document.getElementById("scheduleTable");
   if (!table) return;
   table.classList.toggle("hide-weekend", !state.showWeekends);
-  const toggle = document.getElementById("weekendToggle");
+  const toggle = document.getElementById("settingsWeekendToggle");
   if (toggle) toggle.classList.toggle("on", !!state.showWeekends);
 }
 
-function toggleWeekend() {
+function toggleWeekendFromSettings(ev) {
   state.showWeekends = !state.showWeekends;
   saveState();
   applyWeekendVisibility();
@@ -3211,14 +3823,26 @@ function toggleWeekend() {
   showToast("📅 Выходные", state.showWeekends ? "Показываются" : "Скрыты");
 }
 
+function applyHideBadGrades() {
+  document.body.classList.toggle("hide-bad-grades", !!state.hideBadGrades);
+  const toggle = document.getElementById("settingsHideBadToggle");
+  if (toggle) toggle.classList.toggle("on", !!state.hideBadGrades);
+}
+
+function toggleHideBadGrades(ev) {
+  state.hideBadGrades = !state.hideBadGrades;
+  saveState();
+  applyHideBadGrades();
+  showToast("⭐ Оценки", state.hideBadGrades ? "Показаны только 4 и 5" : "Показаны все оценки");
+}
+
 // ==================== ПРОФИЛЬ ====================
-function openProfile() {
+function openProfileInternal() {
   renderProfileContent();
   document.getElementById("profileModalBg").classList.add("active");
 }
-function closeProfile() {
-  document.getElementById("profileModalBg").classList.remove("active");
-}
+function openProfile() { openProfileInternal(); }
+function closeProfile() { document.getElementById("profileModalBg").classList.remove("active"); }
 document.getElementById("profileModalBg").addEventListener("click", e => {
   if (e.target.id === "profileModalBg") closeProfile();
 });
@@ -3227,23 +3851,408 @@ function renderProfileContent() {
   const p = getProfile();
   const modal = document.getElementById("profileModal");
   modal.classList.toggle("eva", currentUser === "eva");
-  document.getElementById("profileAvatarBig").innerHTML = currentUser === "eva" ? getEvaAvatarSVG() : getDimaAvatarSVG();
+  const avatarBig = document.getElementById("profileAvatarBig");
+  const custom = getUserAvatar(currentUser);
+  if (custom) avatarBig.innerHTML = `<img src="${custom}" alt="avatar">`;
+  else avatarBig.innerHTML = currentUser === "eva" ? getEvaAvatarSVG() : getDimaAvatarSVG();
   document.getElementById("profileName").textContent = p.name;
   document.getElementById("profileClass").textContent = p.class;
+  document.getElementById("profileSchool").textContent = p.school;
   document.getElementById("profileBirth").textContent = p.birth;
   document.getElementById("profilePhone").textContent = p.phone;
   const emailRow = document.getElementById("profileEmailRow");
-  if (p.showEmail) {
+  if (p.showEmail !== false && p.email) {
     emailRow.style.display = "flex";
-    emailRow.querySelector(".pr-value").textContent = p.email;
+    document.getElementById("profileEmail").textContent = p.email;
   } else {
     emailRow.style.display = "none";
   }
   applyAvatarFrame();
-  updateHeaderBgButtons();
-  applyWeekendVisibility();
 }
 
+// ==================== НАСТРОЙКИ ====================
+function openSettingsInternal() {
+  renderSettings();
+  document.getElementById("settingsModalBg").classList.add("active");
+}
+function openSettings() {
+  closeProfile();
+  openSettingsInternal();
+}
+function closeSettings() {
+  document.getElementById("settingsModalBg").classList.remove("active");
+}
+document.getElementById("settingsModalBg").addEventListener("click", e => {
+  if (e.target.id === "settingsModalBg") closeSettings();
+});
+
+function renderSettings() {
+  const p = getProfile();
+  document.getElementById("settingsProfileName").textContent = p.name;
+  document.getElementById("settingsProfileClass").textContent = `${p.class} · ${p.school}`;
+  const mini = document.getElementById("settingsAvatarMini");
+  renderAvatarInto(mini, currentUser, false);
+  const frameLabel = document.getElementById("frameLabel");
+  const frameNames = {
+    none: "нет", gold: "золото", glow: "свет", fire: "огонь", ice: "лёд", rainbow: "радуга",
+    neon: "неон", galaxy: "галактика", emerald: "изумруд", sunset: "закат",
+    ocean: "океан", matrix: "матрица", aurora: "сияние", blood: "кровь"
+  };
+  frameLabel.textContent = "Сейчас: " + (frameNames[getAvatarFrame(currentUser)] || "нет");
+  document.getElementById("settingsWeekendToggle").classList.toggle("on", !!state.showWeekends);
+  document.getElementById("settingsHideBadToggle").classList.toggle("on", !!state.hideBadGrades);
+  const pass = state.passwords[currentUser];
+  const title = document.getElementById("passwordTitle");
+  const subtitle = document.getElementById("passwordSubtitle");
+  if (pass && pass.length > 0 && pass.pin) {
+    title.textContent = "Изменить пароль";
+    const modeText = pass.mode === "always" ? "Всегда при входе" : "На других устройствах";
+    subtitle.textContent = `${pass.length} цифр · ${modeText}`;
+  } else {
+    title.textContent = "Установить пароль";
+    subtitle.textContent = "Защита входа в профиль";
+  }
+}
+
+// ==================== РЕДАКТИРОВАНИЕ ПРОФИЛЯ ====================
+function openEditProfile() {
+  closeSettings();
+  pushModalParent("settings");
+  const p = getProfile();
+  document.getElementById("editName").value = p.name || "";
+  document.getElementById("editClass").value = p.class || "";
+  document.getElementById("editSchool").value = p.school || "";
+  document.getElementById("editBirth").value = p.birth || "";
+  document.getElementById("editPhone").value = p.phone || "";
+  document.getElementById("editEmail").value = p.email || "";
+  document.getElementById("editProfileModalBg").classList.add("active");
+}
+function closeEditProfile() {
+  document.getElementById("editProfileModalBg").classList.remove("active");
+  returnToParent();
+}
+document.getElementById("editProfileModalBg").addEventListener("click", e => {
+  if (e.target.id === "editProfileModalBg") closeEditProfile();
+});
+
+function saveProfileEdit() {
+  if (!state.userProfiles) state.userProfiles = {};
+  if (!state.userProfiles[currentUser]) state.userProfiles[currentUser] = {};
+  state.userProfiles[currentUser].name = document.getElementById("editName").value.trim();
+  state.userProfiles[currentUser].class = document.getElementById("editClass").value.trim();
+  state.userProfiles[currentUser].school = document.getElementById("editSchool").value.trim();
+  state.userProfiles[currentUser].birth = document.getElementById("editBirth").value.trim();
+  state.userProfiles[currentUser].phone = document.getElementById("editPhone").value.trim();
+  state.userProfiles[currentUser].email = document.getElementById("editEmail").value.trim();
+  saveState();
+  document.getElementById("editProfileModalBg").classList.remove("active");
+  refreshUIToUser();
+  showToast("✏️ Профиль", "Изменения сохранены");
+  returnToParent();
+}
+
+// ==================== ЗАГРУЗКА ФОТО ====================
+function openUploadChoice() {
+  closeSettings();
+  pushModalParent("settings");
+  document.getElementById("uploadChoiceModalBg").classList.add("active");
+}
+function closeUploadChoice() {
+  document.getElementById("uploadChoiceModalBg").classList.remove("active");
+  returnToParent();
+}
+document.getElementById("uploadChoiceModalBg").addEventListener("click", e => {
+  if (e.target.id === "uploadChoiceModalBg") closeUploadChoice();
+});
+
+function uploadAvatar(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) { alert("Выберите изображение!"); ev.target.value = ""; return; }
+  if (file.size > 4 * 1024 * 1024) { alert("Файл слишком большой. Максимум 4 МБ."); ev.target.value = ""; return; }
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const compressed = await compressImage(e.target.result, 600, 0.85);
+    if (!state.customAvatars) state.customAvatars = {};
+    state.customAvatars[currentUser] = compressed;
+    await saveStateNow();
+    refreshUIToUser();
+    document.getElementById("uploadChoiceModalBg").classList.remove("active");
+    showToast("👤 Аватарка", "Фото установлено!");
+    returnToParent();
+  };
+  reader.readAsDataURL(file);
+  ev.target.value = "";
+}
+
+function uploadHeaderBgFromChoice(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) { alert("Выберите изображение!"); ev.target.value = ""; return; }
+  if (file.size > 4 * 1024 * 1024) { alert("Файл слишком большой. Максимум 4 МБ."); ev.target.value = ""; return; }
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const compressed = await compressImage(e.target.result, 1200, 0.8);
+    if (!state.headerBgs) state.headerBgs = {};
+    state.headerBgs[currentUser] = compressed;
+    await saveStateNow();
+    applyHeaderBg();
+    document.getElementById("uploadChoiceModalBg").classList.remove("active");
+    showToast("🎨 Фон шапки", "Картинка установлена!");
+    returnToParent();
+  };
+  reader.readAsDataURL(file);
+  ev.target.value = "";
+}
+
+// ==================== РАМКА ====================
+function openFramePicker() {
+  closeSettings();
+  pushModalParent("settings");
+  applyAvatarFrame();
+  document.getElementById("framePickerModalBg").classList.add("active");
+}
+function closeFramePicker() {
+  document.getElementById("framePickerModalBg").classList.remove("active");
+  returnToParent();
+}
+document.getElementById("framePickerModalBg").addEventListener("click", e => {
+  if (e.target.id === "framePickerModalBg") closeFramePicker();
+});
+
+function setAvatarFrame(frame) {
+  if (!state.avatarFrames) state.avatarFrames = {};
+  state.avatarFrames[currentUser] = frame;
+  saveState();
+  applyAvatarFrame();
+  applyHeaderAvatar();
+  const names = {
+    none: "без рамки", gold: "золотая", glow: "светящаяся", fire: "огненная", ice: "ледяная",
+    rainbow: "радужная", neon: "неон", galaxy: "галактика", emerald: "изумруд",
+    sunset: "закат", ocean: "океан", matrix: "матрица", aurora: "сияние", blood: "кровавая"
+  };
+  showToast("🖼 Рамка", `Установлена ${names[frame] || frame}`);
+}
+
+// ==================== СЕМЬЯ ====================
+function openFamilyFromSettings() {
+  closeSettings();
+  pushModalParent("settings");
+  openFamily();
+}
+function openFamily() {
+  updateFamilySelection();
+  document.getElementById("famDimaAvatar").innerHTML = getUserAvatar("dima") ? `<img src="${getUserAvatar('dima')}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : getDimaAvatarSVG();
+  document.getElementById("famEvaAvatar").innerHTML = getUserAvatar("eva") ? `<img src="${getUserAvatar('eva')}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : getEvaAvatarSVG();
+  document.getElementById("familyModalBg").classList.add("active");
+}
+function closeFamily() {
+  document.getElementById("familyModalBg").classList.remove("active");
+  returnToParent();
+}
+document.getElementById("familyModalBg").addEventListener("click", e => {
+  if (e.target.id === "familyModalBg") closeFamily();
+});
+function updateFamilySelection() {
+  document.getElementById("famDima").classList.toggle("active", currentUser === "dima");
+  document.getElementById("famEva").classList.toggle("active", currentUser === "eva");
+}
+function switchUser(user) {
+  if (user === currentUser) { closeFamily(); return; }
+  const pass = state.passwords[user];
+  if (pass && pass.pin && pass.length > 0 && pass.mode === "always") {
+    modalStack = [];
+    closeFamily();
+    requestPasswordPrompt(user, () => doSwitchUser(user));
+    return;
+  }
+  doSwitchUser(user);
+}
+function doSwitchUser(user) {
+  modalStack = [];
+  currentUser = user;
+  state.user = user;
+  saveState();
+  updateFamilySelection();
+  applyUserTheme();
+  applyHeaderBg();
+  applyHeaderAvatar();
+  refreshUIToUser();
+  closeFamily();
+  closeProfile();
+  closeSettings();
+  if (user === "eva") switchTab("schedule", document.getElementById("tabBtnSchedule"));
+  else switchTab("grades", document.getElementById("tabBtnGrades"));
+}
+
+// ==================== ПАРОЛЬ ====================
+function openPasswordSettings() {
+  closeSettings();
+  pushModalParent("settings");
+  const pass = state.passwords[currentUser];
+  pinEntryBuffer = "";
+  pendingPassword = null;
+  document.getElementById("passwordStep1").style.display = "block";
+  document.getElementById("passwordStep2").style.display = "none";
+  document.getElementById("passwordStep3").style.display = "none";
+  document.getElementById("passwordModalTitle").textContent = "🔒 Пароль";
+  document.getElementById("passwordModalSub").textContent = "Выберите длину пароля";
+  document.querySelectorAll("#passwordStep1 .pass-option").forEach(opt => {
+    const len = parseInt(opt.dataset.len);
+    if (pass && pass.pin && pass.length === len) opt.classList.add("active");
+    else if (!pass && len === 0) opt.classList.add("active");
+    else opt.classList.remove("active");
+  });
+  document.getElementById("passwordModalBg").classList.add("active");
+}
+function closePasswordSettings() {
+  document.getElementById("passwordModalBg").classList.remove("active");
+  returnToParent();
+}
+document.getElementById("passwordModalBg").addEventListener("click", e => {
+  if (e.target.id === "passwordModalBg") closePasswordSettings();
+});
+function selectPasswordLength(len) {
+  if (len === 0) {
+    if (state.passwords[currentUser]) {
+      delete state.passwords[currentUser];
+      saveState();
+    }
+    document.getElementById("passwordModalBg").classList.remove("active");
+    showToast("🔓 Пароль", "Пароль убран");
+    returnToParent();
+    return;
+  }
+  pendingPassword = { length: len, pin: null };
+  pinEntryBuffer = "";
+  document.getElementById("passwordStep1").style.display = "none";
+  document.getElementById("passwordStep2").style.display = "block";
+  document.getElementById("passwordStep2Sub").textContent = `Введите ${len}-значный пароль`;
+  renderPinDisplay(len, 0);
+  renderPinKeypad(len, "passwordStep2");
+}
+function renderPinDisplay(len, filled) {
+  const display = document.getElementById("pinDisplay");
+  let out = "";
+  for (let i = 0; i < len; i++) out += i < filled ? "●" : "•";
+  display.textContent = out;
+}
+function renderPinKeypad(len, purpose) {
+  const wrap = document.getElementById(purpose === "passwordStep2" ? "pinKeypad" : "promptPinKeypad");
+  wrap.innerHTML = "";
+  ["1","2","3","4","5","6","7","8","9","C","0","⌫"].forEach(k => {
+    const btn = document.createElement("button");
+    btn.className = "pin-key";
+    btn.textContent = k;
+    if (k === "C") btn.classList.add("clear");
+    if (k === "⌫") btn.classList.add("backspace");
+    btn.onclick = () => handlePinKey(k, len, purpose);
+    wrap.appendChild(btn);
+  });
+}
+function handlePinKey(key, len, purpose) {
+  if (purpose === "passwordStep2") {
+    if (key === "C") { pinEntryBuffer = ""; renderPinDisplay(len, 0); return; }
+    if (key === "⌫") { pinEntryBuffer = pinEntryBuffer.slice(0, -1); renderPinDisplay(len, pinEntryBuffer.length); return; }
+    if (pinEntryBuffer.length < len) {
+      pinEntryBuffer += key;
+      renderPinDisplay(len, pinEntryBuffer.length);
+      if (pinEntryBuffer.length === len) {
+        setTimeout(() => {
+          pendingPassword.pin = pinEntryBuffer;
+          document.getElementById("passwordStep2").style.display = "none";
+          document.getElementById("passwordStep3").style.display = "block";
+          const pass = state.passwords[currentUser];
+          document.querySelectorAll("#passwordStep3 .pass-option").forEach(opt => {
+            opt.classList.toggle("active", pass && pass.mode === opt.dataset.mode);
+          });
+        }, 250);
+      }
+    }
+  } else if (purpose === "prompt") {
+    if (key === "C") { pinEntryBuffer = ""; renderPromptPinDisplay(len, 0); return; }
+    if (key === "⌫") { pinEntryBuffer = pinEntryBuffer.slice(0, -1); renderPromptPinDisplay(len, pinEntryBuffer.length); return; }
+    if (pinEntryBuffer.length < len) {
+      pinEntryBuffer += key;
+      renderPromptPinDisplay(len, pinEntryBuffer.length);
+      if (pinEntryBuffer.length === len) setTimeout(() => checkPasswordPrompt(pinEntryBuffer), 200);
+    }
+  }
+}
+function renderPromptPinDisplay(len, filled) {
+  const display = document.getElementById("promptPinDisplay");
+  let out = "";
+  for (let i = 0; i < len; i++) out += i < filled ? "●" : "•";
+  display.textContent = out;
+}
+function cancelPinEntry() {
+  document.getElementById("passwordStep2").style.display = "none";
+  document.getElementById("passwordStep1").style.display = "block";
+  pinEntryBuffer = "";
+  pendingPassword = null;
+}
+function selectPasswordMode(mode) {
+  if (!pendingPassword || !pendingPassword.pin) return;
+  if (!state.passwords) state.passwords = {};
+  state.passwords[currentUser] = {
+    length: pendingPassword.length,
+    pin: pendingPassword.pin,
+    mode: mode
+  };
+  saveState();
+  document.getElementById("passwordModalBg").classList.remove("active");
+  showToast("🔒 Пароль", "Пароль установлен");
+  returnToParent();
+}
+function cancelPasswordMode() {
+  document.getElementById("passwordStep3").style.display = "none";
+  document.getElementById("passwordStep2").style.display = "block";
+}
+
+let passwordPromptCallback = null;
+let passwordPromptUser = null;
+function requestPasswordPrompt(user, callback) {
+  const pass = state.passwords[user];
+  if (!pass || !pass.pin) { if (callback) callback(); return; }
+  passwordPromptUser = user;
+  passwordPromptCallback = callback;
+  pinEntryBuffer = "";
+  document.getElementById("passwordPromptSub").textContent = `Введите ${pass.length}-значный код`;
+  renderPromptPinDisplay(pass.length, 0);
+  renderPinKeypad(pass.length, "prompt");
+  document.getElementById("passwordPromptBg").classList.add("active");
+}
+function checkPasswordPrompt(pin) {
+  const pass = state.passwords[passwordPromptUser];
+  if (!pass) { cancelPasswordPrompt(); return; }
+  if (pin === pass.pin) {
+    document.getElementById("passwordPromptBg").classList.remove("active");
+    const cb = passwordPromptCallback;
+    passwordPromptCallback = null;
+    if (cb) cb();
+  } else {
+    pinEntryBuffer = "";
+    renderPromptPinDisplay(pass.length, 0);
+    const display = document.getElementById("promptPinDisplay");
+    display.style.color = "#e53935";
+    display.textContent = "✕ Неверно";
+    setTimeout(() => {
+      display.style.color = "";
+      renderPromptPinDisplay(pass.length, 0);
+    }, 1200);
+  }
+}
+function cancelPasswordPrompt() {
+  document.getElementById("passwordPromptBg").classList.remove("active");
+  pinEntryBuffer = "";
+  passwordPromptCallback = null;
+  passwordPromptUser = null;
+}
+document.getElementById("passwordPromptBg").addEventListener("click", e => {
+  if (e.target.id === "passwordPromptBg") cancelPasswordPrompt();
+});
+
+// ==================== АВАТАРКИ SVG ====================
 function getDimaAvatarSVG() {
   return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
     <rect width="200" height="200" fill="#f5b800"/>
@@ -3260,7 +4269,6 @@ function getDimaAvatarSVG() {
     <path d="M75 55 Q85 42 100 45 Q95 55 80 60 Z" fill="#6b4226"/>
   </svg>`;
 }
-
 function getEvaAvatarSVG() {
   return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
     <rect width="200" height="200" fill="#fce4ec"/>
@@ -3283,47 +4291,7 @@ function getEvaAvatarSVG() {
   </svg>`;
 }
 
-function openFamily() {
-  updateFamilySelection();
-  document.getElementById("famDimaAvatar").innerHTML = getDimaAvatarSVG();
-  document.getElementById("famEvaAvatar").innerHTML = getEvaAvatarSVG();
-  document.getElementById("familyModalBg").classList.add("active");
-}
-function closeFamily() {
-  document.getElementById("familyModalBg").classList.remove("active");
-}
-document.getElementById("familyModalBg").addEventListener("click", e => {
-  if (e.target.id === "familyModalBg") closeFamily();
-});
-
-function updateFamilySelection() {
-  document.getElementById("famDima").classList.toggle("active", currentUser === "dima");
-  document.getElementById("famEva").classList.toggle("active", currentUser === "eva");
-}
-
-function switchUser(user) {
-  if (user === currentUser) {
-    closeFamily();
-    return;
-  }
-  currentUser = user;
-  state.user = user;
-  saveState();
-  updateFamilySelection();
-  applyUserTheme();
-  applyHeaderBg();
-  refreshUIToUser();
-  closeFamily();
-  closeProfile();
-  if (user === "eva") {
-    const scheduleBtn = document.getElementById("tabBtnSchedule");
-    switchTab("schedule", scheduleBtn);
-  } else {
-    const gradesBtn = document.getElementById("tabBtnGrades");
-    switchTab("grades", gradesBtn);
-  }
-}
-
+// ==================== ТЕМА ПОЛЬЗОВАТЕЛЯ ====================
 function applyUserTheme() {
   const header = document.getElementById("mainHeader");
   const weekInfo = document.getElementById("weekInfo");
@@ -3353,40 +4321,34 @@ function refreshUIToUser() {
   document.getElementById("tabBtnGrades").classList.toggle("hidden", !p.showGrades);
   document.getElementById("tabBtnQuarters").classList.toggle("hidden", !p.showQuarters);
   document.getElementById("scoreBar").classList.toggle("hidden", !p.showScoreBar);
-
-  document.getElementById("avatarSvg").outerHTML = currentUser === "eva"
-    ? getEvaAvatarSVG().replace("<svg", '<svg id="avatarSvg"')
-    : getDimaAvatarSVG().replace("<svg", '<svg id="avatarSvg"');
-
+  applyHeaderAvatar();
   document.getElementById("headerTitle").textContent = currentUser === "eva" ? "Дневник Евы" : "Дневник.ру";
   document.getElementById("headerSub").textContent = currentUser === "eva" ? "1Б · Гимназия №10" : "Электронный дневник";
-
   applyWeekendVisibility();
+  applyHideBadGrades();
   render();
   renderSchedule();
   renderQuarters();
   updateNowBar();
 }
 
+// ==================== NOW BAR ====================
 function updateNowBar() {
   const bar = document.getElementById("nowBar");
   const iconEl = document.getElementById("nowIcon");
   const textEl = document.getElementById("nowText");
   const timeEl = document.getElementById("nowTime");
   bar.classList.remove("active", "lesson", "break", "soon");
-
   const now = new Date();
   const day = now.getDay();
   if (day === 0 || day === 6) return;
   const dayInfo = getDayType(now);
   if (dayInfo.type !== "school") return;
-
   const dayIdx = day - 1;
   const bells = getBells();
   const schedule = getSchedule();
   const lessons = schedule[dayIdx] || [];
   const nowMin = now.getHours() * 60 + now.getMinutes();
-
   for (let i = 0; i < bells.length; i++) {
     const bell = bells[i];
     const s = timeToMin(bell.start), e = timeToMin(bell.end);
@@ -3430,31 +4392,26 @@ function updateNowBar() {
   }
 }
 
+// ==================== Д/З ====================
 function renderTomorrowHW() {
   const wrap = document.getElementById("tomorrowHW");
   const list = document.getElementById("thList");
   const title = document.getElementById("thTitle");
   wrap.classList.remove("active");
   list.innerHTML = "";
-
   if (!getProfile().showHW) return;
-
   const today = new Date();
   const dow = today.getDay();
   if (dow === 5 || dow === 6) return;
-
   const tomorrow = addDays(today, 1);
   const tomDow = tomorrow.getDay();
   if (tomDow === 0 || tomDow === 6) return;
-
   const tomInfo = getDayType(tomorrow);
   if (tomInfo.type !== "school") return;
-
   const tomDayIdx = tomDow - 1;
   const schedule = getSchedule();
   const lessons = schedule[tomDayIdx] || [];
   const dateKey = isoKey(tomorrow);
-
   const items = [];
   lessons.forEach((lesson, slotIdx) => {
     if (!lesson || !lesson.subject) return;
@@ -3464,15 +4421,12 @@ function renderTomorrowHW() {
     const photos = state.hwPhotos[hwKey] || [];
     if (text || photos.length > 0) items.push({ lesson, slotIdx, text, photos });
   });
-
   title.textContent = `📝 Задано на завтра (${DAY_NAMES[tomDayIdx]}, ${formatFull(tomorrow)})`;
-
   if (items.length === 0) {
     list.innerHTML = `<div class="th-empty">Пока ничего не задано — или ты ещё не записал.</div>`;
     wrap.classList.add("active");
     return;
   }
-
   items.forEach(it => {
     const div = document.createElement("div");
     div.className = "th-item";
@@ -3482,21 +4436,15 @@ function renderTomorrowHW() {
     if (it.photos.length > 0) {
       html += `<div class="th-photo">`;
       const showCount = Math.min(it.photos.length, 2);
-      for (let i = 0; i < showCount; i++) {
-        html += `<img src="${it.photos[i]}" onclick="viewTomorrowPhoto(${it.slotIdx}, ${i})" alt="фото задания">`;
-      }
-      if (it.photos.length > 2) {
-        html += `<img src="${it.photos[2]}" onclick="viewTomorrowPhoto(${it.slotIdx}, 2)" alt="фото задания" style="opacity:.6;">`;
-      }
+      for (let i = 0; i < showCount; i++) html += `<img src="${it.photos[i]}" onclick="viewTomorrowPhoto(${it.slotIdx}, ${i})" alt="фото задания">`;
+      if (it.photos.length > 2) html += `<img src="${it.photos[2]}" onclick="viewTomorrowPhoto(${it.slotIdx}, 2)" alt="фото задания" style="opacity:.6;">`;
       html += `</div>`;
     }
     div.innerHTML = html;
     list.appendChild(div);
   });
-
   wrap.classList.add("active");
 }
-
 function viewTomorrowPhoto(slotIdx, idx) {
   const tomorrow = addDays(new Date(), 1);
   const tomDow = tomorrow.getDay();
@@ -3509,6 +4457,7 @@ function viewTomorrowPhoto(slotIdx, idx) {
   document.getElementById("photoViewer").classList.add("active");
 }
 
+// ==================== РИСКИ ====================
 function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
   let sumWV = 0, sumW = 0;
   Object.values(subjGrades).forEach(v => {
@@ -3526,11 +4475,7 @@ function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
 function renderRiskBar() {
   const bar = document.getElementById("riskBar");
   const wrap = document.getElementById("riskItems");
-  if (!getProfile().showGrades) {
-    bar.classList.remove("active");
-    wrap.innerHTML = "";
-    return;
-  }
+  if (!getProfile().showGrades) { bar.classList.remove("active"); wrap.innerHTML = ""; return; }
   const grades = getCurrentGrades();
   const items = [];
   state.subjects.forEach(subj => {
@@ -3542,11 +4487,7 @@ function renderRiskBar() {
   });
   items.sort((a, b) => a.current - b.current);
   const top5 = items.slice(0, 5);
-  if (top5.length === 0) {
-    bar.classList.remove("active");
-    wrap.innerHTML = "";
-    return;
-  }
+  if (top5.length === 0) { bar.classList.remove("active"); wrap.innerHTML = ""; return; }
   bar.classList.add("active");
   wrap.innerHTML = top5.map((it, i) => `
     <div class="risk-item" style="animation-delay:${i * .05}s">
@@ -3562,6 +4503,7 @@ function plural5(n) {
   return "пятёрок";
 }
 
+// ==================== ТАБЛИЦА ОЦЕНОК ====================
 function render() {
   if (!getProfile().showGrades) return;
   const dates = getCurrentDates();
@@ -3580,12 +4522,10 @@ function render() {
     const subjGrades = grades[subj] || {};
     const tr = document.createElement("tr");
     tr.style.animation = `fadeIn .35s var(--ease) ${idx * .015}s backwards`;
-
     const tdName = document.createElement("td");
     tdName.className = "subject-col";
     tdName.textContent = subj;
     tr.appendChild(tdName);
-
     dates.forEach(d => {
       const td = document.createElement("td");
       td.className = "grade-cell";
@@ -3594,12 +4534,12 @@ function render() {
         td.innerHTML = `<div class="grade-wrap">
           <span class="grade-badge g${parsed.grade}">${parsed.grade}</span>
           <span class="type-label ${parsed.type}">${parsed.type === "kr" ? "К/Р" : "УР"}</span>
+          <span class="hidden-placeholder">•</span>
         </div>`;
       }
       td.onclick = () => openGradeModal(subj, d);
       tr.appendChild(td);
     });
-
     const tdAvg = document.createElement("td");
     tdAvg.className = "avg-col";
     const weighted = calcWeightedAvg(subjGrades);
@@ -3613,27 +4553,26 @@ function render() {
       tdAvg.style.color = "var(--text-mute)";
     }
     tr.appendChild(tdAvg);
-
     const tdQ = document.createElement("td");
     tdQ.className = "quarter-cell-main";
     const qv = (state.quarters[subj] || {})[activeQuarter];
     if (qv) {
       tdQ.textContent = qv;
       tdQ.style.color = qv < 2.5 ? "#e53935" : qv < 3.5 ? "#fb8c00" : "#2e7d32";
+      if (qv <= 3) tdQ.classList.add("bad-grade");
     } else {
       tdQ.textContent = "—";
       tdQ.style.color = "var(--text-mute)";
     }
     tdQ.onclick = () => openQuarterModal(subj, activeQuarter);
     tr.appendChild(tdQ);
-
     tbody.appendChild(tr);
   });
-
   updateAvg();
   updateToday();
   updateQuarterLabel();
   renderRiskBar();
+  applyHideBadGrades();
 }
 
 function updateQuarterLabel() {
@@ -3733,7 +4672,6 @@ function updateTypeButtons() {
 }
 function selectType(type) { gradeModal.type = type; updateTypeButtons(); }
 function closeModal() { document.getElementById("modalBg").classList.remove("active"); }
-
 function saveGrade() {
   if (!gradeModal.grade) { alert("Выберите оценку!"); return; }
   const { subj, date, grade, type } = gradeModal;
@@ -3754,13 +4692,11 @@ function clearGrade() {
 document.getElementById("modalBg").addEventListener("click", e => {
   if (e.target.id === "modalBg") closeModal();
 });
-
 function clearAll() {
   if (!confirm(`Удалить ВСЕ оценки за ${activeQuarter} четверть?`)) return;
   state.gradesByQuarter[activeQuarter] = {};
   saveState(); render();
 }
-
 function downloadDiary() {
   const data = JSON.stringify(state, null, 2);
   const blob = new Blob([data], { type: "application/json" });
@@ -3773,7 +4709,6 @@ function downloadDiary() {
   URL.revokeObjectURL(url);
   alert("Файл скачан! 📁");
 }
-
 async function uploadDiary(ev) {
   const file = ev.target.files[0];
   if (!file) return;
@@ -3789,6 +4724,7 @@ async function uploadDiary(ev) {
       applyTheme();
       applyUserTheme();
       applyHeaderBg();
+      applyBgMedia();
       refreshUIToUser();
       renderReminders(); updateRemindBadge(); checkReminders();
       alert("Дневник загружен! ✅");
@@ -3810,8 +4746,8 @@ function switchTab(name, btn) {
   if (name === "grades") render();
 }
 
+// ==================== РАСПИСАНИЕ ====================
 function getWeekDates(monday) { return [0,1,2,3,4,5,6].map(i => addDays(monday, i)); }
-
 function getCurrentLessonSlotIndex() {
   const now = new Date();
   const day = now.getDay();
@@ -3827,18 +4763,15 @@ function getCurrentLessonSlotIndex() {
   }
   return -1;
 }
-
 function renderSchedule() {
   if (!currentWeekStart) currentWeekStart = getMondayOfDate(new Date());
   const dates = getWeekDates(currentWeekStart);
   const header = document.getElementById("scheduleHeader");
   const body = document.getElementById("scheduleBody");
   const today = new Date(); today.setHours(0,0,0,0);
-
   const bells = getBells();
   const schedule = getSchedule();
   const showHW = getProfile().showHW;
-
   const todayIdx = dates.findIndex(d => isSameDay(d, today));
   const currentSlot = todayIdx >= 0 ? getCurrentLessonSlotIndex() : -1;
 
@@ -3858,14 +4791,12 @@ function renderSchedule() {
     const tr = document.createElement("tr");
     const isCurrentRow = (slot === currentSlot && todayIdx >= 0);
     if (isCurrentRow) tr.classList.add("current-lesson-row");
-
     tr.innerHTML = `<td class="num-col">${slot + 1}</td>
                     <td class="time-col">${bells[slot].start} – ${bells[slot].end}</td>`;
     for (let day = 0; day < 7; day++) {
       const td = document.createElement("td");
       const date = dates[day];
       const dayInfo = getDayType(date);
-
       if (dayInfo.type !== "school") {
         if (slot === 0) {
           td.className = "day-off " + dayInfo.type;
@@ -3875,14 +4806,12 @@ function renderSchedule() {
         }
         continue;
       }
-
       const lessons = schedule[day] || [];
       const lesson = lessons[slot];
       if (lesson && lesson.subject) {
         let html = `<div class="subj">${lesson.subject}</div>`;
         if (lesson.room) html += `<div class="room">каб. ${lesson.room}</div>`;
         if (lesson.teacher) html += `<div class="teacher">${lesson.teacher}</div>`;
-
         if (showHW && hasHomework(lesson.subject)) {
           const dateKey = isoKey(date);
           const hwKey = `${dateKey}|${day}|${slot}`;
@@ -3903,7 +4832,6 @@ function renderSchedule() {
           }
           if (hwPhotos.length > 0) {
             html += `<div>`;
-            // Показываем только первое фото, если больше — бейдж +N
             if (hwPhotos.length === 1) {
               html += `<img class="hw-photo-thumb" src="${hwPhotos[0]}" onclick="viewHWPhoto('${hwKey}', 0)" alt="фото">`;
             } else {
@@ -3915,26 +4843,22 @@ function renderSchedule() {
             html += `</div>`;
           }
         }
-
         if (day === todayIdx && slot === currentSlot) {
           td.classList.add("current-lesson");
           html = `<span class="live-badge">Сейчас</span>` + html;
         }
-
         td.innerHTML = html;
       }
       tr.appendChild(td);
     }
     body.appendChild(tr);
   }
-
   const mon = dates[0], sun = dates[6];
   document.getElementById("weekLabel").textContent = `Неделя ${getWeekNumber(mon)}`;
   document.getElementById("weekDates").textContent = `${formatFull(mon)} — ${formatFull(sun)} ${sun.getFullYear()}`;
   applyWeekendVisibility();
   renderTomorrowHW();
 }
-
 function getWeekNumber(d) {
   const date = new Date(d);
   date.setHours(0,0,0,0);
@@ -3980,10 +4904,7 @@ function addHWPhoto(ev) {
   const files = Array.from(ev.target.files);
   files.forEach(file => {
     const reader = new FileReader();
-    reader.onload = e => {
-      hwPhotosTemp.push(e.target.result);
-      renderHWPhotos();
-    };
+    reader.onload = e => { hwPhotosTemp.push(e.target.result); renderHWPhotos(); };
     reader.readAsDataURL(file);
   });
   ev.target.value = "";
@@ -4038,6 +4959,7 @@ document.getElementById("hwModalBg").addEventListener("click", e => {
   if (e.target.id === "hwModalBg") closeHW();
 });
 
+// ==================== ЧЕТВЕРТНЫЕ ====================
 function renderQuarters() {
   if (!getProfile().showQuarters) return;
   const tbody = document.getElementById("quartersBody");
@@ -4056,6 +4978,7 @@ function renderQuarters() {
       if (qv) {
         td.textContent = qv;
         td.style.color = qv < 2.5 ? "#e53935" : qv < 3.5 ? "#fb8c00" : "#2e7d32";
+        if (qv <= 3) td.classList.add("bad-quarter");
         const w = QUARTER_WEIGHTS[q];
         sumW += w; sumWV += qv * w;
       } else {
@@ -4072,6 +4995,7 @@ function renderQuarters() {
       tdFinal.textContent = final;
       tdFinal.classList.add("has-grade");
       tdFinal.style.color = final < 2.5 ? "#e53935" : final < 3.5 ? "#fb8c00" : "#2e7d32";
+      if (final <= 3) tdFinal.classList.add("bad-quarter");
     } else {
       tdFinal.textContent = "—";
       tdFinal.style.color = "var(--text-mute)";
@@ -4085,20 +5009,12 @@ function getQuarterGradeLimits(subj, quarter) {
   const grades = state.gradesByQuarter[quarter] || {};
   const subjGrades = grades[subj] || {};
   const avg = calcWeightedAvg(subjGrades);
-  if (avg === null) {
-    return { min: 1, max: 5, avg: null };
-  }
-  if (avg >= 4.5) {
-    return { min: 5, max: 5, avg };
-  } else if (avg >= 3.5) {
-    return { min: 4, max: 5, avg };
-  } else if (avg >= 2.5) {
-    return { min: 3, max: 5, avg };
-  } else {
-    return { min: 1, max: 5, avg };
-  }
+  if (avg === null) return { min: 1, max: 5, avg: null };
+  if (avg >= 4.5) return { min: 5, max: 5, avg };
+  if (avg >= 3.5) return { min: 4, max: 5, avg };
+  if (avg >= 2.5) return { min: 3, max: 5, avg };
+  return { min: 1, max: 5, avg };
 }
-
 function openQuarterModal(subj, quarter) {
   currentQuarterModal = { subj, quarter };
   document.getElementById("qTitle").textContent = subj;
@@ -4107,7 +5023,6 @@ function openQuarterModal(subj, quarter) {
   wrap.innerHTML = "";
   const current = (state.quarters[subj] || {})[quarter];
   const limits = getQuarterGradeLimits(subj, quarter);
-
   const subEl = document.getElementById("qSub");
   if (limits.avg !== null) {
     let hint = "";
@@ -4117,18 +5032,16 @@ function openQuarterModal(subj, quarter) {
     else hint = ` • средний ${limits.avg.toFixed(2)} — доступны любые`;
     subEl.textContent = `${quarter} четверть${hint}`;
   }
-
   [1,2,3,4,5].forEach(n => {
     const btn = document.createElement("button");
     btn.className = "grade-btn g" + n;
     btn.textContent = n;
     if (current === n) btn.classList.add("selected");
-
     if (n < limits.min || n > limits.max) {
       btn.disabled = true;
       btn.style.opacity = "0.3";
       btn.style.cursor = "not-allowed";
-      btn.title = `Нельзя выставить: средний балл ${limits.avg ? limits.avg.toFixed(2) : "—"}`;
+      btn.title = `Нельзя выставить`;
     } else {
       btn.onclick = () => {
         if (!state.quarters[subj]) state.quarters[subj] = {};
@@ -4159,6 +5072,7 @@ document.getElementById("qModalBg").addEventListener("click", e => {
   if (e.target.id === "qModalBg") closeQModal();
 });
 
+// ==================== КАЛЕНДАРЬ ====================
 function openCal() {
   if (!calMonth) calMonth = new Date();
   renderCal();
@@ -4210,6 +5124,7 @@ document.getElementById("calModalBg").addEventListener("click", e => {
   if (e.target.id === "calModalBg") closeCal();
 });
 
+// ==================== НАПОМИНАНИЯ ====================
 function ensureReminders() { if (!Array.isArray(state.reminders)) state.reminders = []; }
 function getUpcomingReminders() {
   ensureReminders();
@@ -4241,7 +5156,6 @@ function closeReminders() { document.getElementById("remindModalBg").classList.r
 document.getElementById("remindModalBg").addEventListener("click", e => {
   if (e.target.id === "remindModalBg") closeReminders();
 });
-
 function addReminder() {
   const dEl = document.getElementById("remindDate");
   const tEl = document.getElementById("remindTime");
@@ -4301,10 +5215,7 @@ function renderReminders() {
     const timeStr = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
     return `
       <div class="remind-item ${isPast ? "past" : ""}" style="animation-delay:${i * .04}s">
-        <div class="ri-time">
-          ${dateStr}<br>${timeStr}
-          ${r.fired ? "<br><span style='color:#9e9e9e'>✓ показано</span>" : ""}
-        </div>
+        <div class="ri-time">${dateStr}<br>${timeStr}${r.fired ? "<br><span style='color:#9e9e9e'>✓ показано</span>" : ""}</div>
         <div class="ri-text">${escapeHtml(r.text)}</div>
         <button class="ri-del" title="Удалить" onclick="deleteReminder('${r.id}')">✕</button>
       </div>
@@ -4333,9 +5244,7 @@ function checkReminders() {
 function fireReminder(r) {
   showToast("🔔 Напоминание", r.text);
   if ("Notification" in window && Notification.permission === "granted") {
-    try {
-      new Notification("🔔 Дневник.ру — напоминание", { body: r.text, icon: "icon.png", tag: r.id });
-    } catch (e) {}
+    try { new Notification("🔔 Дневник.ру — напоминание", { body: r.text, icon: "icon.png", tag: r.id }); } catch (e) {}
   }
 }
 function showToast(title, text) {
@@ -4350,10 +5259,7 @@ function showToast(title, text) {
     </div>
     <button class="t-close" title="Закрыть">✕</button>
   `;
-  const close = () => {
-    el.classList.add("hide");
-    setTimeout(() => el.remove(), 300);
-  };
+  const close = () => { el.classList.add("hide"); setTimeout(() => el.remove(), 300); };
   el.querySelector(".t-close").onclick = close;
   wrap.appendChild(el);
   setTimeout(close, 12000);
@@ -4362,7 +5268,6 @@ function askNotificationPermission() {
   if (!("Notification" in window)) return;
   if (Notification.permission === "default") Notification.requestPermission();
 }
-
 function escapeHtml(s) {
   return String(s)
     .replace(/&/g, "&amp;")
@@ -4375,11 +5280,12 @@ function escapeHtml(s) {
 // ==================== СТАРТ ====================
 async function init() {
   state = await loadStateAsync();
-
   applyTheme();
   currentUser = state.user || "dima";
   applyUserTheme();
   applyHeaderBg();
+  applyBgMedia();
+  applyHeaderAvatar();
   activeQuarter = getCurrentQuarter();
   currentWeekStart = getMondayOfDate(new Date());
 
@@ -4395,9 +5301,25 @@ async function init() {
     document.getElementById("tab-grades").classList.add("active");
   }
 
+  applyHideBadGrades();
+  applyWeekendVisibility();
   render();
   renderSchedule();
   renderQuarters();
+
+  const pass = state.passwords[currentUser];
+  if (pass && pass.pin && pass.length > 0) {
+    const isSameDevice = state.lastDeviceId === state.deviceId;
+    if (pass.mode === "always" || !isSameDevice) {
+      requestPasswordPrompt(currentUser, () => {
+        state.lastDeviceId = state.deviceId;
+        saveState();
+      });
+    } else {
+      state.lastDeviceId = state.deviceId;
+      saveState();
+    }
+  }
 
   setInterval(updateNowBar, 30000);
   setInterval(checkReminders, 1000);
@@ -4410,7 +5332,6 @@ async function init() {
   updateNowBar();
   checkReminders();
   updateRemindBadge();
-
   document.addEventListener("click", askNotificationPermission, { once: true });
 }
 
