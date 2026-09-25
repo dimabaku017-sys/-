@@ -32,7 +32,6 @@
     --header-h: 64px;
     --radius: 14px;
   }
-
   [data-theme="dark"] {
     --bg: #0f1420;
     --panel: #1a2130;
@@ -44,10 +43,8 @@
     --orange-soft: #2e2010;
     --pink-soft: #2a1520;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
-
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
     background: var(--bg);
@@ -58,53 +55,17 @@
     position: relative;
   }
 
-  /* ================= ФОН ================= */
-  .bg-layer {
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    overflow: hidden;
-    pointer-events: none;
-    background: var(--bg);
-  }
-  .bg-media {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none;
-  }
+  /* ФОН */
+  .bg-layer { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; background: var(--bg); }
+  .bg-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
   .bg-media.active { display: block; }
-  /* Уменьшенная вуаль, чтобы фон лучше просвечивал */
-  .bg-media-overlay {
-    position: absolute;
-    inset: 0;
-    background: var(--bg);
-    opacity: 0.42;
-    pointer-events: none;
-    display: none;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-  }
+  .bg-media-overlay { position: absolute; inset: 0; background: var(--bg); opacity: 0.42; pointer-events: none; display: none; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
   .bg-media-overlay.active { display: block; }
   [data-theme="dark"] .bg-media-overlay { opacity: 0.55; }
 
-  .mesh-bg {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    transition: opacity .3s var(--ease);
-  }
+  .mesh-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; transition: opacity .3s var(--ease); }
   .mesh-bg.hidden { opacity: 0; }
-  .mesh-blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.55;
-    will-change: transform;
-  }
+  .mesh-blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.55; will-change: transform; }
   .mesh-blob.b1 { width: 520px; height: 520px; background: radial-gradient(circle, #1976d2 0%, transparent 70%); top: -10%; left: -8%; animation: meshFloat1 26s ease-in-out infinite; }
   .mesh-blob.b2 { width: 480px; height: 480px; background: radial-gradient(circle, #8e24aa 0%, transparent 70%); top: 30%; right: -10%; animation: meshFloat2 32s ease-in-out infinite; }
   .mesh-blob.b3 { width: 560px; height: 560px; background: radial-gradient(circle, #ec407a 0%, transparent 70%); bottom: -15%; left: 25%; animation: meshFloat3 38s ease-in-out infinite; }
@@ -114,7 +75,6 @@
   @keyframes meshFloat3 { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(60px,-80px) scale(1.1);} 66%{transform:translate(-60px,-40px) scale(.9);} }
   @keyframes meshFloat4 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(100px,-60px) scale(1.2);} }
   [data-theme="dark"] .mesh-blob { opacity: 0.35; }
-
   @media (max-width: 768px) {
     .mesh-blob { filter: blur(60px); }
     .mesh-blob.b1, .mesh-blob.b2 { width: 340px; height: 340px; }
@@ -122,7 +82,7 @@
     .mesh-blob.b4 { width: 300px; height: 300px; }
   }
 
-  /* ================= ЗАЩИТНЫЙ ЭКРАН ПАРОЛЯ ================= */
+  /* LOCK SCREEN */
   .lock-screen {
     position: fixed;
     inset: 0;
@@ -137,13 +97,8 @@
     animation: lockFadeIn .5s var(--ease);
   }
   .lock-screen.active { display: flex; }
-  @keyframes lockFadeIn {
-    from { opacity: 0; backdrop-filter: blur(0); }
-    to   { opacity: 1; backdrop-filter: blur(30px) saturate(180%); }
-  }
-  [data-theme="dark"] .lock-screen {
-    background: rgba(0, 0, 0, 0.5);
-  }
+  @keyframes lockFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  [data-theme="dark"] .lock-screen { background: rgba(0, 0, 0, 0.5); }
 
   .lock-panel {
     background: rgba(255, 255, 255, 0.22);
@@ -159,80 +114,35 @@
     color: #fff;
     animation: lockPanelIn .5s var(--ease);
   }
-  [data-theme="dark"] .lock-panel {
-    background: rgba(30, 40, 60, 0.35);
-    border-color: rgba(255, 255, 255, 0.15);
+  [data-theme="dark"] .lock-panel { background: rgba(30, 40, 60, 0.35); border-color: rgba(255, 255, 255, 0.15); }
+  @keyframes lockPanelIn { from { transform: scale(.92) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+  .lock-screen.shake { animation: screenShake .4s var(--ease); }
+  @keyframes screenShake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-4px, -3px); }
+    40% { transform: translate(4px, 3px); }
+    60% { transform: translate(-3px, 2px); }
+    80% { transform: translate(3px, -2px); }
   }
-  @keyframes lockPanelIn {
-    from { transform: scale(.92) translateY(20px); opacity: 0; }
-    to   { transform: scale(1) translateY(0); opacity: 1; }
-  }
-
-  .lock-panel .lock-avatar {
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 16px;
-    border: 3px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    background: #f5b800;
-  }
-  .lock-panel .lock-avatar svg,
-  .lock-panel .lock-avatar img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-  }
-  .lock-panel .lock-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 4px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-  }
-  .lock-panel .lock-sub {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.85);
-    margin-bottom: 20px;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  .lock-panel .pin-display {
-    background: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    color: #fff;
-    font-family: 'Courier New', monospace;
-    font-size: 30px;
-    letter-spacing: 12px;
-    text-align: center;
-    padding: 14px;
-    border-radius: 16px;
-    font-weight: bold;
-    min-height: 58px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 14px;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-    transition: .2s var(--ease);
-  }
-  .lock-panel .pin-display.error {
-    background: rgba(229, 57, 53, 0.35);
-    border-color: rgba(229, 57, 53, 0.6);
-    animation: pinShake .45s var(--ease);
-  }
-  @keyframes pinShake {
+  .lock-panel .lock-avatar { width: 88px; height: 88px; border-radius: 50%; overflow: hidden; margin: 0 auto 16px; border: 3px solid rgba(255, 255, 255, 0.7); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); background: #f5b800; }
+  .lock-panel .lock-avatar svg, .lock-panel .lock-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lock-panel .lock-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 4px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
+  .lock-panel .lock-sub { font-size: 13px; color: rgba(255, 255, 255, 0.85); margin-bottom: 20px; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3); }
+  .lock-panel .pin-dots { display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  .lock-panel .pin-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); border: 2px solid rgba(255, 255, 255, 0.6); transition: .2s var(--ease); box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15); }
+  .lock-panel .pin-dot.filled { background: #fff; transform: scale(1.1); box-shadow: 0 0 14px rgba(255, 255, 255, 0.9); }
+  .lock-panel .pin-dot.error { background: #e53935; border-color: #ff5252; box-shadow: 0 0 14px rgba(229, 57, 53, 0.9); }
+  .lock-panel .pin-dots.shake { animation: dotsShake .5s var(--ease); }
+  @keyframes dotsShake {
     0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-10px); }
-    40% { transform: translateX(10px); }
-    60% { transform: translateX(-6px); }
-    80% { transform: translateX(6px); }
+    15% { transform: translateX(-10px); }
+    30% { transform: translateX(10px); }
+    45% { transform: translateX(-8px); }
+    60% { transform: translateX(8px); }
+    75% { transform: translateX(-4px); }
+    90% { transform: translateX(4px); }
   }
-
-  .lock-panel .pin-keypad {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
+  .lock-panel .pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .lock-panel .pin-key {
     padding: 16px 8px;
     font-size: 22px;
@@ -251,35 +161,18 @@
   }
   .lock-panel .pin-key:hover { background: rgba(255, 255, 255, 0.35); }
   .lock-panel .pin-key:active { transform: scale(.94); }
-  .lock-panel .pin-key.clear {
-    background: rgba(229, 57, 53, 0.4);
-    border-color: rgba(229, 57, 53, 0.5);
-  }
+  .lock-panel .pin-key.clear { background: rgba(229, 57, 53, 0.4); border-color: rgba(229, 57, 53, 0.5); }
   .lock-panel .pin-key.clear:hover { background: rgba(229, 57, 53, 0.55); }
-  .lock-panel .pin-key.backspace {
-    background: rgba(255, 152, 0, 0.35);
-    border-color: rgba(255, 152, 0, 0.45);
-  }
+  .lock-panel .pin-key.backspace { background: rgba(255, 152, 0, 0.35); border-color: rgba(255, 152, 0, 0.45); }
   .lock-panel .pin-key.backspace:hover { background: rgba(255, 152, 0, 0.5); }
 
-  /* ================= ПАНЕЛЬ ПАРОЛЯ В НАСТРОЙКАХ (обычная, не lock-screen) ================= */
-  .pin-display-settings {
-    font-family: 'Courier New', monospace;
-    font-size: 32px;
-    letter-spacing: 12px;
-    text-align: center;
-    padding: 16px;
-    background: var(--bg);
-    border-radius: 12px;
-    color: var(--primary);
-    font-weight: bold;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 12px;
-  }
-  [data-theme="dark"] .pin-display-settings { background: #0f1420; color: #82b1ff; }
+  /* PIN в настройках */
+  .pin-dots-settings { display: flex; justify-content: center; gap: 14px; margin: 16px 0; flex-wrap: wrap; }
+  .pin-dots-settings .pin-dot-s { width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 2px solid var(--border); transition: .2s var(--ease); }
+  [data-theme="dark"] .pin-dots-settings .pin-dot-s { background: #0f1420; }
+  .pin-dots-settings .pin-dot-s.filled { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-color: var(--primary); transform: scale(1.15); box-shadow: 0 0 10px rgba(25,118,210,.5); }
+  .pin-dots-settings .pin-dot-s.error { background: #e53935; border-color: #e53935; box-shadow: 0 0 10px rgba(229,57,53,.6); }
+  .pin-dots-settings.shake { animation: dotsShake .5s var(--ease); }
   .pin-keypad-settings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
   .pin-keypad-settings .pin-key {
     padding: 16px 8px;
@@ -301,14 +194,9 @@
   .pin-keypad-settings .pin-key.backspace { background: #fff3e0; color: var(--orange); }
   [data-theme="dark"] .pin-keypad-settings .pin-key.backspace { background: var(--orange-soft); }
 
-  .app {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 0 12px 24px;
-    position: relative;
-  }
+  .app { max-width: 1440px; margin: 0 auto; padding: 0 12px 24px; position: relative; }
 
-  /* ================= ШАПКА ================= */
+  /* ШАПКА */
   .header {
     background: linear-gradient(135deg, #1976d2, #0d47a1);
     background-size: 200% 200%;
@@ -316,35 +204,20 @@
     color: #fff;
     padding: 12px 16px;
     border-radius: 0 0 var(--radius) var(--radius);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     gap: 10px;
     box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
     min-height: var(--header-h);
   }
-  .header.has-custom-bg {
-    background-size: cover !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    animation: none !important;
-  }
-  .header.has-custom-bg::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15));
-    pointer-events: none;
-    z-index: 0;
-  }
+  .header.has-custom-bg { background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; animation: none !important; }
+  .header.has-custom-bg::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15)); pointer-events: none; z-index: 0; }
   .header.eva { background: linear-gradient(135deg, #ec407a, #ad1457); background-size: 200% 200%; }
   .header.eva.has-custom-bg { background: var(--header-custom-bg); }
   .header::after {
     content: "";
-    position: absolute;
-    inset: -50%;
+    position: absolute; inset: -50%;
     background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.18), transparent 45%),
                 radial-gradient(circle at 80% 80%, rgba(255,255,255,.10), transparent 45%);
     pointer-events: none;
@@ -356,35 +229,12 @@
   @keyframes headerGlow { 0%,100%{transform:translate(0,0) scale(1);opacity:.8;} 50%{transform:translate(5%,-4%) scale(1.08);opacity:1;} }
 
   .header-left { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; min-width: 0; }
-  .logo {
-    width: 38px; height: 38px;
-    flex-shrink: 0;
-    border-radius: 10px;
-    background: rgba(255,255,255,.18);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255,255,255,.25);
-  }
+  .logo { width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; background: rgba(255,255,255,.18); display: flex; align-items: center; justify-content: center; font-size: 20px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,.25); }
   .header h1 { font-size: 18px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 4px rgba(0,0,0,.25); }
   .header-sub { font-size: 11px; opacity: .9; font-weight: 400; display: block; margin-top: 1px; text-shadow: 0 1px 3px rgba(0,0,0,.25); }
   .header-right { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
-  .theme-btn {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,.6);
-    background: rgba(255,255,255,.12);
-    cursor: pointer;
-    font-size: 18px;
-    display: flex; align-items: center; justify-content: center;
-    transition: .25s var(--ease);
-    color: #fff;
-    backdrop-filter: blur(4px);
-  }
+  .theme-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); background: rgba(255,255,255,.12); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: .25s var(--ease); color: #fff; backdrop-filter: blur(4px); }
   .theme-btn:hover { background: rgba(255,255,255,.28); transform: rotate(20deg); }
-
   .avatar-btn {
     width: 48px; height: 48px;
     border-radius: 50%;
@@ -402,22 +252,13 @@
   .avatar-btn:hover { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(255,255,255,.25); }
   .avatar-btn svg { width: 100%; height: 100%; display: block; }
   .avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
-
-  /* Мини-рамки для шапки */
   .avatar-btn[data-frame="gold"] { border-color: #ffd700; box-shadow: 0 0 15px rgba(255,215,0,.75), 0 2px 10px rgba(0,0,0,.2); }
   .avatar-btn[data-frame="glow"] { border-color: #4fc3f7; box-shadow: 0 0 18px rgba(79,195,247,.85), 0 2px 10px rgba(0,0,0,.2); animation: glowBtnPulse 2.4s ease-in-out infinite; }
   @keyframes glowBtnPulse { 0%,100%{box-shadow:0 0 18px rgba(79,195,247,.85),0 2px 10px rgba(0,0,0,.2);} 50%{box-shadow:0 0 28px rgba(79,195,247,1),0 2px 10px rgba(0,0,0,.2);} }
   .avatar-btn[data-frame="fire"] { border-color: #ff5722; box-shadow: 0 0 18px rgba(255,87,34,.9), 0 2px 10px rgba(0,0,0,.2); animation: fireBtn 1.6s ease-in-out infinite; }
   @keyframes fireBtn { 0%,100%{box-shadow:0 0 18px rgba(255,87,34,.9),0 2px 10px rgba(0,0,0,.2);} 50%{box-shadow:0 0 26px rgba(255,152,0,1),0 2px 10px rgba(0,0,0,.2);} }
   .avatar-btn[data-frame="ice"] { border-color: #81d4fa; box-shadow: 0 0 18px rgba(129,212,250,.9), 0 2px 10px rgba(0,0,0,.2); }
-  .avatar-btn[data-frame="rainbow"] {
-    border-color: transparent;
-    background-image: linear-gradient(#fff,#fff), conic-gradient(from 0deg, #ff0000, #ff9800, #ffeb3b, #4caf50, #2196f3, #9c27b0, #ff0000);
-    background-origin: border-box;
-    background-clip: content-box, border-box;
-    animation: hueRotate 4s linear infinite;
-    box-shadow: 0 0 15px rgba(255,0,128,.6);
-  }
+  .avatar-btn[data-frame="rainbow"] { border-color: transparent; background-image: linear-gradient(#fff,#fff), conic-gradient(from 0deg, #ff0000, #ff9800, #ffeb3b, #4caf50, #2196f3, #9c27b0, #ff0000); background-origin: border-box; background-clip: content-box, border-box; animation: hueRotate 4s linear infinite; box-shadow: 0 0 15px rgba(255,0,128,.6); }
   @keyframes hueRotate { from{filter:hue-rotate(0deg);} to{filter:hue-rotate(360deg);} }
   .avatar-btn[data-frame="neon"] { border-color: #00e5ff; box-shadow: 0 0 20px rgba(0,229,255,.95), 0 0 35px rgba(0,229,255,.5), 0 2px 10px rgba(0,0,0,.2); animation: neonBtn 1.8s ease-in-out infinite; }
   @keyframes neonBtn { 0%,100%{box-shadow:0 0 20px rgba(0,229,255,.95),0 0 35px rgba(0,229,255,.5),0 2px 10px rgba(0,0,0,.2);} 50%{box-shadow:0 0 32px rgba(0,229,255,1),0 0 55px rgba(0,229,255,.75),0 2px 10px rgba(0,0,0,.2);} }
@@ -436,7 +277,7 @@
   .avatar-btn[data-frame="blood"] { border-color: #b71c1c; box-shadow: 0 0 22px rgba(183,28,28,.95), inset 0 0 12px rgba(183,28,28,.5); animation: bloodBtn 2s ease-in-out infinite; }
   @keyframes bloodBtn { 0%,100%{box-shadow:0 0 22px rgba(183,28,28,.95),inset 0 0 12px rgba(183,28,28,.5);} 50%{box-shadow:0 0 34px rgba(229,57,53,1),inset 0 0 20px rgba(229,57,53,.7);} }
 
-  /* ================= СТАТИСТИКА ================= */
+  /* СТАТИСТИКА */
   .score-bar {
     background: color-mix(in srgb, var(--panel) 82%, transparent);
     backdrop-filter: blur(10px);
@@ -462,7 +303,6 @@
   [data-theme="dark"] .avg-orange { color: #ffb74d; }
   [data-theme="dark"] .avg-green  { color: #66bb6a; }
 
-  /* ================= NOW BAR ================= */
   .now-bar {
     display: none;
     padding: 12px 16px;
@@ -486,21 +326,13 @@
   .now-bar.eva.lesson { background: linear-gradient(135deg, #ec407a, #ad1457); }
   .now-bar.eva.break  { background: linear-gradient(135deg, #ff7043, #d84315); }
   .now-bar.eva.soon   { background: linear-gradient(135deg, #ab47bc, #6a1b9a); }
-  .now-bar::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
-    animation: shimmer 3s infinite;
-    pointer-events: none;
-  }
+  .now-bar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent); animation: shimmer 3s infinite; pointer-events: none; }
   @keyframes shimmer { 0%{transform:translateX(-100%);} 100%{transform:translateX(100%);} }
   .now-bar .icon { font-size: 20px; position: relative; z-index: 1; animation: pulse 1.8s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.15);} }
   .now-bar .now-text { flex: 1; min-width: 140px; position: relative; z-index: 1; }
   .now-bar .now-time { background: rgba(255,255,255,.25); padding: 4px 12px; border-radius: 6px; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; position: relative; z-index: 1; }
 
-  /* ================= RISK BAR ================= */
   .risk-bar {
     background: var(--orange-soft);
     border: 1px solid #ffe082;
@@ -538,7 +370,6 @@
   .risk-bar .risk-item .need { color: var(--green); font-weight: 700; }
   [data-theme="dark"] .risk-bar .risk-item .need { color: #66bb6a; }
 
-  /* ================= ВКЛАДКИ ================= */
   .tabs {
     display: flex;
     background: color-mix(in srgb, var(--panel) 82%, transparent);
@@ -569,11 +400,7 @@
     display: flex; align-items: center; justify-content: center;
     gap: 6px;
   }
-  .tab-btn.active {
-    color: #fff;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    box-shadow: 0 2px 8px rgba(25,118,210,.3);
-  }
+  .tab-btn.active { color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); box-shadow: 0 2px 8px rgba(25,118,210,.3); }
   [data-theme="dark"] .tab-btn.active { color: #fff; }
   .tab-btn.hidden { display: none; }
   .tab-btn.eva.active { background: linear-gradient(135deg, #ec407a, #ad1457); box-shadow: 0 2px 8px rgba(236,64,122,.3); }
@@ -582,7 +409,6 @@
   .tab-content.active { display: block; animation: tabIn .3s var(--ease); }
   @keyframes tabIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
 
-  /* ================= ПАНЕЛЬ УПРАВЛЕНИЯ ================= */
   .controls {
     background: color-mix(in srgb, var(--panel) 82%, transparent);
     backdrop-filter: blur(10px);
@@ -611,14 +437,7 @@
     white-space: nowrap;
     display: inline-flex; align-items: center; gap: 6px;
   }
-  .btn::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35), transparent 70%);
-    transform: translateX(-100%);
-    transition: transform .5s;
-  }
+  .btn::before { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35), transparent 70%); transform: translateX(-100%); transition: transform .5s; }
   .btn:hover::before { transform: translateX(100%); }
   .btn:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
   .btn:active { transform: translateY(0) scale(.98); }
@@ -644,7 +463,6 @@
   .quarter-switcher .arrow:disabled { color: #cfd8dc; cursor: not-allowed; }
   .quarter-switcher .quarter-label { font-weight: 700; color: var(--orange); font-size: 13px; min-width: 100px; text-align: center; padding: 0 6px; }
 
-  /* ================= ТАБЛИЦЫ ================= */
   .table-wrap {
     background: color-mix(in srgb, var(--panel) 88%, transparent);
     backdrop-filter: blur(12px);
@@ -659,50 +477,21 @@
   table.grades-table th, table.grades-table td { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6px; text-align: center; vertical-align: middle; }
   table.grades-table thead th { background: #f5f7fa; position: sticky; top: 0; z-index: 5; font-weight: 600; font-size: 12px; color: #37474f; padding: 10px 6px; }
   [data-theme="dark"] table.grades-table thead th { background: #202a3d; color: var(--text-soft); }
-  th.subject-col, td.subject-col {
-    background: #fafbfc;
-    text-align: left;
-    padding-left: 12px;
-    min-width: 150px;
-    font-weight: 600;
-    font-size: 13px;
-    position: sticky;
-    left: 0;
-    z-index: 4;
-    border-right: 2px solid #cfd8dc;
-  }
+  th.subject-col, td.subject-col { background: #fafbfc; text-align: left; padding-left: 12px; min-width: 150px; font-weight: 600; font-size: 13px; position: sticky; left: 0; z-index: 4; border-right: 2px solid #cfd8dc; }
   [data-theme="dark"] th.subject-col, [data-theme="dark"] td.subject-col { background: #202a3d; border-right-color: var(--border); }
   thead th.subject-col { z-index: 6; }
   tbody tr:hover { background: rgba(25,118,210,.04); }
   [data-theme="dark"] tbody tr:hover { background: rgba(74,158,255,.05); }
   tbody tr:hover td.subject-col { color: var(--primary); }
 
-  th.avg-col, td.avg-col {
-    background: #f5f7fa;
-    font-weight: bold;
-    font-size: 14px;
-    min-width: 80px;
-    border-left: 2px solid #cfd8dc;
-    position: sticky;
-    right: 78px;
-    z-index: 4;
-  }
+  th.avg-col, td.avg-col { background: #f5f7fa; font-weight: bold; font-size: 14px; min-width: 80px; border-left: 2px solid #cfd8dc; position: sticky; right: 78px; z-index: 4; }
   [data-theme="dark"] th.avg-col, [data-theme="dark"] td.avg-col { background: #202a3d; border-left-color: var(--border); }
   thead th.avg-col { z-index: 6; }
   td.avg-col { line-height: 1.3; }
   td.avg-col .weighted { font-size: 14px; }
   td.avg-col .simple { font-size: 10px; color: #78909c; font-weight: normal; margin-top: 2px; }
 
-  th.quarter-col, td.quarter-col {
-    background: #fff3e0;
-    font-weight: bold;
-    font-size: 14px;
-    min-width: 78px;
-    border-left: 2px solid #ffcc80;
-    position: sticky;
-    right: 0;
-    z-index: 4;
-  }
+  th.quarter-col, td.quarter-col { background: #fff3e0; font-weight: bold; font-size: 14px; min-width: 78px; border-left: 2px solid #ffcc80; position: sticky; right: 0; z-index: 4; }
   [data-theme="dark"] th.quarter-col, [data-theme="dark"] td.quarter-col { background: var(--orange-soft); border-left-color: var(--border); }
   thead th.quarter-col { z-index: 6; color: var(--orange); font-size: 11px; padding: 8px 4px; }
   thead th.quarter-col .q-name { display: block; font-size: 12px; }
@@ -733,15 +522,7 @@
   body.hide-bad-grades td.quarter-cell-main.bad-grade::before { content: "•"; color: var(--text-mute); }
 
   .grade-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
-  .grade-badge {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 34px; height: 34px;
-    border-radius: 9px;
-    color: #fff; font-weight: bold; font-size: 17px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.2);
-    animation: badgeIn .3s var(--ease);
-    transition: .25s var(--ease);
-  }
+  .grade-badge { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 9px; color: #fff; font-weight: bold; font-size: 17px; box-shadow: 0 2px 6px rgba(0,0,0,.2); animation: badgeIn .3s var(--ease); transition: .25s var(--ease); }
   @keyframes badgeIn { from{transform:scale(.5);opacity:0;} to{transform:scale(1);opacity:1;} }
   td.grade-cell:hover .grade-badge { transform: scale(1.08) rotate(-3deg); }
   .g1, .g2 { background: linear-gradient(135deg, #ef5350, #c62828); }
@@ -753,17 +534,11 @@
   [data-theme="dark"] .type-label.ur { color: var(--text-soft); background: #2a3446; }
   .type-label.kr { color: #fff; background: #c62828; box-shadow: 0 1px 3px rgba(198,40,40,.4); }
 
-  /* ================= ЧЕТВЕРТНАЯ ТАБЛИЦА ================= */
   table.quarters-table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 600px; font-size: 13px; }
   table.quarters-table th, table.quarters-table td { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 8px; text-align: center; vertical-align: middle; }
   table.quarters-table thead th { background: #f5f7fa; position: sticky; top: 0; z-index: 5; font-weight: 600; font-size: 12px; color: #37474f; padding: 12px 4px; }
   [data-theme="dark"] table.quarters-table thead th { background: #202a3d; color: var(--text-soft); }
-  table.quarters-table th.subject-col, table.quarters-table td.subject-col {
-    background: #fafbfc; text-align: left; padding-left: 12px;
-    min-width: 160px; font-weight: 600; font-size: 13px;
-    position: sticky; left: 0; z-index: 4;
-    border-right: 2px solid #cfd8dc;
-  }
+  table.quarters-table th.subject-col, table.quarters-table td.subject-col { background: #fafbfc; text-align: left; padding-left: 12px; min-width: 160px; font-weight: 600; font-size: 13px; position: sticky; left: 0; z-index: 4; border-right: 2px solid #cfd8dc; }
   [data-theme="dark"] table.quarters-table th.subject-col, [data-theme="dark"] table.quarters-table td.subject-col { background: #202a3d; border-right-color: var(--border); }
   table.quarters-table td.quarter-cell { cursor: pointer; min-width: 80px; height: 50px; font-size: 19px; font-weight: bold; }
   table.quarters-table td.quarter-cell:hover { background: #e3f2fd; transform: scale(1.05); }
@@ -776,16 +551,13 @@
   body.hide-bad-grades table.quarters-table td.quarter-cell.bad-quarter,
   body.hide-bad-grades table.quarters-table td.quarter-cell.final.bad-quarter { color: var(--text-mute) !important; font-size: 14px !important; }
 
-  /* ================= РАСПИСАНИЕ ================= */
   .week-info {
     background: color-mix(in srgb, var(--panel) 82%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: var(--radius);
     padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap;
     gap: 10px;
     font-size: 13px;
@@ -796,7 +568,6 @@
   .week-info .week-label { font-weight: 700; color: var(--orange); font-size: 15px; }
   .week-info.eva .week-label { color: #ec407a; }
   .week-info .week-dates { color: var(--text-soft); font-size: 12px; }
-  .week-info.eva .week-dates { color: #ad1457; }
   .week-nav { display: flex; gap: 6px; flex-wrap: wrap; }
   .week-nav .btn { padding: 10px 20px; font-size: 14px; }
   .btn.today { background: #ff9800; }
@@ -804,18 +575,7 @@
   .btn.today.eva { background: #ec407a; }
   .btn.remind { background: linear-gradient(135deg, #8e24aa, #6a1b9a); position: relative; }
   .btn.remind:hover { background: linear-gradient(135deg, #7b1fa2, #4a148c); }
-  .btn.remind .badge {
-    display: inline-block;
-    min-width: 18px; height: 18px;
-    line-height: 18px;
-    padding: 0 5px;
-    margin-left: 4px;
-    background: #ff5252; color: #fff;
-    border-radius: 9px;
-    font-size: 11px; font-weight: 700;
-    text-align: center;
-    box-shadow: 0 0 0 2px rgba(255,82,82,.3);
-  }
+  .btn.remind .badge { display: inline-block; min-width: 18px; height: 18px; line-height: 18px; padding: 0 5px; margin-left: 4px; background: #ff5252; color: #fff; border-radius: 9px; font-size: 11px; font-weight: 700; text-align: center; box-shadow: 0 0 0 2px rgba(255,82,82,.3); }
   .btn.remind .badge.empty { display: none; }
 
   .schedule-wrap {
@@ -839,16 +599,9 @@
   .schedule-table th .day-date { display: block; font-size: 11px; font-weight: 500; color: #1565c0; margin-top: 2px; }
   [data-theme="dark"] .schedule-table th .day-date { color: #82b1ff; }
   .schedule-table.eva th .day-date { color: #ad1457; }
-  [data-theme="dark"] .schedule-table.eva th .day-date { color: #f48fb1; }
-  .schedule-table th .day-date.today {
-    background: linear-gradient(135deg, #ff9800, #f57c00);
-    color: white;
-    border-radius: 4px;
-    padding: 2px 6px;
-    display: inline-block;
-    box-shadow: 0 2px 8px rgba(255,152,0,.5);
-  }
-  .schedule-table.eva th .day-date.today { background: linear-gradient(135deg, #ec407a, #ad1457); box-shadow: 0 2px 8px rgba(236,64,122,.5); }
+  .schedule-table th .day-date.today { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; border-radius: 4px; padding: 2px 6px; display: inline-block; box-shadow: 0 2px 8px rgba(255,152,0,.5); }
+  .schedule-table.eva th .day-date.today { background: linear-gradient(135deg, #ec407a, #ad1457); }
+  .schedule-table th .short-note { display: block; font-size: 9px; color: #bf360c; font-weight: 700; margin-top: 2px; }
   .schedule-table th.num-col, .schedule-table td.num-col { background: #f5f7fa; font-weight: 700; text-align: center; width: 36px; min-width: 36px; font-size: 14px; color: #37474f; }
   [data-theme="dark"] .schedule-table th.num-col, [data-theme="dark"] .schedule-table td.num-col { background: #202a3d; color: var(--text-soft); }
   .schedule-table th.time-col, .schedule-table td.time-col { background: #f5f7fa; font-weight: 700; text-align: center; min-width: 90px; font-size: 11px; color: #37474f; white-space: nowrap; }
@@ -862,69 +615,26 @@
   [data-theme="dark"] .schedule-table.eva td .subj { color: #f48fb1; }
   .schedule-table td .room { color: var(--text-soft); font-size: 10px; }
   .schedule-table td .teacher { color: var(--text-soft); font-size: 10px; font-style: italic; }
+  body.hide-rooms .schedule-table td .room { display: none; }
+  body.hide-teachers .schedule-table td .teacher { display: none; }
 
   .schedule-table.hide-weekend th:nth-child(8), .schedule-table.hide-weekend th:nth-child(9),
   .schedule-table.hide-weekend td:nth-child(8), .schedule-table.hide-weekend td:nth-child(9) { display: none; }
 
-  .schedule-table td.current-lesson {
-    background: linear-gradient(135deg, rgba(67,160,71,.22), rgba(46,125,50,.22)) !important;
-    border: 2px solid #43a047 !important;
-    position: relative;
-    animation: lessonCellPulse 2s ease-in-out infinite;
-  }
-  .schedule-table.eva td.current-lesson {
-    background: linear-gradient(135deg, rgba(236,64,122,.22), rgba(173,20,87,.22)) !important;
-    border-color: #ec407a !important;
-  }
+  .schedule-table td.current-lesson { background: linear-gradient(135deg, rgba(67,160,71,.22), rgba(46,125,50,.22)) !important; border: 2px solid #43a047 !important; position: relative; animation: lessonCellPulse 2s ease-in-out infinite; }
+  .schedule-table.eva td.current-lesson { background: linear-gradient(135deg, rgba(236,64,122,.22), rgba(173,20,87,.22)) !important; border-color: #ec407a !important; }
   [data-theme="dark"] .schedule-table td.current-lesson { background: linear-gradient(135deg, rgba(67,160,71,.28), rgba(46,125,50,.28)) !important; }
   [data-theme="dark"] .schedule-table.eva td.current-lesson { background: linear-gradient(135deg, rgba(236,64,122,.28), rgba(173,20,87,.28)) !important; }
-  @keyframes lessonCellPulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(67,160,71,.45), inset 0 0 12px rgba(67,160,71,.15); transform: scale(1); }
-    50%     { box-shadow: 0 0 0 8px rgba(67,160,71,0), inset 0 0 22px rgba(67,160,71,.35); transform: scale(1.025); }
-  }
-  .schedule-table td.current-lesson::before {
-    content: "";
-    position: absolute;
-    top: 6px; right: 6px;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: #43a047;
-    box-shadow: 0 0 0 0 rgba(67,160,71,.7);
-    animation: liveDot 1.5s ease-in-out infinite;
-    z-index: 2;
-  }
+  @keyframes lessonCellPulse { 0%,100%{box-shadow:0 0 0 0 rgba(67,160,71,.45),inset 0 0 12px rgba(67,160,71,.15);transform:scale(1);} 50%{box-shadow:0 0 0 8px rgba(67,160,71,0),inset 0 0 22px rgba(67,160,71,.35);transform:scale(1.025);} }
+  .schedule-table td.current-lesson::before { content: ""; position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; border-radius: 50%; background: #43a047; animation: liveDot 1.5s ease-in-out infinite; z-index: 2; }
   .schedule-table.eva td.current-lesson::before { background: #ec407a; }
   @keyframes liveDot { 0%,100%{box-shadow:0 0 0 0 rgba(67,160,71,.7);opacity:1;} 50%{box-shadow:0 0 0 8px rgba(67,160,71,0);opacity:.85;} }
-  .schedule-table td.current-lesson .live-badge {
-    position: absolute;
-    top: -8px; left: 8px;
-    background: linear-gradient(135deg, #43a047, #2e7d32);
-    color: #fff; font-size: 9px; font-weight: 700;
-    padding: 2px 6px; border-radius: 6px;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    box-shadow: 0 2px 8px rgba(67,160,71,.55);
-    z-index: 3;
-  }
+  .schedule-table td.current-lesson .live-badge { position: absolute; top: -8px; left: 8px; background: linear-gradient(135deg, #43a047, #2e7d32); color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 6px; text-transform: uppercase; letter-spacing: .5px; box-shadow: 0 2px 8px rgba(67,160,71,.55); z-index: 3; }
   .schedule-table.eva td.current-lesson .live-badge { background: linear-gradient(135deg, #ec407a, #ad1457); }
-  .schedule-table tr.current-lesson-row td.num-col,
-  .schedule-table tr.current-lesson-row td.time-col {
-    background: linear-gradient(135deg, #43a047, #2e7d32) !important;
-    color: #fff !important;
-    font-weight: 700;
-  }
-  .schedule-table.eva tr.current-lesson-row td.num-col,
-  .schedule-table.eva tr.current-lesson-row td.time-col { background: linear-gradient(135deg, #ec407a, #ad1457) !important; }
+  .schedule-table tr.current-lesson-row td.num-col, .schedule-table tr.current-lesson-row td.time-col { background: linear-gradient(135deg, #43a047, #2e7d32) !important; color: #fff !important; font-weight: 700; }
+  .schedule-table.eva tr.current-lesson-row td.num-col, .schedule-table.eva tr.current-lesson-row td.time-col { background: linear-gradient(135deg, #ec407a, #ad1457) !important; }
 
-  td.day-off {
-    background: #f5f5f5 !important;
-    text-align: center !important;
-    vertical-align: middle !important;
-    color: var(--text-mute);
-    font-style: italic;
-    font-size: 12px;
-    font-weight: 600;
-  }
+  td.day-off { background: #f5f5f5 !important; text-align: center !important; vertical-align: middle !important; color: var(--text-mute); font-style: italic; font-size: 12px; font-weight: 600; }
   [data-theme="dark"] td.day-off { background: #202a3d !important; }
   td.day-off.holiday { background: #fff3e0 !important; color: #e65100; }
   [data-theme="dark"] td.day-off.holiday { background: var(--orange-soft) !important; color: #ffb74d; }
@@ -932,52 +642,14 @@
   [data-theme="dark"] td.day-off.weekend { background: #202a3d !important; color: var(--text-soft); }
   td.day-off.vacation { background: #e8f5e9 !important; color: #2e7d32; }
   [data-theme="dark"] td.day-off.vacation { background: #1a2e1c !important; color: #66bb6a; }
-  /* Сокращённые уроки (праздники) */
-  td.day-off.holiday-short { background: #ffe0b2 !important; color: #bf360c !important; }
-  [data-theme="dark"] td.day-off.holiday-short { background: #3a2410 !important; color: #ffb74d; }
 
-  /* ================= ДОМАШНЕЕ ЗАДАНИЕ ================= */
   .hw-row { margin-top: 6px; display: flex; align-items: flex-start; gap: 4px; flex-wrap: wrap; }
-  .hw-btn {
-    background: #fff3e0;
-    color: var(--orange);
-    border: 1px solid #ffcc80;
-    border-radius: 4px;
-    padding: 2px 7px;
-    font-size: 11px;
-    cursor: pointer;
-    font-weight: 600;
-    white-space: nowrap;
-    transition: .2s var(--ease);
-  }
+  .hw-btn { background: #fff3e0; color: var(--orange); border: 1px solid #ffcc80; border-radius: 4px; padding: 2px 7px; font-size: 11px; cursor: pointer; font-weight: 600; white-space: nowrap; transition: .2s var(--ease); }
   [data-theme="dark"] .hw-btn { background: var(--orange-soft); border-color: var(--border); }
   .hw-btn:hover { background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff; transform: translateY(-1px); box-shadow: 0 2px 6px rgba(255,152,0,.4); }
   .hw-btn.has-hw { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; border-color: transparent; }
-  .hw-btn .photo-badge {
-    display: inline-block;
-    margin-left: 4px;
-    background: var(--primary);
-    color: #fff;
-    border-radius: 8px;
-    padding: 0 5px;
-    font-size: 10px;
-    line-height: 14px;
-  }
-  .hw-text {
-    font-size: 11px;
-    color: #5d4037;
-    background: #fff8e1;
-    padding: 3px 6px;
-    border-radius: 3px;
-    display: inline-block;
-    margin-top: 3px;
-    max-width: 100%;
-    word-wrap: break-word;
-    line-height: 1.35;
-    cursor: pointer;
-    user-select: none;
-    border-left: 3px solid var(--orange);
-  }
+  .hw-btn .photo-badge { display: inline-block; margin-left: 4px; background: var(--primary); color: #fff; border-radius: 8px; padding: 0 5px; font-size: 10px; line-height: 14px; }
+  .hw-text { font-size: 11px; color: #5d4037; background: #fff8e1; padding: 3px 6px; border-radius: 3px; display: inline-block; margin-top: 3px; max-width: 100%; word-wrap: break-word; line-height: 1.35; cursor: pointer; user-select: none; border-left: 3px solid var(--orange); }
   [data-theme="dark"] .hw-text { background: #202a3d; color: var(--text); }
   .hw-text:hover { background: #ffecb3; transform: translateX(2px); }
   .hw-text.done { text-decoration: line-through; color: var(--text-mute); background: #f5f5f5; border-left-color: var(--green); opacity: .7; }
@@ -985,14 +657,7 @@
   .hw-photo-thumb:hover { transform: scale(1.15) rotate(-3deg); box-shadow: var(--shadow-md); }
   .hw-photo-wrap { position: relative; display: inline-block; margin-top: 4px; margin-right: 4px; vertical-align: top; }
   .hw-photo-wrap .hw-photo-thumb { margin: 0; display: block; }
-  .hw-photo-more {
-    position: absolute; inset: 0;
-    background: rgba(0,0,0,.55);
-    color: #fff; border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700;
-    cursor: pointer;
-  }
+  .hw-photo-more { position: absolute; inset: 0; background: rgba(0,0,0,.55); color: #fff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; cursor: pointer; }
   .hw-photo-more:hover { background: rgba(0,0,0,.75); }
 
   .tomorrow-hw {
@@ -1012,15 +677,7 @@
   @keyframes fadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
   .tomorrow-hw .th-title { font-weight: 700; color: var(--orange); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
   .tomorrow-hw .th-list { display: flex; flex-direction: column; gap: 8px; }
-  .tomorrow-hw .th-item {
-    background: color-mix(in srgb, var(--panel) 85%, transparent);
-    border: 1px solid #ffe082;
-    border-left: 4px solid #ff9800;
-    border-radius: 8px;
-    padding: 10px 12px;
-    display: flex; flex-direction: column; gap: 4px;
-    animation: fadeIn .3s var(--ease) backwards;
-  }
+  .tomorrow-hw .th-item { background: color-mix(in srgb, var(--panel) 85%, transparent); border: 1px solid #ffe082; border-left: 4px solid #ff9800; border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; animation: fadeIn .3s var(--ease) backwards; }
   .tomorrow-hw .th-item .th-subj { font-weight: 700; color: #1a237e; font-size: 13px; }
   .tomorrow-hw .th-item .th-meta { font-size: 11px; color: var(--text-soft); }
   .tomorrow-hw .th-item .th-text { color: #5d4037; font-size: 12px; line-height: 1.4; white-space: pre-wrap; }
@@ -1028,7 +685,7 @@
   .tomorrow-hw .th-item .th-photo img { max-width: 80px; max-height: 80px; border-radius: 6px; border: 1px solid #90caf9; cursor: pointer; margin-right: 4px; }
   .tomorrow-hw .th-empty { color: var(--text-mute); font-style: italic; font-size: 12px; }
 
-  /* ================= МОДАЛЬНЫЕ ОКНА ================= */
+  /* МОДАЛКИ */
   .modal-bg {
     position: fixed; inset: 0;
     background: rgba(0,0,0,.4);
@@ -1040,20 +697,7 @@
   }
   .modal-bg.active { display: flex; animation: bgIn .25s var(--ease); }
   @keyframes bgIn { from{opacity:0;} to{opacity:1;} }
-  .modal {
-    background: var(--panel);
-    border-radius: var(--radius);
-    padding: 20px;
-    width: 100%;
-    max-width: 460px;
-    max-height: 90vh;
-    overflow-y: auto;
-    text-align: center;
-    box-shadow: var(--shadow-lg);
-    animation: pop .25s var(--ease);
-    color: var(--text);
-    position: relative;
-  }
+  .modal { background: var(--panel); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; text-align: center; box-shadow: var(--shadow-lg); animation: pop .25s var(--ease); color: var(--text); position: relative; }
   @keyframes pop { from{transform:scale(.9);opacity:0;} to{transform:scale(1);opacity:1;} }
   .modal h3 { font-size: 16px; color: var(--primary); margin-bottom: 4px; }
   [data-theme="dark"] .modal h3 { color: #82b1ff; }
@@ -1078,162 +722,108 @@
     overflow: hidden;
     letter-spacing: .2px;
   }
-  .action-btn::before {
-    content: "";
-    position: absolute; inset: 0;
-    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35), transparent 70%);
-    transform: translateX(-100%);
-    transition: transform .5s;
-  }
+  .action-btn::before { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35), transparent 70%); transform: translateX(-100%); transition: transform .5s; }
   .action-btn:hover::before { transform: translateX(100%); }
   .action-btn:active { transform: scale(.97); }
   .action-btn .ab-emoji { font-size: 15px; }
   .action-btn.save { background: linear-gradient(135deg, #43a047, #2e7d32); color: #fff; box-shadow: 0 3px 10px rgba(67,160,71,.35), inset 0 1px 0 rgba(255,255,255,.25); }
-  .action-btn.save:hover { background: linear-gradient(135deg, #4caf50, #1b5e20); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(67,160,71,.5); }
+  .action-btn.save:hover { background: linear-gradient(135deg, #4caf50, #1b5e20); transform: translateY(-2px); }
   .action-btn.clear { background: linear-gradient(135deg, #ff9800, #ef6c00); color: #fff; box-shadow: 0 3px 10px rgba(239,108,0,.35), inset 0 1px 0 rgba(255,255,255,.25); }
-  .action-btn.clear:hover { background: linear-gradient(135deg, #ffa726, #e65100); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(239,108,0,.5); }
+  .action-btn.clear:hover { background: linear-gradient(135deg, #ffa726, #e65100); transform: translateY(-2px); }
   .action-btn.cancel { background: linear-gradient(135deg, #78909c, #546e7a); color: #fff; box-shadow: 0 3px 10px rgba(84,110,122,.35), inset 0 1px 0 rgba(255,255,255,.25); }
-  .action-btn.cancel:hover { background: linear-gradient(135deg, #90a4ae, #455a64); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(84,110,122,.5); }
+  .action-btn.cancel:hover { background: linear-gradient(135deg, #90a4ae, #455a64); transform: translateY(-2px); }
   .action-btn.done { background: linear-gradient(135deg, #2196f3, #0d47a1); color: #fff; box-shadow: 0 3px 10px rgba(13,71,161,.35), inset 0 1px 0 rgba(255,255,255,.25); }
-  .action-btn.done:hover { background: linear-gradient(135deg, #42a5f5, #0d47a1); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(13,71,161,.5); }
+  .action-btn.done:hover { background: linear-gradient(135deg, #42a5f5, #0d47a1); transform: translateY(-2px); }
   .action-btn.back { background: linear-gradient(135deg, #8e24aa, #4a148c); color: #fff; box-shadow: 0 3px 10px rgba(74,20,140,.35), inset 0 1px 0 rgba(255,255,255,.25); }
-  .action-btn.back:hover { background: linear-gradient(135deg, #ab47bc, #4a148c); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(74,20,140,.5); }
+  .action-btn.back:hover { background: linear-gradient(135deg, #ab47bc, #4a148c); transform: translateY(-2px); }
+  .action-btn.danger { background: linear-gradient(135deg, #e53935, #b71c1c); color: #fff; box-shadow: 0 3px 10px rgba(183,28,28,.4), inset 0 1px 0 rgba(255,255,255,.25); }
+  .action-btn.danger:hover { background: linear-gradient(135deg, #ef5350, #c62828); transform: translateY(-2px); }
   .action-btn.full { flex: 1 1 100%; }
 
   .section-label { font-size: 11px; font-weight: 600; color: #455a64; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; text-align: left; }
   [data-theme="dark"] .section-label { color: var(--text-soft); }
 
   .grade-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-  .grade-btn {
-    width: 48px; height: 48px;
-    border: none; border-radius: 10px;
-    color: #fff; font-size: 20px; font-weight: bold;
-    cursor: pointer; transition: .2s var(--ease);
-    box-shadow: 0 2px 8px rgba(0,0,0,.15);
-  }
-  .grade-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+  .grade-btn { width: 48px; height: 48px; border: none; border-radius: 10px; color: #fff; font-size: 20px; font-weight: bold; cursor: pointer; transition: .2s var(--ease); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  .grade-btn:hover { transform: translateY(-4px) scale(1.05); }
   .grade-btn.selected { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.08); }
   .grade-btn:disabled { opacity: .3; cursor: not-allowed; transform: none !important; box-shadow: none; }
 
   .type-btns { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
-  .type-btn {
-    padding: 10px 18px;
-    border: 2px solid #cfd8dc;
-    background: var(--panel);
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    color: #546e7a;
-    min-width: 110px;
-  }
+  .type-btn { padding: 10px 18px; border: 2px solid #cfd8dc; background: var(--panel); border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; color: #546e7a; min-width: 110px; }
   [data-theme="dark"] .type-btn { border-color: var(--border); color: var(--text-soft); }
   .type-btn.selected[data-type="ur"] { border-color: #607d8b; background: #eceff1; color: #37474f; }
-  [data-theme="dark"] .type-btn.selected[data-type="ur"] { background: var(--primary-soft); color: var(--text); }
   .type-btn.selected[data-type="kr"] { border-color: #c62828; background: #ffebee; color: #c62828; }
-  [data-theme="dark"] .type-btn.selected[data-type="kr"] { background: #2e1414; color: #ff6b6b; }
   .type-btn .hint { display: block; font-size: 10px; font-weight: normal; color: #999; margin-top: 2px; }
-  .type-btn.selected .hint { color: inherit; opacity: 0.7; }
 
-  textarea {
-    width: 100%;
-    min-height: 90px;
-    padding: 10px;
-    border: 1px solid #cfd8dc;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 13px;
-    resize: vertical;
-    margin-bottom: 10px;
-    background: var(--panel);
-    color: var(--text);
-  }
-  [data-theme="dark"] textarea { border-color: var(--border); }
+  textarea { width: 100%; min-height: 90px; padding: 10px; border: 1px solid #cfd8dc; border-radius: 10px; font-family: inherit; font-size: 13px; resize: vertical; margin-bottom: 10px; background: var(--panel); color: var(--text); }
   textarea:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
   .hw-photo-area { margin-bottom: 12px; text-align: left; }
   .hw-photo-area .photo-label-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 8px; flex-wrap: wrap; }
   .hw-photo-area .photo-label { font-size: 11px; font-weight: 600; color: #455a64; text-transform: uppercase; letter-spacing: 0.5px; }
-  [data-theme="dark"] .hw-photo-area .photo-label { color: var(--text-soft); }
-  .gallery-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 10px 16px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: #fff; border: none; border-radius: 10px;
-    cursor: pointer; font-size: 13px; font-weight: 600;
-    box-shadow: 0 2px 6px rgba(25,118,210,.3);
-  }
+  .gallery-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; box-shadow: 0 2px 6px rgba(25,118,210,.3); }
   .gallery-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(25,118,210,.45); }
 
-  #hwPhotoInput, #headerBgInput, #avatarUploadInput, #headerBgUploadInput, #bgMediaInput, #resetPasswordInput { display: none; }
+  .hw-templates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    background: color-mix(in srgb, var(--primary-soft) 70%, transparent);
+    border-radius: 10px;
+    border: 1px dashed #90caf9;
+  }
+  [data-theme="dark"] .hw-templates { border-color: var(--border); }
+  .hw-templates .tpl-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    align-self: center;
+    margin-right: 4px;
+  }
+  .hw-tpl-btn {
+    padding: 6px 12px;
+    border: none;
+    background: var(--panel);
+    color: var(--primary);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: .2s var(--ease);
+    font-family: inherit;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid #bbdefb;
+  }
+  [data-theme="dark"] .hw-tpl-btn { background: var(--panel); border-color: var(--border); color: #82b1ff; }
+  .hw-tpl-btn:hover { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; transform: translateY(-1px); box-shadow: 0 3px 10px rgba(25,118,210,.35); }
+
+  #hwPhotoInput, #headerBgInput, #avatarUploadInput, #headerBgUploadInput, #bgMediaInput { display: none; }
   .hw-photo-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .hw-photo-preview .thumb-wrap { position: relative; width: 72px; height: 72px; }
   .hw-photo-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 2px solid #90caf9; cursor: pointer; }
-  .hw-photo-preview .remove-photo {
-    position: absolute; top: -6px; right: -6px;
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ef4444, #b91c1c);
-    color: #fff; border: 2px solid var(--panel);
-    cursor: pointer; font-size: 12px; line-height: 1; font-weight: bold;
-  }
+  .hw-photo-preview .remove-photo { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; border: 2px solid var(--panel); cursor: pointer; font-size: 12px; line-height: 1; font-weight: bold; }
   .hw-photo-empty { font-size: 11px; color: var(--text-mute); font-style: italic; margin-top: 6px; }
 
-  /* ================= ПРОСМОТР ФОТО ================= */
-  .photo-viewer {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.9);
-    backdrop-filter: blur(6px);
-    display: none;
-    align-items: center; justify-content: center;
-    z-index: 200;
-    cursor: zoom-out;
-    padding: 16px;
-  }
+  .photo-viewer { position: fixed; inset: 0; background: rgba(0,0,0,.9); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; z-index: 200; cursor: zoom-out; padding: 16px; }
   .photo-viewer.active { display: flex; animation: bgIn .25s var(--ease); }
   .photo-viewer img { max-width: 92vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,.6); }
   .photo-viewer .close-hint { position: fixed; top: 16px; right: 20px; color: #fff; font-size: 13px; opacity: .8; }
 
-  /* ================= ПРОФИЛЬ ================= */
-  .profile-settings-btn {
-    position: absolute; top: 12px; right: 12px;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: color-mix(in srgb, var(--panel) 90%, transparent);
-    color: var(--text-soft);
-    font-size: 20px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: .3s var(--ease);
-    z-index: 5;
-    box-shadow: var(--shadow-sm);
-  }
+  .profile-settings-btn { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%; border: none; background: color-mix(in srgb, var(--panel) 90%, transparent); color: var(--text-soft); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .3s var(--ease); z-index: 5; box-shadow: var(--shadow-sm); }
   .profile-settings-btn:hover { background: var(--primary); color: #fff; transform: rotate(90deg) scale(1.1); }
   .profile-modal { max-width: 440px; text-align: center; padding: 24px 20px 20px; }
 
-  .avatar-frame-wrap {
-    width: 130px; height: 130px;
-    margin: 0 auto 14px;
-    position: relative;
-    display: flex; align-items: center; justify-content: center;
-    animation: avatarFloat 4s ease-in-out infinite;
-  }
+  .avatar-frame-wrap { width: 130px; height: 130px; margin: 0 auto 14px; position: relative; display: flex; align-items: center; justify-content: center; animation: avatarFloat 4s ease-in-out infinite; }
   @keyframes avatarFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
-  .profile-modal .profile-avatar-big {
-    width: 100%; height: 100%;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 4px solid #ffe082;
-    box-shadow: 0 4px 16px rgba(245,184,0,.35);
-    background: #f5b800;
-    position: relative;
-    z-index: 1;
-  }
+  .profile-modal .profile-avatar-big { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 4px solid #ffe082; box-shadow: 0 4px 16px rgba(245,184,0,.35); background: #f5b800; position: relative; z-index: 1; }
   .profile-modal.eva .profile-avatar-big { border-color: #f8bbd0; box-shadow: 0 4px 16px rgba(236,64,122,.35); background: #fce4ec; }
   .profile-modal .profile-avatar-big svg,
   .profile-modal .profile-avatar-big img { width: 100%; height: 100%; display: block; object-fit: cover; }
-
   .avatar-frame-ring { position: absolute; inset: -6px; border-radius: 50%; pointer-events: none; z-index: 2; }
 
   .avatar-frame-wrap[data-frame="gold"] .profile-avatar-big { border-color: #ffd700; box-shadow: 0 0 0 3px #fff8e1, 0 0 20px rgba(255,215,0,.55); }
@@ -1275,102 +865,36 @@
   .profile-modal.eva .profile-name { color: #ad1457; }
   [data-theme="dark"] .profile-modal .profile-name { color: #82b1ff; }
   [data-theme="dark"] .profile-modal.eva .profile-name { color: #f48fb1; }
-  .profile-modal .profile-row {
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    background: #f5f9ff;
-    border-radius: 10px;
-    margin-bottom: 6px;
-    font-size: 13px;
-    text-align: left;
-    border-left: 3px solid transparent;
-    transition: .2s var(--ease);
-  }
+  .profile-modal .profile-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 12px; background: #f5f9ff; border-radius: 10px; margin-bottom: 6px; font-size: 13px; text-align: left; border-left: 3px solid transparent; }
   [data-theme="dark"] .profile-modal .profile-row { background: #202a3d; }
   .profile-modal.eva .profile-row { background: #fce4ec; }
-  [data-theme="dark"] .profile-modal.eva .profile-row { background: #2a1520; }
   .profile-modal .profile-row:hover { background: var(--primary-soft); border-left-color: var(--primary); transform: translateX(4px); }
   .profile-modal .profile-row .pr-label { color: #607d8b; font-weight: 600; font-size: 12px; }
-  [data-theme="dark"] .profile-modal .profile-row .pr-label { color: var(--text-soft); }
   .profile-modal .profile-row .pr-value { color: var(--text); font-weight: 500; text-align: right; word-break: break-word; font-size: 12px; }
 
-  /* ================= НАСТРОЙКИ ================= */
   .settings-modal { max-width: 420px; text-align: left; }
   .settings-modal h3 { text-align: center; }
   .settings-modal .sub { text-align: center; }
-  .settings-section {
-    background: color-mix(in srgb, var(--panel) 90%, transparent);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
-  }
-  .settings-section .ss-title {
-    font-size: 11px; font-weight: 700;
-    color: var(--text-soft);
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    margin-bottom: 10px;
-  }
-  .settings-row {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 10px;
-    padding: 9px 10px;
-    border-radius: 8px;
-    margin-bottom: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: .2s var(--ease);
-    background: transparent;
-    border: none;
-    width: 100%;
-    text-align: left;
-    color: var(--text);
-    font-family: inherit;
-  }
+  .settings-section { background: color-mix(in srgb, var(--panel) 90%, transparent); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+  .settings-section .ss-title { font-size: 11px; font-weight: 700; color: var(--text-soft); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+  .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; border-radius: 8px; margin-bottom: 6px; font-size: 13px; cursor: pointer; transition: .2s var(--ease); background: transparent; border: none; width: 100%; text-align: left; color: var(--text); font-family: inherit; }
   .settings-row:last-child { margin-bottom: 0; }
   .settings-row:hover { background: var(--primary-soft); transform: translateX(3px); }
-  .settings-row .sr-left { display: flex; align-items: center; gap: 10px; font-weight: 500; min-width: 0; }
+  .settings-row .sr-left { display: flex; align-items: center; gap: 10px; font-weight: 500; min-width: 0; flex: 1; }
   .settings-row .sr-left .sr-emoji { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
-  .settings-row .sr-left .sr-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .settings-row .sr-left .sr-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
   .settings-row .sr-left .sr-text b { font-weight: 600; font-size: 13px; }
   .settings-row .sr-left .sr-text span { font-size: 11px; color: var(--text-soft); }
   .settings-row .sr-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; color: var(--text-mute); font-size: 15px; }
   .settings-row.chevron .sr-right::after { content: "›"; font-size: 20px; font-weight: bold; color: var(--text-mute); }
 
-  .toggle-switch {
-    position: relative;
-    width: 42px; height: 24px;
-    border-radius: 12px;
-    background: #cfd8dc;
-    border: none;
-    transition: .25s var(--ease);
-    flex-shrink: 0;
-    padding: 0;
-    pointer-events: none;
-  }
+  .toggle-switch { position: relative; width: 42px; height: 24px; border-radius: 12px; background: #cfd8dc; border: none; transition: .25s var(--ease); flex-shrink: 0; padding: 0; pointer-events: none; }
   [data-theme="dark"] .toggle-switch { background: #3a4a60; }
-  .toggle-switch::after {
-    content: "";
-    position: absolute;
-    top: 3px; left: 3px;
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: #fff;
-    transition: .25s var(--ease);
-  }
+  .toggle-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: .25s var(--ease); }
   .toggle-switch.on { background: linear-gradient(135deg, #43a047, #2e7d32); }
   .toggle-switch.on::after { left: 21px; }
 
-  .settings-avatar-mini {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
-    border: 2px solid #ffe082;
-    background: #f5b800;
-  }
+  .settings-avatar-mini { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex-shrink: 0; border: 2px solid #ffe082; background: #f5b800; }
   .settings-avatar-mini svg,
   .settings-avatar-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -1379,42 +903,11 @@
   .settings-submodal .sub { text-align: center; }
   .field-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
   .field-row label { font-size: 11px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: .5px; }
-  .field-row input, .field-row textarea {
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 14px;
-    font-family: inherit;
-    background: var(--panel);
-    color: var(--text);
-    width: 100%;
-  }
+  .field-row input, .field-row textarea { padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--panel); color: var(--text); width: 100%; }
   .field-row input:focus, .field-row textarea:focus { outline: 2px solid var(--primary); border-color: var(--primary); }
 
-  /* Палитра рамок */
-  .frame-options {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 12px;
-    max-height: 380px;
-    overflow-y: auto;
-    padding-right: 4px;
-  }
-  .frame-opt {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 5px;
-    padding: 10px 6px;
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background: color-mix(in srgb, var(--panel) 90%, transparent);
-    cursor: pointer;
-    transition: .2s var(--ease);
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--text-soft);
-    text-transform: uppercase;
-  }
+  .frame-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
+  .frame-opt { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 6px; border-radius: 10px; border: 2px solid transparent; background: color-mix(in srgb, var(--panel) 90%, transparent); cursor: pointer; transition: .2s var(--ease); font-size: 9px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; }
   .frame-opt:hover { background: var(--primary-soft); transform: translateY(-2px); }
   .frame-opt.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
   .frame-opt .fo-preview { width: 36px; height: 36px; border-radius: 50%; background: #f5b800; border: 3px solid #ffe082; }
@@ -1434,48 +927,17 @@
   .frame-opt[data-frame="blood"] .fo-preview { border-color: #b71c1c; box-shadow: 0 0 14px rgba(183,28,28,1); }
 
   .pass-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
-  .pass-option {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--panel) 90%, transparent);
-    border: 2px solid var(--border);
-    cursor: pointer;
-    transition: .2s var(--ease);
-    text-align: left;
-    font-family: inherit;
-    color: var(--text);
-    width: 100%;
-  }
+  .pass-option { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: color-mix(in srgb, var(--panel) 90%, transparent); border: 2px solid var(--border); cursor: pointer; transition: .2s var(--ease); text-align: left; font-family: inherit; color: var(--text); width: 100%; }
   .pass-option:hover { border-color: var(--primary); background: var(--primary-soft); }
   .pass-option.active { border-color: var(--primary); background: var(--primary-soft); }
-  .pass-option .po-radio {
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    border: 2px solid #cfd8dc;
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  [data-theme="dark"] .pass-option .po-radio { border-color: var(--border); }
+  .pass-option .po-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #cfd8dc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
   .pass-option.active .po-radio { border-color: var(--primary); background: var(--primary); }
   .pass-option.active .po-radio::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
   .pass-option .po-text b { font-size: 13px; display: block; margin-bottom: 2px; }
   .pass-option .po-text span { font-size: 11px; color: var(--text-soft); }
 
   .upload-choice { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
-  .upload-choice-btn {
-    display: flex; align-items: center; gap: 12px;
-    padding: 16px;
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--panel) 90%, transparent);
-    border: 2px solid var(--border);
-    cursor: pointer;
-    transition: .2s var(--ease);
-    text-align: left;
-    font-family: inherit;
-    color: var(--text);
-    width: 100%;
-  }
+  .upload-choice-btn { display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 12px; background: color-mix(in srgb, var(--panel) 90%, transparent); border: 2px solid var(--border); cursor: pointer; transition: .2s var(--ease); text-align: left; font-family: inherit; color: var(--text); width: 100%; }
   .upload-choice-btn:hover { border-color: var(--primary); background: var(--primary-soft); transform: translateY(-2px); }
   .upload-choice-btn .ucb-emoji { font-size: 28px; flex-shrink: 0; }
   .upload-choice-btn .ucb-text { flex: 1; }
@@ -1483,150 +945,71 @@
   .upload-choice-btn .ucb-text span { font-size: 11px; color: var(--text-soft); line-height: 1.35; display: block; }
   .upload-choice-btn .ucb-arrow { font-size: 20px; color: var(--text-mute); flex-shrink: 0; }
 
-  .settings-profile-preview {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--panel) 90%, transparent);
-    border: 1px solid var(--border);
-    margin-bottom: 12px;
-  }
+  .settings-profile-preview { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: color-mix(in srgb, var(--panel) 90%, transparent); border: 1px solid var(--border); margin-bottom: 12px; }
   .settings-profile-preview .spp-info { flex: 1; text-align: left; min-width: 0; }
   .settings-profile-preview .spp-info b { font-size: 14px; font-weight: 700; display: block; margin-bottom: 2px; color: var(--text); }
   .settings-profile-preview .spp-info span { font-size: 11px; color: var(--text-soft); }
 
-  /* ================= СЕМЬЯ ================= */
   .family-modal { max-width: 420px; text-align: center; padding: 24px 20px 20px; }
   .family-modal h3 { font-size: 17px; color: #7b1fa2; margin-bottom: 4px; }
-  [data-theme="dark"] .family-modal h3 { color: #ba68c8; }
   .family-modal .sub { font-size: 12px; color: #777; margin-bottom: 16px; }
   .family-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-  .family-item {
-    display: flex; align-items: center; gap: 12px;
-    background: #f5f9ff;
-    border: 2px solid transparent;
-    border-radius: 12px;
-    padding: 12px 14px;
-    cursor: pointer;
-    transition: .25s var(--ease);
-    text-align: left;
-  }
+  .family-item { display: flex; align-items: center; gap: 12px; background: #f5f9ff; border: 2px solid transparent; border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: .25s var(--ease); text-align: left; }
   [data-theme="dark"] .family-item { background: #202a3d; }
-  .family-item:hover { background: var(--primary-soft); border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .family-item:hover { background: var(--primary-soft); border-color: var(--primary); transform: translateY(-2px); }
   .family-item.active { border-color: var(--primary); background: var(--primary-soft); }
   .family-item.eva.active { border-color: #ec407a; background: var(--pink-soft); }
-  .family-item .fam-avatar {
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
-    border: 3px solid #ffe082;
-    background: #f5b800;
-  }
+  .family-item .fam-avatar { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; flex-shrink: 0; border: 3px solid #ffe082; background: #f5b800; }
   .family-item.eva .fam-avatar { border-color: #f8bbd0; background: #fce4ec; }
   .family-item .fam-avatar svg { width: 100%; height: 100%; display: block; }
   .family-item .fam-info { flex: 1; }
   .family-item .fam-name { font-weight: 700; color: var(--text); font-size: 14px; margin-bottom: 2px; }
   .family-item .fam-role { font-size: 11px; color: var(--text-soft); }
-  .family-item .fam-check { font-size: 18px; color: var(--primary); opacity: 0; transition: .2s var(--ease); }
-  .family-item.eva .fam-check { color: #ec407a; }
+  .family-item .fam-check { font-size: 18px; color: var(--primary); opacity: 0; }
   .family-item.active .fam-check { opacity: 1; }
 
-  /* ================= КАЛЕНДАРЬ ================= */
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
-  .cal-cell {
-    padding: 10px 4px;
-    text-align: center;
-    border-radius: 8px;
-    background: #f5f7fa;
-    cursor: pointer;
-    font-size: 12px;
-    border: 2px solid transparent;
-    color: var(--text);
-  }
+  .cal-cell { padding: 10px 4px; text-align: center; border-radius: 8px; background: #f5f7fa; cursor: pointer; font-size: 12px; border: 2px solid transparent; color: var(--text); }
   [data-theme="dark"] .cal-cell { background: #202a3d; }
   .cal-cell:hover { background: #e3f2fd; transform: scale(1.08); }
   .cal-cell.header { background: #e3f2fd; cursor: default; font-weight: 600; color: var(--primary-dark); }
-  [data-theme="dark"] .cal-cell.header { background: var(--primary-soft); color: #82b1ff; }
   .cal-cell.header:hover { background: #e3f2fd; transform: none; }
   .cal-cell.other-month { color: var(--text-mute); background: transparent; }
   .cal-cell.past { color: var(--text-mute); opacity: .5; }
   .cal-cell.holiday { background: #fff3e0; color: #e65100; font-weight: bold; }
-  [data-theme="dark"] .cal-cell.holiday { background: var(--orange-soft); color: #ffb74d; }
   .cal-cell.vacation { background: #e8f5e9; color: #2e7d32; font-weight: bold; }
-  [data-theme="dark"] .cal-cell.vacation { background: #1a2e1c; color: #66bb6a; }
   .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .cal-nav .month-title { font-size: 16px; font-weight: 700; color: var(--primary); }
-  .cal-nav button {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    border: none;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 15px;
-  }
-  .cal-nav button:hover { transform: scale(1.12); box-shadow: var(--shadow-md); }
+  .cal-nav button { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 15px; }
 
-  /* ================= НАПОМИНАНИЯ ================= */
   .remind-modal { max-width: 480px; text-align: left; }
   .remind-modal h3, .remind-modal .sub { text-align: center; }
   .remind-form { background: var(--primary-soft); border: 1px solid #bbdefb; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
   .remind-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
   .remind-row label { display: flex; flex-direction: column; font-size: 11px; font-weight: 600; color: #455a64; text-transform: uppercase; gap: 4px; flex: 1; min-width: 120px; }
   .remind-row input { padding: 8px 10px; border: 1px solid #cfd8dc; border-radius: 8px; font-size: 13px; font-family: inherit; color: var(--text); background: var(--panel); }
-  .remind-item {
-    display: flex; align-items: flex-start; gap: 10px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--purple);
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 6px;
-  }
+  .remind-item { display: flex; align-items: flex-start; gap: 10px; background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--purple); border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; }
   .remind-item.past { opacity: .5; }
   .remind-item .ri-time { font-size: 11px; font-weight: 700; color: #6a1b9a; white-space: nowrap; }
   .remind-item .ri-text { flex: 1; font-size: 12px; color: var(--text); line-height: 1.35; word-break: break-word; white-space: pre-wrap; }
   .remind-item .ri-del { background: #ffebee; border: none; color: #c62828; width: 26px; height: 26px; border-radius: 8px; cursor: pointer; font-size: 13px; }
   .remind-empty { text-align: center; color: var(--text-mute); font-style: italic; font-size: 12px; padding: 16px; }
 
-  /* ================= TOAST ================= */
-  .toast-wrap {
-    position: fixed;
-    top: 12px; right: 12px;
-    z-index: 300;
-    display: flex; flex-direction: column; gap: 10px;
-    pointer-events: none;
-    max-width: calc(100vw - 24px);
-  }
-  .toast {
-    pointer-events: auto;
-    min-width: 240px; max-width: 360px;
-    background: linear-gradient(135deg, #a855f7, #7c3aed);
-    color: #fff;
-    padding: 14px 16px;
-    border-radius: 12px;
-    box-shadow: 0 12px 40px rgba(124,58,237,.5);
-    font-size: 13px;
-    line-height: 1.4;
-    display: flex; gap: 10px; align-items: flex-start;
-  }
+  .toast-wrap { position: fixed; top: 12px; right: 12px; z-index: 300; display: flex; flex-direction: column; gap: 10px; pointer-events: none; max-width: calc(100vw - 24px); }
+  .toast { pointer-events: auto; min-width: 240px; max-width: 360px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; padding: 14px 16px; border-radius: 12px; box-shadow: 0 12px 40px rgba(124,58,237,.5); font-size: 13px; line-height: 1.4; display: flex; gap: 10px; align-items: flex-start; animation: toastIn .35s var(--ease); }
   .toast .t-icon { font-size: 20px; flex-shrink: 0; }
   .toast .t-body { flex: 1; }
   .toast .t-title { font-weight: 700; margin-bottom: 3px; }
   .toast .t-text { opacity: .95; white-space: pre-wrap; word-break: break-word; }
   .toast .t-close { background: rgba(255,255,255,.15); border: none; color: #fff; cursor: pointer; font-size: 13px; line-height: 1; padding: 3px 7px; border-radius: 6px; flex-shrink: 0; }
-  .toast .t-close:hover { background: rgba(255,255,255,.3); }
   .toast.hide { animation: toastOut .3s var(--ease) forwards; }
   @keyframes toastIn  { from{transform:translateX(120%) scale(.9);opacity:0;} to{transform:translateX(0) scale(1);opacity:1;} }
   @keyframes toastOut { from{transform:translateX(0);opacity:1;} to{transform:translateX(120%);opacity:0;} }
-  .toast { animation: toastIn .35s var(--ease); }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: #c5cdd6; border-radius: 999px; }
   [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #3a4a60; }
 
-  /* ================= МОБИЛЬНАЯ ================= */
   @media (max-width: 768px) {
     .app { padding: 0 8px 20px; }
     .header { padding: 10px 12px; min-height: 56px; border-radius: 0 0 12px 12px; }
@@ -1662,10 +1045,9 @@
     .action-btn .ab-emoji { font-size: 13px; }
     .lock-panel { padding: 24px 18px 18px; border-radius: 24px; }
     .lock-panel .lock-avatar { width: 72px; height: 72px; }
-    .lock-panel .pin-display { font-size: 26px; letter-spacing: 10px; padding: 12px; }
+    .lock-panel .pin-dot { width: 16px; height: 16px; }
     .lock-panel .pin-key { padding: 14px 6px; font-size: 20px; border-radius: 14px; }
   }
-
   @media (max-width: 400px) {
     .header h1 { font-size: 13px; }
     .header-sub { display: none; }
@@ -1674,7 +1056,6 @@
     .btn { padding: 7px 10px; font-size: 11px; }
     .action-btn { padding: 10px 10px; font-size: 11px; min-width: 80px; }
   }
-
   @media (min-width: 1025px) {
     .header { padding: 16px 28px; }
     .header h1 { font-size: 22px; }
@@ -1683,14 +1064,13 @@
     .avatar-frame-wrap { width: 150px; height: 150px; }
     .lock-panel { padding: 40px 30px 30px; }
     .lock-panel .lock-avatar { width: 100px; height: 100px; }
-    .lock-panel .pin-display { font-size: 34px; letter-spacing: 14px; padding: 18px; }
+    .lock-panel .pin-dot { width: 20px; height: 20px; }
     .lock-panel .pin-key { padding: 18px 10px; font-size: 24px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ================= ФОН ================= -->
 <div class="bg-layer" id="bgLayer">
   <div class="mesh-bg" id="meshBg">
     <div class="mesh-blob b1"></div>
@@ -1703,13 +1083,12 @@
   <div class="bg-media-overlay" id="bgMediaOverlay"></div>
 </div>
 
-<!-- ================= LOCK SCREEN (экран пароля) ================= -->
 <div class="lock-screen" id="lockScreen">
-  <div class="lock-panel">
+  <div class="lock-panel" id="lockPanel">
     <div class="lock-avatar" id="lockAvatar"></div>
     <div class="lock-title" id="lockTitle">Введите код</div>
     <div class="lock-sub" id="lockSub">Введите 4-значный пароль</div>
-    <div class="pin-display" id="lockPinDisplay">••••</div>
+    <div class="pin-dots" id="lockPinDots"></div>
     <div class="pin-keypad" id="lockPinKeypad"></div>
   </div>
 </div>
@@ -1777,7 +1156,6 @@
         <span class="quarter-label" id="qLabel">1 четверть</span>
         <button class="arrow" id="qNext" onclick="changeQuarter(1)">›</button>
       </div>
-      <button class="btn danger" onclick="clearAll()" style="margin-left:auto;">🧹 Очистить</button>
     </div>
     <div class="table-wrap">
       <table class="grades-table" id="diaryTable">
@@ -1797,7 +1175,6 @@
         <button class="btn" onclick="prevWeek()">← Предыдущая</button>
         <button class="btn today" id="btnToday" onclick="goToToday()">📅 Календарь</button>
         <button class="btn" onclick="nextWeek()">Следующая →</button>
-        <button class="btn remind" onclick="openReminders()">🔔 Напоминания <span id="remindBadge" class="badge empty">0</span></button>
       </div>
     </div>
     <div class="schedule-wrap">
@@ -1832,7 +1209,7 @@
 
 </div>
 
-<!-- ================= ОЦЕНКА ================= -->
+<!-- ОЦЕНКА -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
@@ -1852,11 +1229,18 @@
   </div>
 </div>
 
-<!-- ================= Д/З ================= -->
+<!-- Д/З -->
 <div class="modal-bg" id="hwModalBg">
   <div class="modal">
     <h3 id="hwTitle">Домашнее задание</h3>
     <div class="sub" id="hwSub"></div>
+    <div class="hw-templates">
+      <span class="tpl-label">Шаблоны:</span>
+      <button class="hw-tpl-btn" onclick="insertHwTemplate('§ ')">§ параграф</button>
+      <button class="hw-tpl-btn" onclick="insertHwTemplate('Стр. ')">Стр. учебник</button>
+      <button class="hw-tpl-btn" onclick="insertHwTemplate('№ ')">№ номер</button>
+      <button class="hw-tpl-btn" onclick="insertHwTemplate('Упр. ')">Упр. упражнение</button>
+    </div>
     <textarea id="hwText" placeholder="Введите домашнее задание..."></textarea>
     <div class="hw-photo-area">
       <div class="photo-label-row">
@@ -1880,7 +1264,7 @@
   <img id="photoViewerImg" src="" alt="Фото">
 </div>
 
-<!-- ================= ЧЕТВЕРТНАЯ ================= -->
+<!-- ЧЕТВЕРТНАЯ -->
 <div class="modal-bg" id="qModalBg">
   <div class="modal">
     <h3 id="qTitle">Четвертная оценка</h3>
@@ -1893,7 +1277,7 @@
   </div>
 </div>
 
-<!-- ================= ПРОФИЛЬ ================= -->
+<!-- ПРОФИЛЬ -->
 <div class="modal-bg" id="profileModalBg">
   <div class="modal profile-modal" id="profileModal">
     <button class="profile-settings-btn" onclick="openSettings()" title="Настройки">⚙️</button>
@@ -1913,7 +1297,7 @@
   </div>
 </div>
 
-<!-- ================= НАСТРОЙКИ ================= -->
+<!-- НАСТРОЙКИ -->
 <div class="modal-bg" id="settingsModalBg">
   <div class="modal settings-modal">
     <h3>⚙️ Настройки</h3>
@@ -1934,7 +1318,7 @@
         <span class="sr-right"></span>
       </button>
       <button class="settings-row chevron" onclick="openUploadChoice()">
-        <span class="sr-left"><span class="sr-emoji">📷</span><span class="sr-text"><b>Загрузить фото</b><span>Аватарка, шапка или фон приложения</span></span></span>
+        <span class="sr-left"><span class="sr-emoji">📷</span><span class="sr-text"><b>Загрузить</b><span>Аватарка, шапка или фон</span></span></span>
         <span class="sr-right"></span>
       </button>
       <button class="settings-row chevron" onclick="openFramePicker()">
@@ -1944,6 +1328,10 @@
       <button class="settings-row chevron" onclick="openFamilyFromSettings()">
         <span class="sr-left"><span class="sr-emoji">👨‍👩‍👧</span><span class="sr-text"><b>Семья</b><span>Переключение между профилями</span></span></span>
         <span class="sr-right"></span>
+      </button>
+      <button class="settings-row chevron" onclick="openRemindersFromSettings()">
+        <span class="sr-left"><span class="sr-emoji">🔔</span><span class="sr-text"><b>Напоминания</b><span>Управление напоминаниями</span></span></span>
+        <span class="sr-right"><span id="settingsRemindBadge" style="background:#ff5252;color:#fff;border-radius:9px;padding:1px 8px;font-size:11px;font-weight:700;">0</span></span>
       </button>
     </div>
 
@@ -1971,6 +1359,31 @@
         <span class="sr-left"><span class="sr-emoji">⭐</span><span class="sr-text"><b>Только хорошие оценки</b><span>Скрыть 1, 2, 3 в таблице</span></span></span>
         <span class="sr-right"><span class="toggle-switch" id="settingsHideBadToggle"></span></span>
       </div>
+      <div class="settings-row" onclick="toggleRooms(event)">
+        <span class="sr-left"><span class="sr-emoji">🚪</span><span class="sr-text"><b>Показывать кабинеты</b><span>Номер кабинета в ячейке урока</span></span></span>
+        <span class="sr-right"><span class="toggle-switch" id="settingsRoomsToggle"></span></span>
+      </div>
+      <div class="settings-row" onclick="toggleTeachers(event)">
+        <span class="sr-left"><span class="sr-emoji">👩‍🏫</span><span class="sr-text"><b>Показывать учителей</b><span>ФИО учителя в ячейке урока</span></span></span>
+        <span class="sr-right"><span class="toggle-switch" id="settingsTeachersToggle"></span></span>
+      </div>
+      <div class="settings-row" onclick="toggleAutosave(event)">
+        <span class="sr-left"><span class="sr-emoji">💾</span><span class="sr-text"><b>Автосохранение</b><span id="autosaveLabel">Мгновенно</span></span></span>
+        <span class="sr-right"><span class="toggle-switch" id="settingsAutosaveToggle"></span></span>
+      </div>
+    </div>
+
+    <div class="settings-section" style="border-color:#ffcc80;">
+      <div class="ss-title" style="color:#bf360c;">⚠️ Опасная зона</div>
+      <button class="settings-row" onclick="openResetConfirm()" style="background:linear-gradient(135deg, #ffebee, #ffcdd2);">
+        <span class="sr-left">
+          <span class="sr-emoji">🔄</span>
+          <span class="sr-text">
+            <b style="color:#c62828;">Сбросить до заводских</b>
+            <span style="color:#c62828;">Удалить все данные и настройки</span>
+          </span>
+        </span>
+      </button>
     </div>
 
     <div class="actions">
@@ -1997,7 +1410,7 @@
   </div>
 </div>
 
-<!-- ================= ВЫБОР КУДА ЗАГРУЗИТЬ (3 кнопки) ================= -->
+<!-- ВЫБОР ЗАГРУЗКИ -->
 <div class="modal-bg" id="uploadChoiceModalBg">
   <div class="modal settings-submodal">
     <h3>📷 Загрузить</h3>
@@ -2055,7 +1468,7 @@
   </div>
 </div>
 
-<!-- Пароль (в настройках) -->
+<!-- ПАРОЛЬ -->
 <div class="modal-bg" id="passwordModalBg">
   <div class="modal settings-submodal">
     <h3 id="passwordModalTitle">🔒 Пароль</h3>
@@ -2079,10 +1492,19 @@
 
     <div id="passwordStep2" style="display:none;">
       <div class="sub" id="passwordStep2Sub">Введите пароль</div>
-      <div class="pin-display-settings" id="pinDisplay">••••</div>
-      <div class="pin-keypad-settings" id="pinKeypad"></div>
+      <div class="pin-dots-settings" id="pinDots1"></div>
+      <div class="pin-keypad-settings" id="pinKeypad1"></div>
       <div class="actions">
         <button class="action-btn back full" onclick="cancelPinEntry()"><span class="ab-emoji">↩</span> Назад</button>
+      </div>
+    </div>
+
+    <div id="passwordStep2b" style="display:none;">
+      <div class="sub" id="passwordStep2bSub">Повторите пароль</div>
+      <div class="pin-dots-settings" id="pinDots2"></div>
+      <div class="pin-keypad-settings" id="pinKeypad2"></div>
+      <div class="actions">
+        <button class="action-btn back full" onclick="cancelPinRepeat()"><span class="ab-emoji">↩</span> Назад</button>
       </div>
     </div>
 
@@ -2091,7 +1513,7 @@
       <div class="pass-options">
         <button class="pass-option" data-mode="always" onclick="selectPasswordMode('always')">
           <span class="po-radio"></span>
-          <span class="po-text"><b>Всегда при входе</b><span>Пароль запрашивается каждый раз при возврате в приложение</span></span>
+          <span class="po-text"><b>Всегда при входе</b><span>Каждый раз при возврате в приложение</span></span>
         </button>
         <button class="pass-option" data-mode="other-device" onclick="selectPasswordMode('other-device')">
           <span class="po-radio"></span>
@@ -2105,15 +1527,39 @@
   </div>
 </div>
 
-<!-- СБРОС ПАРОЛЯ с подтверждением -->
+<!-- СБРОС ПАРОЛЯ -->
 <div class="modal-bg" id="resetPasswordModalBg">
   <div class="modal settings-submodal">
     <h3 id="resetPasswordTitle">🔓 Сброс пароля</h3>
     <div class="sub" id="resetPasswordSub">Введите текущий пароль для подтверждения</div>
-    <div class="pin-display-settings" id="resetPinDisplay">••••</div>
+    <div class="pin-dots-settings" id="resetPinDots"></div>
     <div class="pin-keypad-settings" id="resetPinKeypad"></div>
     <div class="actions">
       <button class="action-btn cancel full" onclick="closeResetPassword()"><span class="ab-emoji">✕</span> Отмена</button>
+    </div>
+  </div>
+</div>
+
+<!-- СБРОС ДО ЗАВОДСКИХ -->
+<div class="modal-bg" id="resetAllModalBg">
+  <div class="modal settings-submodal">
+    <h3 id="resetAllTitle">⚠️ Сброс всех данных</h3>
+    <div class="sub" id="resetAllSub">Вы точно хотите всё сбросить?<br>Все оценки, настройки, пароль и напоминания будут удалены.</div>
+
+    <div id="resetAllStep1">
+      <div class="actions">
+        <button class="action-btn danger" onclick="confirmResetAll()"><span class="ab-emoji">✓</span> Да, сбросить</button>
+        <button class="action-btn cancel" onclick="closeResetAll()"><span class="ab-emoji">✕</span> Нет, оставить</button>
+      </div>
+    </div>
+
+    <div id="resetAllStep2" style="display:none;">
+      <div class="sub">Введите пароль для подтверждения</div>
+      <div class="pin-dots-settings" id="resetAllPinDots"></div>
+      <div class="pin-keypad-settings" id="resetAllPinKeypad"></div>
+      <div class="actions">
+        <button class="action-btn cancel full" onclick="cancelResetAll()"><span class="ab-emoji">✕</span> Отмена</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2201,8 +1647,6 @@ const BELLS = [
   { start: "13:20", end: "14:00" },
   { start: "14:10", end: "14:50" }
 ];
-
-// Сокращённые звонки для праздничных дней
 const BELLS_HOLIDAY = [
   { start: "08:30", end: "08:50" },
   { start: "09:00", end: "09:20" },
@@ -2212,7 +1656,6 @@ const BELLS_HOLIDAY = [
   { start: "10:50", end: "11:10" },
   { start: "11:15", end: "11:35" }
 ];
-
 const BELLS_EVA = [
   { start: "08:30", end: "09:10" },
   { start: "09:25", end: "10:05" },
@@ -2220,11 +1663,9 @@ const BELLS_EVA = [
 ];
 
 function timeToMin(t) { const [h, m] = t.split(":").map(Number); return h * 60 + m; }
-
 const NO_HOMEWORK_SUBJECTS = ["Разговоры о важном", "Физкультура"];
 function hasHomework(subject) { return !NO_HOMEWORK_SUBJECTS.includes(subject); }
 
-// Праздники (5 октября — День учителя)
 const HOLIDAYS = [
   { day: 5,  month: 10, name: "День учителя", short: true },
   { day: 23, month: 2,  name: "День защитника Отечества", short: false },
@@ -2234,7 +1675,6 @@ const HOLIDAYS = [
   { day: 12, month: 6,  name: "День России", short: false },
   { day: 4,  month: 11, name: "День народного единства", short: false }
 ];
-
 const VACATIONS = [
   { from: new Date(2026, 9, 27),  to: new Date(2026, 10, 5),  name: "Осенние каникулы" },
   { from: new Date(2026, 11, 30), to: new Date(2027, 0, 11),  name: "Зимние каникулы" },
@@ -2242,7 +1682,6 @@ const VACATIONS = [
   { from: new Date(2027, 2, 24),  to: new Date(2027, 2, 31),  name: "Весенние каникулы" },
   { from: new Date(2027, 4, 26),  to: new Date(2027, 7, 31),  name: "Летние каникулы" }
 ];
-
 function getHoliday(date) { return HOLIDAYS.find(h => h.day === date.getDate() && h.month === date.getMonth() + 1) || null; }
 function getVacation(date) {
   const d = new Date(date); d.setHours(0,0,0,0);
@@ -2260,13 +1699,11 @@ function getDayType(date) {
   if (dow === 0 || dow === 6) return { type: "weekend", label: "Выходной день", name: "Выходной" };
   return { type: "school", label: "", name: "" };
 }
-// Возвращает массив звонков для конкретной даты
 function getBellsForDate(date) {
   const hol = getHoliday(date);
   if (hol && hol.short) return BELLS_HOLIDAY;
   return getProfile().bellType === "eva" ? BELLS_EVA : BELLS;
 }
-
 function getQuarterByDate(date) {
   const d = new Date(date); d.setHours(0,0,0,0);
   if (d <= new Date(2026, 9, 26)) return 1;
@@ -2284,14 +1721,12 @@ const SUBJECTS_DEFAULT = [
   "Информатика", "Физкультура", "ОБЖ",
   "Черчение", "Технология"
 ];
-
 const DATES_BY_QUARTER_DEFAULT = {
   1: ["01.09","03.09","05.09","08.09","10.09","12.09","15.09","17.09","19.09","22.09","24.09","26.09","29.09","01.10","03.10"],
   2: ["06.11","10.11","12.11","14.11","17.11","19.11","21.11","24.11","26.11","28.11","01.12","03.12","05.12","08.12","10.12"],
   3: ["12.01","14.01","16.01","19.01","21.01","23.01","26.01","28.01","30.01","02.02","04.02","06.02","09.02","11.02","13.02"],
   4: ["01.04","03.04","06.04","08.04","10.04","13.04","15.04","17.04","20.04","22.04","24.04","27.04","29.04","04.05","06.05"]
 };
-
 const WEEK_SCHEDULE = [
   [
     { subject: "Разговоры о важном", room: "16", teacher: "Уварова Ю.В." },
@@ -2341,7 +1776,6 @@ const WEEK_SCHEDULE = [
   [],
   []
 ];
-
 const WEEK_SCHEDULE_EVA = [
   [
     { subject: "Разговоры о важном", room: "", teacher: "Любовь Евгеньевна" },
@@ -2391,13 +1825,12 @@ const WEEK_SCHEDULE_EVA = [
   [],
   []
 ];
-
 const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"];
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const MONTH_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 
-const STORAGE_KEY = "diary_html_v22";
-const DB_NAME = "diary_db_v22";
+const STORAGE_KEY = "diary_html_v24";
+const DB_NAME = "diary_db_v24";
 const DB_STORE = "kv";
 
 const PROFILES = {
@@ -2453,6 +1886,17 @@ async function idbSet(key, value) {
     });
   } catch (e) { return false; }
 }
+async function idbClear() {
+  try {
+    const db = await openDB();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(DB_STORE, "readwrite");
+      const req = tx.objectStore(DB_STORE).clear();
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => reject(req.error);
+    });
+  } catch (e) { return false; }
+}
 
 // ==================== СОСТОЯНИЕ ====================
 let state = null;
@@ -2464,24 +1908,26 @@ let gradeModal = { subj: null, date: null, grade: null, type: "ur" };
 let currentQuarterModal = { subj: null, quarter: null };
 let activeQuarter = null;
 let currentUser = "dima";
+let sessionUnlocked = false;
 
-let pinEntryBuffer = "";
+let pin1Buffer = "";
+let pin2Buffer = "";
 let pendingPassword = null;
 
-// Флаг: был ли уже ввод пароля при текущей сессии (для режима "other-device")
-let sessionUnlocked = false;
-// Флаг: приложение скрыто (для повторного запроса при возврате)
-let needsRelockOnReturn = false;
-
-// Стек навигации модалок
+// Стек модалок
 let modalStack = [];
 function pushModalParent(parentId) { modalStack.push(parentId); }
 function popModalParent() { return modalStack.pop(); }
 function returnToParent() {
   const parent = popModalParent();
-  if (parent === "settings") setTimeout(() => openSettingsInternal(), 100);
-  else if (parent === "profile") setTimeout(() => openProfileInternal(), 100);
+  if (parent === "settings") {
+    setTimeout(() => openSettingsInternal(), 80);
+  } else if (parent === "profile") {
+    setTimeout(() => openProfileInternal(), 80);
+  }
 }
+// Очистка стека
+function clearModalStack() { modalStack = []; }
 
 function getHeaderBg(user) { return state.headerBgs && state.headerBgs[user] ? state.headerBgs[user] : null; }
 function getAvatarFrame(user) { return state.avatarFrames && state.avatarFrames[user] ? state.avatarFrames[user] : "none"; }
@@ -2518,14 +1964,14 @@ function defaultState() {
     bgMedia: null,
     showWeekends: true,
     hideBadGrades: false,
+    showRooms: true,
+    showTeachers: true,
+    autosaveInstant: true,
     passwords: {},
     deviceId: generateDeviceId()
   };
 }
-
-function generateDeviceId() {
-  return "dev_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
-}
+function generateDeviceId() { return "dev_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10); }
 
 function normalizeState(s) {
   if (!s.subjects) s.subjects = [...SUBJECTS_DEFAULT];
@@ -2549,6 +1995,9 @@ function normalizeState(s) {
   if (!s.userProfiles || typeof s.userProfiles !== "object") s.userProfiles = {};
   if (s.showWeekends === undefined) s.showWeekends = true;
   if (s.hideBadGrades === undefined) s.hideBadGrades = false;
+  if (s.showRooms === undefined) s.showRooms = true;
+  if (s.showTeachers === undefined) s.showTeachers = true;
+  if (s.autosaveInstant === undefined) s.autosaveInstant = true;
   if (!s.passwords || typeof s.passwords !== "object") s.passwords = {};
   if (!s.deviceId) s.deviceId = generateDeviceId();
   if (!("bgMedia" in s)) s.bgMedia = null;
@@ -2558,11 +2007,12 @@ function normalizeState(s) {
 let saveTimer = null;
 function saveState() {
   if (!state) return;
+  const delay = state.autosaveInstant ? 50 : 5000;
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
     const ok = await idbSet("state", state);
     if (!ok) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
-  }, 120);
+  }, delay);
 }
 async function saveStateNow() {
   if (!state) return;
@@ -2607,25 +2057,18 @@ function getMondayOfDate(d) {
   return date;
 }
 function addDays(d, n) { const date = new Date(d); date.setDate(date.getDate() + n); return date; }
-function formatDate(d) {
-  return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`;
-}
+function formatDate(d) { return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`; }
 function formatFull(d) { return `${d.getDate()} ${MONTH_GEN[d.getMonth()]}`; }
-function isoKey(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-}
-function isSameDay(a, b) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-}
+function isoKey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+function isSameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
 
-// ==================== ФОН (МЕДИА) ====================
+// ==================== ФОН ====================
 function applyBgMedia() {
   const bg = getBgMedia();
   const img = document.getElementById("bgImage");
   const video = document.getElementById("bgVideo");
   const overlay = document.getElementById("bgMediaOverlay");
   const mesh = document.getElementById("meshBg");
-
   img.classList.remove("active");
   video.classList.remove("active");
   video.pause();
@@ -2633,9 +2076,7 @@ function applyBgMedia() {
   img.src = "";
   overlay.classList.remove("active");
   mesh.classList.remove("hidden");
-
   if (!bg) return;
-
   if (bg.type === "image") {
     img.src = bg.data;
     img.classList.add("active");
@@ -2652,14 +2093,12 @@ function applyBgMedia() {
     mesh.classList.add("hidden");
   }
 }
-
 async function uploadBgMedia(ev) {
   const file = ev.target.files[0];
   if (!file) return;
   const isImage = file.type.startsWith("image/");
   const isVideo = file.type.startsWith("video/");
   if (!isImage && !isVideo) { alert("Выберите изображение или видео!"); ev.target.value = ""; return; }
-
   if (isVideo) {
     const video = document.createElement("video");
     video.preload = "metadata";
@@ -2681,7 +2120,6 @@ async function uploadBgMedia(ev) {
   await processBgMediaFile(file, "image");
   ev.target.value = "";
 }
-
 async function processBgMediaFile(file, type) {
   if (type === "image") {
     if (file.size > 5 * 1024 * 1024) { alert("Файл слишком большой. Максимум 5 МБ."); return; }
@@ -2710,16 +2148,6 @@ async function processBgMediaFile(file, type) {
     reader.readAsDataURL(file);
   }
 }
-
-async function removeBgMedia() {
-  if (!getBgMedia()) { showToast("🎬 Фон", "Фон уже не установлен"); return; }
-  state.bgMedia = null;
-  await saveStateNow();
-  applyBgMedia();
-  showToast("🎬 Фон", "Фон убран");
-}
-
-// ==================== ФОН ШАПКИ ====================
 function applyHeaderBg() {
   const header = document.getElementById("mainHeader");
   const bg = getHeaderBg(currentUser);
@@ -2768,8 +2196,6 @@ function applyHeaderAvatar() {
   else inner.innerHTML = currentUser === "eva" ? getEvaAvatarSVG() : getDimaAvatarSVG();
   document.getElementById("headerAvatarBtn").setAttribute("data-frame", getAvatarFrame(currentUser));
 }
-
-// ==================== РАМКА ====================
 function applyAvatarFrame() {
   const wrap = document.getElementById("avatarFrameWrap");
   if (!wrap) return;
@@ -2791,13 +2217,13 @@ function applyAvatarFrame() {
   applyHeaderAvatar();
 }
 
-// ==================== ВЫХОДНЫЕ И СКРЫТИЕ ОЦЕНОК ====================
+// ==================== ТУМБЛЕРЫ ====================
 function applyWeekendVisibility() {
   const table = document.getElementById("scheduleTable");
   if (!table) return;
   table.classList.toggle("hide-weekend", !state.showWeekends);
-  const toggle = document.getElementById("settingsWeekendToggle");
-  if (toggle) toggle.classList.toggle("on", !!state.showWeekends);
+  const t1 = document.getElementById("settingsWeekendToggle");
+  if (t1) t1.classList.toggle("on", !!state.showWeekends);
 }
 function toggleWeekendFromSettings(ev) {
   state.showWeekends = !state.showWeekends;
@@ -2808,8 +2234,8 @@ function toggleWeekendFromSettings(ev) {
 }
 function applyHideBadGrades() {
   document.body.classList.toggle("hide-bad-grades", !!state.hideBadGrades);
-  const toggle = document.getElementById("settingsHideBadToggle");
-  if (toggle) toggle.classList.toggle("on", !!state.hideBadGrades);
+  const t1 = document.getElementById("settingsHideBadToggle");
+  if (t1) t1.classList.toggle("on", !!state.hideBadGrades);
 }
 function toggleHideBadGrades(ev) {
   state.hideBadGrades = !state.hideBadGrades;
@@ -2817,45 +2243,81 @@ function toggleHideBadGrades(ev) {
   applyHideBadGrades();
   showToast("⭐ Оценки", state.hideBadGrades ? "Показаны только 4 и 5" : "Показаны все оценки");
 }
+function applyRooms() {
+  document.body.classList.toggle("hide-rooms", !state.showRooms);
+  const t = document.getElementById("settingsRoomsToggle");
+  if (t) t.classList.toggle("on", !!state.showRooms);
+}
+function toggleRooms(ev) {
+  state.showRooms = !state.showRooms;
+  saveState();
+  applyRooms();
+  renderSchedule();
+  showToast("🚪 Кабинеты", state.showRooms ? "Показываются" : "Скрыты");
+}
+function applyTeachers() {
+  document.body.classList.toggle("hide-teachers", !state.showTeachers);
+  const t = document.getElementById("settingsTeachersToggle");
+  if (t) t.classList.toggle("on", !!state.showTeachers);
+}
+function toggleTeachers(ev) {
+  state.showTeachers = !state.showTeachers;
+  saveState();
+  applyTeachers();
+  renderSchedule();
+  showToast("👩‍🏫 Учителя", state.showTeachers ? "Показываются" : "Скрыты");
+}
+function applyAutosave() {
+  const t = document.getElementById("settingsAutosaveToggle");
+  if (t) t.classList.toggle("on", !!state.autosaveInstant);
+  const lbl = document.getElementById("autosaveLabel");
+  if (lbl) lbl.textContent = state.autosaveInstant ? "Мгновенно" : "Раз в 5 сек";
+}
+function toggleAutosave(ev) {
+  state.autosaveInstant = !state.autosaveInstant;
+  saveState();
+  applyAutosave();
+  showToast("💾 Автосохранение", state.autosaveInstant ? "Мгновенно" : "Раз в 5 сек");
+}
 
 // ==================== LOCK SCREEN ====================
+let lockPinBuffer = "";
+let lockPinLength = 4;
+let lockPinCallback = null;
+
 function showLockScreen(callback) {
   const user = currentUser;
   const pass = state.passwords[user];
   if (!pass || !pass.pin) { if (callback) callback(); return; }
-
-  // Заполняем данные
   const lockAvatar = document.getElementById("lockAvatar");
   const custom = getUserAvatar(user);
   lockAvatar.innerHTML = custom
     ? `<img src="${custom}" alt="avatar">`
     : (user === "eva" ? getEvaAvatarSVG() : getDimaAvatarSVG());
-
-  document.getElementById("lockTitle").textContent = getUserProfile(user).name.split(" ")[0] || "Введите код";
+  const parts = getUserProfile(user).name.split(" ");
+  const firstName = parts[1] || parts[0] || "Введите код";
+  document.getElementById("lockTitle").textContent = firstName;
   document.getElementById("lockSub").textContent = `Введите ${pass.length}-значный пароль`;
-
-  // Сбрасываем буфер
   lockPinBuffer = "";
   lockPinLength = pass.length;
   lockPinCallback = callback;
-  renderLockPinDisplay(0);
-  renderLockPinKeypad(pass.length);
-
+  renderLockPinDots(pass.length, 0, false);
+  renderLockPinKeypad();
   document.getElementById("lockScreen").classList.add("active");
 }
-
-let lockPinBuffer = "";
-let lockPinLength = 4;
-let lockPinCallback = null;
-
-function renderLockPinDisplay(filled) {
-  const display = document.getElementById("lockPinDisplay");
-  display.classList.remove("error");
-  let out = "";
-  for (let i = 0; i < lockPinLength; i++) out += i < filled ? "●" : "•";
-  display.textContent = out;
+function renderLockPinDots(len, filled, error) {
+  const wrap = document.getElementById("lockPinDots");
+  wrap.innerHTML = "";
+  wrap.classList.remove("shake");
+  for (let i = 0; i < len; i++) {
+    const d = document.createElement("div");
+    d.className = "pin-dot";
+    if (i < filled) d.classList.add("filled");
+    if (error) d.classList.add("error");
+    wrap.appendChild(d);
+  }
 }
-function renderLockPinKeypad(len) {
+function renderLockPinKeypad() {
   const wrap = document.getElementById("lockPinKeypad");
   wrap.innerHTML = "";
   ["1","2","3","4","5","6","7","8","9","C","0","⌫"].forEach(k => {
@@ -2869,13 +2331,13 @@ function renderLockPinKeypad(len) {
   });
 }
 function handleLockPinKey(key) {
-  if (key === "C") { lockPinBuffer = ""; renderLockPinDisplay(0); return; }
-  if (key === "⌫") { lockPinBuffer = lockPinBuffer.slice(0, -1); renderLockPinDisplay(lockPinBuffer.length); return; }
+  if (key === "C") { lockPinBuffer = ""; renderLockPinDots(lockPinLength, 0, false); return; }
+  if (key === "⌫") { lockPinBuffer = lockPinBuffer.slice(0, -1); renderLockPinDots(lockPinLength, lockPinBuffer.length, false); return; }
   if (lockPinBuffer.length < lockPinLength) {
     lockPinBuffer += key;
-    renderLockPinDisplay(lockPinBuffer.length);
+    renderLockPinDots(lockPinLength, lockPinBuffer.length, false);
     if (lockPinBuffer.length === lockPinLength) {
-      setTimeout(() => checkLockPin(lockPinBuffer), 200);
+      setTimeout(() => checkLockPin(lockPinBuffer), 180);
     }
   }
 }
@@ -2889,15 +2351,18 @@ function checkLockPin(pin) {
     lockPinCallback = null;
     if (cb) setTimeout(cb, 200);
   } else {
-    lockPinBuffer = "";
-    renderLockPinDisplay(0);
-    const display = document.getElementById("lockPinDisplay");
-    display.classList.add("error");
-    display.textContent = "✕ Неверно";
+    if (navigator.vibrate) navigator.vibrate([40, 30, 40, 30, 60]);
+    renderLockPinDots(lockPinLength, lockPinLength, true);
+    const dots = document.getElementById("lockPinDots");
+    dots.classList.add("shake");
+    const screen = document.getElementById("lockScreen");
+    screen.classList.add("shake");
     setTimeout(() => {
-      display.classList.remove("error");
-      renderLockPinDisplay(0);
-    }, 1000);
+      lockPinBuffer = "";
+      dots.classList.remove("shake");
+      screen.classList.remove("shake");
+      renderLockPinDots(lockPinLength, 0, false);
+    }, 700);
   }
 }
 function hideLockScreen() {
@@ -2906,6 +2371,7 @@ function hideLockScreen() {
 
 // ==================== ПРОФИЛЬ ====================
 function openProfileInternal() {
+  clearModalStack();
   renderProfileContent();
   document.getElementById("profileModalBg").classList.add("active");
 }
@@ -2939,15 +2405,18 @@ function renderProfileContent() {
 
 // ==================== НАСТРОЙКИ ====================
 function openSettingsInternal() {
+  clearModalStack();
   renderSettings();
   document.getElementById("settingsModalBg").classList.add("active");
 }
-function openSettings() { closeProfile(); openSettingsInternal(); }
+function openSettings() {
+  closeProfile();
+  openSettingsInternal();
+}
 function closeSettings() { document.getElementById("settingsModalBg").classList.remove("active"); }
 document.getElementById("settingsModalBg").addEventListener("click", e => {
   if (e.target.id === "settingsModalBg") closeSettings();
 });
-
 function renderSettings() {
   const p = getProfile();
   document.getElementById("settingsProfileName").textContent = p.name;
@@ -2963,6 +2432,11 @@ function renderSettings() {
   frameLabel.textContent = "Сейчас: " + (frameNames[getAvatarFrame(currentUser)] || "нет");
   document.getElementById("settingsWeekendToggle").classList.toggle("on", !!state.showWeekends);
   document.getElementById("settingsHideBadToggle").classList.toggle("on", !!state.hideBadGrades);
+  document.getElementById("settingsRoomsToggle").classList.toggle("on", !!state.showRooms);
+  document.getElementById("settingsTeachersToggle").classList.toggle("on", !!state.showTeachers);
+  applyAutosave();
+  const badge = document.getElementById("settingsRemindBadge");
+  if (badge) badge.textContent = getUpcomingReminders().length;
   const pass = state.passwords[currentUser];
   const title = document.getElementById("passwordTitle");
   const subtitle = document.getElementById("passwordSubtitle");
@@ -3012,7 +2486,7 @@ function saveProfileEdit() {
   returnToParent();
 }
 
-// ==================== ВЫБОР ЗАГРУЗКИ (3 кнопки) ====================
+// ==================== ЗАГРУЗКА ====================
 function openUploadChoice() {
   closeSettings();
   pushModalParent("settings");
@@ -3025,7 +2499,6 @@ function closeUploadChoice() {
 document.getElementById("uploadChoiceModalBg").addEventListener("click", e => {
   if (e.target.id === "uploadChoiceModalBg") closeUploadChoice();
 });
-
 function uploadAvatar(ev) {
   const file = ev.target.files[0];
   if (!file) return;
@@ -3120,27 +2593,21 @@ function switchUser(user) {
   if (user === currentUser) { closeFamily(); return; }
   const pass = state.passwords[user];
   if (pass && pass.pin && pass.length > 0 && pass.mode === "always") {
-    modalStack = [];
+    clearModalStack();
     closeFamily();
-    // Запрос пароля через lock-screen
     const targetUser = user;
-    const pass2 = state.passwords[targetUser];
-    // Временно подставляем target user для lock screen
     const savedUser = currentUser;
     currentUser = targetUser;
     showLockScreen(() => {
       currentUser = savedUser;
       doSwitchUser(targetUser);
     });
-    // Восстановим currentUser для отображения
-    // Но showLockScreen использует currentUser для выбора пароля
-    // Оставим так
     return;
   }
   doSwitchUser(user);
 }
 function doSwitchUser(user) {
-  modalStack = [];
+  clearModalStack();
   currentUser = user;
   state.user = user;
   saveState();
@@ -3152,7 +2619,7 @@ function doSwitchUser(user) {
   closeFamily();
   closeProfile();
   closeSettings();
-  sessionUnlocked = true; // После переключения разблокировано
+  sessionUnlocked = true;
   if (user === "eva") switchTab("schedule", document.getElementById("tabBtnSchedule"));
   else switchTab("grades", document.getElementById("tabBtnGrades"));
 }
@@ -3162,18 +2629,16 @@ function openPasswordSettings() {
   closeSettings();
   pushModalParent("settings");
   const pass = state.passwords[currentUser];
-  pinEntryBuffer = "";
+  pin1Buffer = "";
+  pin2Buffer = "";
   pendingPassword = null;
-
-  // Если пароль уже установлен — сначала просим ввести его для сброса
   if (pass && pass.pin && pass.length > 0) {
     requestResetPassword();
     return;
   }
-
-  // Иначе — установка нового
   document.getElementById("passwordStep1").style.display = "block";
   document.getElementById("passwordStep2").style.display = "none";
+  document.getElementById("passwordStep2b").style.display = "none";
   document.getElementById("passwordStep3").style.display = "none";
   document.getElementById("passwordModalTitle").textContent = "🔒 Установить пароль";
   document.getElementById("passwordModalSub").textContent = "Выберите длину пароля";
@@ -3188,10 +2653,8 @@ document.getElementById("passwordModalBg").addEventListener("click", e => {
   if (e.target.id === "passwordModalBg") closePasswordSettings();
 });
 
-// === Сброс пароля с подтверждением старого ===
 let resetPinBuffer = "";
 let resetPinLength = 4;
-
 function requestResetPassword() {
   const pass = state.passwords[currentUser];
   if (!pass || !pass.pin) { closeSettings(); return; }
@@ -3199,8 +2662,8 @@ function requestResetPassword() {
   resetPinLength = pass.length;
   document.getElementById("resetPasswordTitle").textContent = "🔓 Сброс пароля";
   document.getElementById("resetPasswordSub").textContent = `Введите текущий ${pass.length}-значный пароль для сброса`;
-  renderResetPinDisplay(0);
-  renderResetPinKeypad(pass.length);
+  renderResetPinDots(0, false);
+  renderResetPinKeypad();
   document.getElementById("resetPasswordModalBg").classList.add("active");
 }
 function closeResetPassword() {
@@ -3210,14 +2673,19 @@ function closeResetPassword() {
 document.getElementById("resetPasswordModalBg").addEventListener("click", e => {
   if (e.target.id === "resetPasswordModalBg") closeResetPassword();
 });
-
-function renderResetPinDisplay(filled) {
-  const display = document.getElementById("resetPinDisplay");
-  let out = "";
-  for (let i = 0; i < resetPinLength; i++) out += i < filled ? "●" : "•";
-  display.textContent = out;
+function renderResetPinDots(filled, error) {
+  const wrap = document.getElementById("resetPinDots");
+  wrap.innerHTML = "";
+  wrap.classList.remove("shake");
+  for (let i = 0; i < resetPinLength; i++) {
+    const d = document.createElement("div");
+    d.className = "pin-dot-s";
+    if (i < filled) d.classList.add("filled");
+    if (error) d.classList.add("error");
+    wrap.appendChild(d);
+  }
 }
-function renderResetPinKeypad(len) {
+function renderResetPinKeypad() {
   const wrap = document.getElementById("resetPinKeypad");
   wrap.innerHTML = "";
   ["1","2","3","4","5","6","7","8","9","C","0","⌫"].forEach(k => {
@@ -3231,16 +2699,15 @@ function renderResetPinKeypad(len) {
   });
 }
 function handleResetPinKey(key) {
-  if (key === "C") { resetPinBuffer = ""; renderResetPinDisplay(0); return; }
-  if (key === "⌫") { resetPinBuffer = resetPinBuffer.slice(0, -1); renderResetPinDisplay(resetPinBuffer.length); return; }
+  if (key === "C") { resetPinBuffer = ""; renderResetPinDots(0, false); return; }
+  if (key === "⌫") { resetPinBuffer = resetPinBuffer.slice(0, -1); renderResetPinDots(resetPinBuffer.length, false); return; }
   if (resetPinBuffer.length < resetPinLength) {
     resetPinBuffer += key;
-    renderResetPinDisplay(resetPinBuffer.length);
+    renderResetPinDots(resetPinBuffer.length, false);
     if (resetPinBuffer.length === resetPinLength) {
       setTimeout(() => {
         const pass = state.passwords[currentUser];
         if (pass && resetPinBuffer === pass.pin) {
-          // Правильный пароль — удаляем
           delete state.passwords[currentUser];
           saveState();
           document.getElementById("resetPasswordModalBg").classList.remove("active");
@@ -3248,47 +2715,45 @@ function handleResetPinKey(key) {
           renderSettings();
           returnToParent();
         } else {
-          // Неверный — показываем ошибку и очищаем
-          resetPinBuffer = "";
-          renderResetPinDisplay(0);
-          const display = document.getElementById("resetPinDisplay");
-          display.textContent = "✕ Неверно";
-          display.style.color = "#e53935";
+          if (navigator.vibrate) navigator.vibrate([40, 30, 40, 30, 60]);
+          renderResetPinDots(resetPinLength, true);
+          const dots = document.getElementById("resetPinDots");
+          dots.classList.add("shake");
           setTimeout(() => {
-            display.style.color = "";
-            renderResetPinDisplay(0);
-          }, 1200);
+            resetPinBuffer = "";
+            dots.classList.remove("shake");
+            renderResetPinDots(0, false);
+          }, 700);
         }
-      }, 200);
+      }, 180);
     }
   }
 }
 
-// === Установка нового пароля ===
 function selectPasswordLength(len) {
-  if (len === 0) {
-    if (state.passwords[currentUser]) { delete state.passwords[currentUser]; saveState(); }
-    document.getElementById("passwordModalBg").classList.remove("active");
-    showToast("🔓 Пароль", "Пароль убран");
-    returnToParent();
-    return;
-  }
-  pendingPassword = { length: len, pin: null };
-  pinEntryBuffer = "";
+  pendingPassword = { length: len, pin1: null, pin2: null };
+  pin1Buffer = "";
+  pin2Buffer = "";
   document.getElementById("passwordStep1").style.display = "none";
   document.getElementById("passwordStep2").style.display = "block";
   document.getElementById("passwordStep2Sub").textContent = `Введите ${len}-значный пароль`;
-  renderPinDisplay(len, 0);
-  renderPinKeypadSettings(len);
+  renderPinDots("pinDots1", len, 0, false);
+  renderPinKeypadSettings("pinKeypad1", len, 1);
 }
-function renderPinDisplay(len, filled) {
-  const display = document.getElementById("pinDisplay");
-  let out = "";
-  for (let i = 0; i < len; i++) out += i < filled ? "●" : "•";
-  display.textContent = out;
+function renderPinDots(id, len, filled, error) {
+  const wrap = document.getElementById(id);
+  wrap.innerHTML = "";
+  wrap.classList.remove("shake");
+  for (let i = 0; i < len; i++) {
+    const d = document.createElement("div");
+    d.className = "pin-dot-s";
+    if (i < filled) d.classList.add("filled");
+    if (error) d.classList.add("error");
+    wrap.appendChild(d);
+  }
 }
-function renderPinKeypadSettings(len) {
-  const wrap = document.getElementById("pinKeypad");
+function renderPinKeypadSettings(wrapId, len, stage) {
+  const wrap = document.getElementById(wrapId);
   wrap.innerHTML = "";
   ["1","2","3","4","5","6","7","8","9","C","0","⌫"].forEach(k => {
     const btn = document.createElement("button");
@@ -3296,38 +2761,77 @@ function renderPinKeypadSettings(len) {
     btn.textContent = k;
     if (k === "C") btn.classList.add("clear");
     if (k === "⌫") btn.classList.add("backspace");
-    btn.onclick = () => handlePinKey(k, len);
+    btn.onclick = () => handlePinKeyStage(k, len, stage);
     wrap.appendChild(btn);
   });
 }
-function handlePinKey(key, len) {
-  if (key === "C") { pinEntryBuffer = ""; renderPinDisplay(len, 0); return; }
-  if (key === "⌫") { pinEntryBuffer = pinEntryBuffer.slice(0, -1); renderPinDisplay(len, pinEntryBuffer.length); return; }
-  if (pinEntryBuffer.length < len) {
-    pinEntryBuffer += key;
-    renderPinDisplay(len, pinEntryBuffer.length);
-    if (pinEntryBuffer.length === len) {
+function handlePinKeyStage(key, len, stage) {
+  const buffer = stage === 1 ? pin1Buffer : pin2Buffer;
+  const dotsId = stage === 1 ? "pinDots1" : "pinDots2";
+  if (key === "C") {
+    if (stage === 1) pin1Buffer = ""; else pin2Buffer = "";
+    renderPinDots(dotsId, len, 0, false);
+    return;
+  }
+  if (key === "⌫") {
+    if (stage === 1) pin1Buffer = pin1Buffer.slice(0, -1); else pin2Buffer = pin2Buffer.slice(0, -1);
+    renderPinDots(dotsId, len, (stage === 1 ? pin1Buffer : pin2Buffer).length, false);
+    return;
+  }
+  if (buffer.length < len) {
+    if (stage === 1) pin1Buffer += key; else pin2Buffer += key;
+    renderPinDots(dotsId, len, (stage === 1 ? pin1Buffer : pin2Buffer).length, false);
+    const cur = stage === 1 ? pin1Buffer : pin2Buffer;
+    if (cur.length === len) {
       setTimeout(() => {
-        pendingPassword.pin = pinEntryBuffer;
-        document.getElementById("passwordStep2").style.display = "none";
-        document.getElementById("passwordStep3").style.display = "block";
-        document.querySelectorAll("#passwordStep3 .pass-option").forEach(opt => opt.classList.remove("active"));
-      }, 250);
+        if (stage === 1) {
+          document.getElementById("passwordStep2").style.display = "none";
+          document.getElementById("passwordStep2b").style.display = "block";
+          document.getElementById("passwordStep2bSub").textContent = "Повторите пароль";
+          renderPinDots("pinDots2", len, 0, false);
+          renderPinKeypadSettings("pinKeypad2", len, 2);
+        } else {
+          if (pin1Buffer === pin2Buffer) {
+            pendingPassword.pin1 = pin1Buffer;
+            pendingPassword.pin2 = pin2Buffer;
+            document.getElementById("passwordStep2b").style.display = "none";
+            document.getElementById("passwordStep3").style.display = "block";
+            document.querySelectorAll("#passwordStep3 .pass-option").forEach(opt => opt.classList.remove("active"));
+          } else {
+            if (navigator.vibrate) navigator.vibrate([40, 30, 40, 30, 60]);
+            renderPinDots("pinDots2", len, len, true);
+            const dots = document.getElementById("pinDots2");
+            dots.classList.add("shake");
+            setTimeout(() => {
+              pin2Buffer = "";
+              dots.classList.remove("shake");
+              renderPinDots("pinDots2", len, 0, false);
+            }, 700);
+          }
+        }
+      }, 180);
     }
   }
 }
 function cancelPinEntry() {
   document.getElementById("passwordStep2").style.display = "none";
   document.getElementById("passwordStep1").style.display = "block";
-  pinEntryBuffer = "";
+  pin1Buffer = "";
+  pin2Buffer = "";
   pendingPassword = null;
 }
+function cancelPinRepeat() {
+  document.getElementById("passwordStep2b").style.display = "none";
+  document.getElementById("passwordStep2").style.display = "block";
+  pin2Buffer = "";
+  renderPinDots("pinDots1", pendingPassword.length, pin1Buffer.length, false);
+}
 function selectPasswordMode(mode) {
-  if (!pendingPassword || !pendingPassword.pin) return;
+  if (!pendingPassword || !pendingPassword.pin1) return;
   if (!state.passwords) state.passwords = {};
   state.passwords[currentUser] = {
     length: pendingPassword.length,
-    pin: pendingPassword.pin,
+    pin: pendingPassword.pin1,
     mode: mode
   };
   saveState();
@@ -3337,7 +2841,103 @@ function selectPasswordMode(mode) {
 }
 function cancelPasswordMode() {
   document.getElementById("passwordStep3").style.display = "none";
-  document.getElementById("passwordStep2").style.display = "block";
+  document.getElementById("passwordStep2b").style.display = "block";
+}
+
+// ==================== СБРОС ВСЕГО ====================
+let resetAllPinBuffer = "";
+let resetAllPinLength = 4;
+
+function openResetConfirm() {
+  document.getElementById("resetAllStep1").style.display = "block";
+  document.getElementById("resetAllStep2").style.display = "none";
+  document.getElementById("resetAllTitle").textContent = "⚠️ Сброс всех данных";
+  document.getElementById("resetAllSub").innerHTML = "Вы точно хотите всё сбросить?<br>Все оценки, настройки, пароль и напоминания будут удалены.";
+  document.getElementById("resetAllModalBg").classList.add("active");
+}
+function closeResetAll() {
+  document.getElementById("resetAllModalBg").classList.remove("active");
+}
+document.getElementById("resetAllModalBg").addEventListener("click", e => {
+  if (e.target.id === "resetAllModalBg") closeResetAll();
+});
+function confirmResetAll() {
+  const pass = state.passwords[currentUser];
+  if (pass && pass.pin && pass.length > 0) {
+    resetAllPinBuffer = "";
+    resetAllPinLength = pass.length;
+    document.getElementById("resetAllStep1").style.display = "none";
+    document.getElementById("resetAllStep2").style.display = "block";
+    document.getElementById("resetAllSub").textContent = `Введите ${pass.length}-значный пароль для подтверждения`;
+    renderResetAllPinDots(0, false);
+    renderResetAllPinKeypad();
+  } else {
+    performFullReset();
+  }
+}
+function cancelResetAll() {
+  document.getElementById("resetAllStep2").style.display = "none";
+  document.getElementById("resetAllStep1").style.display = "block";
+  document.getElementById("resetAllSub").innerHTML = "Вы точно хотите всё сбросить?<br>Все оценки, настройки, пароль и напоминания будут удалены.";
+}
+function renderResetAllPinDots(filled, error) {
+  const wrap = document.getElementById("resetAllPinDots");
+  wrap.innerHTML = "";
+  wrap.classList.remove("shake");
+  for (let i = 0; i < resetAllPinLength; i++) {
+    const d = document.createElement("div");
+    d.className = "pin-dot-s";
+    if (i < filled) d.classList.add("filled");
+    if (error) d.classList.add("error");
+    wrap.appendChild(d);
+  }
+}
+function renderResetAllPinKeypad() {
+  const wrap = document.getElementById("resetAllPinKeypad");
+  wrap.innerHTML = "";
+  ["1","2","3","4","5","6","7","8","9","C","0","⌫"].forEach(k => {
+    const btn = document.createElement("button");
+    btn.className = "pin-key";
+    btn.textContent = k;
+    if (k === "C") btn.classList.add("clear");
+    if (k === "⌫") btn.classList.add("backspace");
+    btn.onclick = () => handleResetAllPinKey(k);
+    wrap.appendChild(btn);
+  });
+}
+function handleResetAllPinKey(key) {
+  if (key === "C") { resetAllPinBuffer = ""; renderResetAllPinDots(0, false); return; }
+  if (key === "⌫") { resetAllPinBuffer = resetAllPinBuffer.slice(0, -1); renderResetAllPinDots(resetAllPinBuffer.length, false); return; }
+  if (resetAllPinBuffer.length < resetAllPinLength) {
+    resetAllPinBuffer += key;
+    renderResetAllPinDots(resetAllPinBuffer.length, false);
+    if (resetAllPinBuffer.length === resetAllPinLength) {
+      setTimeout(() => {
+        const pass = state.passwords[currentUser];
+        if (pass && resetAllPinBuffer === pass.pin) {
+          performFullReset();
+        } else {
+          if (navigator.vibrate) navigator.vibrate([40, 30, 40, 30, 60]);
+          renderResetAllPinDots(resetAllPinLength, true);
+          const dots = document.getElementById("resetAllPinDots");
+          dots.classList.add("shake");
+          setTimeout(() => {
+            resetAllPinBuffer = "";
+            dots.classList.remove("shake");
+            renderResetAllPinDots(0, false);
+          }, 700);
+        }
+      }, 180);
+    }
+  }
+}
+async function performFullReset() {
+  await idbClear();
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  state = defaultState();
+  await saveStateNow();
+  showToast("🔄 Сброс", "Все данные удалены. Перезагрузка...");
+  setTimeout(() => { location.reload(); }, 800);
 }
 
 // ==================== АВАТАРКИ SVG ====================
@@ -3413,6 +3013,8 @@ function refreshUIToUser() {
   document.getElementById("headerSub").textContent = currentUser === "eva" ? "1Б · Гимназия №10" : "Электронный дневник";
   applyWeekendVisibility();
   applyHideBadGrades();
+  applyRooms();
+  applyTeachers();
   render();
   renderSchedule();
   renderQuarters();
@@ -3437,7 +3039,6 @@ function updateNowBar() {
   const lessons = schedule[dayIdx] || [];
   const nowMin = now.getHours() * 60 + now.getMinutes();
   const isShort = dayInfo.short;
-
   for (let i = 0; i < bells.length; i++) {
     const bell = bells[i];
     const s = timeToMin(bell.start), e = timeToMin(bell.end);
@@ -3483,6 +3084,17 @@ function updateNowBar() {
 }
 
 // ==================== Д/З ====================
+function insertHwTemplate(text) {
+  const ta = document.getElementById("hwText");
+  const start = ta.selectionStart || ta.value.length;
+  const before = ta.value.slice(0, start);
+  const after = ta.value.slice(start);
+  const sep = before.length > 0 && !before.endsWith(" ") && !before.endsWith("\n") ? " " : "";
+  ta.value = before + sep + text + after;
+  ta.focus();
+  const newPos = (before + sep + text).length;
+  ta.setSelectionRange(newPos, newPos);
+}
 function renderTomorrowHW() {
   const wrap = document.getElementById("tomorrowHW");
   const list = document.getElementById("thList");
@@ -3775,11 +3387,6 @@ function clearGrade() {
 document.getElementById("modalBg").addEventListener("click", e => {
   if (e.target.id === "modalBg") closeModal();
 });
-function clearAll() {
-  if (!confirm(`Удалить ВСЕ оценки за ${activeQuarter} четверть?`)) return;
-  state.gradesByQuarter[activeQuarter] = {};
-  saveState(); render();
-}
 function downloadDiary() {
   const data = JSON.stringify(state, null, 2);
   const blob = new Blob([data], { type: "application/json" });
@@ -3855,8 +3462,6 @@ function renderSchedule() {
   const showHW = getProfile().showHW;
   const todayIdx = dates.findIndex(d => isSameDay(d, today));
   const currentSlot = todayIdx >= 0 ? getCurrentLessonSlotIndex() : -1;
-
-  // Используем звонки по профилю (7 уроков), но в праздничные дни сокращённые
   const bells = getProfile().bellType === "eva" ? BELLS_EVA : BELLS;
 
   let headHTML = '<th class="num-col">№</th><th class="time-col">Время</th>';
@@ -3865,7 +3470,7 @@ function renderSchedule() {
     const dateStr = `${d.getDate()} ${MONTH_GEN[d.getMonth()]}`;
     const dayInfo = getDayType(d);
     let extra = "";
-    if (dayInfo.short) extra = `<span style="display:block;font-size:9px;color:#bf360c;font-weight:700;">🎉 Сокращённые</span>`;
+    if (dayInfo.short) extra = `<span class="short-note">🎉 Сокращённые</span>`;
     headHTML += `<th>
       <span class="day-name">${DAY_NAMES[i]}</span>
       <span class="day-date ${isToday ? "today" : ""}">${dateStr}</span>
@@ -3885,9 +3490,7 @@ function renderSchedule() {
       const td = document.createElement("td");
       const date = dates[day];
       const dayInfo = getDayType(date);
-      // Часы для этой колонки (могут быть сокращённые)
       const colBells = getBellsForDate(date);
-      // Обновим time-col
       if (day === 0) {
         const timeTd = tr.querySelector('.time-col');
         if (slot < colBells.length) timeTd.textContent = `${colBells[slot].start} – ${colBells[slot].end}`;
@@ -3952,6 +3555,8 @@ function renderSchedule() {
   document.getElementById("weekLabel").textContent = `Неделя ${getWeekNumber(mon)}`;
   document.getElementById("weekDates").textContent = `${formatFull(mon)} — ${formatFull(sun)} ${sun.getFullYear()}`;
   applyWeekendVisibility();
+  applyRooms();
+  applyTeachers();
   renderTomorrowHW();
 }
 function getWeekNumber(d) {
@@ -3964,7 +3569,6 @@ function getWeekNumber(d) {
 function prevWeek() { currentWeekStart = addDays(currentWeekStart, -7); renderSchedule(); }
 function nextWeek() { currentWeekStart = addDays(currentWeekStart, 7); renderSchedule(); }
 function goToToday() { calMonth = new Date(); openCal(); }
-
 function openHW(dayIdx, slotIdx, dateKey) {
   if (!getProfile().showHW) return;
   currentHW = { date: dateKey, dayIdx, slotIdx };
@@ -4225,11 +3829,8 @@ function getUpcomingReminders() {
   return state.reminders.filter(r => !r.fired).sort((a, b) => a.ts - b.ts);
 }
 function updateRemindBadge() {
-  const badge = document.getElementById("remindBadge");
-  if (!badge) return;
-  const n = getUpcomingReminders().length;
-  badge.textContent = n;
-  badge.classList.toggle("empty", n === 0);
+  const badge = document.getElementById("settingsRemindBadge");
+  if (badge) badge.textContent = getUpcomingReminders().length;
 }
 function openReminders() {
   ensureReminders();
@@ -4246,7 +3847,15 @@ function openReminders() {
   document.getElementById("remindModalBg").classList.add("active");
   updateRemindBadge();
 }
-function closeReminders() { document.getElementById("remindModalBg").classList.remove("active"); }
+function openRemindersFromSettings() {
+  closeSettings();
+  pushModalParent("settings");
+  openReminders();
+}
+function closeReminders() {
+  document.getElementById("remindModalBg").classList.remove("active");
+  returnToParent();
+}
 document.getElementById("remindModalBg").addEventListener("click", e => {
   if (e.target.id === "remindModalBg") closeReminders();
 });
@@ -4371,33 +3980,23 @@ function escapeHtml(s) {
     .replace(/'/g, "&#039;");
 }
 
-// ==================== ОТСЛЕЖИВАНИЕ ВОЗВРАТА В ПРИЛОЖЕНИЕ ====================
-// Если пароль установлен в режиме "always", при возврате во вкладку
-// (visibilitychange) показываем lock screen снова
+// ==================== ВОЗВРАТ В ПРИЛОЖЕНИЕ ====================
 document.addEventListener("visibilitychange", () => {
   if (!state) return;
   const pass = state.passwords[currentUser];
   if (!pass || !pass.pin || pass.length === 0) return;
   if (pass.mode !== "always") return;
-
   if (document.visibilityState === "visible") {
-    // Возврат в приложение — показываем lock screen
     if (sessionUnlocked) {
-      showLockScreen(() => {
-        // После успешного ввода — ничего дополнительно
-      });
+      showLockScreen(() => {});
     }
   }
 });
-
-// Также при попытке открыть приложение (pagehide/pagehide)
 window.addEventListener("pagehide", () => {
   if (!state) return;
   const pass = state.passwords[currentUser];
   if (!pass || !pass.pin || pass.length === 0) return;
-  if (pass.mode === "always") {
-    sessionUnlocked = false;
-  }
+  if (pass.mode === "always") sessionUnlocked = false;
 });
 
 // ==================== СТАРТ ====================
@@ -4426,16 +4025,17 @@ async function init() {
 
   applyHideBadGrades();
   applyWeekendVisibility();
+  applyRooms();
+  applyTeachers();
+  applyAutosave();
   render();
   renderSchedule();
   renderQuarters();
 
-  // Проверка пароля при старте
   const pass = state.passwords[currentUser];
   if (pass && pass.pin && pass.length > 0) {
     const isSameDevice = state.lastDeviceId === state.deviceId;
     if (pass.mode === "always" || !isSameDevice) {
-      // Показываем lock screen без кнопок "отмена"
       showLockScreen(() => {
         state.lastDeviceId = state.deviceId;
         saveState();
