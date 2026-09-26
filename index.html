@@ -7,6 +7,11 @@
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="shortcut icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1976d2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Дневник">
 <style>
   :root {
     --primary: #1976d2;
@@ -447,6 +452,8 @@
   .btn.gray:hover { background: #455a64; }
   .btn.green  { background: #43a047; }
   .btn.green:hover { background: #2e7d32; }
+  .btn.purple { background: #7b1fa2; }
+  .btn.purple:hover { background: #4a148c; }
 
   .quarter-switcher {
     display: inline-flex; align-items: center;
@@ -738,6 +745,8 @@
   .action-btn.back:hover { background: linear-gradient(135deg, #ab47bc, #4a148c); transform: translateY(-2px); }
   .action-btn.danger { background: linear-gradient(135deg, #e53935, #b71c1c); color: #fff; box-shadow: 0 3px 10px rgba(183,28,28,.4), inset 0 1px 0 rgba(255,255,255,.25); }
   .action-btn.danger:hover { background: linear-gradient(135deg, #ef5350, #c62828); transform: translateY(-2px); }
+  .action-btn.purple { background: linear-gradient(135deg, #8e24aa, #4a148c); color: #fff; box-shadow: 0 3px 10px rgba(74,20,140,.35), inset 0 1px 0 rgba(255,255,255,.25); }
+  .action-btn.purple:hover { background: linear-gradient(135deg, #ab47bc, #4a148c); transform: translateY(-2px); }
   .action-btn.full { flex: 1 1 100%; }
 
   .section-label { font-size: 11px; font-weight: 600; color: #455a64; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; text-align: left; }
@@ -1010,6 +1019,41 @@
   ::-webkit-scrollbar-thumb { background: #c5cdd6; border-radius: 999px; }
   [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #3a4a60; }
 
+  /* PWA install hint */
+  .pwa-install-banner {
+    display: none;
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(25,118,210,.5);
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 400;
+    align-items: center;
+    gap: 10px;
+    max-width: calc(100vw - 24px);
+    animation: slideUpBanner .4s var(--ease);
+  }
+  .pwa-install-banner.active { display: flex; }
+  .pwa-install-banner button {
+    background: rgba(255,255,255,.25);
+    border: none;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    font-family: inherit;
+  }
+  .pwa-install-banner button:hover { background: rgba(255,255,255,.4); }
+  @keyframes slideUpBanner { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
   @media (max-width: 768px) {
     .app { padding: 0 8px 20px; }
     .header { padding: 10px 12px; min-height: 56px; border-radius: 0 0 12px 12px; }
@@ -1209,6 +1253,13 @@
 
 </div>
 
+<!-- PWA Install Banner -->
+<div class="pwa-install-banner" id="pwaInstallBanner">
+  <span>📲 Установить приложение?</span>
+  <button onclick="installPWA()">Установить</button>
+  <button onclick="dismissPWA()" style="background:transparent;">✕</button>
+</div>
+
 <!-- ОЦЕНКА -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
@@ -1330,7 +1381,7 @@
         <span class="sr-right"></span>
       </button>
       <button class="settings-row chevron" onclick="openRemindersFromSettings()">
-        <span class="sr-left"><span class="sr-emoji">🔔</span><span class="sr-text"><b>Напоминания</b><span>Управление напоминаниями</span></span></span>
+        <span class="sr-left"><span class="sr-emoji">🔔</span><span class="sr-text"><b>Напоминания</b><span>Управление и экспорт</span></span></span>
         <span class="sr-right"><span id="settingsRemindBadge" style="background:#ff5252;color:#fff;border-radius:9px;padding:1px 8px;font-size:11px;font-weight:700;">0</span></span>
       </button>
     </div>
@@ -1612,7 +1663,7 @@
 <div class="modal-bg" id="remindModalBg">
   <div class="modal remind-modal">
     <h3>🔔 Напоминания</h3>
-    <div class="sub">Уведомление придёт в указанное время</div>
+    <div class="sub">Уведомление придёт в указанное время (пока приложение открыто)</div>
     <div class="remind-form">
       <div class="remind-row">
         <label>Дата<input type="date" id="remindDate"></label>
@@ -1621,10 +1672,13 @@
       <textarea id="remindText" placeholder="О чём напомнить?"></textarea>
       <div class="actions">
         <button class="action-btn save" onclick="addReminder()"><span class="ab-emoji">➕</span> Добавить</button>
-        <button class="action-btn cancel" onclick="closeReminders()"><span class="ab-emoji">✕</span> Закрыть</button>
+        <button class="action-btn purple" onclick="exportRemindersICS()"><span class="ab-emoji">📅</span> Экспорт в .ics</button>
       </div>
     </div>
     <div class="remind-list" id="remindList"></div>
+    <div class="actions">
+      <button class="action-btn cancel full" onclick="closeReminders()"><span class="ab-emoji">✕</span> Закрыть</button>
+    </div>
   </div>
 </div>
 
@@ -1829,8 +1883,8 @@ const DAY_NAMES = ["Понедельник", "Вторник", "Среда", "Ч
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const MONTH_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
 
-const STORAGE_KEY = "diary_html_v24";
-const DB_NAME = "diary_db_v24";
+const STORAGE_KEY = "diary_html_v25";
+const DB_NAME = "diary_db_v25";
 const DB_STORE = "kv";
 
 const PROFILES = {
@@ -1914,19 +1968,14 @@ let pin1Buffer = "";
 let pin2Buffer = "";
 let pendingPassword = null;
 
-// Стек модалок
 let modalStack = [];
 function pushModalParent(parentId) { modalStack.push(parentId); }
 function popModalParent() { return modalStack.pop(); }
 function returnToParent() {
   const parent = popModalParent();
-  if (parent === "settings") {
-    setTimeout(() => openSettingsInternal(), 80);
-  } else if (parent === "profile") {
-    setTimeout(() => openProfileInternal(), 80);
-  }
+  if (parent === "settings") setTimeout(() => openSettingsInternal(), 80);
+  else if (parent === "profile") setTimeout(() => openProfileInternal(), 80);
 }
-// Очистка стека
 function clearModalStack() { modalStack = []; }
 
 function getHeaderBg(user) { return state.headerBgs && state.headerBgs[user] ? state.headerBgs[user] : null; }
@@ -3883,6 +3932,8 @@ function addReminder() {
   xEl.value = "";
   renderReminders();
   updateRemindBadge();
+  // Планируем через SW
+  scheduleReminderInSW(newRem);
   if (ts <= Date.now()) {
     newRem.fired = true;
     fireReminder(newRem);
@@ -3944,10 +3995,48 @@ function checkReminders() {
     if (document.getElementById("remindModalBg").classList.contains("active")) renderReminders();
   }
 }
+// Планирование напоминания через setTimeout пока вкладка открыта
+function scheduleReminderInSW(rem) {
+  const delay = rem.ts - Date.now();
+  if (delay <= 0) return;
+  // Максимум setTimeout ~24 дня, ограничиваем
+  if (delay > 2147483647) return;
+  setTimeout(() => {
+    if (!state || !state.reminders) return;
+    const r = state.reminders.find(x => x.id === rem.id);
+    if (r && !r.fired) {
+      r.fired = true;
+      fireReminder(r);
+      state.reminders = state.reminders.filter(x => !x.fired);
+      saveState();
+      updateRemindBadge();
+      if (document.getElementById("remindModalBg").classList.contains("active")) renderReminders();
+    }
+  }, delay);
+}
+// Новая функция — показывает уведомление через Service Worker (работает надёжнее)
 function fireReminder(r) {
   showToast("🔔 Напоминание", r.text);
-  if ("Notification" in window && Notification.permission === "granted") {
-    try { new Notification("🔔 Дневник.ру", { body: r.text, icon: "icon.png", tag: r.id }); } catch (e) {}
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  // Пытаемся через SW
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'SHOW_NOTIFICATION',
+      title: '🔔 Дневник.ру',
+      body: r.text,
+      tag: r.id
+    });
+  } else {
+    try {
+      new Notification('🔔 Дневник.ру', {
+        body: r.text,
+        icon: 'icon.png',
+        tag: r.id,
+        vibrate: [80, 40, 80]
+      });
+    } catch (e) {
+      console.warn('Notification error:', e);
+    }
   }
 }
 function showToast(title, text) {
@@ -3980,6 +4069,68 @@ function escapeHtml(s) {
     .replace(/'/g, "&#039;");
 }
 
+// ==================== ЭКСПОРТ В .ICS ====================
+function exportRemindersICS() {
+  ensureReminders();
+  const reminders = state.reminders.filter(r => !r.fired);
+  if (reminders.length === 0) {
+    alert("Нет активных напоминаний для экспорта.");
+    return;
+  }
+  // Формат .ics
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Дневник.ру//RU',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'X-WR-CALNAME:Дневник.ру — напоминания'
+  ];
+  reminders.forEach(r => {
+    const dt = new Date(r.ts);
+    const dtStart = formatICSDate(dt);
+    const dtEnd = formatICSDate(new Date(r.ts + 15 * 60 * 1000)); // +15 мин
+    const uid = r.id + '@diary.ru';
+    const dtstamp = formatICSDate(new Date());
+    lines.push('BEGIN:VEVENT');
+    lines.push(`UID:${uid}`);
+    lines.push(`DTSTAMP:${dtstamp}`);
+    lines.push(`DTSTART:${dtStart}`);
+    lines.push(`DTEND:${dtEnd}`);
+    lines.push(`SUMMARY:${escapeICS('🔔 ' + r.text)}`);
+    lines.push(`DESCRIPTION:${escapeICS('Напоминание из Дневник.ру')}`);
+    lines.push('BEGIN:VALARM');
+    lines.push('TRIGGER:-PT5M');
+    lines.push('ACTION:DISPLAY');
+    lines.push(`DESCRIPTION:${escapeICS(r.text)}`);
+    lines.push('END:VALARM');
+    lines.push('END:VEVENT');
+  });
+  lines.push('END:VCALENDAR');
+  const icsContent = lines.join('\r\n');
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `diary_reminders_${Date.now()}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('📅 Экспорт', 'Файл .ics скачан. Откройте его — календарь импортирует напоминания.');
+}
+function formatICSDate(d) {
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+}
+function escapeICS(s) {
+  return String(s)
+    .replace(/\\/g, '\\\\')
+    .replace(/,/g, '\\,')
+    .replace(/;/g, '\\;')
+    .replace(/\n/g, '\\n');
+}
+
 // ==================== ВОЗВРАТ В ПРИЛОЖЕНИЕ ====================
 document.addEventListener("visibilitychange", () => {
   if (!state) return;
@@ -3998,6 +4149,57 @@ window.addEventListener("pagehide", () => {
   if (!pass || !pass.pin || pass.length === 0) return;
   if (pass.mode === "always") sessionUnlocked = false;
 });
+
+// ==================== PWA: Service Worker ====================
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Показываем баннер "Установить" через 3 секунды
+  setTimeout(() => {
+    const banner = document.getElementById('pwaInstallBanner');
+    if (banner && !localStorage.getItem('pwaDismissed')) {
+      banner.classList.add('active');
+    }
+  }, 3000);
+});
+function installPWA() {
+  const banner = document.getElementById('pwaInstallBanner');
+  banner.classList.remove('active');
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      if (choice.outcome === 'accepted') {
+        showToast('📲 Установка', 'Приложение установлено!');
+      }
+      deferredPrompt = null;
+    });
+  } else {
+    alert('Для установки откройте меню браузера → «Установить приложение» или «Добавить на главный экран».');
+  }
+}
+function dismissPWA() {
+  const banner = document.getElementById('pwaInstallBanner');
+  banner.classList.remove('active');
+  try { localStorage.setItem('pwaDismissed', '1'); } catch (e) {}
+}
+
+// Регистрация SW
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js', { scope: './' })
+      .then(reg => {
+        console.log('[PWA] SW зарегистрирован:', reg.scope);
+        reg.update().catch(() => {});
+      })
+      .catch(err => {
+        console.warn('[PWA] Ошибка регистрации SW:', err);
+      });
+  });
+  navigator.serviceWorker.addEventListener('message', event => {
+    console.log('[PWA] Сообщение от SW:', event.data);
+  });
+}
 
 // ==================== СТАРТ ====================
 async function init() {
@@ -4048,6 +4250,12 @@ async function init() {
   } else {
     sessionUnlocked = true;
   }
+
+  // Планируем все активные напоминания в SW-таймеры
+  ensureReminders();
+  state.reminders.forEach(r => {
+    if (!r.fired && r.ts > Date.now()) scheduleReminderInSW(r);
+  });
 
   setInterval(updateNowBar, 30000);
   setInterval(checkReminders, 1000);
