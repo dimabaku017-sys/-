@@ -1513,13 +1513,38 @@ function pushToCloud() {
 }
 
 function buildCloudPayload() {
-  // Что уходит в облако: всё, кроме фото/видео/тяжёлых локальных данных
+  // Firebase не разрешает точки в ключах — заменяем их на "_"
+  const safeGrades = {};
+  Object.keys(state.gradesByQuarter || {}).forEach(q => {
+    safeGrades[q] = {};
+    Object.keys(state.gradesByQuarter[q] || {}).forEach(subj => {
+      safeGrades[q][subj] = {};
+      Object.keys(state.gradesByQuarter[q][subj] || {}).forEach(dateKey => {
+        // 01.09 → 01_09
+        safeGrades[q][subj][dateKey.replace(/\./g, "_")] = state.gradesByQuarter[q][subj][dateKey];
+      });
+    });
+  });
+
+  // Также заменяем точки в ключах Д/З
+  const safeHW = {};
+  Object.keys(state.homework || {}).forEach(k => {
+    // "2024-09-01|0|1" — точек нет, но на всякий случай
+    safeHW[k.replace(/\./g, "_")] = state.homework[k];
+  });
+  const safeHWDone = {};
+  Object.keys(state.hwDone || {}).forEach(k => {
+    safeHWDone[k.replace(/\./g, "_")] = state.hwDone[k];
+  });
+  // Аналогично для домашних фото — но фото мы не синхронизируем
+  // quarters — там ключи числовые, точек нет
+
   return {
     subjects: state.subjects,
-    gradesByQuarter: state.gradesByQuarter,
+    gradesByQuarter: safeGrades,
     datesByQuarter: state.datesByQuarter,
-    homework: state.homework,
-    hwDone: state.hwDone,
+    homework: safeHW,
+    hwDone: safeHWDone,
     quarters: state.quarters,
     reminders: state.reminders,
     theme: state.theme,
@@ -1532,7 +1557,6 @@ function buildCloudPayload() {
     showTeachers: state.showTeachers,
     autosaveInstant: state.autosaveInstant,
     passwords: state.passwords
-    // hwPhotos, customAvatars, headerBgs, bgMedia — НЕ синхронизируются (локально)
   };
 }
 
@@ -1561,7 +1585,32 @@ function startCloudListener() {
       const localBg = state.bgMedia;
       const localDeviceId = state.deviceId;
 
-      state = normalizeState({ ...state, ...remote });
+      // Разворачиваем "_" обратно в "." для оценок
+const restoredGrades = {};
+Object.keys(remote.gradesByQuarter || {}).forEach(q => {
+  restoredGrades[q] = {};
+  Object.keys(remote.gradesByQuarter[q] || {}).forEach(subj => {
+    restoredGrades[q][subj] = {};
+    Object.keys(remote.gradesByQuarter[q][subj] || {}).forEach(dateKey => {
+      restoredGrades[q][subj][dateKey.replace(/_/g, ".")] = remote.gradesByQuarter[q][subj][dateKey];
+    });
+  });
+});
+remote.gradesByQuarter = restoredGrades;
+
+// Для Д/З
+const restoredHW = {};
+Object.keys(remote.homework || {}).forEach(k => {
+  restoredHW[k.replace(/_/g, ".")] = remote.homework[k];
+});
+remote.homework = restoredHW;
+const restoredHWDone = {};
+Object.keys(remote.hwDone || {}).forEach(k => {
+  restoredHWDone[k.replace(/_/g, ".")] = remote.hwDone[k];
+});
+remote.hwDone = restoredHWDone;
+
+state = normalizeState({ ...state, ...remote });
 
       state.hwPhotos = localPhotos;
       state.customAvatars = localAvatars;
@@ -1820,7 +1869,32 @@ async function syncNow() {
       const localHeaderBgs = state.headerBgs || {};
       const localBg = state.bgMedia;
       const localDeviceId = state.deviceId;
-      state = normalizeState({ ...state, ...remote });
+      // Разворачиваем "_" обратно в "." для оценок
+const restoredGrades = {};
+Object.keys(remote.gradesByQuarter || {}).forEach(q => {
+  restoredGrades[q] = {};
+  Object.keys(remote.gradesByQuarter[q] || {}).forEach(subj => {
+    restoredGrades[q][subj] = {};
+    Object.keys(remote.gradesByQuarter[q][subj] || {}).forEach(dateKey => {
+      restoredGrades[q][subj][dateKey.replace(/_/g, ".")] = remote.gradesByQuarter[q][subj][dateKey];
+    });
+  });
+});
+remote.gradesByQuarter = restoredGrades;
+
+// Для Д/З
+const restoredHW = {};
+Object.keys(remote.homework || {}).forEach(k => {
+  restoredHW[k.replace(/_/g, ".")] = remote.homework[k];
+});
+remote.homework = restoredHW;
+const restoredHWDone = {};
+Object.keys(remote.hwDone || {}).forEach(k => {
+  restoredHWDone[k.replace(/_/g, ".")] = remote.hwDone[k];
+});
+remote.hwDone = restoredHWDone;
+
+state = normalizeState({ ...state, ...remote });
       state.hwPhotos = localPhotos;
       state.customAvatars = localAvatars;
       state.headerBgs = localHeaderBgs;
