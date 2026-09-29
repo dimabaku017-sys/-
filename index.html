@@ -437,7 +437,7 @@
     max-height: calc(100vh - 340px);
     -webkit-overflow-scrolling: touch;
   }
-  table.grades-table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 900px; font-size: 13px; }
+  table.grades-table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 700px; font-size: 12px; }
   table.grades-table th, table.grades-table td { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6px; text-align: center; vertical-align: middle; }
   table.grades-table thead th { background: #f5f7fa; position: sticky; top: 0; z-index: 5; font-weight: 600; font-size: 12px; color: #37474f; padding: 10px 6px; }
   [data-theme="dark"] table.grades-table thead th { background: #202a3d; color: var(--text-soft); }
@@ -725,7 +725,7 @@
     font-size: 14px;
     font-variant-numeric: tabular-nums;
   }
-  table.quarters-table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 600px; font-size: 13px; }
+  table.quarters-table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 500px; font-size: 12px; }
   table.quarters-table th, table.quarters-table td { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 8px; text-align: center; vertical-align: middle; }
   table.quarters-table thead th { background: #f5f7fa; position: sticky; top: 0; z-index: 5; font-weight: 600; font-size: 12px; color: #37474f; padding: 12px 4px; }
   [data-theme="dark"] table.quarters-table thead th { background: #202a3d; color: var(--text-soft); }
@@ -970,7 +970,63 @@
   .photo-viewer { position: fixed; inset: 0; background: rgba(0,0,0,.92); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; z-index: 200; cursor: zoom-out; padding: 16px; }
   .photo-viewer.active { display: flex; animation: bgIn .25s var(--ease); }
   .photo-viewer img { max-width: 92vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,.6); animation: pop .35s var(--ease-bounce); }
-  .photo-viewer .close-hint { position: fixed; top: 16px; right: 20px; color: #fff; font-size: 13px; opacity: .8; }
+    .photo-close-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.3);
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 210;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform .25s var(--ease-bounce), background .2s var(--ease);
+    font-family: inherit;
+    line-height: 1;
+    padding: 0;
+  }
+  .photo-close-btn:hover { background: rgba(255,255,255,.3); transform: rotate(90deg) scale(1.08); }
+  .photo-close-btn:active { transform: rotate(90deg) scale(.95); }
+  .photo-nav-btn {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.3);
+    font-size: 32px;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 210;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform .25s var(--ease-bounce), background .2s var(--ease);
+    font-family: inherit;
+    line-height: 1;
+    padding: 0;
+    padding-bottom: 4px;
+  }
+  .photo-nav-btn:hover { background: rgba(255,255,255,.3); }
+  .photo-nav-btn:active { transform: translateY(-50%) scale(.92); }
+  .photo-nav-prev { left: 12px; }
+  .photo-nav-next { right: 12px; }
+  .photo-viewer img { cursor: zoom-in; touch-action: none; transition: transform .25s var(--ease); }
+  .photo-viewer img.zoomed { cursor: zoom-out; }
   @keyframes pop { from{transform:scale(.9);opacity:0;} to{transform:scale(1);opacity:1;} }
   .profile-settings-btn { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%; border: none; background: color-mix(in srgb, var(--panel) 90%, transparent); color: var(--text-soft); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .35s var(--ease-bounce); z-index: 5; box-shadow: var(--shadow-sm); }
   .profile-settings-btn:hover { background: var(--primary); color: #fff; transform: rotate(90deg) scale(1.1); }
@@ -2377,6 +2433,30 @@
   .settings-modal .settings-close-btn:active {
     transform: rotate(90deg) scale(.95);
   }
+  
+  @media (max-width: 768px) {
+    table.grades-table { min-width: 540px !important; font-size: 10px !important; }
+    table.grades-table th, table.grades-table td { padding: 3px 2px !important; }
+    table.grades-table thead th { font-size: 9px !important; padding: 5px 3px !important; }
+    th.subject-col, td.subject-col { min-width: 78px !important; font-size: 10px !important; padding-left: 5px !important; }
+    td.grade-cell { min-width: 30px !important; height: 34px !important; }
+    .grade-badge { width: 24px !important; height: 24px !important; font-size: 12px !important; border-radius: 6px !important; }
+    .type-label { font-size: 6px !important; padding: 0 2px !important; }
+    th.avg-col, td.avg-col { min-width: 54px !important; font-size: 11px !important; }
+    td.avg-col .weighted { font-size: 11px !important; }
+    td.avg-col .simple { font-size: 8px !important; }
+    th.quarter-col, td.quarter-col { min-width: 54px !important; font-size: 11px !important; }
+    thead th.quarter-col { font-size: 8px !important; padding: 4px 2px !important; }
+    td.quarter-cell-main { min-width: 54px !important; height: 34px !important; font-size: 14px !important; }
+    .hidden-placeholder { width: 24px !important; height: 24px !important; font-size: 12px !important; }
+  }
+      table.quarters-table { min-width: 460px !important; font-size: 11px !important; }
+    table.quarters-table th, table.quarters-table td { padding: 5px 3px !important; }
+    table.quarters-table thead th { font-size: 10px !important; padding: 6px 2px !important; }
+    table.quarters-table th.subject-col, table.quarters-table td.subject-col { min-width: 100px !important; font-size: 11px !important; padding-left: 6px !important; }
+    table.quarters-table td.quarter-cell { min-width: 50px !important; height: 38px !important; font-size: 15px !important; }
+    table.quarters-table td.quarter-cell.final { font-size: 16px !important; }
+    .quarter-weights { font-size: 8px !important; }
 </style>
 </head>
 <body>
@@ -2640,9 +2720,11 @@
   </div>
 </div>
 
-<div class="photo-viewer" id="photoViewer" onclick="closePhotoViewer()">
-  <span class="close-hint">Клик — закрыть</span>
+<div class="photo-viewer" id="photoViewer">
+  <button class="photo-close-btn" onclick="closePhotoViewer()" title="Закрыть" aria-label="Закрыть">✕</button>
+  <button class="photo-nav-btn photo-nav-prev" id="photoPrevBtn" onclick="showPrevPhoto(event)" style="display:none;">‹</button>
   <img id="photoViewerImg" src="" alt="Фото">
+  <button class="photo-nav-btn photo-nav-next" id="photoNextBtn" onclick="showNextPhoto(event)" style="display:none;">›</button>
 </div>
 
 <div class="modal-bg" id="qModalBg">
@@ -4624,8 +4706,7 @@ function viewTomorrowPhoto(slotIdx, idx) {
   const hwKey = `${dateKey}|${tomDayIdx}|${slotIdx}`;
   const photos = state.hwPhotos[hwKey] || [];
   if (!photos[idx]) return;
-  document.getElementById("photoViewerImg").src = photos[idx];
-  document.getElementById("photoViewer").classList.add("active");
+  showPhotoFromList(photos, idx);
 }
 function calcNeedForTarget(subjGrades, target = TARGET_AVG) {
   let sumWV = 0, sumW = 0;
@@ -5146,10 +5227,124 @@ function viewPhotoTemp(idx) { document.getElementById("photoViewerImg").src = hw
 function viewHWPhoto(hwKey, idx) {
   const photos = state.hwPhotos[hwKey] || [];
   if (!photos[idx]) return;
-  document.getElementById("photoViewerImg").src = photos[idx];
-  document.getElementById("photoViewer").classList.add("active");
+  showPhotoFromList(photos, idx);
 }
-function closePhotoViewer() { document.getElementById("photoViewer").classList.remove("active"); }
+let photoViewerList = [];
+let photoViewerIndex = 0;
+let photoZoomLevel = 1;
+function closePhotoViewer() {
+  document.getElementById("photoViewer").classList.remove("active");
+  photoViewerList = [];
+  photoViewerIndex = 0;
+  photoZoomLevel = 1;
+  const img = document.getElementById("photoViewerImg");
+  img.style.transform = "";
+  img.classList.remove("zoomed");
+  img.src = "";
+}
+function showPhotoFromList(photos, index) {
+  photoViewerList = photos;
+  photoViewerIndex = index;
+  photoZoomLevel = 1;
+  const img = document.getElementById("photoViewerImg");
+  img.src = photos[index];
+  img.style.transform = "";
+  img.classList.remove("zoomed");
+  document.getElementById("photoViewer").classList.add("active");
+  updatePhotoNavButtons();
+  bindPhotoZoom();
+}
+function updatePhotoNavButtons() {
+  const prev = document.getElementById("photoPrevBtn");
+  const next = document.getElementById("photoNextBtn");
+  const hasMultiple = photoViewerList.length > 1;
+  prev.style.display = hasMultiple ? "flex" : "none";
+  next.style.display = hasMultiple ? "flex" : "none";
+}
+function showPrevPhoto(ev) {
+  if (ev) ev.stopPropagation();
+  if (photoViewerList.length === 0) return;
+  photoViewerIndex = (photoViewerIndex - 1 + photoViewerList.length) % photoViewerList.length;
+  photoZoomLevel = 1;
+  const img = document.getElementById("photoViewerImg");
+  img.src = photoViewerList[photoViewerIndex];
+  img.style.transform = "";
+  img.classList.remove("zoomed");
+  updatePhotoNavButtons();
+  bindPhotoZoom();
+}
+function showNextPhoto(ev) {
+  if (ev) ev.stopPropagation();
+  if (photoViewerList.length === 0) return;
+  photoViewerIndex = (photoViewerIndex + 1) % photoViewerList.length;
+  photoZoomLevel = 1;
+  const img = document.getElementById("photoViewerImg");
+  img.src = photoViewerList[photoViewerIndex];
+  img.style.transform = "";
+  img.classList.remove("zoomed");
+  updatePhotoNavButtons();
+  bindPhotoZoom();
+}
+function bindPhotoZoom() {
+  const img = document.getElementById("photoViewerImg");
+  let startDist = 0;
+  let startZoom = 1;
+  let lastTap = 0;
+  img.ontouchstart = (e) => {
+    if (e.touches.length === 2) {
+      startDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      startZoom = photoZoomLevel;
+    } else if (e.touches.length === 1) {
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        if (photoZoomLevel > 1) {
+          photoZoomLevel = 1;
+        } else {
+          photoZoomLevel = 2.5;
+        }
+        img.style.transform = `scale(${photoZoomLevel})`;
+        img.classList.toggle("zoomed", photoZoomLevel > 1);
+      }
+      lastTap = now;
+    }
+  };
+  img.ontouchmove = (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      if (startDist > 0) {
+        photoZoomLevel = Math.max(1, Math.min(4, startZoom * (dist / startDist)));
+        img.style.transform = `scale(${photoZoomLevel})`;
+        img.classList.toggle("zoomed", photoZoomLevel > 1.05);
+      }
+    }
+  };
+  img.ontouchend = () => { startDist = 0; };
+  img.onwheel = (e) => {
+    e.preventDefault();
+    photoZoomLevel = Math.max(1, Math.min(4, photoZoomLevel + (e.deltaY < 0 ? 0.2 : -0.2)));
+    img.style.transform = `scale(${photoZoomLevel})`;
+    img.classList.toggle("zoomed", photoZoomLevel > 1.05);
+  };
+  img.onclick = (e) => {
+    e.stopPropagation();
+    if (photoZoomLevel > 1) {
+      photoZoomLevel = 1;
+      img.style.transform = "";
+      img.classList.remove("zoomed");
+    } else {
+      photoZoomLevel = 2.5;
+      img.style.transform = `scale(${photoZoomLevel})`;
+      img.classList.add("zoomed");
+    }
+  };
+}
 function saveHW() {
   if (!getProfile().showHW) return;
   const { date, dayIdx, slotIdx } = currentHW;
@@ -5237,9 +5432,10 @@ function getQuarterGradeLimits(subj, quarter) {
   const avg = calcWeightedAvg(subjGrades);
   if (avg === null) return { min: 1, max: 5, avg: null };
   if (avg >= 4.5) return { min: 5, max: 5, avg };
-  if (avg >= 3.5) return { min: 4, max: 5, avg };
-  if (avg >= 2.5) return { min: 3, max: 5, avg };
-  return { min: 1, max: 5, avg };
+  if (avg >= 3.5) return { min: 4, max: 4, avg };
+  if (avg >= 2.5) return { min: 3, max: 3, avg };
+  if (avg >= 1.5) return { min: 2, max: 2, avg };
+  return { min: 1, max: 1, avg };
 }
 function openQuarterModal(subj, quarter) {
   currentQuarterModal = { subj, quarter };
