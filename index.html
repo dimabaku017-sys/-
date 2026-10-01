@@ -1744,7 +1744,7 @@
       <button class="type-btn" data-type="kr" onclick="selectType('kr')">К/Р <span class="hint">Контрольная · вес 2</span></button>
     </div>
     <div class="section-label">3. Комментарий (необязательно)</div>
-    <textarea class="grade-comment-textarea" id="gradeComment" placeholder="Например: у доски, не выучил стих..." maxlength="200"></textarea>
+    <textarea class="grade-comment-textarea" id="gradeComment" placeholder="Например: у доски, не выучил стих..." maxlength="200" autocomplete="off" autocorrect="on" autocapitalize="sentences" spellcheck="true" lang="ru" inputmode="text"></textarea>
     <div class="actions">
       <button class="action-btn save" onclick="saveGrade()"><span class="ab-emoji">💾</span> Сохранить</button>
       <button class="action-btn clear" onclick="clearGrade()"><span class="ab-emoji">🗑</span> Убрать</button>
@@ -1787,7 +1787,7 @@
       <button class="hw-tpl-btn" onclick="insertHwTemplate('№ ')">№ номер</button>
       <button class="hw-tpl-btn" onclick="insertHwTemplate('Упр ')">Упр упражнение</button>
     </div>
-    <textarea id="hwText" placeholder="Введите домашнее задание..."></textarea>
+    <textarea id="hwText" placeholder="Введите домашнее задание..." autocomplete="off" autocorrect="on" autocapitalize="sentences" spellcheck="true" lang="ru" inputmode="text"></textarea>
     <div class="hw-photo-area">
       <div class="photo-label-row">
         <span class="photo-label">📷 Фото задания</span>
@@ -2176,7 +2176,7 @@
         <label>Дата<input type="date" id="remindDate"></label>
         <label>Время<input type="time" id="remindTime"></label>
       </div>
-      <textarea id="remindText" placeholder="О чём напомнить?"></textarea>
+      <textarea id="remindText" placeholder="О чём напомнить?" autocomplete="off" autocorrect="on" autocapitalize="sentences" spellcheck="true" lang="ru" inputmode="text"></textarea>
       <div class="actions">
         <button class="action-btn save" onclick="addReminder()"><span class="ab-emoji">➕</span> Добавить</button>
         <button class="action-btn purple" onclick="exportRemindersICS()"><span class="ab-emoji">📅</span> Экспорт в .ics</button>
