@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Дневник.ру</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="shortcut icon" href="icon.png">
@@ -2287,6 +2288,94 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
+// ==================== SUPABASE ====================
+const SUPABASE_URL = "https://lysijazmudrcmacrip.supabase.co";
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5c2l6amFvem11ZHJjbWFjcmlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4Njc0MTUsImV4cCI6MjEwNjQ0MzQxNX0.PWl_5Z2oR3G4Kf_likDwzBxsV8sALe6sdTPuS6LsjI4";
+
+let supabaseClient = null;
+let realtimeChannel = null;
+
+try {
+  if (window.supabase) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    console.log("✅ Supabase подключён");
+  }
+} catch (e) {
+  console.warn("⚠️ Supabase недоступен:", e);
+}
+
+// ========== СОХРАНЕНИЕ В ОБЛАКО ==========
+async function saveToCloud() {
+  if (!supabaseClient || !state) return;
+  const user = getCurrentUser();
+  if (!user) return;
+  try {
+    const { error } = await supabaseClient
+      .from("diaries")
+      .upsert({
+        user_email: user.email,
+        data: state,
+        updated_at: new Date().toISOString()
+      }, { onConflict: "user_email" });
+    if (error) console.warn("Cloud save error:", error.message);
+    else console.log("☁️ Сохранено в облако");
+  } catch (e) {
+    console.warn("Cloud save exception:", e);
+  }
+}
+
+// ========== ЗАГРУЗКА ИЗ ОБЛАКА ==========
+async function loadFromCloud(email) {
+  if (!supabaseClient) return null;
+  try {
+    const { data, error } = await supabaseClient
+      .from("diaries")
+      .select("data")
+      .eq("user_email", email)
+      .maybeSingle();
+    if (error) { console.warn("Cloud load error:", error.message); return null; }
+    return data ? data.data : null;
+  } catch (e) {
+    console.warn("Cloud load exception:", e);
+    return null;
+  }
+}
+
+// ========== REALTIME ПОДПИСКА ==========
+function subscribeToCloud(email) {
+  if (!supabaseClient) return;
+  if (realtimeChannel) {
+    supabaseClient.removeChannel(realtimeChannel);
+    realtimeChannel = null;
+  }
+  try {
+    realtimeChannel = supabaseClient
+      .channel("diary_" + email)
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "diaries",
+        filter: "user_email=eq." + email
+      }, (payload) => {
+        console.log("🔔 Получено обновление из облака");
+        if (payload.new && payload.new.data) {
+          const newData = payload.new.data;
+          // Проверяем, что данные изменились не нами же
+          if (JSON.stringify(newData) !== JSON.stringify(state)) {
+            state = normalizeState(newData);
+            if (typeof render === "function") render();
+            if (typeof renderSchedule === "function") renderSchedule();
+            if (typeof renderQuarters === "function") renderQuarters();
+            if (typeof updateAvg === "function") updateAvg();
+          }
+        }
+      })
+      .subscribe();
+  } catch (e) {
+    console.warn("Realtime subscribe error:", e);
+  }
+}
+
 // ==================== АВТОРИЗАЦИЯ ====================
 const USERS_KEY = "diary_users_v1";
 const CURRENT_USER_KEY = "diary_current_user_v1";
@@ -2598,12 +2687,24 @@ async function enterDiary(user) {
   updateStorageKeys();
   currentUser = (user.isTestUser) ? "dima" : ("user_" + user.email.replace(/[^a-zA-Z0-9]/g, "_"));
 
-  // 2. Загружаем state из БД пользователя (или создаём новый)
-  let loadedState = await idbGet("state");
+    // 2. Сначала пробуем загрузить из ОБЛАКА (Supabase)
+  let loadedState = await loadFromCloud(user.email);
+  let source = "cloud";
+  
+  // 3. Если в облаке пусто — пробуем IndexedDB
+  if (!loadedState || !loadedState.subjects) {
+    loadedState = await idbGet("state");
+    source = "local";
+  }
+  
+  // 4. Если нигде нет — создаём новый
   if (!loadedState || typeof loadedState !== "object" || !loadedState.subjects) {
     loadedState = defaultState();
+    source = "new";
   }
+  
   state = normalizeState(loadedState);
+  console.log("📦 State загружен из:", source);
 
   // 3. Скрываем экран входа
   document.getElementById("authScreen").classList.remove("active");
@@ -2669,6 +2770,10 @@ async function enterDiary(user) {
 
   // 6. Сохраняем в БД пользователя
   await idbSet("state", state);
+
+  // 6.5. Отправляем в облако Supabase
+  await saveToCloud();
+  subscribeToCloud(user.email);
 
   // 7. Запускаем все рендеры
   applyTheme();
@@ -3024,6 +3129,12 @@ function applyUserCustomizations() {
 // ============ ВЫХОД ============
 async function doLogout() {
   if (!confirm("Выйти из аккаунта?")) return;
+
+  // Отписываемся от Realtime
+  if (realtimeChannel && supabaseClient) {
+    try { supabaseClient.removeChannel(realtimeChannel); } catch(e) {}
+    realtimeChannel = null;
+  }
 
   // Запоминаем, есть ли сохранённая почта для быстрого входа
   const savedRemember = getRememberMe();
@@ -3521,15 +3632,24 @@ function normalizeState(s) {
 }
 
 let saveTimer = null;
+let cloudSaveTimer = null;
 
 function saveState() {
   if (!state) return;
   const delay = state.autosaveInstant ? 50 : 5000;
+  
+  // Локальное сохранение (IndexedDB)
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
     const ok = await idbSet("state", state);
     if (!ok) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
   }, delay);
+  
+  // Облачное сохранение (Supabase) — с задержкой 500мс чтобы не спамить
+  if (cloudSaveTimer) clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(() => {
+    saveToCloud();
+  }, 500);
 }
 
 async function saveStateNow() {
