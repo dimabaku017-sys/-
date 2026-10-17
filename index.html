@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Дневник.ру</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="shortcut icon" href="icon.png">
@@ -168,55 +167,6 @@
 
   /* ============ ОСНОВНОЙ КОНТЕЙНЕР ============ */
   .app { max-width: 1440px; margin: 0 auto; padding: 0 12px 24px; position: relative; }
-
-    /* ============ СТАТУС ОБЛАКА В ШАПКЕ ============ */
-  .cloud-indicator {
-    display: flex; align-items: center; gap: 6px;
-    padding: 6px 10px; border-radius: 20px;
-    background: rgba(255,255,255,.18);
-    font-size: 11px; font-weight: 700; color: #fff;
-    border: 1px solid rgba(255,255,255,.28);
-    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    transition: .25s var(--ease); cursor: pointer;
-  }
-  .cloud-indicator .ci-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #4ade80; box-shadow: 0 0 8px #4ade80;
-    animation: ciPulse 2s ease-in-out infinite;
-  }
-  @keyframes ciPulse { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
-  .cloud-indicator.sync .ci-dot { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
-  .cloud-indicator.off .ci-dot { background: #94a3b8; box-shadow: none; animation: none; }
-  .cloud-indicator.err .ci-dot { background: #f87171; box-shadow: 0 0 8px #f87171; }
-  .cloud-indicator .ci-label { white-space: nowrap; }
-  @media (max-width: 768px) { .cloud-indicator .ci-label { display: none; } }
-
-  .sync-row {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 10px; padding: 12px 14px; border-radius: 12px;
-    background: color-mix(in srgb, var(--primary-soft) 60%, transparent);
-    margin-bottom: 8px; font-size: 13px;
-  }
-  .sync-row .sr-status { display: flex; align-items: center; gap: 8px; }
-  .sync-row .sr-status b { font-weight: 700; }
-  .sync-row .sr-status .sr-hint { font-size: 11px; color: var(--text-soft); }
-  .sync-row .sr-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: #10b981; box-shadow: 0 0 8px #10b981; flex-shrink: 0;
-  }
-  .sync-row.sync .sr-dot { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; animation: ciPulse 1s ease-in-out infinite; }
-  .sync-row.err .sr-dot { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
-  .sync-row.off .sr-dot { background: #94a3b8; box-shadow: none; }
-  .sync-btn {
-    padding: 8px 14px; border: none; border-radius: 10px;
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    color: #fff; font-weight: 700; font-size: 12px;
-    cursor: pointer; font-family: inherit;
-    box-shadow: 0 2px 8px rgba(37,99,235,.3);
-    transition: .2s var(--ease);
-  }
-  .sync-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,99,235,.45); }
-  .sync-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
 
   /* ============ ШАПКА ============ */
   .header { background: linear-gradient(135deg, #1976d2, #0d47a1); background-size: 200% 200%; animation: headerShift 16s ease infinite; color: #fff; padding: 12px 16px; border-radius: 0 0 var(--radius) var(--radius); display: flex; justify-content: space-between; align-items: center; gap: 10px; box-shadow: var(--shadow-md); position: relative; overflow: hidden; min-height: var(--header-h); }
@@ -1178,11 +1128,7 @@
         <span id="headerProBadge" class="pro-badge" style="display:none; margin-left:6px;">PRO</span>
       </div>
     </div>
-        <div class="header-right">
-      <div class="cloud-indicator" id="cloudIndicator" title="Статус синхронизации" onclick="openSyncFromHeader()">
-        <span class="ci-dot"></span>
-        <span class="ci-label" id="cloudIndicatorLabel">Облако</span>
-      </div>
+    <div class="header-right">
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
       <button class="avatar-btn" id="headerAvatarBtn" onclick="openProfile()" title="Профиль">
         <span id="headerAvatarInner"></span>
@@ -1572,19 +1518,6 @@
           <span id="settingsProfileClass">9Б · Гимназия №10</span>
         </div>
         <span class="pro-badge" id="settingsProBadge" style="display:none;">PRO</span>
-      </div>
-            <div class="settings-section">
-        <div class="ss-title"><span class="ss-emoji">☁️</span> Облако</div>
-        <div class="sync-row" id="settingsSyncRow">
-          <div class="sr-status">
-            <span class="sr-dot" id="settingsSyncDot"></span>
-            <div>
-              <b id="settingsSyncTitle">Облако подключено</b>
-              <div class="sr-hint" id="settingsSyncHint">Нажмите «Синхронизировать»</div>
-            </div>
-          </div>
-          <button class="sync-btn" id="settingsSyncBtn" onclick="syncNow()">🔄 Синхр.</button>
-        </div>
       </div>
       <div class="settings-section">
         <div class="ss-title"><span class="ss-emoji">⭐</span> Подписка</div>
@@ -2022,191 +1955,13 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
-// ==================== SUPABASE ====================
-const SUPABASE_URL = "https://lysizjaozmudrcmacrip.supabase.co";
-const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5c2l6amFvem11ZHJjbWFjcmlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4Njc0MTUsImV4cCI6MjEwNjQ0MzQxNX0.PWl_5Z2oR3G4Kf_likDwzBxsV8sALe6sdTPuS6LsjI4";
-
-let supabaseClient = null;
-let realtimeChannel = null;
-
-try {
-  if (window.supabase) {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    console.log("✅ Supabase подключён");
-  }
-} catch (e) {
-  console.warn("⚠️ Supabase недоступен:", e);
-}
-
-async function saveToCloud() {
-  if (!supabaseClient || !state) { setSyncStatus("off"); return; }
-  const user = getCurrentUser();
-  if (!user) { setSyncStatus("off"); return; }
-  try {
-    setSyncStatus("sync");
-    const { error } = await supabaseClient
-      .from("diaries")
-      .upsert({
-        user_email: user.email,
-        data: state,
-        updated_at: new Date().toISOString()
-      }, { onConflict: "user_email" });
-    if (error) { console.warn("Cloud save error:", error.message); setSyncStatus("err"); }
-    else { lastSyncTime = Date.now(); setSyncStatus("ok"); }
-  } catch (e) {
-    console.warn("Cloud save exception:", e);
-    setSyncStatus("err");
-  }
-}
-
-async function loadFromCloud(email) {
-  if (!supabaseClient) return null;
-  try {
-    const { data, error } = await supabaseClient
-      .from("diaries")
-      .select("data")
-      .eq("user_email", email)
-      .maybeSingle();
-    if (error) { console.warn("Cloud load error:", error.message); return null; }
-    return data ? data.data : null;
-  } catch (e) {
-    console.warn("Cloud load exception:", e);
-    return null;
-  }
-}
-
-function subscribeToCloud(email) {
-  if (!supabaseClient) return;
-  if (realtimeChannel) {
-    supabaseClient.removeChannel(realtimeChannel);
-    realtimeChannel = null;
-  }
-
-  try {
-    realtimeChannel = supabaseClient
-      .channel("diary_" + email)
-      .on("postgres_changes", {
-        event: "*", schema: "public", table: "diaries",
-        filter: "user_email=eq." + email
-      }, (payload) => {
-        console.log("🔔 Получено обновление из облака");
-        if (payload.new && payload.new.data) {
-          const newData = payload.new.data;
-          if (JSON.stringify(newData) !== JSON.stringify(state)) {
-            state = normalizeState(newData);
-            if (typeof render === "function") render();
-            if (typeof renderSchedule === "function") renderSchedule();
-            if (typeof renderQuarters === "function") renderQuarters();
-            if (typeof updateAvg === "function") updateAvg();
-          }
-        }
-      })
-      .subscribe();
-  } catch (e) {
-    console.warn("Realtime subscribe error:", e);
-  }
-}
-
-// ==================== СТАТУС + РУЧНАЯ СИНХРОНИЗАЦИЯ ====================
-function setSyncStatus(status) {
-  syncStatus = status;
-  const ind = document.getElementById("cloudIndicator");
-  const lab = document.getElementById("cloudIndicatorLabel");
-  if (ind) {
-    ind.classList.remove("sync", "off", "err");
-    if (status === "sync") { ind.classList.add("sync"); if (lab) lab.textContent = "Синхр..."; }
-    else if (status === "ok") { if (lab) lab.textContent = "Облако"; }
-    else if (status === "off") { ind.classList.add("off"); if (lab) lab.textContent = "Выкл"; }
-    else if (status === "err") { ind.classList.add("err"); if (lab) lab.textContent = "Ошибка"; }
-  }
-  const row = document.getElementById("settingsSyncRow");
-  const title = document.getElementById("settingsSyncTitle");
-  const hint = document.getElementById("settingsSyncHint");
-  if (row) {
-    row.classList.remove("sync", "off", "err");
-    if (status === "sync") row.classList.add("sync");
-    else if (status === "off") row.classList.add("off");
-    else if (status === "err") row.classList.add("err");
-  }
-  if (title && hint) {
-    if (!getCurrentUser()) {
-      title.textContent = "Войдите в аккаунт";
-      hint.textContent = "Синхронизация недоступна";
-    } else if (status === "sync") {
-      title.textContent = "Синхронизация...";
-      hint.textContent = "Подождите";
-    } else if (status === "ok") {
-      title.textContent = "Облако синхронизировано";
-      hint.textContent = lastSyncTime
-        ? "Последняя: " + new Date(lastSyncTime).toLocaleTimeString("ru-RU")
-        : "Готово";
-    } else if (status === "err") {
-      title.textContent = "Ошибка синхронизации";
-      hint.textContent = "Проверьте интернет";
-    } else {
-      title.textContent = "Облако выключено";
-      hint.textContent = "Войдите в аккаунт";
-    }
-  }
-}
-
-async function syncNow() {
-  if (syncInProgress) return;
-  const user = getCurrentUser();
-  if (!user) { showToast("⚠️ Синхронизация", "Войдите в аккаунт"); return; }
-  syncInProgress = true;
-  const btn = document.getElementById("settingsSyncBtn");
-  if (btn) { btn.disabled = true; btn.textContent = "🔄 Синхр..."; }
-  try {
-    await saveStateNow();
-    await saveToCloud();
-    await loadFromCloudAndApply(user.email);
-    setSyncStatus("ok");
-    showToast("✅ Синхронизация", "Данные синхронизированы");
-  } catch (e) {
-    setSyncStatus("err");
-    showToast("❌ Ошибка", e.message || "Не удалось синхронизировать");
-  } finally {
-    syncInProgress = false;
-    if (btn) { btn.disabled = false; btn.textContent = "🔄 Синхр."; }
-  }
-}
-
-function openSyncFromHeader() {
-  if (!getCurrentUser()) { showToast("☁️ Облако", "Войдите в аккаунт"); return; }
-  syncNow();
-}
-
-async function loadFromCloudAndApply(email) {
-  try {
-    const data = await loadFromCloud(email);
-    if (!data || !data.subjects) return;
-    state = normalizeState(data);
-    await idbSet("state", state);
-    if (typeof render === "function") render();
-    if (typeof renderSchedule === "function") renderSchedule();
-    if (typeof renderQuarters === "function") renderQuarters();
-    if (typeof updateAvg === "function") updateAvg();
-    if (typeof renderStats === "function") {
-      if (document.getElementById("tab-stats")?.classList.contains("active")) renderStats();
-    }
-  } catch (e) { console.warn("loadFromCloudAndApply:", e); }
-}
-
-setInterval(() => {
-  if (!syncInProgress && getCurrentUser() && supabaseClient) {
-    saveToCloud();
-  }
-}, 30000);
-
 // ==================== PRO ====================
 const PRO_EMAIL = "dimabaku017@gmail.com";
-const PRO_PASSWORD = "Lvbnhbq22.";
 
 function isPro() {
   const user = getCurrentUser();
   if (!user) return false;
-  if (user.email && user.email.toLowerCase() === PRO_EMAIL.toLowerCase()) return true;
+  if (user.email && user.email.toLowerCase() === PRO_EMAIL.toLowerCase()) return false;
   if (state && state.proUntil && Date.now() < state.proUntil) return true;
   return false;
 }
@@ -2214,7 +1969,7 @@ function isPro() {
 function proStatusText() {
   const user = getCurrentUser();
   if (!user) return "Войдите в аккаунт";
-  if (user.email && user.email.toLowerCase() === PRO_EMAIL.toLowerCase()) return "Навсегда";
+  if (user.email && user.email.toLowerCase() === PRO_EMAIL.toLowerCase()) return "Отключено";
   const until = state && state.proUntil;
   if (until && Date.now() < until) {
     const d = new Date(until);
@@ -2225,17 +1980,23 @@ function proStatusText() {
 
 function updateProUI() {
   const pro = isPro();
+  const user = getCurrentUser();
+  const isMainAccount = user && user.email && user.email.toLowerCase() === PRO_EMAIL.toLowerCase();
   const headerBadge = document.getElementById("headerProBadge");
   const profileBadge = document.getElementById("profileProBadge");
   const settingsBadge = document.getElementById("settingsProBadge");
-  if (headerBadge) headerBadge.style.display = pro ? "inline-flex" : "none";
-  if (profileBadge) profileBadge.style.display = pro ? "inline-flex" : "none";
-  if (settingsBadge) settingsBadge.style.display = pro ? "inline-flex" : "none";
+  if (headerBadge) headerBadge.style.display = (pro && !isMainAccount) ? "inline-flex" : "none";
+  if (profileBadge) profileBadge.style.display = (pro && !isMainAccount) ? "inline-flex" : "none";
+  if (settingsBadge) settingsBadge.style.display = (pro && !isMainAccount) ? "inline-flex" : "none";
   const emoji = document.getElementById("proStatusEmoji");
   const title = document.getElementById("proStatusTitle");
   const sub = document.getElementById("proStatusSub");
   if (emoji && title && sub) {
-    if (pro) {
+    if (isMainAccount) {
+      emoji.textContent = "🔓";
+      title.textContent = "Подписка PRO";
+      sub.textContent = "Недоступна для этого аккаунта";
+    } else if (pro) {
       emoji.textContent = "⭐";
       title.textContent = "PRO активна";
       sub.textContent = proStatusText();
@@ -2245,19 +2006,31 @@ function updateProUI() {
       sub.textContent = "Больше возможностей";
     }
   }
-  if (pro) {
-    const btn = document.getElementById("headerAvatarBtn");
-    if (btn) btn.setAttribute("data-frame", "pro");
+  const btn = document.getElementById("headerAvatarBtn");
+  if (btn) {
+    if (pro && !isMainAccount) btn.setAttribute("data-frame", "pro");
+    else if (btn.getAttribute("data-frame") === "pro") btn.removeAttribute("data-frame");
   }
 }
 
-function openProModal() { document.getElementById("proModalBg").classList.add("active"); }
+function openProModal() {
+  const user = getCurrentUser();
+  if (user && user.email && user.email.toLowerCase() === PRO_EMAIL.toLowerCase()) {
+    showToast("⭐ PRO", "Для вашего аккаунта подписка PRO недоступна");
+    return;
+  }
+  document.getElementById("proModalBg").classList.add("active");
+}
 function closeProModal() { document.getElementById("proModalBg").classList.remove("active"); }
 document.getElementById("proModalBg").addEventListener("click", e => { if (e.target.id === "proModalBg") closeProModal(); });
 
 function buyPro(period) {
   const user = getCurrentUser();
   if (!user) { showToast("⚠️ PRO", "Войдите в аккаунт"); return; }
+  if (user.email && user.email.toLowerCase() === PRO_EMAIL.toLowerCase()) {
+    showToast("⭐ PRO", "Для вашего аккаунта подписка PRO недоступна");
+    return;
+  }
   const now = Date.now();
   const add = period === "year" ? 365*24*60*60*1000 : 30*24*60*60*1000;
   const current = state.proUntil && state.proUntil > now ? state.proUntil : now;
@@ -2486,13 +2259,11 @@ document.addEventListener("DOMContentLoaded", () => {
 async function enterDiary(user) {
   updateStorageKeys();
   currentUser = (user.isTestUser) ? "dima" : ("user_" + user.email.replace(/[^a-zA-Z0-9]/g, "_"));
-  let loadedState = await loadFromCloud(user.email);
-  let source = "cloud";
-  if (!loadedState || !loadedState.subjects) { loadedState = await idbGet("state"); source = "local"; }
-  if (!loadedState || typeof loadedState !== "object" || !loadedState.subjects) { loadedState = defaultState(); source = "new"; }
-      state = normalizeState(loadedState);
-  console.log("📦 State загружен из:", source);
-  setSyncStatus(getCurrentUser() ? "ok" : "off");
+  let loadedState = await idbGet("state");
+  if (!loadedState || typeof loadedState !== "object" || !loadedState.subjects) {
+    loadedState = defaultState();
+  }
+  state = normalizeState(loadedState);
   document.getElementById("authScreen").classList.remove("active");
   document.body.classList.remove("auth-active");
   if (!state.userProfiles) state.userProfiles = {};
@@ -2529,8 +2300,6 @@ async function enterDiary(user) {
     window._customBellsCount = null; window._saturdayOff = null;
   }
   await idbSet("state", state);
-  await saveToCloud();
-  subscribeToCloud(user.email);
   applyTheme();
   applyUserTheme();
   applyHeaderBg();
@@ -2811,14 +2580,9 @@ function applyUserCustomizations() {
   }
 }
 
-  async function doLogout() {
+async function doLogout() {
   if (!confirm("Выйти из аккаунта?")) return;
-  if (realtimeChannel && supabaseClient) {
-    try { supabaseClient.removeChannel(realtimeChannel); } catch(e) {}
-    realtimeChannel = null;
-  }
-    const savedRemember = getRememberMe();
-  setSyncStatus("off");
+  const savedRemember = getRememberMe();
   setCurrentUser(null);
   document.querySelectorAll(".modal-bg").forEach(m => m.classList.remove("active"));
   state = null;
@@ -3060,10 +2824,6 @@ let pin1Buffer = "";
 let pin2Buffer = "";
 let pendingPassword = null;
 let modalStack = [];
-// ====== СОСТОЯНИЕ СИНХРОНИЗАЦИИ ======
-let syncStatus = "off"; // "ok" | "sync" | "off" | "err"
-let syncInProgress = false;
-let lastSyncTime = null;
 function pushModalParent(parentId) { modalStack.push(parentId); }
 function popModalParent() { return modalStack.pop(); }
 function returnToParent() {
@@ -3151,7 +2911,7 @@ function normalizeState(s) {
   return result;
 }
 
-let saveTimer = null, cloudSaveTimer = null;
+let saveTimer = null;
 function saveState() {
   if (!state) return;
   const delay = state.autosaveInstant ? 50 : 5000;
@@ -3160,8 +2920,6 @@ function saveState() {
     const ok = await idbSet("state", state);
     if (!ok) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
   }, delay);
-  if (cloudSaveTimer) clearTimeout(cloudSaveTimer);
-  cloudSaveTimer = setTimeout(() => { saveToCloud(); }, 500);
 }
 async function saveStateNow() {
   if (!state) return;
@@ -4108,10 +3866,10 @@ function getQuarterGradeLimits(subj, quarter) {
   const avg = calcWeightedAvg(subjGrades);
   if (avg === null) return { min: 1, max: 5, avg: null, naOnly: false, count, threshold };
   if (avg >= 4.5) return { min: 5, max: 5, avg, naOnly: false, count, threshold };
-  if (avg >= 3.5) return { min: 4, max: 4, avg, naOnly: false, count, threshold };
-  if (avg >= 2.5) return { min: 3, max: 3, avg, naOnly: false, count, threshold };
-  if (avg >= 1.5) return { min: 2, max: 2, avg, naOnly: false, count, threshold };
-  return { min: 1, max: 1, avg, naOnly: false, count, threshold };
+  if (avg >= 3.5) return { min: 4, max: 5, avg, naOnly: false, count, threshold };
+  if (avg >= 2.5) return { min: 3, max: 5, avg, naOnly: false, count, threshold };
+  if (avg >= 1.5) return { min: 2, max: 5, avg, naOnly: false, count, threshold };
+  return { min: 1, max: 5, avg, naOnly: false, count, threshold };
 }
 function renderQuarters() {
   if (!state) return;
@@ -4668,7 +4426,7 @@ function renderReminders() {
     const timeStr = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
     return `<div class="remind-item ${isPast ? "past" : ""}"><div class="ri-time">${dateStr}<br>${timeStr}</div><div class="ri-text">${escapeHtml(r.text)}</div><button class="ri-del" title="Удалить" onclick="deleteReminder('${r.id}')">✕</button></div>`;
   }).join("");
-        updateRemindBadge();
+  updateRemindBadge();
 }
 function checkReminders() {
   if (!state) return;
@@ -4888,9 +4646,8 @@ function openForecast() {
 function closeForecast() { document.getElementById("forecastModalBg").classList.remove("active"); }
 document.getElementById("forecastModalBg").addEventListener("click", e => { if (e.target.id === "forecastModalBg") closeForecast(); });
 
-// ==================== АТТЕСТАЦИЯ ====================
+// ==================== АТТЕСТАЦИЯ (без PRO) ====================
 function openAttestation() {
-  if (!isPro()) { openProModal(); return; }
   if (!getProfile().showGrades) return;
   const list = document.getElementById("attestList");
   const sub = document.getElementById("attestationSub");
@@ -5350,7 +5107,7 @@ async function init() {
   if (!authUser) return;
   currentUser = state.user || "dima";
   applyUserTheme(); applyHeaderBg(); applyBgMedia(); applyHeaderAvatar();
-  applyUserCustomizations(); applyFamilyVisibility(); applyProUI();
+  applyUserCustomizations(); applyFamilyVisibility(); updateProUI();
   activeQuarter = getCurrentQuarter();
   currentWeekStart = getMondayOfDate(new Date());
   applyHideBadGrades(); applyWeekendVisibility(); applyRooms(); applyTeachers(); applyAutosave(); applyFontSize();
@@ -5364,13 +5121,10 @@ async function init() {
     const schedTab = document.getElementById("tab-schedule");
     if (schedTab && schedTab.classList.contains("active")) renderSchedule();
   }, 60000);
-    updateNowBar(); checkReminders(); updateRemindBadge(); updateToday();
-  setSyncStatus(getCurrentUser() ? "ok" : "off");
+  updateNowBar(); checkReminders(); updateRemindBadge(); updateToday();
   document.addEventListener("click", askNotificationPermission, { once: true });
 }
 init();
-
-function applyProUI() { updateProUI(); }
 </script>
 </body>
 </html>
