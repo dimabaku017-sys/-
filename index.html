@@ -11,46 +11,25 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Дневник">
-<meta name="app-version" content="1.2.0">
-<meta name="build-date" content="2026-10-19">
+<meta name="app-version" content="2.0.0">
+<meta name="build-date" content="2026-10-20">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  /* ===== ПЕРЕМЕННЫЕ ТЕМ ===== */
   :root {
-    --primary: #2563eb;
-    --primary-dark: #1e40af;
-    --primary-soft: #eff6ff;
-    --bg: #f5f7fb;
-    --panel: #ffffff;
-    --text: #0f172a;
-    --text-soft: #475569;
-    --text-mute: #94a3b8;
-    --border: #e2e8f0;
-    --orange: #f59e0b;
-    --orange-soft: #fef3c7;
-    --green: #10b981;
-    --red: #ef4444;
-    --purple: #8b5cf6;
-    --pink: #ec4899;
-    --pink-soft: #fce7f3;
-    --gold: #f59e0b;
-    --gold-dark: #d97706;
-    --gold-soft: #fef3c7;
+    --primary: #2563eb; --primary-dark: #1e40af; --primary-soft: #eff6ff;
+    --bg: #f5f7fb; --panel: #ffffff; --text: #0f172a; --text-soft: #475569; --text-mute: #94a3b8;
+    --border: #e2e8f0; --orange: #f59e0b; --orange-soft: #fef3c7; --green: #10b981;
+    --red: #ef4444; --purple: #8b5cf6; --pink: #ec4899; --pink-soft: #fce7f3;
+    --gold: #f59e0b; --gold-dark: #d97706; --gold-soft: #fef3c7;
     --shadow-sm: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
     --shadow-md: 0 4px 6px rgba(15,23,42,.05), 0 2px 4px rgba(15,23,42,.04);
     --shadow-lg: 0 10px 15px rgba(15,23,42,.06), 0 4px 6px rgba(15,23,42,.04);
-    --ease: cubic-bezier(.4,0,.2,1);
-    --ease-bounce: cubic-bezier(.34,1.56,.64,1);
-    --header-h: 64px;
-    --radius: 14px;
-    --header-grad-1: #1976d2;
-    --header-grad-2: #0d47a1;
-    --mesh-1: #1976d2;
-    --mesh-2: #8e24aa;
-    --mesh-3: #ec407a;
-    --mesh-4: #26c6da;
+    --ease: cubic-bezier(.4,0,.2,1); --ease-bounce: cubic-bezier(.34,1.56,.64,1);
+    --header-h: 64px; --radius: 14px;
+    --header-grad-1: #1976d2; --header-grad-2: #0d47a1;
+    --mesh-1: #1976d2; --mesh-2: #8e24aa; --mesh-3: #ec407a; --mesh-4: #26c6da;
   }
   [data-theme="dark"] {
     --bg: #0b0f1a; --panel: #151b2b; --text: #f1f5f9; --text-soft: #94a3b8;
@@ -59,100 +38,36 @@
     --header-grad-1: #0d47a1; --header-grad-2: #0a2e6e;
   }
   [data-theme="ocean"] {
-    --primary: #0891b2;
-    --primary-dark: #0e7490;
-    --primary-soft: #cffafe;
-    --bg: #ecfeff;
-    --panel: #ffffff;
-    --text: #083344;
-    --text-soft: #155e75;
-    --text-mute: #67e8f9;
-    --border: #a5f3fc;
-    --orange: #f59e0b;
-    --orange-soft: #fef3c7;
-    --green: #10b981;
-    --red: #ef4444;
-    --purple: #06b6d4;
-    --pink: #ec4899;
-    --pink-soft: #fce7f3;
-    --header-grad-1: #0891b2;
-    --header-grad-2: #155e75;
-    --mesh-1: #22d3ee;
-    --mesh-2: #06b6d4;
-    --mesh-3: #0ea5e9;
-    --mesh-4: #67e8f9;
+    --primary: #0891b2; --primary-dark: #0e7490; --primary-soft: #cffafe;
+    --bg: #ecfeff; --panel: #ffffff; --text: #083344; --text-soft: #155e75;
+    --text-mute: #67e8f9; --border: #a5f3fc; --orange: #f59e0b; --orange-soft: #fef3c7;
+    --green: #10b981; --red: #ef4444; --purple: #06b6d4; --pink: #ec4899; --pink-soft: #fce7f3;
+    --header-grad-1: #0891b2; --header-grad-2: #155e75;
+    --mesh-1: #22d3ee; --mesh-2: #06b6d4; --mesh-3: #0ea5e9; --mesh-4: #67e8f9;
   }
   [data-theme="sakura"] {
-    --primary: #db2777;
-    --primary-dark: #be185d;
-    --primary-soft: #fce7f3;
-    --bg: #fdf2f8;
-    --panel: #ffffff;
-    --text: #500724;
-    --text-soft: #831843;
-    --text-mute: #f9a8d4;
-    --border: #fbcfe8;
-    --orange: #f97316;
-    --orange-soft: #ffedd5;
-    --green: #10b981;
-    --red: #ef4444;
-    --purple: #a855f7;
-    --pink: #ec4899;
-    --pink-soft: #fce7f3;
-    --header-grad-1: #db2777;
-    --header-grad-2: #831843;
-    --mesh-1: #f472b6;
-    --mesh-2: #ec4899;
-    --mesh-3: #f9a8d4;
-    --mesh-4: #fb7185;
+    --primary: #db2777; --primary-dark: #be185d; --primary-soft: #fce7f3;
+    --bg: #fdf2f8; --panel: #ffffff; --text: #500724; --text-soft: #831843;
+    --text-mute: #f9a8d4; --border: #fbcfe8; --orange: #f97316; --orange-soft: #ffedd5;
+    --green: #10b981; --red: #ef4444; --purple: #a855f7; --pink: #ec4899; --pink-soft: #fce7f3;
+    --header-grad-1: #db2777; --header-grad-2: #831843;
+    --mesh-1: #f472b6; --mesh-2: #ec4899; --mesh-3: #f9a8d4; --mesh-4: #fb7185;
   }
   [data-theme="forest"] {
-    --primary: #059669;
-    --primary-dark: #047857;
-    --primary-soft: #d1fae5;
-    --bg: #f0fdf4;
-    --panel: #ffffff;
-    --text: #052e16;
-    --text-soft: #166534;
-    --text-mute: #86efac;
-    --border: #bbf7d0;
-    --orange: #f59e0b;
-    --orange-soft: #fef3c7;
-    --green: #10b981;
-    --red: #ef4444;
-    --purple: #8b5cf6;
-    --pink: #ec4899;
-    --pink-soft: #fce7f3;
-    --header-grad-1: #059669;
-    --header-grad-2: #064e3b;
-    --mesh-1: #34d399;
-    --mesh-2: #10b981;
-    --mesh-3: #6ee7b7;
-    --mesh-4: #a7f3d0;
+    --primary: #059669; --primary-dark: #047857; --primary-soft: #d1fae5;
+    --bg: #f0fdf4; --panel: #ffffff; --text: #052e16; --text-soft: #166534;
+    --text-mute: #86efac; --border: #bbf7d0; --orange: #f59e0b; --orange-soft: #fef3c7;
+    --green: #10b981; --red: #ef4444; --purple: #8b5cf6; --pink: #ec4899; --pink-soft: #fce7f3;
+    --header-grad-1: #059669; --header-grad-2: #064e3b;
+    --mesh-1: #34d399; --mesh-2: #10b981; --mesh-3: #6ee7b7; --mesh-4: #a7f3d0;
   }
   [data-theme="amoled"] {
-    --bg: #000000;
-    --panel: #0a0a0a;
-    --text: #ffffff;
-    --text-soft: #a3a3a3;
-    --text-mute: #525252;
-    --border: #1f1f1f;
-    --primary: #3b82f6;
-    --primary-dark: #2563eb;
-    --primary-soft: #0f172a;
-    --orange: #f59e0b;
-    --orange-soft: #1c1508;
-    --green: #10b981;
-    --red: #ef4444;
-    --purple: #8b5cf6;
-    --pink: #ec4899;
-    --pink-soft: #1a0a14;
-    --header-grad-1: #1e3a8a;
-    --header-grad-2: #0f172a;
-    --mesh-1: #1e3a8a;
-    --mesh-2: #312e81;
-    --mesh-3: #4c1d95;
-    --mesh-4: #0c4a6e;
+    --bg: #000000; --panel: #0a0a0a; --text: #ffffff; --text-soft: #a3a3a3;
+    --text-mute: #525252; --border: #1f1f1f; --primary: #3b82f6; --primary-dark: #2563eb;
+    --primary-soft: #0f172a; --orange: #f59e0b; --orange-soft: #1c1508;
+    --green: #10b981; --red: #ef4444; --purple: #8b5cf6; --pink: #ec4899; --pink-soft: #1a0a14;
+    --header-grad-1: #1e3a8a; --header-grad-2: #0f172a;
+    --mesh-1: #1e3a8a; --mesh-2: #312e81; --mesh-3: #4c1d95; --mesh-4: #0c4a6e;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
@@ -285,51 +200,34 @@
   .header h1 { font-size: 18px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 4px rgba(0,0,0,.25); }
   .header-sub { font-size: 11px; opacity: .9; font-weight: 400; display: block; margin-top: 1px; text-shadow: 0 1px 3px rgba(0,0,0,.25); }
   .header-right { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
+  
   /* Индикатор синхронизации — только точка */
-.sync-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  position: relative;
-  transition: background .3s var(--ease), box-shadow .3s var(--ease);
-  cursor: help;
-}
-.sync-dot.ok {
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, .18), 0 0 8px rgba(34, 197, 94, .6);
-}
-.sync-dot.syncing {
-  background: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, .18), 0 0 8px rgba(245, 158, 11, .6);
-  animation: syncPulse 1.2s ease-in-out infinite;
-}
-.sync-dot.error {
-  background: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, .18), 0 0 8px rgba(239, 68, 68, .6);
-  animation: syncPulse 0.8s ease-in-out infinite;
-}
-.sync-dot.off {
-  background: #94a3b8;
-  box-shadow: 0 0 0 3px rgba(148, 163, 184, .15);
-  opacity: .7;
-}
-@keyframes syncPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.25); opacity: .75; }
-}
-[data-theme="dark"] .sync-dot.ok,
-[data-theme="amoled"] .sync-dot.ok { box-shadow: 0 0 0 3px rgba(34,197,94,.25), 0 0 10px rgba(34,197,94,.7); }
-[data-theme="dark"] .sync-dot.syncing,
-[data-theme="amoled"] .sync-dot.syncing { box-shadow: 0 0 0 3px rgba(245,158,11,.25), 0 0 10px rgba(245,158,11,.7); }
-[data-theme="dark"] .sync-dot.error,
-[data-theme="amoled"] .sync-dot.error { box-shadow: 0 0 0 3px rgba(239,68,68,.25), 0 0 10px rgba(239,68,68,.7); }
+  .sync-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    transition: background .3s var(--ease), box-shadow .3s var(--ease);
+    cursor: help;
+  }
+  .sync-dot.ok { background: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, .18), 0 0 8px rgba(34, 197, 94, .6); }
+  .sync-dot.syncing { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, .18), 0 0 8px rgba(245, 158, 11, .6); animation: syncPulse 1.2s ease-in-out infinite; }
+  .sync-dot.error { background: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, .18), 0 0 8px rgba(239, 68, 68, .6); animation: syncPulse 0.8s ease-in-out infinite; }
+  .sync-dot.off { background: #94a3b8; box-shadow: 0 0 0 3px rgba(148, 163, 184, .15); opacity: .7; }
+  @keyframes syncPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.25); opacity: .75; } }
+  [data-theme="dark"] .sync-dot.ok, [data-theme="amoled"] .sync-dot.ok { box-shadow: 0 0 0 3px rgba(34,197,94,.25), 0 0 10px rgba(34,197,94,.7); }
+  [data-theme="dark"] .sync-dot.syncing, [data-theme="amoled"] .sync-dot.syncing { box-shadow: 0 0 0 3px rgba(245,158,11,.25), 0 0 10px rgba(245,158,11,.7); }
+  [data-theme="dark"] .sync-dot.error, [data-theme="amoled"] .sync-dot.error { box-shadow: 0 0 0 3px rgba(239,68,68,.25), 0 0 10px rgba(239,68,68,.7); }
+  
   .theme-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); background: rgba(255,255,255,.12); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: .25s var(--ease); color: #fff; backdrop-filter: blur(4px); }
   .theme-btn:hover { background: rgba(255,255,255,.28); transform: rotate(20deg); }
   .avatar-btn { width: 48px; height: 48px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.9); background: #f5b800; cursor: pointer; padding: 0; overflow: hidden; transition: transform .25s var(--ease), box-shadow .25s var(--ease); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,.15); position: relative; }
   .avatar-btn:hover { transform: scale(1.08); box-shadow: 0 0 0 5px rgba(255,255,255,.25); }
   .avatar-btn svg { width: 100%; height: 100%; display: block; }
   .avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
+  
+  /* Рамки аватара */
   .avatar-btn[data-frame="gold"] { border-color: #ffd700; box-shadow: 0 0 15px rgba(255,215,0,.75), 0 2px 10px rgba(0,0,0,.2); }
   .avatar-btn[data-frame="glow"] { border-color: #4fc3f7; box-shadow: 0 0 18px rgba(79,195,247,.85), 0 2px 10px rgba(0,0,0,.2); animation: glowBtnPulse 2.4s ease-in-out infinite; }
   @keyframes glowBtnPulse { 0%,100%{box-shadow:0 0 18px rgba(79,195,247,.85),0 2px 10px rgba(0,0,0,.2);} 50%{box-shadow:0 0 28px rgba(79,195,247,1),0 2px 10px rgba(0,0,0,.2);} }
@@ -854,7 +752,7 @@
   .upload-choice-btn .ucb-text span { font-size: 11px; color: var(--text-soft); line-height: 1.35; display: block; }
   .upload-choice-btn .ucb-arrow { font-size: 20px; color: var(--text-mute); flex-shrink: 0; }
 
-  /* ===== PRO МОДАЛКА ===== */
+  /* ===== ПРО МОДАЛКА ===== */
   .pro-modal { max-width: 440px; text-align: center; }
   .pro-hero { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%); border-radius: 18px; padding: 22px 18px; margin-bottom: 16px; color: #4a2c00; position: relative; overflow: hidden; }
   .pro-hero::before { content: ""; position: absolute; inset: -50%; background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 45%); animation: headerGlow 10s ease-in-out infinite; }
@@ -926,7 +824,7 @@
   [data-theme="dark"] .remind-item .ri-del, [data-theme="amoled"] .remind-item .ri-del { background: #2e1414; color: #ff6b6b; }
   .remind-empty { text-align: center; color: var(--text-mute); font-style: italic; font-size: 12px; padding: 16px; }
 
-    /* ===== ОБНОВЛЕНИЕ ПО ===== */
+  /* ===== ОБНОВЛЕНИЕ ПО ===== */
   .update-section {
     background: linear-gradient(135deg, color-mix(in srgb, var(--primary-soft) 95%, transparent), color-mix(in srgb, var(--primary-soft) 55%, transparent));
     border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
@@ -1185,7 +1083,6 @@
 </head>
 <body>
 
-<!-- ЭКРАН ВХОДА / РЕГИСТРАЦИИ -->
 <div id="authScreen" class="active">
   <div class="auth-card">
     <div class="auth-logo">📘</div>
@@ -1198,17 +1095,12 @@
     <div class="auth-error" id="authError"></div>
     <div class="auth-success" id="authSuccess"></div>
     <div id="loginForm">
-      <div class="auth-field">
-        <label>Почта</label>
-        <input type="email" id="loginEmail" placeholder="example@mail.ru" autocomplete="email">
-      </div>
+      <div class="auth-field"><label>Почта</label><input type="email" id="loginEmail" placeholder="example@mail.ru" autocomplete="email"></div>
       <div class="auth-field">
         <label>Пароль</label>
         <div style="position:relative;">
           <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" style="padding-right:44px;">
-          <button type="button" class="eye-btn" onclick="togglePassword('loginPassword', this)" title="Показать пароль">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+          <button type="button" class="eye-btn" onclick="togglePassword('loginPassword', this)" title="Показать пароль"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
       </div>
       <label class="remember-me-row" onclick="toggleRememberMe()">
@@ -1229,9 +1121,7 @@
         <label>Пароль</label>
         <div style="position:relative;">
           <input type="password" id="regPassword" placeholder="Минимум 6 символов" style="padding-right:44px;">
-          <button type="button" class="eye-btn" onclick="togglePassword('regPassword', this)" title="Показать пароль">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+          <button type="button" class="eye-btn" onclick="togglePassword('regPassword', this)" title="Показать пароль"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
       </div>
       <button class="auth-btn" onclick="doRegister()">Зарегистрироваться</button>
@@ -1239,7 +1129,6 @@
   </div>
 </div>
 
-<!-- БЫСТРЫЙ ВХОД -->
 <div id="quickLoginScreen" class="quick-login-screen">
   <div class="quick-login-card">
     <div class="auth-logo">🔐</div>
@@ -1255,20 +1144,15 @@
   </div>
 </div>
 
-<!-- ФОН -->
 <div class="bg-layer" id="bgLayer">
   <div class="mesh-bg" id="meshBg">
-    <div class="mesh-blob b1"></div>
-    <div class="mesh-blob b2"></div>
-    <div class="mesh-blob b3"></div>
-    <div class="mesh-blob b4"></div>
+    <div class="mesh-blob b1"></div><div class="mesh-blob b2"></div><div class="mesh-blob b3"></div><div class="mesh-blob b4"></div>
   </div>
   <img class="bg-media" id="bgImage" alt="">
   <video class="bg-media" id="bgVideo" autoplay muted loop playsinline></video>
   <div class="bg-media-overlay" id="bgMediaOverlay"></div>
 </div>
 
-<!-- БЛОКИРОВКА -->
 <div class="lock-screen" id="lockScreen">
   <div class="lock-panel" id="lockPanel">
     <div class="lock-avatar" id="lockAvatar"></div>
@@ -1279,7 +1163,6 @@
   </div>
 </div>
 
-<!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
 <div class="app">
   <div class="header" id="mainHeader">
     <div class="header-left">
@@ -1290,7 +1173,7 @@
         <span id="headerProBadge" class="pro-badge" style="display:none; margin-left:6px;">PRO</span>
       </div>
     </div>
-        <div class="header-right">
+    <div class="header-right">
       <span class="sync-dot off" id="syncDot" title="Синхронизация"></span>
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
       <button class="avatar-btn" id="headerAvatarBtn" onclick="openProfile()" title="Профиль"><span id="headerAvatarInner"></span></button>
@@ -1332,9 +1215,7 @@
         <span class="quarter-label" id="qLabel">1 четверть</span>
         <button class="arrow" id="qNext" onclick="changeQuarter(1)">›</button>
       </div>
-      <button class="btn share" onclick="openShare()" title="Поделиться дневником" aria-label="Поделиться">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/><path d="M15 3h6v6"/><path d="M21 3l-9 9"/></svg>
-      </button>
+      <button class="btn share" onclick="openShare()" title="Поделиться дневником" aria-label="Поделиться"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/><path d="M15 3h6v6"/><path d="M21 3l-9 9"/></svg></button>
     </div>
     <div class="table-wrap">
       <table class="grades-table" id="diaryTable"><thead><tr id="headerRow"></tr></thead><tbody id="tbody"></tbody></table>
@@ -1380,7 +1261,6 @@
   </div>
 </div>
 
-<!-- Баннер обновления -->
 <div class="update-toast-banner" id="updateToastBanner" onclick="openUpdateSection()">
   <span class="utb-icon">🔄</span>
   <div class="utb-text">
@@ -1389,14 +1269,12 @@
   </div>
 </div>
 
-<!-- PWA-баннер -->
 <div class="pwa-install-banner" id="pwaInstallBanner">
   <span>📲 Установить приложение?</span>
   <button onclick="installPWA()">Установить</button>
   <button onclick="dismissPWA()" style="background:transparent;">✕</button>
 </div>
 
-<!-- Редактор предметов -->
 <div class="modal-bg" id="subjectsEditorBg">
   <div class="modal" style="max-width: 520px;">
     <h3>✏️ Мои предметы</h3>
@@ -1413,7 +1291,6 @@
   </div>
 </div>
 
-<!-- Редактор расписания -->
 <div class="modal-bg" id="scheduleEditorBg">
   <div class="modal" style="max-width: 720px;">
     <h3>✏️ Редактировать уроки</h3>
@@ -1443,7 +1320,6 @@
   </div>
 </div>
 
-<!-- Модалка оценки -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h3 id="modalTitle">Оценка</h3>
@@ -1465,7 +1341,6 @@
   </div>
 </div>
 
-<!-- Прогноз -->
 <div class="modal-bg" id="forecastModalBg">
   <div class="modal" style="max-width:640px;">
     <h3>🎯 Прогноз четвертной</h3>
@@ -1479,7 +1354,6 @@
   </div>
 </div>
 
-<!-- Аттестация -->
 <div class="modal-bg" id="attestationModalBg">
   <div class="modal" style="max-width:520px;">
     <h3>🏆 Аттестация</h3>
@@ -1493,27 +1367,21 @@
   </div>
 </div>
 
-<!-- Д/З -->
 <div class="modal-bg" id="hwModalBg">
   <div class="modal">
     <h3 id="hwTitle">Домашнее задание</h3>
     <div class="sub" id="hwSub"></div>
-
-    <!-- Сканер Д/З -->
     <div class="hw-scan-area" style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
       <button class="action-btn scan" onclick="document.getElementById('hwScanInput').click()" style="flex:1;">
         <span class="ab-emoji">📷</span> Сканировать Д/З
       </button>
       <input type="file" id="hwScanInput" accept="image/*" capture="environment" onchange="scanHWPhoto(event)">
     </div>
-
-    <!-- Статус OCR -->
     <div class="ocr-status" id="ocrStatus">
       <div class="ocr-spinner"></div>
       <span id="ocrStatusText">Распознаём текст...</span>
       <span class="ocr-progress-text" id="ocrProgressText"></span>
     </div>
-
     <div class="hw-templates">
       <span class="tpl-label">Шаблоны:</span>
       <button class="hw-tpl-btn" onclick="insertHwTemplate('§ ')">§ параграф</button>
@@ -1539,7 +1407,6 @@
   </div>
 </div>
 
-<!-- Просмотр фото -->
 <div class="photo-viewer" id="photoViewer">
   <button class="photo-close-btn" onclick="closePhotoViewer()" title="Закрыть">✕</button>
   <button class="photo-nav-btn photo-nav-prev" id="photoPrevBtn" onclick="showPrevPhoto(event)" style="display:none;">‹</button>
@@ -1547,7 +1414,6 @@
   <button class="photo-nav-btn photo-nav-next" id="photoNextBtn" onclick="showNextPhoto(event)" style="display:none;">›</button>
 </div>
 
-<!-- Четвертная -->
 <div class="modal-bg" id="qModalBg">
   <div class="modal">
     <h3 id="qTitle">Четвертная оценка</h3>
@@ -1560,7 +1426,6 @@
   </div>
 </div>
 
-<!-- Профиль -->
 <div class="modal-bg" id="profileModalBg">
   <div class="modal profile-modal" id="profileModal">
     <button class="profile-settings-btn" onclick="openSettings()" title="Настройки">⚙️</button>
@@ -1582,7 +1447,6 @@
   </div>
 </div>
 
-<!-- PRO-модалка -->
 <div class="modal-bg" id="proModalBg">
   <div class="modal pro-modal">
     <div class="pro-hero">
@@ -1606,7 +1470,6 @@
   </div>
 </div>
 
-<!-- Настройки -->
 <div class="modal-bg" id="settingsModalBg">
   <div class="modal settings-modal">
     <div class="settings-header">
@@ -1656,13 +1519,13 @@
           <span class="sr-left"><span class="sr-emoji">🛠</span><span class="sr-text"><b>Дополнительные настройки</b><span>Темы, шрифт, уведомления, PWA</span></span></span><span class="sr-right"></span>
         </button>
       </div>
-            <div class="settings-section">
+      <div class="settings-section">
         <div class="ss-title"><span class="ss-emoji">🔄</span> Обновление ПО</div>
         <button class="settings-row chevron" onclick="openUpdateSection()">
           <span class="sr-left">
             <span class="sr-emoji" id="updateSettingsEmoji">✅</span>
             <span class="sr-text">
-              <b id="updateSettingsTitle">Версия 1.2.0</b>
+              <b id="updateSettingsTitle">Версия 2.0.0</b>
               <span id="updateSettingsSub">Используется последняя версия</span>
             </span>
           </span>
@@ -1670,7 +1533,6 @@
         </button>
       </div>
       <div class="settings-section reset-section">
-
         <div class="ss-title"><span class="ss-emoji">🔄</span> Сброс</div>
         <button class="settings-row" onclick="openResetConfirm()"><span class="sr-left"><span class="sr-emoji">🗑</span><span class="sr-text"><b>Сбросить дневник</b><span>Удалить все данные</span></span></span><span class="sr-right"></span></button>
       </div>
@@ -1679,7 +1541,6 @@
   </div>
 </div>
 
-<!-- Редактирование профиля -->
 <div class="modal-bg" id="editProfileModalBg">
   <div class="modal settings-submodal">
     <h3>✏️ Редактировать профиль</h3>
@@ -1697,7 +1558,6 @@
   </div>
 </div>
 
-<!-- Загрузка -->
 <div class="modal-bg" id="uploadChoiceModalBg">
   <div class="modal settings-submodal">
     <h3>📷 Загрузить</h3>
@@ -1714,7 +1574,6 @@
   </div>
 </div>
 
-<!-- Рамка аватарки -->
 <div class="modal-bg" id="framePickerModalBg">
   <div class="modal settings-submodal">
     <h3>🖼 Рамка аватарки</h3>
@@ -1739,7 +1598,6 @@
   </div>
 </div>
 
-<!-- Пароль -->
 <div class="modal-bg" id="passwordModalBg">
   <div class="modal settings-submodal">
     <h3 id="passwordModalTitle">🔒 Пароль</h3>
@@ -1774,7 +1632,6 @@
   </div>
 </div>
 
-<!-- Сброс пароля -->
 <div class="modal-bg" id="resetPasswordModalBg">
   <div class="modal settings-submodal">
     <h3 id="resetPasswordTitle">🔓 Сброс пароля</h3>
@@ -1785,7 +1642,6 @@
   </div>
 </div>
 
-<!-- Сброс всего -->
 <div class="modal-bg" id="resetAllModalBg">
   <div class="modal settings-submodal">
     <h3>⚠️ Сброс всех данных</h3>
@@ -1794,7 +1650,6 @@
   </div>
 </div>
 
-<!-- Семья -->
 <div class="modal-bg" id="familyModalBg">
   <div class="modal family-modal">
     <h3>👨‍👩‍👧 Семья</h3>
@@ -1807,7 +1662,6 @@
   </div>
 </div>
 
-<!-- Календарь -->
 <div class="modal-bg" id="calModalBg">
   <div class="modal" style="max-width:500px;">
     <h3>📅 Выбор недели</h3>
@@ -1818,7 +1672,6 @@
   </div>
 </div>
 
-<!-- Напоминания -->
 <div class="modal-bg" id="remindModalBg">
   <div class="modal remind-modal">
     <h3>🔔 Напоминания</h3>
@@ -1836,7 +1689,6 @@
   </div>
 </div>
 
-<!-- Ввод PIN для очистки -->
 <div class="modal-bg" id="clearPinModalBg">
   <div class="modal settings-submodal" style="max-width:400px;">
     <h3 id="clearPinTitle">🗑 Введите пароль</h3>
@@ -1847,7 +1699,6 @@
   </div>
 </div>
 
-<!-- Шаринг -->
 <div class="modal-bg" id="shareModalBg">
   <div class="modal share-modal">
     <h3>📤 Поделиться дневником</h3>
@@ -1860,62 +1711,27 @@
   </div>
 </div>
 
-<!-- Доп. настройки (Темы, PWA, шрифт, уведомления) -->
 <div class="modal-bg" id="extraSettingsModalBg">
   <div class="modal settings-submodal" style="max-width:440px;">
     <h3>🛠 Дополнительные настройки</h3>
     <div class="sub">Тонкая настройка приложения</div>
-
-    <!-- ТЕМЫ -->
     <div class="settings-section" style="margin-bottom:14px; padding:6px 14px 12px;">
       <div class="ss-title"><span class="ss-emoji">🎨</span> Тема оформления</div>
       <div class="theme-options" id="themeOptions">
-        <button class="theme-option" data-theme="light" onclick="setTheme('light')">
-          <div class="to-preview"></div>
-          <span class="to-emoji">☀️</span>
-          <span class="to-label">Светлая</span>
-        </button>
-        <button class="theme-option" data-theme="dark" onclick="setTheme('dark')">
-          <div class="to-preview"></div>
-          <span class="to-emoji">🌙</span>
-          <span class="to-label">Тёмная</span>
-        </button>
-        <button class="theme-option" data-theme="ocean" onclick="setTheme('ocean')">
-          <div class="to-preview"></div>
-          <span class="to-emoji">🌊</span>
-          <span class="to-label">Океан</span>
-        </button>
-        <button class="theme-option" data-theme="sakura" onclick="setTheme('sakura')">
-          <div class="to-preview"></div>
-          <span class="to-emoji">🌸</span>
-          <span class="to-label">Сакура</span>
-        </button>
-        <button class="theme-option" data-theme="forest" onclick="setTheme('forest')">
-          <div class="to-preview"></div>
-          <span class="to-emoji">🌲</span>
-          <span class="to-label">Лес</span>
-        </button>
-        <button class="theme-option" data-theme="amoled" onclick="setTheme('amoled')">
-          <div class="to-preview"></div>
-          <span class="to-emoji">⚫</span>
-          <span class="to-label">AMOLED</span>
-        </button>
+        <button class="theme-option" data-theme="light" onclick="setTheme('light')"><div class="to-preview"></div><span class="to-emoji">☀️</span><span class="to-label">Светлая</span></button>
+        <button class="theme-option" data-theme="dark" onclick="setTheme('dark')"><div class="to-preview"></div><span class="to-emoji">🌙</span><span class="to-label">Тёмная</span></button>
+        <button class="theme-option" data-theme="ocean" onclick="setTheme('ocean')"><div class="to-preview"></div><span class="to-emoji">🌊</span><span class="to-label">Океан</span></button>
+        <button class="theme-option" data-theme="sakura" onclick="setTheme('sakura')"><div class="to-preview"></div><span class="to-emoji">🌸</span><span class="to-label">Сакура</span></button>
+        <button class="theme-option" data-theme="forest" onclick="setTheme('forest')"><div class="to-preview"></div><span class="to-emoji">🌲</span><span class="to-label">Лес</span></button>
+        <button class="theme-option" data-theme="amoled" onclick="setTheme('amoled')"><div class="to-preview"></div><span class="to-emoji">⚫</span><span class="to-label">AMOLED</span></button>
       </div>
     </div>
-
-    <!-- PWA -->
     <div class="settings-section" style="margin-bottom:14px; padding:6px 14px 12px;">
       <div class="ss-title"><span class="ss-emoji">📱</span> Установка приложения</div>
-      <div style="font-size:12px;color:var(--text-soft);margin-bottom:10px;line-height:1.5;">
-        Установите «Дневник.ру» как приложение — будет иконка на главном экране и работа офлайн.
-      </div>
-      <button class="btn install" style="width:100%;justify-content:center;" onclick="installPWA()">
-        📥 Установить приложение
-      </button>
+      <div style="font-size:12px;color:var(--text-soft);margin-bottom:10px;line-height:1.5;">Установите «Дневник.ру» как приложение — будет иконка на главном экране и работа офлайн.</div>
+      <button class="btn install" style="width:100%;justify-content:center;" onclick="installPWA()">📥 Установить приложение</button>
       <div id="pwaStatus" style="font-size:11px;color:var(--text-mute);margin-top:8px;text-align:center;">Проверяем...</div>
     </div>
-
-    <!-- Уведомления -->
     <div class="settings-section" style="margin-bottom:14px; padding:6px 14px 10px;">
       <div class="ss-title"><span class="ss-emoji">🔔</span> Уведомления</div>
       <div class="settings-row" onclick="toggleNotifications(event)">
@@ -1923,8 +1739,6 @@
         <span class="sr-right"><span class="toggle-switch" id="notifToggle"></span></span>
       </div>
     </div>
-
-    <!-- Шрифт -->
     <div class="settings-section" style="margin-bottom:14px; padding:6px 14px 12px;">
       <div class="ss-title"><span class="ss-emoji">📏</span> Размер шрифта</div>
       <div class="font-size-options">
@@ -1933,19 +1747,15 @@
         <button class="font-size-option" data-size="large" onclick="setFontSize('large')"><span class="fso-preview">A</span><span class="fso-label">Крупный</span></button>
       </div>
     </div>
-
-    <!-- Очистка -->
     <div class="settings-section reset-section" style="margin-bottom:14px; padding:6px 14px 10px;">
       <div class="ss-title"><span class="ss-emoji">🧹</span> Очистка данных</div>
       <button class="settings-row" onclick="requestClearConfirm('hw')"><span class="sr-left"><span class="sr-emoji">📝</span><span class="sr-text"><b>Очистить Д/З</b><span>Удалить все задания и фото</span></span></span></button>
       <button class="settings-row" onclick="requestClearConfirm('reminders')"><span class="sr-left"><span class="sr-emoji">🔔</span><span class="sr-text"><b>Сбросить напоминания</b><span>Удалить все</span></span></span></button>
     </div>
-
     <div class="actions"><button class="action-btn back full" onclick="closeExtraSettings()"><span class="ab-emoji">↩</span> Назад</button></div>
   </div>
 </div>
 
-<!-- Модалка обновления ПО -->
 <div class="modal-bg" id="updateModalBg">
   <div class="modal settings-submodal" style="max-width:440px;">
     <div class="update-section" id="updateSection">
@@ -1957,7 +1767,6 @@
         </div>
         <span class="update-badge new" id="updateBadge" style="display:none;">NEW</span>
       </div>
-
       <div class="update-versions" id="updateVersions" style="display:none;">
         <div class="update-ver-row old">
           <div class="uvr-label">У вас</div>
@@ -1968,38 +1777,27 @@
           <div class="uvr-value" id="updateNewVer">—</div>
         </div>
       </div>
-
       <div class="update-changelog" id="updateChangelog" style="display:none;">
         <b>Что нового</b>
         <span id="updateChangelogText">—</span>
       </div>
-
       <div class="update-actions" id="updateActions">
-        <button class="btn" id="updateCheckBtn" onclick="checkForUpdates(true)">
-          🔄 Проверить обновления
-        </button>
-        <button class="btn green" id="updateApplyBtn" onclick="applyUpdate()" style="display:none;">
-          ⬇️ Обновить сейчас
-        </button>
+        <button class="btn" id="updateCheckBtn" onclick="checkForUpdates(true)">🔄 Проверить обновления</button>
+        <button class="btn green" id="updateApplyBtn" onclick="applyUpdate()" style="display:none;">⬇️ Обновить сейчас</button>
       </div>
     </div>
-
     <div style="font-size:11px;color:var(--text-mute);text-align:center;line-height:1.5;margin-bottom:12px;">
-      Текущая версия: <b id="updateCurrentVerBottom">1.2.0</b><br>
-      Дата сборки: <span id="updateBuildDate">2026-10-19</span>
+      Текущая версия: <b id="updateCurrentVerBottom">2.0.0</b><br>
+      Дата сборки: <span id="updateBuildDate">2026-10-20</span>
     </div>
-
     <div class="actions">
-      <button class="action-btn cancel full" onclick="closeUpdateModal()">
-        <span class="ab-emoji">✕</span> Закрыть
-      </button>
+      <button class="action-btn cancel full" onclick="closeUpdateModal()"><span class="ab-emoji">✕</span> Закрыть</button>
     </div>
   </div>
 </div>
-<!-- Тосты -->
+
 <div class="toast-wrap" id="toastWrap"></div>
 
-<!-- OCR библиотека (Tesseract.js) грузится лениво -->
 <script>
 // ==================== OCR ====================
 let tesseractLoaded = false;
@@ -2018,30 +1816,25 @@ async function scanHWPhoto(ev) {
   const file = ev.target.files[0];
   if (!file) return;
   ev.target.value = "";
-
   const status = document.getElementById("ocrStatus");
   const statusText = document.getElementById("ocrStatusText");
   const progressText = document.getElementById("ocrProgressText");
   status.classList.add("active");
   statusText.textContent = "Загружаем распознавание...";
   progressText.textContent = "";
-
   try {
     const ok = await loadTesseract();
-    if (!ok) throw new Error("Не удалось загрузить библиотеку распознавания");
+    if (!ok) throw new Error("Не удалось загрузить библиотеку");
     statusText.textContent = "Распознаём текст с фото...";
     const result = await Tesseract.recognize(file, "rus+eng", {
       logger: (m) => {
-        if (m.status === "recognizing text") {
-          progressText.textContent = Math.round(m.progress * 100) + "%";
-        } else {
-          progressText.textContent = m.status;
-        }
+        if (m.status === "recognizing text") progressText.textContent = Math.round(m.progress * 100) + "%";
+        else progressText.textContent = m.status;
       }
     });
     const text = (result.data.text || "").trim();
     if (!text) {
-      statusText.textContent = "Не удалось распознать текст. Попробуйте другое фото.";
+      statusText.textContent = "Не удалось распознать текст.";
       setTimeout(() => status.classList.remove("active"), 2500);
       return;
     }
@@ -2058,9 +1851,7 @@ async function scanHWPhoto(ev) {
     setTimeout(() => status.classList.remove("active"), 2500);
   }
 }
-</script>
 
-<script>
 // ==================== ТЕМЫ ====================
 function setTheme(theme) {
   state.theme = theme;
@@ -2068,7 +1859,6 @@ function setTheme(theme) {
   applyTheme();
   updateThemeUI();
 }
-
 function updateThemeUI() {
   const cur = state.theme || "light";
   document.querySelectorAll(".theme-option").forEach(opt => {
@@ -2080,40 +1870,13 @@ function updateThemeUI() {
 let deferredPrompt = null;
 let swRegistration = null;
 
-// Проверяем, поддерживает ли браузер Service Worker
 if ('serviceWorker' in navigator) {
-  
-  // Ждём, пока страница полностью загрузится
   window.addEventListener('load', () => {
-    
-    // Говорим браузеру: зарегистрируй файл sw.js
     navigator.serviceWorker.register('./sw.js')
-    
-      // Если получилось — сохраняем ссылку на него
-      .then(reg => { 
-        swRegistration = reg; 
-        updatePWAStatus(); // обновляем статус в настройках
-      })
-      
-      // Если не получилось — пишем ошибку в консоль (чтобы не ломалось всё)
+      .then(reg => { swRegistration = reg; updatePWAStatus(); })
       .catch(err => console.warn('SW error:', err));
   });
 }
-  `;
-  try {
-    const blob = new Blob([swCode], { type: 'application/javascript' });
-    const swUrl = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(swUrl).then(reg => {
-      swRegistration = reg;
-      updatePWAStatus();
-    }).catch(err => {
-      console.warn('SW registration failed:', err);
-      updatePWAStatus();
-    });
-  } catch (e) {
-    console.warn('SW error:', e);
-  }
-})();
 
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -2137,51 +1900,34 @@ function installPWA() {
   if (deferredPrompt) {
     deferredPrompt.prompt();
     deferredPrompt.userChoice.then(choice => {
-      if (choice.outcome === 'accepted') {
-        showToast('📱 Установка', 'Спасибо! Приложение установлено');
-      }
+      if (choice.outcome === 'accepted') showToast('📱 Установка', 'Спасибо! Приложение установлено');
       deferredPrompt = null;
       updatePWAStatus();
     });
   } else {
-    // Показываем инструкцию
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isAndroid = /Android/.test(navigator.userAgent);
     let msg = "";
-    if (isIOS) {
-      msg = "На iPhone:\n1. Нажмите «Поделиться» (квадрат со стрелкой)\n2. Выберите «На экран «Домой»»\n3. Нажмите «Добавить»";
-    } else if (isAndroid) {
-      msg = "На Android:\n1. Откройте меню браузера (⋮)\n2. Выберите «Установить приложение» или «Добавить на главный экран»";
-    } else {
-      msg = "В браузере:\n1. Нажмите на иконку установки в адресной строке\nили\n2. Меню → «Установить приложение»";
-    }
-    alert("📱 Как установить приложение:\n\n" + msg + "\n\nЕсли не получается — приложение уже работает в браузере, все функции доступны.");
+    if (isIOS) msg = "На iPhone:\n1. Нажмите «Поделиться»\n2. Выберите «На экран «Домой»»\n3. Нажмите «Добавить»";
+    else if (isAndroid) msg = "На Android:\n1. Откройте меню браузера (⋮)\n2. Выберите «Установить приложение»";
+    else msg = "В браузере:\n1. Нажмите на иконку установки в адресной строке\n2. Или Меню → «Установить приложение»";
+    alert("📱 Как установить приложение:\n\n" + msg);
   }
 }
-
 function dismissPWA() {
   const banner = document.getElementById('pwaInstallBanner');
   if (banner) banner.classList.remove('active');
   localStorage.setItem('pwa_banner_dismissed', '1');
 }
-
 function updatePWAStatus() {
   const el = document.getElementById('pwaStatus');
   if (!el) return;
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    el.innerHTML = "✅ <span style='color:#10b981;font-weight:700;'>Приложение уже установлено</span>";
-  } else if (deferredPrompt) {
-    el.innerHTML = "✨ <span style='color:#10b981;'>Готово к установке — нажмите кнопку выше</span>";
-  } else if (swRegistration) {
-    el.innerHTML = "🔄 Service Worker активен. Установите через меню браузера.";
-  } else {
-    el.innerHTML = "💡 Откройте меню браузера → «Установить приложение»";
-  }
+  if (window.matchMedia('(display-mode: standalone)').matches) el.innerHTML = "✅ <span style='color:#10b981;font-weight:700;'>Приложение уже установлено</span>";
+  else if (deferredPrompt) el.innerHTML = "✨ <span style='color:#10b981;'>Готово к установке — нажмите кнопку выше</span>";
+  else if (swRegistration) el.innerHTML = "🔄 Service Worker активен. Установите через меню браузера.";
+  else el.innerHTML = "💡 Откройте меню браузера → «Установить приложение»";
 }
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.ready.then(() => updatePWAStatus());
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.ready.then(() => updatePWAStatus());
 
 // ==================== АВТОРИЗАЦИЯ ====================
 const USERS_KEY = "diary_users_v1";
@@ -2204,7 +1950,6 @@ function isTestUser() {
   const u = getCurrentUser();
   return !!(u && u.isTestUser);
 }
-
 function getUsers() {
   try {
     const raw = localStorage.getItem(USERS_KEY);
@@ -2279,7 +2024,7 @@ async function doLogin() {
   if (!validateEmail(email)) return showAuthError("Некорректная почта");
   if (!password) return showAuthError("Введите пароль");
   const user = getUsers().find(u => u.email.toLowerCase() === email);
-  if (!user) return showAuthError("Пользователь с такой почтой не найден");
+  if (!user) return showAuthError("Пользователь не найден");
   if (user.password !== password) return showAuthError("Неверный пароль");
   setCurrentUser(user.email);
   showAuthSuccess("Вход выполнен! Открываем дневник...");
@@ -2684,7 +2429,7 @@ function defaultState() {
     showWeekends: true, hideBadGrades: false, showRooms: true, showTeachers: true, autosaveInstant: true,
     passwords: {}, deviceId: generateDeviceId(),
     proUntil: null,
-    appVersion: "1.2.0"  
+    appVersion: "2.0.0"  
   };
 }
 function generateDeviceId() { return "dev_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10); }
@@ -4604,7 +4349,6 @@ async function init() {
   updateProUI();
   render(); renderSchedule(); renderQuarters();
   ensureReminders();
-  // Таймеры — только один раз
   if (!window._diaryTimersStarted) {
     window._diaryTimersStarted = true;
     setInterval(updateNowBar, 30000);
@@ -4617,6 +4361,7 @@ async function init() {
   }
   updateNowBar(); checkReminders(); updateRemindBadge(); updateToday();
   document.addEventListener("click", askNotificationPermission, { once: true });
+  setTimeout(() => { try { checkForUpdates(false); } catch (e) {} }, 1500);
 }
 // ==================== ИНДИКАТОР СИНХРОНИЗАЦИИ ====================
 let _syncState = "off";
@@ -4705,12 +4450,10 @@ document.addEventListener("visibilitychange", () => {
 setInterval(checkSyncHealth, 30000);
 
 // ==================== ОБНОВЛЕНИЕ ПО ====================
-const APP_VERSION = "1.2.0";
-const APP_BUILD_DATE = "2026-10-19";
+const APP_VERSION = "2.0.0";
+const APP_BUILD_DATE = "2026-10-20";
 const VERSION_URL = "version.json";
 const VERSION_CHECK_KEY = "diary_version_check_v1";
-
-// Работает ли сайт через file:// (локальный файл)
 const IS_LOCAL_FILE = location.protocol === "file:";
 
 let _updateInfo = { current: APP_VERSION, latest: APP_VERSION, hasUpdate: false, changelog: "", releaseDate: "", mandatory: false };
@@ -4742,8 +4485,6 @@ function compareVersions(a, b) {
 
 async function checkForUpdates(userInitiated) {
   if (_updateChecking) return;
-
-  // Локальный режим — проверка недоступна
   if (IS_LOCAL_FILE) {
     _updateInfo = {
       current: APP_VERSION,
@@ -4754,12 +4495,9 @@ async function checkForUpdates(userInitiated) {
       mandatory: false
     };
     updateUpdateUI("upToDate");
-    if (userInitiated) {
-      showToast("ℹ️ Локальный режим", "Открыто как файл. Проверка версий работает только на сервере (http:// или https://).");
-    }
+    if (userInitiated) showToast("ℹ️ Локальный режим", "Открыто как файл. Проверка версий работает только на сервере (http:// или https://).");
     return;
   }
-
   _updateChecking = true;
   updateUpdateUI("checking");
   try {
@@ -4796,9 +4534,7 @@ async function checkForUpdates(userInitiated) {
     console.warn("Update check failed:", e);
     _updateInfo.hasUpdate = false;
     updateUpdateUI("error");
-    if (userInitiated) {
-      showToast("⚠️ Ошибка проверки", "Не удалось связаться с сервером обновлений");
-    }
+    if (userInitiated) showToast("⚠️ Ошибка проверки", "Не удалось связаться с сервером обновлений");
   } finally {
     _updateChecking = false;
   }
@@ -4824,9 +4560,7 @@ function updateUpdateUI(mode) {
 
   if (curVerBottom) curVerBottom.textContent = APP_VERSION;
   if (buildDate) buildDate.textContent = APP_BUILD_DATE;
-
   if (!icon || !title || !subtitle) return;
-
   icon.classList.remove("ok", "warn", "err");
 
   if (mode === "checking") {
@@ -4843,7 +4577,6 @@ function updateUpdateUI(mode) {
     if (settingsSub) settingsSub.textContent = "Подождите";
     return;
   }
-
   if (checkBtn) { checkBtn.disabled = false; checkBtn.textContent = "🔄 Проверить обновления"; }
 
   if (mode === "hasUpdate") {
@@ -4867,8 +4600,7 @@ function updateUpdateUI(mode) {
     if (settingsSub) settingsSub.textContent = "У вас " + _updateInfo.current + " — нажмите, чтобы обновить";
     return;
   }
-
-    if (mode === "upToDate") {
+  if (mode === "upToDate") {
     icon.classList.add("ok");
     icon.textContent = "✅";
     if (IS_LOCAL_FILE) {
@@ -4887,7 +4619,6 @@ function updateUpdateUI(mode) {
     if (settingsSub) settingsSub.textContent = IS_LOCAL_FILE ? "Локальный режим" : "Используется последняя версия";
     return;
   }
-
   if (mode === "error") {
     icon.classList.add("err");
     icon.textContent = "⚠️";
@@ -4912,12 +4643,10 @@ function showUpdateBanner(version) {
   banner.classList.add("show");
   setTimeout(() => { if (banner) banner.classList.remove("show"); }, 10000);
 }
-
 function hideUpdateBanner() {
   const banner = document.getElementById("updateToastBanner");
   if (banner) banner.classList.remove("show");
 }
-
 function openUpdateSection() {
   const modal = document.getElementById("updateModalBg");
   if (!modal) return;
@@ -4938,35 +4667,27 @@ function openUpdateSection() {
   } else {
     updateUpdateUI("checking");
   }
-  if (!_updateChecking) {
-    setTimeout(() => checkForUpdates(false), 100);
-  }
+  if (!_updateChecking) setTimeout(() => checkForUpdates(false), 100);
 }
-
 function closeUpdateModal() {
   document.getElementById("updateModalBg").classList.remove("active");
 }
-
 async function applyUpdate() {
   const btn = document.getElementById("updateApplyBtn");
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="update-spinner"></span> Обновление...'; }
-
   try {
     if ("caches" in window) {
       const keys = await caches.keys();
       await Promise.all(keys.map(k => caches.delete(k)));
     }
   } catch (e) { console.warn("Cache clear error:", e); }
-
   try {
     if ("serviceWorker" in navigator) {
       const regs = await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.map(r => r.unregister()));
     }
   } catch (e) { console.warn("SW unregister error:", e); }
-
   saveVersionCheck({ lastChecked: Date.now(), latest: _updateInfo.latest, hasUpdate: false, clearedAt: Date.now() });
-
   showToast("✅ Обновление", "Кэш очищен. Перезагружаем...");
   setTimeout(() => {
     try {
@@ -4977,20 +4698,9 @@ async function applyUpdate() {
   }, 800);
 }
 
-window.addEventListener("load", () => {
-  setTimeout(() => { if (typeof checkForUpdates === "function") checkForUpdates(false); }, 2000);
-});
-
-document.getElementById("updateModalBg").addEventListener("click", e => {
-  if (e.target.id === "updateModalBg") closeUpdateModal();
-});
-
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    const m = document.getElementById("updateModalBg");
-    if (m && m.classList.contains("active")) closeUpdateModal();
-  }
-});
+window.addEventListener("load", () => { setTimeout(() => { if (typeof checkForUpdates === "function") checkForUpdates(false); }, 2000); });
+document.getElementById("updateModalBg").addEventListener("click", e => { if (e.target.id === "updateModalBg") closeUpdateModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = document.getElementById("updateModalBg"); if (m && m.classList.contains("active")) closeUpdateModal(); } });
 
 // ==================== ЗАПУСК ====================
 setTimeout(async () => {
@@ -4998,8 +4708,7 @@ setTimeout(async () => {
   if (ok) setSyncState("ok");
   else setSyncState("error", _syncLastError || "IndexedDB недоступен");
 }, 1000);
-  // Проверка версии при запуске
-  setTimeout(() => { try { checkForUpdates(false); } catch (e) {} }, 1500);
+
 init();
 </script>
 </body>
