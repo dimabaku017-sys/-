@@ -2080,38 +2080,25 @@ function updateThemeUI() {
 let deferredPrompt = null;
 let swRegistration = null;
 
-// Регистрируем Service Worker (inline, чтобы работало без отдельного файла)
-(function registerSW() {
-  if (!('serviceWorker' in navigator)) return;
-  const swCode = `
-    const CACHE_NAME = 'diary-v1';
-    const PRECACHE = ['./', './index.html', './manifest.json'];
-    self.addEventListener('install', e => {
-      e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(PRECACHE).catch(() => {})));
-      self.skipWaiting();
-    });
-    self.addEventListener('activate', e => {
-      e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))));
-      self.clients.claim();
-    });
-    self.addEventListener('fetch', e => {
-      if (e.request.method !== 'GET') return;
-      if (!e.request.url.startsWith('http')) return;
-      const url = new URL(e.request.url);
-      if (url.origin !== location.origin) return;
-      e.respondWith(
-        caches.match(e.request).then(cached => {
-          const fetchPromise = fetch(e.request).then(res => {
-            if (res && res.status === 200) {
-              const clone = res.clone();
-              caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
-            }
-            return res;
-          }).catch(() => cached);
-          return cached || fetchPromise;
-        })
-      );
-    });
+// Проверяем, поддерживает ли браузер Service Worker
+if ('serviceWorker' in navigator) {
+  
+  // Ждём, пока страница полностью загрузится
+  window.addEventListener('load', () => {
+    
+    // Говорим браузеру: зарегистрируй файл sw.js
+    navigator.serviceWorker.register('./sw.js')
+    
+      // Если получилось — сохраняем ссылку на него
+      .then(reg => { 
+        swRegistration = reg; 
+        updatePWAStatus(); // обновляем статус в настройках
+      })
+      
+      // Если не получилось — пишем ошибку в консоль (чтобы не ломалось всё)
+      .catch(err => console.warn('SW error:', err));
+  });
+}
   `;
   try {
     const blob = new Blob([swCode], { type: 'application/javascript' });
