@@ -4394,7 +4394,7 @@ function markSyncing() {
       if (check && check.subjects) setSyncState("ok");
       else setSyncState("error", "Данные не сохранились");
     } catch (e) { setSyncState("error", e.message || String(e)); }
-  }, 400);
+  }, 500);
 }
 
 function checkSyncHealth() {
@@ -4703,13 +4703,23 @@ document.getElementById("updateModalBg").addEventListener("click", e => { if (e.
 document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = document.getElementById("updateModalBg"); if (m && m.classList.contains("active")) closeUpdateModal(); } });
 
 // ==================== ЗАПУСК ====================
-setTimeout(async () => {
-  const ok = await probeSyncCapability();
-  if (ok) setSyncState("ok");
-  else setSyncState("error", _syncLastError || "IndexedDB недоступен");
-}, 1000);
-
-init();
+// Даем базе данных время инициализироваться, прежде чем проверять её
+init().then(async () => {
+  try {
+    const ok = await probeSyncCapability();
+    if (ok) setSyncState("ok");
+    else {
+      // Если не получилось, даем еще одну попытку через 1 секунду
+      setTimeout(async () => {
+        const ok2 = await probeSyncCapability();
+        if (ok2) setSyncState("ok");
+        else setSyncState("error", _syncLastError || "Хранилище недоступно");
+      }, 1000);
+    }
+  } catch (e) {
+    setSyncState("error", "Ошибка при запуске");
+  }
+});
 </script>
 </body>
 </html>
