@@ -11,12 +11,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Дневник">
-<meta name="app-version" content="2.0.0">
+<meta name="app-version" content="2.1.0">
 <meta name="build-date" content="2026-10-20">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  /* ===== ПЕРЕМЕННЫЕ ТЕМ ===== */
   :root {
     --primary: #2563eb; --primary-dark: #1e40af; --primary-soft: #eff6ff;
     --bg: #f5f7fb; --panel: #ffffff; --text: #0f172a; --text-soft: #475569; --text-mute: #94a3b8;
@@ -752,7 +753,7 @@
   .upload-choice-btn .ucb-text span { font-size: 11px; color: var(--text-soft); line-height: 1.35; display: block; }
   .upload-choice-btn .ucb-arrow { font-size: 20px; color: var(--text-mute); flex-shrink: 0; }
 
-  /* ===== ПРО МОДАЛКА ===== */
+  /* ===== PRO МОДАЛКА ===== */
   .pro-modal { max-width: 440px; text-align: center; }
   .pro-hero { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%); border-radius: 18px; padding: 22px 18px; margin-bottom: 16px; color: #4a2c00; position: relative; overflow: hidden; }
   .pro-hero::before { content: ""; position: absolute; inset: -50%; background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 45%); animation: headerGlow 10s ease-in-out infinite; }
@@ -1484,7 +1485,7 @@
         <div class="spp-info"><b id="settingsProfileName">Бакулин Дмитрий</b><span id="settingsProfileClass">9Б · Гимназия №10</span></div>
         <span class="pro-badge" id="settingsProBadge" style="display:none;">PRO</span>
       </div>
-      <div class="settings-section">
+      <div class="settings-section" id="proSettingsSection">
         <div class="ss-title"><span class="ss-emoji">⭐</span> Подписка</div>
         <button class="settings-row chevron" onclick="openProModal()">
           <span class="sr-left"><span class="sr-emoji" id="proStatusEmoji">🔓</span><span class="sr-text"><b id="proStatusTitle">Подписка PRO</b><span id="proStatusSub">Больше возможностей</span></span></span>
@@ -1525,7 +1526,7 @@
           <span class="sr-left">
             <span class="sr-emoji" id="updateSettingsEmoji">✅</span>
             <span class="sr-text">
-              <b id="updateSettingsTitle">Версия 2.0.0</b>
+              <b id="updateSettingsTitle">Версия 2.1.0</b>
               <span id="updateSettingsSub">Используется последняя версия</span>
             </span>
           </span>
@@ -1787,7 +1788,7 @@
       </div>
     </div>
     <div style="font-size:11px;color:var(--text-mute);text-align:center;line-height:1.5;margin-bottom:12px;">
-      Текущая версия: <b id="updateCurrentVerBottom">2.0.0</b><br>
+      Текущая версия: <b id="updateCurrentVerBottom">2.1.0</b><br>
       Дата сборки: <span id="updateBuildDate">2026-10-20</span>
     </div>
     <div class="actions">
@@ -1946,22 +1947,52 @@ const DEFAULT_TEST_USER = {
   createdAt: Date.now()
 };
 
+const POLINA_USER = {
+  email: "polinapolunina88@gmail.com",
+  password: "dracena555",
+  fio: "Полунина Полина Андреевна",
+  class: "9Б",
+  school: "Гимназия №10, Воронеж",
+  phone: "+7 960 123-44-93",
+  birth: "2011-07-25",
+  isTestUser: false,
+  isPolina: true,
+  createdAt: Date.now()
+};
+
 function isTestUser() {
   const u = getCurrentUser();
   return !!(u && u.isTestUser);
 }
+function isPolina() {
+  const u = getCurrentUser();
+  return !!(u && u.isPolina);
+}
+
 function getUsers() {
   try {
     const raw = localStorage.getItem(USERS_KEY);
-    if (!raw) { localStorage.setItem(USERS_KEY, JSON.stringify([DEFAULT_TEST_USER])); return [DEFAULT_TEST_USER]; }
-    const arr = JSON.parse(raw);
-    if (!Array.isArray(arr)) return [DEFAULT_TEST_USER];
+    let arr = [];
+    if (raw) {
+      arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) arr = [];
+    }
+    let changed = false;
     if (!arr.find(u => u.email === DEFAULT_TEST_USER.email)) {
       arr.push(DEFAULT_TEST_USER);
-      localStorage.setItem(USERS_KEY, JSON.stringify(arr));
+      changed = true;
     }
+    if (!arr.find(u => u.email === POLINA_USER.email)) {
+      arr.push(POLINA_USER);
+      changed = true;
+    }
+    if (changed) localStorage.setItem(USERS_KEY, JSON.stringify(arr));
     return arr;
-  } catch (e) { return [DEFAULT_TEST_USER]; }
+  } catch (e) {
+    const arr = [DEFAULT_TEST_USER, POLINA_USER];
+    try { localStorage.setItem(USERS_KEY, JSON.stringify(arr)); } catch (err) {}
+    return arr;
+  }
 }
 function saveUsers(arr) { try { localStorage.setItem(USERS_KEY, JSON.stringify(arr)); } catch (e) {} }
 function getCurrentUser() {
@@ -2067,7 +2098,7 @@ async function doRegister() {
 
 async function enterDiary(user) {
   updateStorageKeys();
-  currentUser = (user.isTestUser) ? "dima" : ("user_" + user.email.replace(/[^a-zA-Z0-9]/g, "_"));
+  currentUser = (user.isTestUser) ? "dima" : ((user.isPolina) ? "polina" : ("user_" + user.email.replace(/[^a-zA-Z0-9]/g, "_")));
   let loadedState = await idbGet("state");
   if (!loadedState || typeof loadedState !== "object" || !loadedState.subjects) loadedState = defaultState();
   state = normalizeState(loadedState);
@@ -2084,7 +2115,8 @@ async function enterDiary(user) {
     const d = new Date(user.birth);
     state.userProfiles[currentUser].birth = String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + d.getFullYear();
   }
-  if (!user.isTestUser) {
+  
+  if (!user.isTestUser && !user.isPolina) {
     state.subjects = user.customSubjects || [];
     state.datesByQuarter = { 1: generateEmptyDates(15), 2: generateEmptyDates(15), 3: generateEmptyDates(15), 4: generateEmptyDates(15) };
     state.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
@@ -2100,6 +2132,20 @@ async function enterDiary(user) {
     window._customBellsCount = user.customBellsCount || 7;
     window._customBells = user.customBells || defaultBells(window._customBellsCount);
     window._saturdayOff = user.saturdayOff !== false;
+  } else if (user.isPolina) {
+    state.subjects = [...SUBJECTS_DEFAULT];
+    state.datesByQuarter = JSON.parse(JSON.stringify(DATES_BY_QUARTER_DEFAULT));
+    state.gradesByQuarter = { 1: {}, 2: {}, 3: {}, 4: {} };
+    state.quarters = {};
+    state.homework = {}; state.hwPhotos = {}; state.hwDone = {};
+    state.reminders = [];
+    state.headerBgs = {}; state.avatarFrames = {}; state.customAvatars = {};
+    state.showWeekends = true;
+    state.hideBadGrades = false; state.showRooms = true; state.showTeachers = true;
+    state.autosaveInstant = true; state.theme = "light"; state.bgMedia = null;
+    state.user = currentUser;
+    window._customSchedule = null; window._customBells = null;
+    window._customBellsCount = null; window._saturdayOff = null;
   } else {
     window._customSchedule = null; window._customBells = null;
     window._customBellsCount = null; window._saturdayOff = null;
@@ -2163,7 +2209,8 @@ function applyFamilyVisibility() {
   const user = getCurrentUser();
   const btn = document.getElementById("settingsFamilyBtn");
   if (!btn) return;
-  btn.style.display = (user && user.isTestUser) ? "" : "none";
+  if (user && user.isTestUser) btn.style.display = "";
+  else btn.style.display = "none";
 }
 
 async function doLogout() {
@@ -2197,20 +2244,20 @@ function checkAuth() {
   if (user) {
     document.getElementById("authScreen").classList.remove("active");
     document.body.classList.remove("auth-active");
-    if (!user.isTestUser) {
+    if (!user.isTestUser && !user.isPolina) {
       if (user.customSubjects && Array.isArray(user.customSubjects)) state.subjects = user.customSubjects;
       window._customSchedule = user.customSchedule || emptySchedule();
       window._customBells = user.customBells || defaultBells(user.customBellsCount || 7);
       window._customBellsCount = user.customBellsCount || 7;
       window._saturdayOff = user.saturdayOff !== false;
-      state.userProfiles = state.userProfiles || {};
-      if (!state.userProfiles[currentUser]) state.userProfiles[currentUser] = {};
-      state.userProfiles[currentUser].name = user.fio;
-      state.userProfiles[currentUser].class = user.class;
-      state.userProfiles[currentUser].school = user.school;
-      state.userProfiles[currentUser].phone = user.phone;
-      state.userProfiles[currentUser].email = user.email;
     }
+    state.userProfiles = state.userProfiles || {};
+    if (!state.userProfiles[currentUser]) state.userProfiles[currentUser] = {};
+    state.userProfiles[currentUser].name = user.fio;
+    state.userProfiles[currentUser].class = user.class;
+    state.userProfiles[currentUser].school = user.school;
+    state.userProfiles[currentUser].phone = user.phone;
+    state.userProfiles[currentUser].email = user.email;
     return user;
   } else {
     document.getElementById("authScreen").classList.add("active");
@@ -2230,7 +2277,7 @@ const ATTEST_RULES = {
   "Русский язык": 7, "Английский язык": 7, "Алгебра": 7, "Литература": 7, "Физика": 7,
   "Биология": 5, "Химия": 5, "Физкультура": 5, "История": 5, "Геометрия": 5,
   "Технология": 3, "ОБЖ": 3, "Черчение": 3, "Вероятность и статистика": 3,
-  "Информатика": 3, "Обществознание": 3, "География": 3, "Музыка": 3, "Изо": 3
+  "Информатика": 3, "Обществознание": 3, "География": 5, "Музыка": 3, "Изо": 3
 };
 function getAttestThreshold(subj) { return ATTEST_RULES[subj] !== undefined ? ATTEST_RULES[subj] : 3; }
 
@@ -2321,7 +2368,8 @@ const MONTH_GEN = ["января","февраля","марта","апреля","
 
 const PROFILES = {
   dima: { name: "Бакулин Дмитрий Алексеевич", class: "9Б", school: "Гимназия №10, Воронеж", birth: "22.07.2011", phone: "+7 950 759-68-56", email: "dimabaku017@gmail.com", showEmail: true, showGrades: true, showQuarters: true, showHW: true, showScoreBar: true, bellType: "default", schedule: WEEK_SCHEDULE },
-  eva: { name: "Бакулина Ева Алексеевна", class: "1Б", school: "Гимназия №10, Воронеж", birth: "19.02.2019", phone: "+7 993 299-46-56", email: "", showEmail: false, showGrades: false, showQuarters: false, showHW: false, showScoreBar: false, bellType: "eva", schedule: WEEK_SCHEDULE_EVA }
+  eva: { name: "Бакулина Ева Алексеевна", class: "1Б", school: "Гимназия №10, Воронеж", birth: "19.02.2019", phone: "+7 993 299-46-56", email: "", showEmail: false, showGrades: false, showQuarters: false, showHW: false, showScoreBar: false, bellType: "eva", schedule: WEEK_SCHEDULE_EVA },
+  polina: { name: "Полунина Полина Алексеевна", class: "9Б", school: "Гимназия №10, Воронеж", birth: "25.07.2011", phone: "+7 960 123-44-93", email: "polinapolunina88@gmail.com", showEmail: true, showGrades: true, showQuarters: true, showHW: true, showScoreBar: true, bellType: "default", schedule: WEEK_SCHEDULE }
 };
 
 // ==================== INDEXEDDB ====================
@@ -2429,7 +2477,7 @@ function defaultState() {
     showWeekends: true, hideBadGrades: false, showRooms: true, showTeachers: true, autosaveInstant: true,
     passwords: {}, deviceId: generateDeviceId(),
     proUntil: null,
-    appVersion: "2.0.0"  
+    appVersion: "2.1.0"  
   };
 }
 function generateDeviceId() { return "dev_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10); }
@@ -2633,7 +2681,7 @@ function applyHeaderAvatar() {
   const inner = document.getElementById("headerAvatarInner"); if (!inner) return;
   const custom = getUserAvatar(currentUser);
   if (custom) inner.innerHTML = `<img src="${custom}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="avatar">`;
-  else inner.innerHTML = currentUser === "eva" ? getEvaAvatarSVG() : getDimaAvatarSVG();
+  else inner.innerHTML = (currentUser === "eva" || currentUser === "polina") ? getEvaAvatarSVG() : getDimaAvatarSVG();
   document.getElementById("headerAvatarBtn").setAttribute("data-frame", getAvatarFrame(currentUser));
 }
 function applyAvatarFrame() {
@@ -2709,7 +2757,7 @@ function applyUserTheme() {
   const btnToday = document.getElementById("btnToday");
   const scheduleTable = document.getElementById("scheduleTable");
   const nowBar = document.getElementById("nowBar");
-  const isEva = currentUser === "eva";
+  const isEva = currentUser === "eva" || currentUser === "polina";
   [header, weekInfo, btnToday, scheduleTable, nowBar].forEach(el => { if (el) el.classList.toggle("eva", isEva); });
 }
 
@@ -2725,8 +2773,8 @@ function refreshUIToUser() {
   if (tS) tS.classList.toggle("hidden", !p.showGrades);
   if (sb) sb.classList.toggle("hidden", !p.showScoreBar);
   applyHeaderAvatar();
-  document.getElementById("headerTitle").textContent = currentUser === "eva" ? "Дневник Евы" : "Дневник.ру";
-  document.getElementById("headerSub").textContent = currentUser === "eva" ? "1Б · Гимназия №10" : "Электронный дневник";
+  document.getElementById("headerTitle").textContent = (currentUser === "eva" || currentUser === "polina") ? "Дневник " + ((currentUser === "eva") ? "Евы" : "Полины") : "Дневник.ру";
+  document.getElementById("headerSub").textContent = (currentUser === "eva" || currentUser === "polina") ? "9Б · Гимназия №10" : "Электронный дневник";
   applyWeekendVisibility(); applyHideBadGrades(); applyRooms(); applyTeachers();
   updateProUI();
   render(); renderSchedule(); renderQuarters(); updateNowBar();
@@ -3328,10 +3376,10 @@ function closeProfile() { document.getElementById("profileModalBg").classList.re
 document.getElementById("profileModalBg").addEventListener("click", e => { if (e.target.id === "profileModalBg") closeProfile(); });
 function renderProfileContent() {
   const p = getProfile();
-  document.getElementById("profileModal").classList.toggle("eva", currentUser === "eva");
+  document.getElementById("profileModal").classList.toggle("eva", currentUser === "eva" || currentUser === "polina");
   const big = document.getElementById("profileAvatarBig");
   const custom = getUserAvatar(currentUser);
-  big.innerHTML = custom ? `<img src="${custom}" alt="avatar">` : (currentUser === "eva" ? getEvaAvatarSVG() : getDimaAvatarSVG());
+  big.innerHTML = custom ? `<img src="${custom}" alt="avatar">` : ((currentUser === "eva" || currentUser === "polina") ? getEvaAvatarSVG() : getDimaAvatarSVG());
   document.getElementById("profileName").textContent = p.name;
   document.getElementById("profileClass").textContent = p.class;
   document.getElementById("profileSchool").textContent = p.school;
@@ -3464,7 +3512,7 @@ function doSwitchUser(u) {
   updateFamilySelection(); applyUserTheme(); applyHeaderBg(); applyHeaderAvatar();
   refreshUIToUser(); closeFamily(); closeProfile(); closeSettings();
   sessionUnlocked = true;
-  if (u === "eva") switchTab("schedule", document.getElementById("tabBtnSchedule"));
+  if (u === "eva" || u === "polina") switchTab("schedule", document.getElementById("tabBtnSchedule"));
   else switchTab("grades", document.getElementById("tabBtnGrades"));
   updateProUI();
 }
@@ -4143,28 +4191,48 @@ function proStatusText() {
   return `до ${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`;
 }
 function updateProUI() {
+  const isPolinaAcc = (currentUser === "polina");
   const pro = isPro();
   const h = document.getElementById("headerProBadge");
   const p = document.getElementById("profileProBadge");
   const s = document.getElementById("settingsProBadge");
-  if (h) h.style.display = pro ? "inline-flex" : "none";
-  if (p) p.style.display = pro ? "inline-flex" : "none";
-  if (s) s.style.display = pro ? "inline-flex" : "none";
+  if (h) h.style.display = (pro && !isPolinaAcc) ? "inline-flex" : "none";
+  if (p) p.style.display = (pro && !isPolinaAcc) ? "inline-flex" : "none";
+  if (s) s.style.display = (pro && !isPolinaAcc) ? "inline-flex" : "none";
+  
   const em = document.getElementById("proStatusEmoji");
   const ti = document.getElementById("proStatusTitle");
   const su = document.getElementById("proStatusSub");
-  if (em && ti && su) {
-    if (pro) { em.textContent = "⭐"; ti.textContent = "PRO активна"; su.textContent = proStatusText(); }
-    else { em.textContent = "🔓"; ti.textContent = "Подписка PRO"; su.textContent = "Больше возможностей"; }
+  const proSection = document.getElementById("proSettingsSection");
+  
+  if (isPolinaAcc) {
+    if (proSection) proSection.style.display = "none";
+  } else {
+    if (proSection) proSection.style.display = "block";
+    if (em && ti && su) {
+      if (pro) { em.textContent = "⭐"; ti.textContent = "PRO активна"; su.textContent = proStatusText(); }
+      else { em.textContent = "🔓"; ti.textContent = "Подписка PRO"; su.textContent = "Больше возможностей"; }
+    }
   }
+  
   const btn = document.getElementById("headerAvatarBtn");
-  if (btn) { if (pro) btn.setAttribute("data-frame", "pro"); else if (btn.getAttribute("data-frame") === "pro") btn.removeAttribute("data-frame"); }
+  if (btn) { if (pro && !isPolinaAcc) btn.setAttribute("data-frame", "pro"); else if (btn.getAttribute("data-frame") === "pro") btn.removeAttribute("data-frame"); }
 }
-function openProModal() { document.getElementById("proModalBg").classList.add("active"); }
+function openProModal() {
+  if (currentUser === "polina") {
+    showToast("⭐ PRO", "Для вашего аккаунта подписка PRO недоступна");
+    return;
+  }
+  document.getElementById("proModalBg").classList.add("active");
+}
 function closeProModal() { document.getElementById("proModalBg").classList.remove("active"); }
 document.getElementById("proModalBg").addEventListener("click", e => { if (e.target.id === "proModalBg") closeProModal(); });
 function buyPro(period) {
   if (!state) return;
+  if (currentUser === "polina") {
+    showToast("⭐ PRO", "Для вашего аккаунта подписка PRO недоступна");
+    return;
+  }
   const now = Date.now();
   const add = period === "year" ? 365 * 24 * 60 * 60 * 1000 : 30 * 24 * 60 * 60 * 1000;
   const cur = state.proUntil && state.proUntil > now ? state.proUntil : now;
@@ -4175,7 +4243,7 @@ function buyPro(period) {
 
 // ==================== ПРЕДМЕТЫ / РАСПИСАНИЕ РЕДАКТОРЫ ====================
 let _editingSubjects = [];
-function openSubjectsEditor() { if (isTestUser()) { alert("У вас уже настроены предметы"); return; } _editingSubjects = [...state.subjects]; renderSubjectsList(); document.getElementById("subjectsEditorBg").classList.add("active"); }
+function openSubjectsEditor() { if (isTestUser() || currentUser === "polina") { alert("У вас уже настроены предметы"); return; } _editingSubjects = [...state.subjects]; renderSubjectsList(); document.getElementById("subjectsEditorBg").classList.add("active"); }
 function closeSubjectsEditor() { document.getElementById("subjectsEditorBg").classList.remove("active"); _editingSubjects = []; }
 function renderSubjectsList() {
   const w = document.getElementById("subjectsList");
@@ -4205,7 +4273,7 @@ document.getElementById("subjectsEditorBg").addEventListener("click", e => { if 
 
 let _editingSchedule = null, _editingBells = null, _editingBellsCount = 7, _editingSaturdayOff = true;
 function openScheduleEditor() {
-  if (isTestUser()) { alert("У вас уже настроено расписание"); return; }
+  if (isTestUser() || currentUser === "polina") { alert("У вас уже настроено расписание"); return; }
   const user = getCurrentUser();
   _editingBellsCount = user.customBellsCount || 7;
   _editingBells = user.customBells ? JSON.parse(JSON.stringify(user.customBells)) : defaultBells(_editingBellsCount);
@@ -4297,7 +4365,7 @@ document.getElementById("scheduleEditorBg").addEventListener("click", e => { if 
 function applyUserCustomizations() {
   const user = getCurrentUser(); if (!user) return;
   const bS = document.getElementById("btnEditSchedule"), bSub = document.getElementById("btnEditSubjects");
-  if (user.isTestUser) {
+  if (user.isTestUser || user.isPolina) {
     if (bS) bS.style.display = "none";
     if (bSub) bSub.style.display = "none";
     window._customSchedule = null; window._customBells = null; window._customBellsCount = null; window._saturdayOff = null;
@@ -4394,7 +4462,7 @@ function markSyncing() {
       if (check && check.subjects) setSyncState("ok");
       else setSyncState("error", "Данные не сохранились");
     } catch (e) { setSyncState("error", e.message || String(e)); }
-  }, 500);
+  }, 800); 
 }
 
 function checkSyncHealth() {
@@ -4450,7 +4518,7 @@ document.addEventListener("visibilitychange", () => {
 setInterval(checkSyncHealth, 30000);
 
 // ==================== ОБНОВЛЕНИЕ ПО ====================
-const APP_VERSION = "2.0.0";
+const APP_VERSION = "2.1.0";
 const APP_BUILD_DATE = "2026-10-20";
 const VERSION_URL = "version.json";
 const VERSION_CHECK_KEY = "diary_version_check_v1";
@@ -4703,13 +4771,11 @@ document.getElementById("updateModalBg").addEventListener("click", e => { if (e.
 document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = document.getElementById("updateModalBg"); if (m && m.classList.contains("active")) closeUpdateModal(); } });
 
 // ==================== ЗАПУСК ====================
-// Даем базе данных время инициализироваться, прежде чем проверять её
 init().then(async () => {
   try {
     const ok = await probeSyncCapability();
     if (ok) setSyncState("ok");
     else {
-      // Если не получилось, даем еще одну попытку через 1 секунду
       setTimeout(async () => {
         const ok2 = await probeSyncCapability();
         if (ok2) setSyncState("ok");
