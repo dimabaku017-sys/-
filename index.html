@@ -11,8 +11,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Дневник">
-<meta name="app-version" content="2.1.0">
-<meta name="build-date" content="2026-10-20">
+<meta name="app-version" content="2.1.2">
+<meta name="build-date" content="2026-10-23">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1253,9 +1253,10 @@
 
   <div class="tab-content" id="tab-stats">
     <div class="controls" style="padding-right:14px;">
-      <button class="btn forecast" onclick="openForecast()">🎯 Прогноз</button>
-      <button class="btn attest" onclick="openAttestation()">🏆 Аттестация</button>
-    </div>
+  <button class="btn forecast" onclick="openForecast()">🎯 Прогноз</button>
+  <button class="btn attest" onclick="openAttestation()">🏆 Аттестация</button>
+  <button class="btn" onclick="openQuartersStats()" style="background: linear-gradient(135deg, #10b981, #047857);">📅 Четверти</button>
+</div>
     <div class="stats-grid" id="statsCards"></div>
     <div class="stats-panel"><div class="sp-title">📊 Распределение оценок</div><div id="statsDist"></div></div>
     <div class="stats-panel"><div class="sp-title">📈 Средний балл по четвертям</div><div class="chart-wrap"><canvas id="statsChart"></canvas></div></div>
@@ -1793,6 +1794,30 @@
     </div>
     <div class="actions">
       <button class="action-btn cancel full" onclick="closeUpdateModal()"><span class="ab-emoji">✕</span> Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка статистики по четвертям -->
+<div class="modal-bg" id="quartersStatsModalBg">
+  <div class="modal" style="max-width:600px; text-align:left;">
+    <h3 style="text-align:center;">📅 Статистика по четвертям</h3>
+    <div class="sub" style="text-align:center; margin-bottom:16px;">Выберите период для просмотра</div>
+    
+    <div style="display:flex; gap:8px; justify-content:center; margin-bottom:16px; flex-wrap:wrap;" id="qStatsBtns">
+      <button class="btn" onclick="renderQuarterStats(1)" id="qStatsBtn1">1 четв.</button>
+      <button class="btn" onclick="renderQuarterStats(2)" id="qStatsBtn2">2 четв.</button>
+      <button class="btn" onclick="renderQuarterStats(3)" id="qStatsBtn3">3 четв.</button>
+      <button class="btn" onclick="renderQuarterStats(4)" id="qStatsBtn4">4 четв.</button>
+      <button class="btn" onclick="renderQuarterStats('all')" id="qStatsBtnAll">За весь год</button>
+    </div>
+
+    <div id="qStatsContent" style="background:var(--primary-soft); border-radius:12px; padding:16px; margin-bottom:16px;">
+      <!-- Сюда будут рендериться данные -->
+    </div>
+
+    <div class="actions">
+      <button class="action-btn done full" onclick="closeQuartersStats()"><span class="ab-emoji">✓</span> Закрыть</button>
     </div>
   </div>
 </div>
@@ -3871,6 +3896,99 @@ function openAttestation() {
 function closeAttestation() { document.getElementById("attestationModalBg").classList.remove("active"); }
 document.getElementById("attestationModalBg").addEventListener("click", e => { if (e.target.id === "attestationModalBg") closeAttestation(); });
 
+// ==================== СТАТИСТИКА ПО ЧЕТВЕРТЯМ ====================
+function openQuartersStats() {
+  document.getElementById("quartersStatsModalBg").classList.add("active");
+  renderQuarterStats(activeQuarter);
+}
+
+function closeQuartersStats() {
+  document.getElementById("quartersStatsModalBg").classList.remove("active");
+}
+
+document.getElementById("quartersStatsModalBg").addEventListener("click", e => {
+  if (e.target.id === "quartersStatsModalBg") closeQuartersStats();
+});
+
+function renderQuarterStats(period) {
+  document.querySelectorAll("#qStatsBtns .btn").forEach(b => b.style.opacity = "0.6");
+  const activeBtn = document.getElementById(period === "all" ? "qStatsBtnAll" : "qStatsBtn" + period);
+  if (activeBtn) activeBtn.style.opacity = "1";
+
+  let countKr = 0, count5 = 0, count4 = 0, count3 = 0, count2 = 0, countNA = 0;
+  let sumWV = 0, sumW = 0, totalGrades = 0;
+
+  const qList = period === "all" ? [1, 2, 3, 4] : [period];
+
+  qList.forEach(q => {
+    const grades = state.gradesByQuarter[q] || {};
+    Object.values(grades).forEach(subjGrades => {
+      Object.values(subjGrades).forEach(v => {
+        const p = parseGrade(v);
+        if (!p) return;
+        const w = getWeight(p.type);
+        sumWV += p.grade * w;
+        sumW += w;
+        totalGrades++;
+        if (p.type === "kr") countKr++;
+        if (p.grade === 5) count5++;
+        else if (p.grade === 4) count4++;
+        else if (p.grade === 3) count3++;
+        else if (p.grade === 2) count2++;
+      });
+    });
+    
+    if (period !== "all") {
+      Object.values(state.quarters).forEach(subjQ => {
+        if (subjQ[q] === "NA") countNA++;
+      });
+    }
+  });
+
+  const avg = sumW > 0 ? (sumWV / sumW).toFixed(2) : "—";
+  const title = period === "all" ? "За весь учебный год" : `За ${period} четверть`;
+
+  const html = `
+    <div style="text-align:center; margin-bottom:16px;">
+      <div style="font-size:18px; font-weight:800; color:var(--primary); margin-bottom:4px;">${title}</div>
+      <div style="font-size:13px; color:var(--text-soft);">Всего оценок: ${totalGrades}</div>
+    </div>
+    
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+      <div style="background:var(--panel); padding:12px; border-radius:10px; text-align:center;">
+        <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase;">Средневзвешенный</div>
+        <div style="font-size:24px; font-weight:800; color:#2e7d32;">${avg}</div>
+      </div>
+      <div style="background:var(--panel); padding:12px; border-radius:10px; text-align:center;">
+        <div style="font-size:11px; color:var(--text-soft); text-transform:uppercase;">Контрольных</div>
+        <div style="font-size:24px; font-weight:800; color:#8e24aa;">${countKr}</div>
+      </div>
+    </div>
+
+    <div style="background:var(--panel); padding:14px; border-radius:10px;">
+      <div style="font-size:12px; font-weight:700; color:var(--text-soft); text-transform:uppercase; margin-bottom:10px;">Распределение оценок</div>
+      <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:6px;">
+        <span style="color:#2e7d32; font-weight:700;">Пятёрки (5):</span> <span>${count5}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:6px;">
+        <span style="color:#558b2f; font-weight:700;">Четвёрки (4):</span> <span>${count4}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:6px;">
+        <span style="color:#ef6c00; font-weight:700;">Тройки (3):</span> <span>${count3}</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:6px;">
+        <span style="color:#c62828; font-weight:700;">Двойки (2):</span> <span>${count2}</span>
+      </div>
+      ${period !== "all" ? `
+      <div style="display:flex; justify-content:space-between; font-size:14px; border-top:1px dashed var(--border); padding-top:6px; margin-top:6px;">
+        <span style="color:#c62828; font-weight:700;">Н/А:</span> <span>${countNA}</span>
+      </div>` : ""}
+    </div>
+  `;
+
+  document.getElementById("qStatsContent").innerHTML = html;
+}
+
 // ==================== ШАРИНГ ====================
 let shareImageDataUrl = null;
 function openShare() {
@@ -3889,7 +4007,7 @@ function openShare() {
 function closeShare() { document.getElementById("shareModalBg").classList.remove("active"); shareImageDataUrl = null; }
 document.getElementById("shareModalBg").addEventListener("click", e => { if (e.target.id === "shareModalBg") closeShare(); });
 function generateShareImage() {
-  const W = 900, headerH = 130, rowH = 56;
+  const W = 950, headerH = 130, rowH = 56; // Сделал шире для новой колонки
   const items = [];
   state.subjects.forEach(subj => {
     const sg = getCurrentGrades()[subj] || {};
@@ -3899,7 +4017,7 @@ function generateShareImage() {
       grades.push({ grade: p.grade, type: p.type });
       const w = getWeight(p.type); swv += p.grade * w; sw += w;
     });
-    if (grades.length) items.push({ subj, grades, avg: sw > 0 ? swv / sw : 0 });
+    if (grades.length) items.push({ subj, grades, avg: sw > 0 ? swv / sw : 0, qGrade: (state.quarters[subj] || {})[activeQuarter] || "—" });
   });
   items.sort((a, b) => a.subj.localeCompare(b.subj, "ru"));
   let tswv = 0, tsw = 0;
@@ -3911,6 +4029,8 @@ function generateShareImage() {
   canvas.width = W * scale; canvas.height = H * scale;
   const ctx = canvas.getContext("2d"); ctx.scale(scale, scale);
   ctx.fillStyle = "#eef1f5"; ctx.fillRect(0, 0, W, H);
+  
+  // Шапка
   const grad = ctx.createLinearGradient(0, 0, W, headerH);
   grad.addColorStop(0, "#1976d2"); grad.addColorStop(1, "#0d47a1");
   ctx.fillStyle = grad; ctx.fillRect(0, 0, W, headerH);
@@ -3925,18 +4045,24 @@ function generateShareImage() {
   ctx.fillText(overall.toFixed(2), W - 32, 40);
   ctx.font = "600 14px 'Manrope', Arial";
   ctx.fillText("средний балл", W - 32, 92);
+
   let y = headerH + 20;
   const padX = 24, rowW = W - padX * 2;
+  
   items.forEach((it, idx) => {
     const ry = y + idx * rowH;
     ctx.fillStyle = idx % 2 === 0 ? "#fff" : "#f8fafc";
     roundRect(ctx, padX, ry, rowW, rowH - 6, 10); ctx.fill();
+    
+    // Название предмета
     ctx.font = "600 16px 'Manrope', Arial"; ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillStyle = "#1a237e";
     let name = it.subj;
-    while (ctx.measureText(name).width > 320 && name.length > 3) name = name.slice(0, -1);
+    while (ctx.measureText(name).width > 260 && name.length > 3) name = name.slice(0, -1);
     if (name !== it.subj) name += "…";
     ctx.fillText(name, padX + 14, ry + (rowH - 6) / 2);
-    const gsX = padX + 340, bs = 32, gap = 6, mg = Math.min(it.grades.length, 10);
+
+    // Оценки
+    const gsX = padX + 280, bs = 32, gap = 6, mg = Math.min(it.grades.length, 9);
     for (let i = 0; i < mg; i++) {
       const g = it.grades[i], bx = gsX + i * (bs + gap), by = ry + ((rowH - 6) - bs) / 2;
       const grd = ctx.createLinearGradient(bx, by, bx + bs, by + bs);
@@ -3947,9 +4073,25 @@ function generateShareImage() {
       ctx.fillStyle = "#fff"; ctx.font = "bold 16px 'Manrope', Arial"; ctx.textAlign = "center";
       ctx.fillText(String(g.grade), bx + bs / 2, by + bs / 2 + 1);
     }
-    ctx.textAlign = "right"; ctx.font = "bold 20px 'Manrope', Arial";
+
+    // Средний балл
+    ctx.textAlign = "right"; ctx.font = "bold 18px 'Manrope', Arial";
     let ac = "#2e7d32"; if (it.avg < 2.5) ac = "#c62828"; else if (it.avg < 3.5) ac = "#ef6c00";
-    ctx.fillStyle = ac; ctx.fillText(it.avg.toFixed(2), W - padX - 16, ry + (rowH - 6) / 2);
+    ctx.fillStyle = ac; 
+    ctx.fillText(it.avg.toFixed(2), W - padX - 70, ry + (rowH - 6) / 2);
+    
+    // Четвертная оценка
+    ctx.textAlign = "center"; ctx.font = "bold 20px 'Manrope', Arial";
+    let qColor = "#c62828"; 
+    if (it.qGrade === "NA" || it.qGrade === "—") qColor = "#78909c"; 
+    else if (it.qGrade >= 4) qColor = "#2e7d32"; 
+    else if (it.qGrade === 3) qColor = "#ef6c00";
+    ctx.fillStyle = qColor;
+    
+    // Рисуем кружок для четвертной
+    const qx = W - padX - 30, qy = ry + (rowH - 6) / 2;
+    ctx.beginPath(); ctx.arc(qx, qy, 16, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff"; ctx.fillText(it.qGrade, qx, qy + 1);
   });
   return canvas.toDataURL("image/png");
 }
