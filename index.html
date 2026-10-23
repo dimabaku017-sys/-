@@ -4705,18 +4705,24 @@ async function checkForUpdates(userInitiated) {
       mandatory: false
     };
     updateUpdateUI("upToDate");
-    if (userInitiated) showToast("ℹ️ Локальный режим", "Открыто как файл. Проверка версий работает только на сервере (http:// или https://).");
     return;
   }
+  
   _updateChecking = true;
   updateUpdateUI("checking");
+  
   try {
-    const url = VERSION_URL + "?t=" + Date.now();
-    const resp = await fetch(url, { cache: "no-store" });
+    // Жестко бьем по сети, игнорируя кэш
+    const url = VERSION_URL + "?nocache=" + Date.now() + "&v=" + Math.random();
+    const resp = await fetch(url, { 
+      cache: "no-store", 
+      headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } 
+    });
     if (!resp.ok) throw new Error("HTTP " + resp.status);
     const data = await resp.json();
     const latest = data.version || APP_VERSION;
     const cmp = compareVersions(latest, APP_VERSION);
+    
     _updateInfo = {
       current: APP_VERSION,
       latest: latest,
@@ -4725,6 +4731,7 @@ async function checkForUpdates(userInitiated) {
       releaseDate: data.releaseDate || "",
       mandatory: !!data.mandatory
     };
+    
     saveVersionCheck({
       lastChecked: Date.now(),
       latest: latest,
@@ -4733,9 +4740,11 @@ async function checkForUpdates(userInitiated) {
       releaseDate: _updateInfo.releaseDate,
       mandatory: _updateInfo.mandatory
     });
+    
     updateUpdateUI(cmp > 0 ? "hasUpdate" : "upToDate");
     if (cmp > 0) showUpdateBanner(latest);
     else hideUpdateBanner();
+    
     if (userInitiated) {
       showToast(cmp > 0 ? "⬆️ Доступно обновление" : "✅ Проверка завершена",
         cmp > 0 ? "Новая версия " + latest + ". Откройте раздел «Обновление ПО»." : "У вас последняя версия " + APP_VERSION);
@@ -4885,30 +4894,31 @@ function closeUpdateModal() {
 async function applyUpdate() {
   const btn = document.getElementById("updateApplyBtn");
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="update-spinner"></span> Обновление...'; }
+  // Принудительно помечаем, что сейчас было обновление, чтобы сайт не проверял версию 5 секунд
+  sessionStorage.setItem('just_updated', Date.now().toString());
+
   try {
     // 1. Отключаем Service Worker
     if ("serviceWorker" in navigator) {
       const regs = await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.map(r => r.unregister()));
     }
-    
-    // 2. Чистим кэш браузера
+    // 2. Чистим кэш
     if ("caches" in window) {
       const keys = await caches.keys();
       await Promise.all(keys.map(k => caches.delete(k)));
     }
-    
-    // 3. Забываем сохраненную проверку версии, чтобы при перезагрузке он снова скачал version.json
+    // 3. Удаляем сохраненную версию
     localStorage.removeItem(VERSION_CHECK_KEY);
-    
   } catch (e) { console.warn("Ошибка при очистке:", e); }
 
   showToast("✅ Обновление", "Загружаем новую версию...");
   
-  // 4. Перезагружаем страницу с обходом кэша
+  // Жесткая перезагрузка через 1 секунду
   setTimeout(() => {
-    window.location.href = window.location.pathname + '?v=' + Date.now();
-  }, 500);
+    // Добавляем случайный параметр, чтобы браузер вообще не брал index.html из кэша
+    window.location.replace(window.location.pathname + '?nocache=' + Date.now());
+  }, 1000);
 }
 
 window.addEventListener("load", () => { setTimeout(() => { if (typeof checkForUpdates === "function") checkForUpdates(false); }, 2000); });
