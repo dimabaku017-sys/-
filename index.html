@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Дневник">
-<meta name="app-version" content="2.1.2">
+<meta name="app-version" content="2.1.3">
 <meta name="build-date" content="2026-10-23">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -4886,37 +4886,29 @@ async function applyUpdate() {
   const btn = document.getElementById("updateApplyBtn");
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="update-spinner"></span> Обновление...'; }
   try {
+    // 1. Отключаем Service Worker
     if ("serviceWorker" in navigator) {
       const regs = await navigator.serviceWorker.getRegistrations();
-      for (const reg of regs) {
-        // Говорим Service Worker'у пропустить ожидание и обновиться
-        if (reg.waiting) {
-          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-        }
-      }
+      await Promise.all(regs.map(r => r.unregister()));
     }
     
-    // Чистим старый кэш, чтобы не тянуть мусор
+    // 2. Чистим кэш браузера
     if ("caches" in window) {
       const keys = await caches.keys();
       await Promise.all(keys.map(k => caches.delete(k)));
     }
+    
+    // 3. Забываем сохраненную проверку версии, чтобы при перезагрузке он снова скачал version.json
+    localStorage.removeItem(VERSION_CHECK_KEY);
+    
   } catch (e) { console.warn("Ошибка при очистке:", e); }
 
-  saveVersionCheck({ lastChecked: Date.now(), latest: _updateInfo.latest, hasUpdate: false, clearedAt: Date.now() });
-
-  showToast("✅ Обновление", "Скачиваем новую версию...");
+  showToast("✅ Обновление", "Загружаем новую версию...");
   
-  // Ждём 1.5 секунды, чтобы новый SW успел встать на место, и перезагружаем
+  // 4. Перезагружаем страницу с обходом кэша
   setTimeout(() => {
-    try {
-      const url = new URL(window.location.href);
-      url.searchParams.set("_u", Date.now().toString());
-      window.location.replace(url.toString());
-    } catch (e) { 
-      location.reload(true); 
-    }
-  }, 1500);
+    window.location.href = window.location.pathname + '?v=' + Date.now();
+  }, 500);
 }
 
 window.addEventListener("load", () => { setTimeout(() => { if (typeof checkForUpdates === "function") checkForUpdates(false); }, 2000); });
