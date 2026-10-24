@@ -1165,7 +1165,7 @@
 </div>
 
 <div class="app">
-  <div class="header" id="mainHeader">
+    <div class="header" id="mainHeader">
     <div class="header-left">
       <div class="logo">📘</div>
       <div>
@@ -1175,7 +1175,6 @@
       </div>
     </div>
     <div class="header-right">
-      <span class="sync-dot off" id="syncDot" title="Синхронизация"></span>
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Сменить тему">🌙</button>
       <button class="avatar-btn" id="headerAvatarBtn" onclick="openProfile()" title="Профиль"><span id="headerAvatarInner"></span></button>
     </div>
@@ -2235,6 +2234,7 @@ async function enterDiary(user) {
   updateToday();
   updateAvg();
   updateRemindBadge();
+  updateAIBtnVisibility();
 }
 
 function generateEmptyDates(count) {
