@@ -1534,6 +1534,19 @@
           <span class="sr-right"></span>
         </button>
       </div>
+            <div class="settings-section">
+        <div class="ss-title"><span class="ss-emoji">💾</span> Резервные копии</div>
+        <button class="settings-row chevron" onclick="openBackupsModal()">
+          <span class="sr-left">
+            <span class="sr-emoji">📂</span>
+            <span class="sr-text">
+              <b>Восстановить из копии</b>
+              <span>Сохраняются за последние 7 дней</span>
+            </span>
+          </span>
+          <span class="sr-right"></span>
+        </button>
+      </div>
       <div class="settings-section reset-section">
         <div class="ss-title"><span class="ss-emoji">🔄</span> Сброс</div>
         <button class="settings-row" onclick="openResetConfirm()"><span class="sr-left"><span class="sr-emoji">🗑</span><span class="sr-text"><b>Сбросить дневник</b><span>Удалить все данные</span></span></span><span class="sr-right"></span></button>
@@ -1818,6 +1831,18 @@
 
     <div class="actions">
       <button class="action-btn done full" onclick="closeQuartersStats()"><span class="ab-emoji">✓</span> Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка резервных копий -->
+<div class="modal-bg" id="backupsModalBg">
+  <div class="modal" style="max-width: 400px;">
+    <h3>📂 Резервные копии</h3>
+    <div class="sub">Выберите дату для восстановления</div>
+    <div id="backupsList" style="display:flex; flex-direction:column; gap:8px; max-height:60vh; overflow-y:auto; text-align:left;"></div>
+    <div class="actions">
+      <button class="action-btn cancel full" onclick="closeBackupsModal()"><span class="ab-emoji">✕</span> Закрыть</button>
     </div>
   </div>
 </div>
@@ -2372,7 +2397,20 @@ function getQuarterByDate(date) {
   if (d >= new Date(2027, 3, 1) && d <= new Date(2027, 4, 25)) return 4;
   return 1;
 }
-function getCurrentQuarter() { return getQuarterByDate(new Date()); }
+function getCurrentQuarter() {
+  const now = new Date();
+  // 31 октября 2026 — начало 2-й четверти (осенние каникулы обычно начинаются в эти дни)
+  const startOfQ2 = new Date(2026, 9, 31); // 31 октября 2026
+  // 30 декабря — начало 3-й
+  const startOfQ3 = new Date(2026, 11, 30); 
+  // 24 марта — начало 4-й
+  const startOfQ4 = new Date(2027, 2, 24); 
+  
+  if (now >= startOfQ4) return 4;
+  if (now >= startOfQ3) return 3;
+  if (now >= startOfQ2) return 2;
+  return 1;
+}
 
 const SUBJECTS_DEFAULT = ["Алгебра","Геометрия","Вероятность и статистика","Русский язык","Литература","Физика","Химия","История","Обществознание","Английский язык","Биология","География","Информатика","Физкультура","ОБЖ","Черчение","Технология"];
 const DATES_BY_QUARTER_DEFAULT = {
@@ -2912,7 +2950,20 @@ function updateQuarterLabel() {
   document.getElementById("qPrev").disabled = activeQuarter <= 1;
   document.getElementById("qNext").disabled = activeQuarter >= 4;
 }
-function changeQuarter(delta) { activeQuarter = Math.max(1, Math.min(4, activeQuarter + delta)); render(); }
+function changeQuarter(delta) {
+  activeQuarter = Math.max(1, Math.min(4, activeQuarter + delta));
+  render(); // Обновляем таблицу оценок
+  
+  // Обновляем статистику, если мы на вкладке "Статистика"
+  if (document.getElementById("tab-stats").classList.contains("active")) {
+    renderStats();
+  }
+  
+  // Если открыто окно "Четверти", обновляем и его
+  if (document.getElementById("quartersStatsModalBg")?.classList.contains("active")) {
+    renderQuarterStats(activeQuarter);
+  }
+}
 function updateToday() {
   const d = new Date();
   document.getElementById("today").textContent = formatDate(d);
@@ -3752,36 +3803,51 @@ function renderStats() {
   if (!getProfile().showGrades) return;
   const cardsWrap = document.getElementById("statsCards"), distWrap = document.getElementById("statsDist");
   if (!cardsWrap) return;
+  
   let tswv = 0, tsw = 0, tcnt = 0, krc = 0, fives = 0;
   const byGrade = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
   const subjAvgs = [];
+  
+  // Берем ТОЛЬКО текущую четверть
+  const currentGrades = getCurrentGrades();
+
   state.subjects.forEach(subj => {
     let sswv = 0, ssw = 0;
-    [1,2,3,4].forEach(q => {
-      const sg = (state.gradesByQuarter[q] || {})[subj] || {};
-      Object.values(sg).forEach(v => {
-        const p = parseGrade(v); if (!p) return;
-        const w = getWeight(p.type);
-        sswv += p.grade * w; ssw += w; tswv += p.grade * w; tsw += w; tcnt++;
-        if (p.type === "kr") krc++;
-        if (p.grade === 5) fives++;
-        if (byGrade[p.grade] !== undefined) byGrade[p.grade]++;
-      });
+    const sg = currentGrades[subj] || {};
+    
+    Object.values(sg).forEach(v => {
+      const p = parseGrade(v); if (!p) return;
+      const w = getWeight(p.type);
+      sswv += p.grade * w; ssw += w; 
+      tswv += p.grade * w; tsw += w; tcnt++;
+      if (p.type === "kr") krc++;
+      if (p.grade === 5) fives++;
+      if (byGrade[p.grade] !== undefined) byGrade[p.grade]++;
     });
+    
     if (ssw > 0) subjAvgs.push({ subj, avg: sswv / ssw });
   });
+
   const overall = tsw > 0 ? tswv / tsw : 0;
   let best = null, worst = null;
-  if (subjAvgs.length) { best = subjAvgs.reduce((a, b) => a.avg > b.avg ? a : b); worst = subjAvgs.reduce((a, b) => a.avg < b.avg ? a : b); }
+  if (subjAvgs.length) { 
+    best = subjAvgs.reduce((a, b) => a.avg > b.avg ? a : b); 
+    worst = subjAvgs.reduce((a, b) => a.avg < b.avg ? a : b); 
+  }
+  
   const avgCls = overall >= 4.5 ? "c-green" : overall >= 3.5 ? "c-orange" : "c-red";
+  
+  // Выводим карточки
   cardsWrap.innerHTML = `
-    <div class="stat-card ${avgCls}"><div class="sc-label">Средневзвешенный</div><div class="sc-value">${overall > 0 ? overall.toFixed(2) : "—"}</div><div class="sc-sub">за весь год</div></div>
-    <div class="stat-card"><div class="sc-label">Всего оценок</div><div class="sc-value">${tcnt}</div><div class="sc-sub">во всех четвертях</div></div>
+    <div class="stat-card ${avgCls}"><div class="sc-label">Средневзвешенный</div><div class="sc-value">${overall > 0 ? overall.toFixed(2) : "—"}</div><div class="sc-sub">за ${activeQuarter} четверть</div></div>
+    <div class="stat-card"><div class="sc-label">Всего оценок</div><div class="sc-value">${tcnt}</div><div class="sc-sub">в ${activeQuarter} четверти</div></div>
     <div class="stat-card c-green"><div class="sc-label">Лучший предмет</div><div class="sc-value" style="font-size:15px;">${best ? escapeHtml(best.subj) : "—"}</div><div class="sc-sub">${best ? best.avg.toFixed(2) : ""}</div></div>
     <div class="stat-card c-red"><div class="sc-label">Худший предмет</div><div class="sc-value" style="font-size:15px;">${worst ? escapeHtml(worst.subj) : "—"}</div><div class="sc-sub">${worst ? worst.avg.toFixed(2) : ""}</div></div>
     <div class="stat-card c-purple"><div class="sc-label">Контрольных</div><div class="sc-value">${krc}</div><div class="sc-sub">вес ×2</div></div>
     <div class="stat-card c-pink"><div class="sc-label">Пятёрок</div><div class="sc-value">${fives}</div><div class="sc-sub">${tcnt > 0 ? Math.round(fives / tcnt * 100) + "%" : ""}</div></div>
   `;
+
+  // Выводим распределение оценок
   const maxC = Math.max(byGrade[5], byGrade[4], byGrade[3], byGrade[2], byGrade[1], 1);
   const order = [5,4,3,2,1];
   distWrap.innerHTML = order.map(g => {
@@ -3791,6 +3857,8 @@ function renderStats() {
     const lc = g === 5 ? '#2e7d32' : g === 4 ? '#558b2f' : g === 3 ? '#ef6c00' : g === 2 ? '#c62828' : '#7f0000';
     return `<div class="dist-row"><div class="dr-label" style="color:${lc};">${g}</div><div class="dr-bar-wrap"><div class="dr-bar g${g}" style="width:${width}%;">${c > 0 ? c : ""}</div></div><div class="dr-count">${c} (${pct}%)</div></div>`;
   }).join("");
+  
+  // Рисуем график
   drawStatsChart();
 }
 function drawStatsChart() {
@@ -3845,7 +3913,10 @@ window.addEventListener("resize", () => {
 function openForecast() {
   if (!getProfile().showGrades) return;
   const list = document.getElementById("forecastList"), sub = document.getElementById("forecastSub");
+  
+  // Принудительно обновляем текст заголовка под текущую четверть
   sub.textContent = `Расчёт для ${activeQuarter} четверти`;
+  
   const grades = getCurrentGrades(), items = [];
   state.subjects.forEach(subj => {
     const sg = grades[subj] || {};
@@ -3858,10 +3929,18 @@ function openForecast() {
     items.push({ subj, current: cur, need5: n5, need4: n4 });
   });
   items.sort((a, b) => a.current - b.current);
-  if (!items.length) { list.innerHTML = `<div class="remind-empty">Нет оценок в этой четверти.</div>`; document.getElementById("forecastModalBg").classList.add("active"); return; }
+  
+  if (!items.length) { 
+    list.innerHTML = `<div class="remind-empty">Нет оценок в этой четверти.</div>`; 
+    document.getElementById("forecastModalBg").classList.add("active"); 
+    return; 
+  }
+  
+  // Обновляем счетчик в синем блоке
   document.getElementById("fmhTitle").textContent = `${activeQuarter} четверть`;
   document.getElementById("fmhSub").textContent = `Предметов: ${items.length}`;
   document.getElementById("fmhCount").textContent = `${items.length} предм.`;
+  
   list.innerHTML = items.map((it, i) => {
     const cls = it.current >= 4.5 ? "green" : it.current >= 3.5 ? "orange" : "red";
     const pct = Math.min(100, Math.round((it.current / 5) * 100));
@@ -3872,6 +3951,7 @@ function openForecast() {
     else lines += `<div class="fi-line"><span class="badge-need orange">${it.need4}</span><span>Нужно <b>${it.need4}</b> ${plural5(it.need4)} до 3.50</span></div>`;
     return `<div class="forecast-item" style="animation-delay:${i*.03}s"><div class="fi-head"><div class="fi-subj"><span class="fi-emoji">${getSubjectEmoji(it.subj)}</span>${escapeHtml(it.subj)}</div><div class="fi-avg ${cls}">${it.current.toFixed(2)}</div></div><div class="fi-progress"><div class="fi-progress-bar" style="width:${pct}%"></div></div><div class="fi-lines">${lines}</div></div>`;
   }).join("");
+  
   document.getElementById("forecastModalBg").classList.add("active");
 }
 function closeForecast() { document.getElementById("forecastModalBg").classList.remove("active"); }
@@ -3921,6 +4001,7 @@ document.getElementById("quartersStatsModalBg").addEventListener("click", e => {
 });
 
 function renderQuarterStats(period) {
+  // Подсветка кнопок
   document.querySelectorAll("#qStatsBtns .btn").forEach(b => b.style.opacity = "0.6");
   const activeBtn = document.getElementById(period === "all" ? "qStatsBtnAll" : "qStatsBtn" + period);
   if (activeBtn) activeBtn.style.opacity = "1";
@@ -3930,6 +4011,7 @@ function renderQuarterStats(period) {
 
   const qList = period === "all" ? [1, 2, 3, 4] : [period];
 
+  // 1. Считаем оценки в журнале (для среднего балла и контрольных)
   qList.forEach(q => {
     const grades = state.gradesByQuarter[q] || {};
     Object.values(grades).forEach(subjGrades => {
@@ -3941,17 +4023,31 @@ function renderQuarterStats(period) {
         sumW += w;
         totalGrades++;
         if (p.type === "kr") countKr++;
-        if (p.grade === 5) count5++;
-        else if (p.grade === 4) count4++;
-        else if (p.grade === 3) count3++;
-        else if (p.grade === 2) count2++;
       });
     });
-    
-    if (period !== "all") {
-      Object.values(state.quarters).forEach(subjQ => {
-        if (subjQ[q] === "NA") countNA++;
+  });
+
+  // 2. Считаем именно ЧЕТВЕРТНЫЕ оценки
+  state.subjects.forEach(subj => {
+    const qGrades = state.quarters[subj] || {};
+    if (period === "all") {
+      // Если выбрано "За весь год" - показываем, сколько всего четвертных оценок выставлено
+      [1, 2, 3, 4].forEach(q => {
+        const qv = qGrades[q];
+        if (qv === "NA") countNA++;
+        else if (qv === 5) count5++;
+        else if (qv === 4) count4++;
+        else if (qv === 3) count3++;
+        else if (qv === 2) count2++;
       });
+    } else {
+      // Если выбрана конкретная четверть - показываем только её
+      const qv = qGrades[period];
+      if (qv === "NA") countNA++;
+      else if (qv === 5) count5++;
+      else if (qv === 4) count4++;
+      else if (qv === 3) count3++;
+      else if (qv === 2) count2++;
     }
   });
 
@@ -3961,7 +4057,7 @@ function renderQuarterStats(period) {
   const html = `
     <div style="text-align:center; margin-bottom:16px;">
       <div style="font-size:18px; font-weight:800; color:var(--primary); margin-bottom:4px;">${title}</div>
-      <div style="font-size:13px; color:var(--text-soft);">Всего оценок: ${totalGrades}</div>
+      <div style="font-size:13px; color:var(--text-soft);">Всего текущих оценок: ${totalGrades}</div>
     </div>
     
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
@@ -3976,7 +4072,7 @@ function renderQuarterStats(period) {
     </div>
 
     <div style="background:var(--panel); padding:14px; border-radius:10px;">
-      <div style="font-size:12px; font-weight:700; color:var(--text-soft); text-transform:uppercase; margin-bottom:10px;">Распределение оценок</div>
+      <div style="font-size:12px; font-weight:700; color:var(--text-soft); text-transform:uppercase; margin-bottom:10px;">Четвертные оценки</div>
       <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:6px;">
         <span style="color:#2e7d32; font-weight:700;">Пятёрки (5):</span> <span>${count5}</span>
       </div>
@@ -3989,7 +4085,7 @@ function renderQuarterStats(period) {
       <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:6px;">
         <span style="color:#c62828; font-weight:700;">Двойки (2):</span> <span>${count2}</span>
       </div>
-      ${period !== "all" ? `
+      ${(period !== "all" || countNA > 0) ? `
       <div style="display:flex; justify-content:space-between; font-size:14px; border-top:1px dashed var(--border); padding-top:6px; margin-top:6px;">
         <span style="color:#c62828; font-weight:700;">Н/А:</span> <span>${countNA}</span>
       </div>` : ""}
@@ -4580,6 +4676,7 @@ async function init() {
     }, 60000);
   }
   updateNowBar(); checkReminders(); updateRemindBadge(); updateToday();
+  
   document.addEventListener("click", askNotificationPermission, { once: true });
   setTimeout(() => { try { checkForUpdates(false); } catch (e) {} }, 1500);
 }
@@ -4929,6 +5026,92 @@ async function applyUpdate() {
 window.addEventListener("load", () => { setTimeout(() => { if (typeof checkForUpdates === "function") checkForUpdates(false); }, 2000); });
 document.getElementById("updateModalBg").addEventListener("click", e => { if (e.target.id === "updateModalBg") closeUpdateModal(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = document.getElementById("updateModalBg"); if (m && m.classList.contains("active")) closeUpdateModal(); } });
+
+// ==================== АВТОБЭКАП ====================
+async function createAutoBackup() {
+  if (!state) return;
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const backupKey = "backup_" + todayStr;
+    
+    const existing = await idbGet(backupKey);
+    if (!existing) {
+      await idbSet(backupKey, JSON.parse(JSON.stringify(state)));
+      await cleanOldBackups();
+    }
+  } catch (e) { console.warn("Ошибка автосохранения:", e); }
+}
+
+async function cleanOldBackups() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(DB_STORE, "readonly");
+    const req = tx.objectStore(DB_STORE).getAllKeys();
+    
+    req.onsuccess = async () => {
+      const keys = req.result.filter(k => typeof k === 'string' && k.startsWith('backup_'));
+      keys.sort();
+      
+      if (keys.length > 7) {
+        const toDelete = keys.slice(0, keys.length - 7);
+        const dbWrite = await openDB();
+        const txWrite = dbWrite.transaction(DB_STORE, "readwrite");
+        const store = txWrite.objectStore(DB_STORE);
+        toDelete.forEach(k => store.delete(k));
+      }
+    };
+  } catch (e) {}
+}
+
+async function openBackupsModal() {
+  const list = document.getElementById("backupsList");
+  list.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">Загрузка...</div>';
+  document.getElementById("backupsModalBg").classList.add("active");
+  
+  try {
+    const db = await openDB();
+    const tx = db.transaction(DB_STORE, "readonly");
+    const req = tx.objectStore(DB_STORE).getAllKeys();
+    
+    req.onsuccess = () => {
+      const keys = req.result.filter(k => typeof k === 'string' && k.startsWith('backup_')).sort().reverse();
+      if (keys.length === 0) {
+        list.innerHTML = '<div style="text-align:center; color:#999; padding:20px;">Копий пока нет. Они появятся, когда вы зайдете на следующий день.</div>';
+        return;
+      }
+      
+      list.innerHTML = keys.map(k => {
+        const dateStr = k.replace('backup_', '');
+        const [y, m, d] = dateStr.split('-');
+        return `<button class="btn" style="width:100%; justify-content:flex-start; background:#f0f4f8; color:#333;" onclick="restoreBackup('${k}')">
+          <span style="font-size:18px; margin-right:8px;">📅</span> ${d}.${m}.${y}
+        </button>`;
+      }).join("");
+    };
+  } catch (e) { list.innerHTML = 'Ошибка загрузки'; }
+}
+
+async function restoreBackup(key) {
+  if (!confirm("Восстановить данные из этой копии? Текущие данные будут перезаписаны.")) return;
+  try {
+    const backupState = await idbGet(key);
+    if (!backupState) { showToast("Ошибка", "Копия не найдена"); return; }
+    
+    state = normalizeState(backupState);
+    await saveStateNow();
+    closeBackupsModal();
+    
+    applyTheme(); applyUserTheme(); applyHeaderAvatar(); render(); renderSchedule(); renderQuarters();
+    showToast("✅ Восстановлено", "Данные успешно восстановлены из копии");
+    
+  } catch (e) {
+    showToast("Ошибка", "Не удалось восстановить");
+  }
+}
+
+function closeBackupsModal() {
+  document.getElementById("backupsModalBg").classList.remove("active");
+}
 
 // ==================== ЗАПУСК ====================
 init().then(async () => {
