@@ -202,25 +202,6 @@
   .header-sub { font-size: 11px; opacity: .9; font-weight: 400; display: block; margin-top: 1px; text-shadow: 0 1px 3px rgba(0,0,0,.25); }
   .header-right { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; }
   
-  /* Индикатор синхронизации — только точка */
-  .sync-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    position: relative;
-    transition: background .3s var(--ease), box-shadow .3s var(--ease);
-    cursor: help;
-  }
-  .sync-dot.ok { background: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, .18), 0 0 8px rgba(34, 197, 94, .6); }
-  .sync-dot.syncing { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, .18), 0 0 8px rgba(245, 158, 11, .6); animation: syncPulse 1.2s ease-in-out infinite; }
-  .sync-dot.error { background: #ef4444; box-shadow: 0 0 0 3px rgba(239, 68, 68, .18), 0 0 8px rgba(239, 68, 68, .6); animation: syncPulse 0.8s ease-in-out infinite; }
-  .sync-dot.off { background: #94a3b8; box-shadow: 0 0 0 3px rgba(148, 163, 184, .15); opacity: .7; }
-  @keyframes syncPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.25); opacity: .75; } }
-  [data-theme="dark"] .sync-dot.ok, [data-theme="amoled"] .sync-dot.ok { box-shadow: 0 0 0 3px rgba(34,197,94,.25), 0 0 10px rgba(34,197,94,.7); }
-  [data-theme="dark"] .sync-dot.syncing, [data-theme="amoled"] .sync-dot.syncing { box-shadow: 0 0 0 3px rgba(245,158,11,.25), 0 0 10px rgba(245,158,11,.7); }
-  [data-theme="dark"] .sync-dot.error, [data-theme="amoled"] .sync-dot.error { box-shadow: 0 0 0 3px rgba(239,68,68,.25), 0 0 10px rgba(239,68,68,.7); }
-  
   .theme-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); background: rgba(255,255,255,.12); cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: .25s var(--ease); color: #fff; backdrop-filter: blur(4px); }
   .theme-btn:hover { background: rgba(255,255,255,.28); transform: rotate(20deg); }
   .avatar-btn { width: 48px; height: 48px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.9); background: #f5b800; cursor: pointer; padding: 0; overflow: hidden; transition: transform .25s var(--ease), box-shadow .25s var(--ease); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,.15); position: relative; }
@@ -1327,11 +1308,13 @@
     <div class="sub" id="modalSub"></div>
     <div class="section-label">1. Выберите оценку</div>
     <div class="grade-btns" id="modalBtns"></div>
-    <div class="section-label">2. Тип работы</div>
+    <div class="section-label">2. Тип работы и вес</div>
     <div class="type-btns">
       <button class="type-btn" data-type="ur" onclick="selectType('ur')">УР <span class="hint">Урок · вес 1</span></button>
-      <button class="type-btn" data-type="kr" onclick="selectType('kr')">К/Р <span class="hint">Контрольная · вес 2</span></button>
+      <button class="type-btn" data-type="kr" onclick="selectType('kr')">К/Р <span class="hint">Контрольная</span></button>
     </div>
+    <div class="section-label" id="weightLabel" style="display:none;">3. Вес оценки (например: 1.5, 1.25)</div>
+    <input type="number" id="gradeWeightInput" step="0.05" min="1" max="10" value="2" style="width:100%; padding:10px; border:2px solid var(--border); border-radius:10px; font-size:16px; font-family:inherit; margin-bottom:16px; display:none; background:var(--panel); color:var(--text);">
     <div class="section-label">3. Комментарий (необязательно)</div>
     <textarea class="grade-comment-textarea" id="gradeComment" placeholder="Например: у доски, не выучил стих..." maxlength="200"></textarea>
     <div class="actions">
@@ -2234,7 +2217,6 @@ async function enterDiary(user) {
   updateToday();
   updateAvg();
   updateRemindBadge();
-  updateAIBtnVisibility();
 }
 
 function generateEmptyDates(count) {
@@ -2606,13 +2588,22 @@ async function saveStateNow() {
   if (!ok) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {} }
 }
 
+// ИСПРАВЛЕНО: parseGrade теперь забирает вес (weight)
 function parseGrade(v) {
   if (v === null || v === undefined) return null;
-  if (typeof v === "number") return { grade: v, type: "ur", comment: "" };
-  if (typeof v === "object" && v.grade) return { grade: v.grade, type: v.type || "ur", comment: v.comment || "" };
+  if (typeof v === "number") return { grade: v, type: "ur", weight: 1, comment: "" };
+  if (typeof v === "object" && v.grade) return { grade: v.grade, type: v.type || "ur", weight: v.weight || (v.type === "kr" ? 2 : 1), comment: v.comment || "" };
   return null;
 }
-function getWeight(type) { return type === "kr" ? WEIGHT_KR : WEIGHT_UR; }
+
+// ИСПРАВЛЕНО: getWeight теперь принимает весь объект оценки
+function getWeight(rec) {
+  if (!rec) return 1;
+  if (typeof rec === "number") return 1; 
+  if (rec.weight) return parseFloat(rec.weight); 
+  return (rec.type === "kr") ? 2 : 1; 
+}
+
 function getCurrentGrades() { return state && state.gradesByQuarter ? (state.gradesByQuarter[activeQuarter] || {}) : {}; }
 function getCurrentDates() { return state && state.datesByQuarter ? (state.datesByQuarter[activeQuarter] || []) : []; }
 function getProfile() {
@@ -2895,9 +2886,13 @@ function openGradeModal(subj, date) {
   gradeModal.subj = subj; gradeModal.date = date;
   gradeModal.grade = existing ? existing.grade : null;
   gradeModal.type = existing ? existing.type : "ur";
+  gradeModal.customWeight = existing ? existing.weight : null;
+  
   document.getElementById("modalTitle").textContent = subj;
   document.getElementById("modalSub").textContent = `Дата: ${date} • ${activeQuarter} четверть`;
   document.getElementById("gradeComment").value = existing ? (existing.comment || "") : "";
+  document.getElementById("gradeWeightInput").value = gradeModal.customWeight || 2;
+  
   const wrap = document.getElementById("modalBtns"); wrap.innerHTML = "";
   [1,2,3,4,5].forEach(n => {
     const btn = document.createElement("button");
@@ -2910,21 +2905,48 @@ function openGradeModal(subj, date) {
     };
     wrap.appendChild(btn);
   });
-  updateTypeButtons();
+  
+  // Синхронизируем UI типа работы и поля веса
+  selectType(gradeModal.type); 
   document.getElementById("modalBg").classList.add("active");
 }
 function updateTypeButtons() { document.querySelectorAll(".type-btn").forEach(b => b.classList.toggle("selected", b.dataset.type === gradeModal.type)); }
-function selectType(type) { gradeModal.type = type; updateTypeButtons(); }
+
+// ИСПРАВЛЕНО: Показ/скрытие поля веса
+function selectType(type) { 
+  gradeModal.type = type; 
+  updateTypeButtons(); 
+  const weightInput = document.getElementById("gradeWeightInput");
+  const weightLabel = document.getElementById("weightLabel");
+  if (type === "kr") {
+    weightInput.style.display = "block";
+    weightLabel.style.display = "block";
+    if (!gradeModal.customWeight) weightInput.value = 2; 
+  } else {
+    weightInput.style.display = "none";
+    weightLabel.style.display = "none";
+  }
+}
+
 function closeModal() { document.getElementById("modalBg").classList.remove("active"); }
 function saveGrade() {
   if (!gradeModal.grade) { alert("Выберите оценку!"); return; }
   const { subj, date, grade, type } = gradeModal;
   const comment = (document.getElementById("gradeComment").value || "").trim();
+  
+  let weight = 1;
+  if (type === "kr") {
+    weight = parseFloat(document.getElementById("gradeWeightInput").value);
+    if (isNaN(weight) || weight < 1) weight = 2; 
+  }
+
   const grades = state.gradesByQuarter[activeQuarter];
   if (!grades[subj]) grades[subj] = {};
-  const rec = { grade, type };
+  const rec = { grade, type, weight }; 
+  
   if (comment) rec.comment = comment;
   grades[subj][date] = rec;
+  
   saveState(); closeModal(); render();
 }
 function clearGrade() {
@@ -2937,7 +2959,7 @@ document.getElementById("modalBg").addEventListener("click", e => { if (e.target
 
 function calcWeightedAvg(subjGrades) {
   let swv = 0, sw = 0;
-  Object.values(subjGrades).forEach(v => { const p = parseGrade(v); if (!p) return; const w = getWeight(p.type); swv += p.grade * w; sw += w; });
+  Object.values(subjGrades).forEach(v => { const p = parseGrade(v); if (!p) return; const w = getWeight(p); swv += p.grade * w; sw += w; });
   return sw === 0 ? null : swv / sw;
 }
 function calcSimpleAvg(subjGrades) {
@@ -2978,7 +3000,7 @@ function renderRiskBar() {
   state.subjects.forEach(subj => {
     const sg = grades[subj]; if (!sg) return;
     let swv = 0, sw = 0;
-    Object.values(sg).forEach(v => { const p = parseGrade(v); if (!p) return; const w = getWeight(p.type); swv += p.grade * w; sw += w; });
+    Object.values(sg).forEach(v => { const p = parseGrade(v); if (!p) return; const w = getWeight(p); swv += p.grade * w; sw += w; });
     if (sw === 0) return;
     const cur = swv / sw;
     if (cur >= TARGET_AVG) return;
@@ -3001,7 +3023,7 @@ function updateAvg() {
   let swv = 0, sw = 0, cnt = 0; const all = [];
   Object.values(grades).forEach(sg => Object.values(sg).forEach(v => {
     const p = parseGrade(v); if (!p) return;
-    const w = getWeight(p.type); swv += p.grade * w; sw += w; cnt++; all.push(p.grade);
+    const w = getWeight(p); swv += p.grade * w; sw += w; cnt++; all.push(p.grade);
   }));
   const eW = document.getElementById("avgWeighted");
   const eS = document.getElementById("avgSimple");
@@ -3817,7 +3839,7 @@ function renderStats() {
     
     Object.values(sg).forEach(v => {
       const p = parseGrade(v); if (!p) return;
-      const w = getWeight(p.type);
+      const w = getWeight(p);
       sswv += p.grade * w; ssw += w; 
       tswv += p.grade * w; tsw += w; tcnt++;
       if (p.type === "kr") krc++;
@@ -3876,7 +3898,7 @@ function drawStatsChart() {
   const qAvgs = [];
   [1,2,3,4].forEach(q => {
     let swv = 0, sw = 0;
-    Object.values(state.gradesByQuarter[q] || {}).forEach(sg => Object.values(sg).forEach(v => { const p = parseGrade(v); if (!p) return; const w = getWeight(p.type); swv += p.grade * w; sw += w; }));
+    Object.values(state.gradesByQuarter[q] || {}).forEach(sg => Object.values(sg).forEach(v => { const p = parseGrade(v); if (!p) return; const w = getWeight(p); swv += p.grade * w; sw += w; }));
     qAvgs.push(sw > 0 ? swv / sw : null);
   });
   const pL = 36, pR = 16, pT = 20, pB = 30;
@@ -3921,7 +3943,7 @@ function openForecast() {
   state.subjects.forEach(subj => {
     const sg = grades[subj] || {};
     let swv = 0, sw = 0;
-    Object.values(sg).forEach(v => { const p = parseGrade(v); if (!p) return; const w = getWeight(p.type); swv += p.grade * w; sw += w; });
+    Object.values(sg).forEach(v => { const p = parseGrade(v); if (!p) return; const w = getWeight(p); swv += p.grade * w; sw += w; });
     if (sw === 0) return;
     const cur = swv / sw;
     const n5 = cur >= 4.5 ? 0 : Math.ceil((4.5 * sw - swv) / (5 - 4.5));
@@ -4018,7 +4040,7 @@ function renderQuarterStats(period) {
       Object.values(subjGrades).forEach(v => {
         const p = parseGrade(v);
         if (!p) return;
-        const w = getWeight(p.type);
+        const w = getWeight(p);
         sumWV += p.grade * w;
         sumW += w;
         totalGrades++;
@@ -4121,13 +4143,13 @@ function generateShareImage() {
     getCurrentDates().forEach(d => {
       const p = parseGrade(sg[d]); if (!p) return;
       grades.push({ grade: p.grade, type: p.type });
-      const w = getWeight(p.type); swv += p.grade * w; sw += w;
+      const w = getWeight(p); swv += p.grade * w; sw += w;
     });
     if (grades.length) items.push({ subj, grades, avg: sw > 0 ? swv / sw : 0, qGrade: (state.quarters[subj] || {})[activeQuarter] || "—" });
   });
   items.sort((a, b) => a.subj.localeCompare(b.subj, "ru"));
   let tswv = 0, tsw = 0;
-  items.forEach(it => it.grades.forEach(g => { const w = getWeight(g.type); tswv += g.grade * w; tsw += w; }));
+  items.forEach(it => it.grades.forEach(g => { const w = getWeight(g); tswv += g.grade * w; tsw += w; }));
   const overall = tsw > 0 ? tswv / tsw : 0;
   const footerH = 100;
   const H = headerH + items.length * rowH + footerH + 20;
